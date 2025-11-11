@@ -1,0 +1,65 @@
+name: MegaLinter (Reusable)
+on:
+  workflow_call:
+    inputs:
+      exclude_dirs:
+        type: string
+        default: '.github,.git,.cache,node_modules,.var,.rustup,.wine,.zim,.void-editor,.vscode,.claude'
+    secrets:
+      PAT:
+        required: false
+
+jobs:
+  megalinter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Validate Configs
+        uses: kehoecj/validate-configs-action@v4.0.1
+        with:
+          group-by: "pass-fail"
+          exclude-dirs: ${{ inputs.exclude_dirs }}
+          AUTO_FIX: "true"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: MegaLinter
+        uses: oxsecurity/megalinter@v9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT: ${{ secrets.PAT }}
+          VALIDATE_ALL_CODEBASE: true
+          APPLY_FIXES: all
+          APPLY_FIXES_EVENT: all
+          APPLY_FIXES_MODE: commit
+          PARALLEL: true
+          SHOW_ELAPSED_TIME: true
+          BASH_SHELLCHECK_DISABLE_ERRORS: true
+          BASH_SHELLCHECK_ARGUMENTS: '-s bash -P SCRIPTDIR -x -a -S warning -o all'
+          BASH_SHFMT_ARGUMENTS: "-ln bash -s -i 2 -bn"
+          FILTER_REGEX_INCLUDE: '((\.config|\.termux|\.github)/|^\.[^/]+$|^scripts/|^bin/|.*)'
+          FILTER_REGEX_EXCLUDE: '(^Linux-Settings/|^\.cache/|^node_modules/|^vendor/|^dist/|^build/|^\.git/)'
+          ENABLE: ACTION,BASH,CSS,DOCKERFILE,EDITORCONFIG,ENV,HTML,JSON,MAKEFILE,MARKDOWN,PYTHON,REPOSITORY,SPELL,TOML,XML,YAML
+          DISABLE_LINTERS: REPOSITORY_KICS,REPOSITORY_GRYPE,SPELL_VALE,REPOSITORY_TRIVY,REPOSITORY_DEVSKIM
+          DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,BASH_EXEC,REPOSITORY_GIT_DIFF,REPOSITORY_SECRETLINT
+
+      - name: Upload artifacts
+        if: success() || failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: megalinter-reports
+          include-hidden-files: true
+          path: |
+            megalinter-reports
+            mega-linter.log
+
+      - name: Commit fixes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "[MegaLinter] Apply fixes"
+          commit_user_name: megalinter-bot
+          commit_user_email: 129584137+megalinter-bot@users.noreply.github.com
