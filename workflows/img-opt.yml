@@ -1,0 +1,59 @@
+name: Optimize Images (Reusable)
+on:
+  workflow_call:
+    inputs:
+      export_webp:
+        type: boolean
+        default: true
+      export_avif:
+        type: boolean
+        default: false
+      replace_original:
+        type: boolean
+        default: false
+
+jobs:
+  optimize-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+
+      - name: Compress and Convert
+        id: compress
+        uses: stellasoftio/image-optimizer-action@v1.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          export-webp: ${{ inputs.export_webp }}
+          export-avif: ${{ inputs.export_avif }}
+          compress-png: true
+          compress-svg: true
+          compress-jpg: true
+          compress-webp: true
+          compress-avif: true
+          replace-original-after-export-webp: ${{ inputs.replace_original }}
+
+      - name: Remove Originals
+        if: steps.compress.outputs.changes_detected == 'true'
+        run: |
+          set -e
+          find . -type f -name '*.avif' -print0 | while IFS= read -r -d '' avif; do
+            base="${avif%.avif}"
+            for ext in png jpg jpeg; do
+              [[ -f ${base}.${ext} ]] && rm "${base}.${ext}"
+            done
+          done
+          find . -type f -name '*.webp' -print0 | while IFS= read -r -d '' webp; do
+            base="${webp%.webp}"
+            [[ -f ${base}.gif ]] && rm "${base}.gif"
+          done
+
+      - name: Commit
+        if: steps.compress.outputs.changes_detected == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: 'chore(img): optimize & convert [skip ci]'
+          branch: ${{ github.head_ref || github.ref_name }}
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'
