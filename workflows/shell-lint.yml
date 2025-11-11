@@ -1,0 +1,50 @@
+# .github/workflows/shell-lint.yml (reusable in Ven0m0/.github)
+name: Shell Lint (Reusable)
+on:
+  workflow_call:
+    inputs:
+      exclude_pattern:
+        type: string
+        default: '(^|/)\.(git|cache)(/|$)'
+        required: false
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -yq
+          sudo apt-get install -y shellcheck shfmt
+          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | \
+            sudo tar xz -C /usr/local/bin shellharden
+
+      - name: Fix shell files
+        env:
+          SHELLCHECK_OPTS: "--source-path=SCRIPTDIR --external-sources --check-sourced --shell=bash --severity=style"
+          LC_ALL: "C"
+        run: |
+          set -euo pipefail; shopt -s nullglob globstar
+          mapfile -t files < <(
+            {
+              find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '*bashrc' -o -name '*profile' -o -name 'bash_*' \)
+              find . -type f -exec sh -c 'head -n1 "$1" | grep -qE "^#!/.*sh"' _ {} \; -print
+            } | grep -vE '${{ inputs.exclude_pattern }}' | sort -u
+          )
+          for f in "${files[@]}"; do
+            shellharden --replace "$f" &>/dev/null || :
+            shellcheck -f diff "$f" 2>/dev/null | patch -Np1 2>/dev/null || :
+            shfmt -i 2 -s -ln bash -w "$f" &>/dev/null || :
+          done
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || {
+            git add -A
+            git commit -m "🔧 Auto-fix shell [skip ci]"
+            git push
+          }
