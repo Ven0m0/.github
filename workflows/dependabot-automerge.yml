@@ -1,0 +1,11 @@
+name: Dependabot Auto-Merge (Reusable)
+on:
+  workflow_call:
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Enable auto-merge
+        uses: hmarr/auto-approve-action@v4
