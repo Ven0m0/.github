@@ -1,0 +1,77 @@
+name: Unified Linters (Reusable)
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: ShellCheck via Reviewdog
+        uses: reviewdog/action-shellcheck@v1.32.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          path: "."
+          pattern: |
+            *.sh
+            *.bash
+            .bashrc
+            bash_*
+          exclude: |
+            */.git/*
+            ./.cache/*
+            ./Linux-Settings
+          check_all_files_with_shebangs: "true"
+          shellcheck_flags: "-x -s bash"
+
+      - name: Apply ShellCheck fixes
+        continue-on-error: true
+        run: |
+          set -e
+          mapfile -t files < <(
+            {
+              find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '.bashrc' -o -name 'bash_*' \) ! -path '*/.git/*' ! -path './.cache/*' ! -path './Linux-Settings/*'
+              find . -type f -executable ! -path '*/.git/*' ! -path './.cache/*' -exec grep -l '^#!.*\(bash\|sh\)' {} +
+            } | sort -u
+          )
+          for f in "${files[@]}"; do
+            [[ -f $f ]] && shellcheck -f diff "$f" 2>/dev/null | patch -Np1 2>/dev/null || :
+          done
+
+      - name: Commit ShellCheck fixes
+        if: github.event_name == 'pull_request'
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: ${{ github.head_ref }}
+          commit_message: "style: apply shellcheck fixes"
+          commit_user_name: "shellcheck-bot"
+          commit_user_email: "shellcheck-bot@users.noreply.github.com"
+
+      - name: Cache Super-Linter
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/super-linter
+          key: ${{ runner.os }}-super-linter-8.2.1
+
+      - name: Super-Linter
+        uses: super-linter/super-linter@v8.2.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: true
+          IGNORE_GITIGNORED_FILES: true
+          IGNORE_GENERATED_FILES: true
+          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
+          DISABLE_ERRORS: true
+
+      - name: Commit Super-Linter fixes
+        if: github.event_name == 'pull_request'
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: ${{ github.head_ref }}
+          commit_message: "chore: apply super-linter fixes"
+          commit_user_name: "super-linter"
+          commit_user_email: "super-linter@users.noreply.github.com"
