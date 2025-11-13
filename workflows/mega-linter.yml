@@ -38,6 +38,7 @@ jobs:
           PARALLEL: true
           SHOW_ELAPSED_TIME: true
           BASH_SHELLCHECK_DISABLE_ERRORS: true
+          FILEIO_REPORTER: false
           BASH_SHELLCHECK_ARGUMENTS: '-s bash -P SCRIPTDIR -x -a -S warning -o all'
           BASH_SHFMT_ARGUMENTS: "-ln bash -s -i 2 -bn"
           FILTER_REGEX_INCLUDE: '((\.config|\.termux|\.github)/|^\.[^/]+$|^scripts/|^bin/|.*)'
@@ -45,6 +46,17 @@ jobs:
           ENABLE: ACTION,BASH,CSS,DOCKERFILE,EDITORCONFIG,ENV,HTML,JSON,MAKEFILE,MARKDOWN,PYTHON,REPOSITORY,SPELL,TOML,XML,YAML
           DISABLE_LINTERS: REPOSITORY_KICS,REPOSITORY_GRYPE,SPELL_VALE,REPOSITORY_TRIVY,REPOSITORY_DEVSKIM
           DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,BASH_EXEC,REPOSITORY_GIT_DIFF,REPOSITORY_SECRETLINT
+          # YAML Configuration
+          YAML_YAMLLINT_CONFIG_FILE: .yamllint.yml
+          YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(node_modules|\.git)'
+          YAML_PRETTIER_CONFIG_FILE: .prettierrc.yml
+          YAML_PRETTIER_FILTER_REGEX_EXCLUDE: '(node_modules|\.git)'
+          # JSON Configuration
+          JSON_JSONLINT_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|package-lock\.json)'
+          JSON_PRETTIER_CONFIG_FILE: .prettierrc.yml
+          JSON_PRETTIER_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|package-lock\.json)'
+          # TOML Configuration
+          TOML_TAPLO_FILTER_REGEX_EXCLUDE: '(node_modules|\.git)'
 
       - name: Upload artifacts
         if: success() || failure()
