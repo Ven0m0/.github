@@ -1,5 +1,19 @@
-name: MegaLinter (Reusable)
+name: MegaLinter
+
 on:
+  push:
+    branches: [main, master, claude/**]
+    paths:
+      - '**.yml'
+      - '**.yaml'
+      - '**.toml'
+      - '**.json'
+      - '**.json5'
+      - '**.jsonc'
+      - '**.properties'
+      - '.github/workflows/mega-linter.yml'
+  pull_request:
+    branches: [main, master, claude/**]
   workflow_call:
     inputs:
       exclude_dirs:
@@ -9,11 +23,22 @@ on:
       PAT:
         required: false
 
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   megalinter:
+    name: MegaLinter
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout Code
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
           fetch-depth: 0
@@ -22,11 +47,12 @@ jobs:
         uses: kehoecj/validate-configs-action@v4.0.1
         with:
           group-by: "pass-fail"
-          exclude-dirs: ${{ inputs.exclude_dirs }}
+          exclude-dirs: ${{ inputs.exclude_dirs || '.github,.git,.cache,node_modules,.var,.rustup,.wine,.zim,.void-editor,.vscode,.claude' }}
           AUTO_FIX: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: MegaLinter
+        id: ml
         uses: oxsecurity/megalinter@v9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -44,6 +70,13 @@ jobs:
           FILTER_REGEX_INCLUDE: '((\.config|\.termux|\.github)/|^\.[^/]+$|^scripts/|^bin/|.*)'
           FILTER_REGEX_EXCLUDE: '(^Linux-Settings/|^\.cache/|^node_modules/|^vendor/|^dist/|^build/|^\.git/)'
           ENABLE: ACTION,BASH,CSS,DOCKERFILE,EDITORCONFIG,ENV,HTML,JSON,MAKEFILE,MARKDOWN,PYTHON,REPOSITORY,SPELL,TOML,XML,YAML
+          ENABLE_LINTERS: >-
+            YAML_YAMLLINT,
+            YAML_PRETTIER,
+            JSON_JSONLINT,
+            JSON_PRETTIER,
+            JSON_NPM_PACKAGE_JSON_LINT,
+            TOML_TAPLO
           DISABLE_LINTERS: REPOSITORY_KICS,REPOSITORY_GRYPE,SPELL_VALE,REPOSITORY_TRIVY,REPOSITORY_DEVSKIM
           DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,BASH_EXEC,REPOSITORY_GIT_DIFF,REPOSITORY_SECRETLINT
           # YAML Configuration
@@ -58,7 +91,7 @@ jobs:
           # TOML Configuration
           TOML_TAPLO_FILTER_REGEX_EXCLUDE: '(node_modules|\.git)'
 
-      - name: Upload artifacts
+      - name: Archive production artifacts
         if: success() || failure()
         uses: actions/upload-artifact@v5
         with:
@@ -68,10 +101,11 @@ jobs:
             megalinter-reports
             mega-linter.log
 
-      - name: Commit fixes
+      - name: Auto-commit & push fixes to main
+        if: steps.ml.outputs.has_updated_sources == '1'
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          branch: main
           commit_message: "[MegaLinter] Apply fixes"
           commit_user_name: megalinter-bot
           commit_user_email: 129584137+megalinter-bot@users.noreply.github.com
