@@ -1,34 +1,184 @@
 name: Submodule Update (Reusable)
+
 on:
   workflow_call:
+    inputs:
+      strategy:
+        description: 'Update strategy (merge, rebase, checkout)'
+        type: string
+        default: 'merge'
+        required: false
+      auto_merge:
+        description: 'Enable auto-merge for the PR'
+        type: boolean
+        default: false
+        required: false
+      branch_prefix:
+        description: 'Prefix for update branch name'
+        type: string
+        default: 'chore/submodule-updates'
+        required: false
+      filter_blob:
+        description: 'Use blob:none filter for partial clone'
+        type: boolean
+        default: true
+        required: false
+
+concurrency:
+  group: ${{ github.workflow }}-submodule-update
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   update:
+    name: Update Submodules
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update submodules
-        id: update
+      - name: Configure Git
         run: |
-          set -e
-          git submodule sync --recursive
-          git submodule update --init --recursive --remote --merge --filter=blob:none
-          git maintenance run --quiet
-          [[ -n $(git status --porcelain) ]] && echo "changes_detected=true" >> "$GITHUB_OUTPUT" || echo "changes_detected=false" >> "$GITHUB_OUTPUT"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Create PR
+      - name: List Current Submodules
+        id: list-submodules
+        run: |
+          set -euo pipefail
+
+          echo "## Current Submodules" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          git submodule status >> $GITHUB_STEP_SUMMARY || echo "No submodules found" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          submodule_count=$(git submodule status | wc -l)
+          echo "submodule_count=$submodule_count" >> "$GITHUB_OUTPUT"
+
+      - name: Sync Submodule URLs
+        if: steps.list-submodules.outputs.submodule_count > 0
+        run: |
+          git submodule sync --recursive
+
+      - name: Update Submodules
+        id: update
+        if: steps.list-submodules.outputs.submodule_count > 0
+        run: |
+          set -euo pipefail
+
+          filter_flag=""
+          if [[ "${{ inputs.filter_blob }}" == "true" ]]; then
+            filter_flag="--filter=blob:none"
+          fi
+
+          # Update submodules to latest commits
+          git submodule update --init --recursive --remote --${{ inputs.strategy }} $filter_flag
+
+          # Run maintenance
+          git maintenance run --quiet 2>/dev/null || true
+
+          # Check for changes
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes_detected=true" >> "$GITHUB_OUTPUT"
+
+            echo "## Submodule Changes" >> $GITHUB_STEP_SUMMARY
+            echo '```diff' >> $GITHUB_STEP_SUMMARY
+            git diff --submodule=log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "changes_detected=false" >> "$GITHUB_OUTPUT"
+            echo "## No Changes" >> $GITHUB_STEP_SUMMARY
+            echo "All submodules are already up to date" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Generate Update Details
+        id: details
         if: steps.update.outputs.changes_detected == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v7
+        run: |
+          set -euo pipefail
+
+          # Get list of updated submodules
+          updated_submodules=$(git diff --name-only | grep -E '^[^/]+$' | sort -u || true)
+
+          details="## Updated Submodules\n\n"
+          for submodule in $updated_submodules; do
+            if [[ -d "$submodule" ]]; then
+              details+="### $submodule\n"
+              details+='```\n'
+              details+=$(git diff --submodule=log "$submodule")
+              details+='\n```\n\n'
+            fi
+          done
+
+          details+="\n---\n"
+          details+="Automated update from [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+          # Save to file for PR body
+          echo "$details" > /tmp/pr_body.md
+
+      - name: Create Pull Request
+        id: create-pr
+        if: steps.update.outputs.changes_detected == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_user_name: "github-actions[bot]"
           commit_user_email: "41898282+github-actions[bot]@users.noreply.github.com"
-          commit_message: "chore(submodules): update to latest"
-          branch: "chore/submodule-updates"
-          create_pull_request: true
-          pull_request_title: "chore: update submodules"
-          pull_request_body: |
-            Automated submodule update from [workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          commit_message: "chore(submodules): update to latest commits"
+          branch: "${{ inputs.branch_prefix }}"
+          create_branch: true
+          push_options: '--force'
+
+      - name: Create or Update PR
+        if: steps.update.outputs.changes_detected == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const prBody = fs.readFileSync('/tmp/pr_body.md', 'utf8');
+
+            // Check if PR already exists
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${{ inputs.branch_prefix }}`
+            });
+
+            if (pulls.length > 0) {
+              // Update existing PR
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pulls[0].number,
+                body: prBody
+              });
+              console.log(`Updated existing PR #${pulls[0].number}`);
+            } else {
+              // Create new PR
+              const { data: pr } = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'chore: update submodules to latest',
+                head: '${{ inputs.branch_prefix }}',
+                base: context.ref.replace('refs/heads/', ''),
+                body: prBody
+              });
+              console.log(`Created new PR #${pr.number}`);
+
+              // Enable auto-merge if requested
+              if ('${{ inputs.auto_merge }}' === 'true') {
+                await github.rest.pulls.updateBranch({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number
+                });
+              }
+            }
