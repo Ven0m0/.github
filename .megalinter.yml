@@ -1,53 +1,123 @@
 ---
-# MegaLinter configuration file
-# https://megalinter.io/latest/configuration/
+# ========================================
+# MegaLinter Configuration
+# Documentation: https://megalinter.io/latest/configuration/
+# ========================================
 
+# ===========================
+# Global Settings
+# ===========================
+
+# Apply automatic fixes
 APPLY_FIXES: all
 
-# Enable/disable linters, merged from all configs
+# Ignore generated and gitignored files
+IGNORE_GENERATED_FILES: true
+IGNORE_GITIGNORED_FILES: true
+
+# Performance
+PARALLEL: true
+SHOW_ELAPSED_TIME: true
+
+# Reporting
+REPORT_OUTPUT_FOLDER: megalinter-reports
+FLAVOR_SUGGESTIONS: false
+ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
+
+# ===========================
+# Language/Format Enablement
+# ===========================
+
+# Enable specific linters
 ENABLE: BASH,MAKEFILE,POWERSHELL,PYTHON,CSS,ENV,HTML,JSON,MARKDOWN,XML,YAML,ACTION,DOCKERFILE,EDITORCONFIG
+
+# ===========================
+# Disabled Linters
+# ===========================
+
+# Completely disabled linters
 DISABLE_LINTERS: REPOSITORY_KICS,REPOSITORY_GRYPE,SPELL_VALE,SPELL_PROSELINT
-DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,BASH_EXEC,BASH_SHFMT,BASH_SHELLCHECK,YAML_YAMLLINT,YAML_V8R,YAML_PRETTIER,REPOSITORY_SEMGREP,REPOSITORY_GRYPE,REPOSITORY_DEVSKIM,PYTHON_BAN
+
+# Linters that run but don't cause failures
+DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,BASH_EXEC,BASH_SHFMT,BASH_SHELLCHECK,YAML_YAMLLINT,YAML_V8R,YAML_PRETTIER,REPOSITORY_SEMGREP,REPOSITORY_GRYPE,REPOSITORY_DEVSKIM,PYTHON_BANDIT
+
+# ===========================
+# Linter-Specific Configuration
+# ===========================
 
 LINTERS:
+  # YAML Linting
   - linter: yamllint
     variables:
       YAML_YAMLLINT_CONFIG_FILE: .yamllint.yml
       YAML_YAMLLINT_CLI_LINT_MODE: file
+      YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.cache|megalinter-reports)'
+
+  # YAML Formatting (Prettier)
   - linter: prettier
     descriptor: YAML
     variables:
       YAML_PRETTIER_CONFIG_FILE: .prettierrc.yml
       YAML_PRETTIER_FILE_EXTENSIONS: [".yml", ".yaml"]
+      YAML_PRETTIER_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.cache)'
+
+  # JSON Linting
   - linter: jsonlint
     variables:
       JSON_JSONLINT_CLI_LINT_MODE: list_of_files
+      JSON_JSONLINT_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|package-lock\.json|yarn\.lock)'
+
+  # JSON Formatting (Prettier)
   - linter: prettier
     descriptor: JSON
     variables:
       JSON_PRETTIER_CONFIG_FILE: .prettierrc.yml
       JSON_PRETTIER_FILE_EXTENSIONS: [".json", ".json5", ".jsonc"]
+      JSON_PRETTIER_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|package-lock\.json)'
+
+  # TOML Formatting
   - linter: taplo
     variables:
       TOML_TAPLO_ARGUMENTS: fmt
+      TOML_TAPLO_FILE_EXTENSIONS: [".toml"]
 
+# ===========================
+# Tool-Specific Arguments
+# ===========================
+
+# ShellCheck
 SHELLCHECK_ARGUMENTS: "-s bash -x -a -S warning -e SC2086"
+SHELLCHECK_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.cache)'
+
+# shfmt (Shell Formatter)
 SHFMT_ARGUMENTS: "-ln bash -s -i 2 -bn --apply-ignore"
+SHFMT_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.cache)'
+
+# Python
+PYTHON_DEFAULT_STYLE: ruff
+PYTHON_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.venv|venv|__pycache__)'
+
+# Markdown
+MARKDOWN_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|CHANGELOG\.md)'
+
+# Spell Checker
 SPELL_LYCHEE_DISABLE_ERRORS: true
+SPELL_CSPELL_DISABLE_ERRORS: true
+
+# YAML Validator
 YAML_V8R_FILE_EXTENSIONS: [".yml", ".yaml", ".toml", ".json", ".jsonc"]
 YAML_V8R_DISABLE_ERRORS: true
 YAML_YAMLLINT_DISABLE_ERRORS: true
 YAML_PRETTIER_DISABLE_ERRORS: true
-IGNORE_GENERATED_FILES: true
-IGNORE_GITIGNORED_FILES: true
-PARALLEL: true
-PYTHON_DEFAULT_STYLE: ruff
-SHOW_ELAPSED_TIME: true
-REPORT_OUTPUT_FOLDER: megalinter-reports
-FILTER_REGEX_EXCLUDE: '(\.github/workflows)'
-FLAVOR_SUGGESTIONS: false
 
-# File extensions to lint
+# ===========================
+# File Filters
+# ===========================
+
+# Global exclusion pattern
+FILTER_REGEX_EXCLUDE: '(\.github/workflows|node_modules|\.git|\.cache|\.claude|megalinter-reports)'
+
+# File patterns to include
 fileio:
   files:
     - "**/*.yml"
@@ -57,12 +127,34 @@ fileio:
     - "**/*.jsonc"
     - "**/*.toml"
     - "**/*.properties"
+    - "**/*.sh"
+    - "**/*.bash"
+    - "**/*.py"
+    - "**/*.md"
 
-# Exclusions (dirs and files)
+# ===========================
+# Exclusions
+# ===========================
+
+# Excluded directories
 excluded_directories:
   - node_modules
   - .git
+  - .cache
+  - .claude
+  - .venv
+  - venv
+  - dist
+  - build
   - megalinter-reports
+  - coverage
+
+# Excluded files
 excluded_files:
   - package-lock.json
   - yarn.lock
+  - pnpm-lock.yaml
+  - poetry.lock
+  - Cargo.lock
+  - "*.min.js"
+  - "*.min.css"

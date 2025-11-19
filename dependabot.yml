@@ -1,21 +1,51 @@
+# ========================================
+# Dependabot Configuration
+# Documentation: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# ========================================
+
 version: 2
+
 updates:
+  # ===========================
+  # GitHub Actions Dependencies
+  # ===========================
   - package-ecosystem: github-actions
     directory: /.github/workflows
+
+    # Update schedule
     schedule:
       interval: weekly
       day: sunday
       time: "04:00"
       timezone: "Europe/Berlin"
+
+    # Pull request settings
     open-pull-requests-limit: 10
-    rebase-strategy: "auto"
+    rebase-strategy: auto
+
+    # Commit message configuration
     commit-message:
       prefix: "chore(deps)"
+      prefix-development: "chore(dev-deps)"
       include: scope
+
+    # PR metadata
     reviewers:
       - Ven0m0
     labels:
       - dependencies
       - github-actions
+      - automated
+
+    # Branch naming
     pull-request-branch-name:
       separator: /
+
+    # Grouping strategy (group minor and patch updates)
+    groups:
+      github-actions-minor:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch

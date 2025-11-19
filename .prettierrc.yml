@@ -1,38 +1,84 @@
 ---
-# Prettier configuration for YAML, JSON, TOML formatting
+# Prettier Code Formatter Configuration
+# Documentation: https://prettier.io/docs/en/configuration.html
 
-# Basic formatting
+# ===========================
+# Global Formatting Options
+# ===========================
+
+# Line width
 printWidth: 120
+
+# Indentation
 tabWidth: 2
 useTabs: false
+
+# Syntax
 semi: false
 singleQuote: false
 quoteProps: consistent
 trailingComma: none
 bracketSpacing: true
+bracketSameLine: false
 arrowParens: avoid
+
+# Line endings
 endOfLine: lf
 
-# YAML specific
+# Prose wrapping
 proseWrap: preserve
 
-# Override for specific file types
+# ===========================
+# File Type Overrides
+# ===========================
+
 overrides:
+  # TOML files
   - files: "*.toml"
     options:
       printWidth: 100
+      tabWidth: 2
 
+  # JSON files
   - files: ["*.json", "*.json5", "*.jsonc"]
     options:
       printWidth: 120
+      tabWidth: 2
       trailingComma: none
+      parser: json
 
+  # YAML files
   - files: ["*.yml", "*.yaml"]
     options:
       printWidth: 120
+      tabWidth: 2
       proseWrap: preserve
+      bracketSpacing: true
+      singleQuote: false
 
-  - files: "package.json"
+  # Markdown files
+  - files: ["*.md", "*.mdx"]
+    options:
+      printWidth: 80
+      proseWrap: always
+      tabWidth: 2
+
+  # Package files
+  - files: ["package.json", "package-lock.json"]
     options:
       printWidth: 120
+      tabWidth: 2
+      trailingComma: none
+
+  # GitHub Actions workflows
+  - files: ".github/workflows/*.{yml,yaml}"
+    options:
+      printWidth: 120
+      tabWidth: 2
+      bracketSpacing: true
+
+  # Configuration files
+  - files: [".prettierrc", ".eslintrc", ".stylelintrc"]
+    options:
+      printWidth: 100
       tabWidth: 2
