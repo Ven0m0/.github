@@ -1,5 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "// NOTE": "Biome handles JS/TS/JSX/TSX/CSS linting and formatting. YAML/JSON/TOML/Markdown use Prettier.",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -8,7 +9,7 @@
   },
   "files": {
     "include": ["**/*.js", "**/*.ts", "**/*.jsx", "**/*.tsx", "**/*.json", "**/*.jsonc", "**/*.css", "**/*.html"],
-    "ignore": ["**/node_modules", "**/dist", "**/build", "**/.git", "**/coverage", "**/*.min.js", "**/.cache"],
+    "ignore": ["**/node_modules", "**/dist", "**/build", "**/.git", "**/coverage", "**/*.min.js", "**/.cache", "**/.venv", "**/venv", "**/megalinter-reports"],
     "ignoreUnknown": true,
     "maxSize": 10485760
   },
@@ -215,9 +216,9 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf",
-    "lineWidth": 88,
+    "lineWidth": 120,
     "attributePosition": "auto",
-    "ignore": ["**/node_modules", "**/dist", "**/build", "**/.git", "**/coverage", "**/*.min.js", "**/.cache"]
+    "ignore": ["**/node_modules", "**/dist", "**/build", "**/.git", "**/coverage", "**/*.min.js", "**/.cache", "**/.venv", "**/venv"]
   },
   "javascript": {
     "formatter": {
@@ -234,7 +235,7 @@
       "indentStyle": "space",
       "indentWidth": 2,
       "lineEnding": "lf",
-      "lineWidth": 88
+      "lineWidth": 120
     },
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
@@ -246,7 +247,7 @@
       "indentStyle": "space",
       "indentWidth": 2,
       "lineEnding": "lf",
-      "lineWidth": 88,
+      "lineWidth": 120,
       "trailingCommas": "none"
     },
     "parser": {
@@ -260,7 +261,7 @@
       "indentStyle": "space",
       "indentWidth": 2,
       "lineEnding": "lf",
-      "lineWidth": 88,
+      "lineWidth": 120,
       "quoteStyle": "double"
     },
     "parser": {

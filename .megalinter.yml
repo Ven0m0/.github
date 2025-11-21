@@ -29,7 +29,8 @@ ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
 # ===========================
 
 # Enable specific linters
-ENABLE: BASH,MAKEFILE,POWERSHELL,PYTHON,CSS,ENV,HTML,JSON,MARKDOWN,XML,YAML,ACTION,DOCKERFILE,EDITORCONFIG
+# Note: CSS handled by Biome, JS/TS handled by Biome
+ENABLE: BASH,MAKEFILE,POWERSHELL,PYTHON,CSS,ENV,HTML,JSON,MARKDOWN,XML,YAML,JAVASCRIPT,TYPESCRIPT,JSX,ACTION,DOCKERFILE,EDITORCONFIG
 
 # ===========================
 # Disabled Linters
@@ -38,22 +39,43 @@ ENABLE: BASH,MAKEFILE,POWERSHELL,PYTHON,CSS,ENV,HTML,JSON,MARKDOWN,XML,YAML,ACTI
 # Completely disabled linters
 DISABLE_LINTERS: REPOSITORY_KICS,REPOSITORY_GRYPE,SPELL_VALE,SPELL_PROSELINT
 
-# Linters that run but don't cause failures
-DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,BASH_EXEC,BASH_SHFMT,BASH_SHELLCHECK,YAML_YAMLLINT,YAML_V8R,YAML_PRETTIER,REPOSITORY_SEMGREP,REPOSITORY_GRYPE,REPOSITORY_DEVSKIM,PYTHON_BANDIT
+# Linters that run but don't cause failures (reduced list - only non-critical)
+DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,REPOSITORY_SEMGREP,REPOSITORY_DEVSKIM
 
 # ===========================
 # Linter-Specific Configuration
 # ===========================
 
 LINTERS:
-  # YAML Linting
+  # JavaScript/TypeScript - Biome (primary)
+  - linter: biome
+    descriptor: JAVASCRIPT
+    variables:
+      JAVASCRIPT_BIOME_CONFIG_FILE: biome.json
+      JAVASCRIPT_BIOME_FILE_EXTENSIONS: [".js", ".jsx", ".ts", ".tsx"]
+      JAVASCRIPT_BIOME_ARGUMENTS: check --apply
+
+  # CSS - Biome
+  - linter: biome
+    descriptor: CSS
+    variables:
+      CSS_BIOME_CONFIG_FILE: biome.json
+      CSS_BIOME_FILE_EXTENSIONS: [".css"]
+
+  # YAML Linting - yamllint (validation)
   - linter: yamllint
     variables:
       YAML_YAMLLINT_CONFIG_FILE: .yamllint.yml
       YAML_YAMLLINT_CLI_LINT_MODE: file
       YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.cache|megalinter-reports)'
 
-  # YAML Formatting (Prettier)
+  # YAML Formatting - yamlfmt (primary) and Prettier (fallback)
+  - linter: yamlfmt
+    descriptor: YAML
+    variables:
+      YAML_YAMLFMT_CONFIG_FILE: .yamlfmt
+      YAML_YAMLFMT_FILE_EXTENSIONS: [".yml", ".yaml"]
+
   - linter: prettier
     descriptor: YAML
     variables:
@@ -85,8 +107,8 @@ LINTERS:
 # Tool-Specific Arguments
 # ===========================
 
-# ShellCheck
-SHELLCHECK_ARGUMENTS: "-s bash -x -a -S warning -e SC2086"
+# ShellCheck (primary config in .shellcheckrc, minimal args here)
+SHELLCHECK_ARGUMENTS: "-S warning"
 SHELLCHECK_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.cache)'
 
 # shfmt (Shell Formatter)
@@ -100,22 +122,19 @@ PYTHON_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.venv|venv|__pycache__)'
 # Markdown
 MARKDOWN_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|CHANGELOG\.md)'
 
-# Spell Checker
+# Spell Checker (kept disabled - non-blocking)
 SPELL_LYCHEE_DISABLE_ERRORS: true
 SPELL_CSPELL_DISABLE_ERRORS: true
 
-# YAML Validator
+# YAML Validator (errors now enabled for quality control)
 YAML_V8R_FILE_EXTENSIONS: [".yml", ".yaml", ".toml", ".json", ".jsonc"]
-YAML_V8R_DISABLE_ERRORS: true
-YAML_YAMLLINT_DISABLE_ERRORS: true
-YAML_PRETTIER_DISABLE_ERRORS: true
 
 # ===========================
 # File Filters
 # ===========================
 
-# Global exclusion pattern
-FILTER_REGEX_EXCLUDE: '(\.github/workflows|node_modules|\.git|\.cache|\.claude|megalinter-reports)'
+# Global exclusion pattern (standardized across all linters)
+FILTER_REGEX_EXCLUDE: '(\.github/workflows|node_modules|\.git|\.cache|\.claude|\.venv|venv|dist|build|coverage|megalinter-reports)'
 
 # File patterns to include
 fileio:

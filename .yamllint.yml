@@ -1,16 +1,26 @@
 ---
+# ========================================
 # YAML Linting Configuration
 # Documentation: https://yamllint.readthedocs.io/
+# ========================================
+# Note: yamllint handles syntax validation, Prettier handles formatting
+# Severity levels set to 'warning' for non-critical style issues
+# ========================================
 
 extends: default
 locale: en_US.UTF-8
 
-# Directories and files to ignore
+# Directories and files to ignore (standardized with other tools)
 ignore: |
   node_modules/
   .git/
   .cache/
   .claude/
+  .venv/
+  venv/
+  dist/
+  build/
+  coverage/
   megalinter-reports/
   package-lock.json
   yarn.lock

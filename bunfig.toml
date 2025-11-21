@@ -1,0 +1,77 @@
+# ========================================
+# Bun Configuration
+# Documentation: https://bun.sh/docs/runtime/bunfig
+# ========================================
+
+# ===========================
+# Package Manager Settings
+# ===========================
+
+[install]
+# Package installation behavior
+registry = "https://registry.npmjs.org/"
+production = false
+optional = true
+dev = true
+peer = true
+
+# Caching and performance
+cache = true
+exact = false
+frozen = false
+
+# Security
+audit = true
+
+# Logging
+loglevel = "info"
+
+[install.scopes]
+# Scope-specific registries can be defined here
+# Example: "@myorg" = "https://npm.myorg.com/"
+
+# ===========================
+# Runtime Settings
+# ===========================
+
+[runtime]
+# Preload scripts
+# preload = ["./setup.ts"]
+
+# ===========================
+# Test Runner
+# ===========================
+
+[test]
+# Test timeout in milliseconds
+timeout = 5000
+
+# Code coverage
+coverage = false
+
+# Bail on first failure
+bail = false
+
+# ===========================
+# Build & Transpiler
+# ===========================
+
+[transpiler]
+# Target JavaScript version (default: "browser")
+target = "node"
+
+# Enable JSX
+jsx = "react"
+jsxFactory = "React.createElement"
+jsxFragment = "React.Fragment"
+
+# ===========================
+# Performance
+# ===========================
+
+[performance]
+# Enable optimizations
+optimize = true
+
+# Minify output
+minify = false

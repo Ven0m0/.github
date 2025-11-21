@@ -1,12 +1,19 @@
 ---
+# ========================================
 # Prettier Code Formatter Configuration
 # Documentation: https://prettier.io/docs/en/configuration.html
+# ========================================
+# Scope: YAML, JSON, TOML, Markdown formatting
+# Note: JS/TS/CSS are handled by Biome (see biome.json)
+# YAML formatting shared with yamlfmt (see .yamlfmt)
+# Line width standardized to 120 characters across all file types.
+# ========================================
 
 # ===========================
 # Global Formatting Options
 # ===========================
 
-# Line width
+# Line width (standardized across all tools)
 printWidth: 120
 
 # Indentation
@@ -17,10 +24,10 @@ useTabs: false
 semi: false
 singleQuote: false
 quoteProps: consistent
-trailingComma: none
+trailingComma: es5
 bracketSpacing: true
 bracketSameLine: false
-arrowParens: avoid
+arrowParens: always
 
 # Line endings
 endOfLine: lf
@@ -33,21 +40,7 @@ proseWrap: preserve
 # ===========================
 
 overrides:
-  # TOML files
-  - files: "*.toml"
-    options:
-      printWidth: 100
-      tabWidth: 2
-
-  # JSON files
-  - files: ["*.json", "*.json5", "*.jsonc"]
-    options:
-      printWidth: 120
-      tabWidth: 2
-      trailingComma: none
-      parser: json
-
-  # YAML files
+  # YAML files (workflows, configs, etc.)
   - files: ["*.yml", "*.yaml"]
     options:
       printWidth: 120
@@ -56,29 +49,22 @@ overrides:
       bracketSpacing: true
       singleQuote: false
 
-  # Markdown files
-  - files: ["*.md", "*.mdx"]
-    options:
-      printWidth: 80
-      proseWrap: always
-      tabWidth: 2
-
-  # Package files
-  - files: ["package.json", "package-lock.json"]
+  # JSON files (configs, package files, etc.)
+  - files: ["*.json", "*.json5", "*.jsonc"]
     options:
       printWidth: 120
       tabWidth: 2
       trailingComma: none
 
-  # GitHub Actions workflows
-  - files: ".github/workflows/*.{yml,yaml}"
+  # TOML files (Cargo.toml, pyproject.toml, etc.)
+  - files: "*.toml"
     options:
       printWidth: 120
       tabWidth: 2
-      bracketSpacing: true
 
-  # Configuration files
-  - files: [".prettierrc", ".eslintrc", ".stylelintrc"]
+  # Markdown files (documentation)
+  - files: ["*.md", "*.mdx"]
     options:
-      printWidth: 100
+      printWidth: 80
+      proseWrap: always
       tabWidth: 2
