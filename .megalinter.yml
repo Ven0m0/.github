@@ -28,8 +28,9 @@ ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
 # Language/Format Enablement
 # ===========================
 
-# Enable specific linters (removed CSS since Prettier handles it)
-ENABLE: BASH,MAKEFILE,POWERSHELL,PYTHON,ENV,HTML,JSON,MARKDOWN,XML,YAML,ACTION,DOCKERFILE,EDITORCONFIG
+# Enable specific linters
+# Note: CSS handled by Biome, JS/TS handled by Biome
+ENABLE: BASH,MAKEFILE,POWERSHELL,PYTHON,CSS,ENV,HTML,JSON,MARKDOWN,XML,YAML,JAVASCRIPT,TYPESCRIPT,JSX,ACTION,DOCKERFILE,EDITORCONFIG
 
 # ===========================
 # Disabled Linters
@@ -46,14 +47,35 @@ DISABLE_ERRORS_LINTERS: SPELL_CSPELL,SPELL_LYCHEE,REPOSITORY_SEMGREP,REPOSITORY_
 # ===========================
 
 LINTERS:
-  # YAML Linting
+  # JavaScript/TypeScript - Biome (primary)
+  - linter: biome
+    descriptor: JAVASCRIPT
+    variables:
+      JAVASCRIPT_BIOME_CONFIG_FILE: biome.json
+      JAVASCRIPT_BIOME_FILE_EXTENSIONS: [".js", ".jsx", ".ts", ".tsx"]
+      JAVASCRIPT_BIOME_ARGUMENTS: check --apply
+
+  # CSS - Biome
+  - linter: biome
+    descriptor: CSS
+    variables:
+      CSS_BIOME_CONFIG_FILE: biome.json
+      CSS_BIOME_FILE_EXTENSIONS: [".css"]
+
+  # YAML Linting - yamllint (validation)
   - linter: yamllint
     variables:
       YAML_YAMLLINT_CONFIG_FILE: .yamllint.yml
       YAML_YAMLLINT_CLI_LINT_MODE: file
       YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(node_modules|\.git|\.cache|megalinter-reports)'
 
-  # YAML Formatting (Prettier)
+  # YAML Formatting - yamlfmt (primary) and Prettier (fallback)
+  - linter: yamlfmt
+    descriptor: YAML
+    variables:
+      YAML_YAMLFMT_CONFIG_FILE: .yamlfmt
+      YAML_YAMLFMT_FILE_EXTENSIONS: [".yml", ".yaml"]
+
   - linter: prettier
     descriptor: YAML
     variables:

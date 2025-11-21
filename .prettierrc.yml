@@ -3,7 +3,9 @@
 # Prettier Code Formatter Configuration
 # Documentation: https://prettier.io/docs/en/configuration.html
 # ========================================
-# Note: This is the primary formatter for all languages.
+# Scope: YAML, JSON, TOML, Markdown formatting
+# Note: JS/TS/CSS are handled by Biome (see biome.json)
+# YAML formatting shared with yamlfmt (see .yamlfmt)
 # Line width standardized to 120 characters across all file types.
 # ========================================
 
