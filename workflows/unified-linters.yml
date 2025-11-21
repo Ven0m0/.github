@@ -13,6 +13,11 @@ on:
         type: boolean
         default: true
         required: false
+      enable_megalinter:
+        description: 'Enable MegaLinter (comprehensive multi-language linting)'
+        type: boolean
+        default: false
+        required: false
       enable_reviewdog:
         description: 'Enable Reviewdog for PR comments'
         type: boolean
@@ -24,14 +29,24 @@ on:
         default: false
         required: false
       exclude_paths:
-        description: 'Paths to exclude from linting'
+        description: 'Paths to exclude from linting (glob patterns for ShellCheck/Super-Linter)'
         type: string
-        default: '*/.git/*,./.cache/*,./.claude/*'
+        default: '*/.git/*,./.cache/*,./.claude/*,node_modules/*'
+        required: false
+      exclude_dirs:
+        description: 'Directories to exclude from MegaLinter (comma-separated)'
+        type: string
+        default: '.github,.git,.cache,node_modules'
         required: false
       apply_fixes:
         description: 'Apply automatic fixes'
         type: boolean
         default: true
+        required: false
+      megalinter_config:
+        description: 'Path to MegaLinter config file'
+        type: string
+        default: '.megalinter.yml'
         required: false
 
 concurrency:
@@ -93,8 +108,8 @@ jobs:
           mapfile -t files < <(
             {
               find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '.bashrc' -o -name 'bash_*' \) \
-                ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*'
-              find . -type f -executable ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' \
+                ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' ! -path '*/node_modules/*'
+              find . -type f -executable ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' ! -path '*/node_modules/*' \
                 -exec sh -c 'head -n1 "$1" | grep -qE "^#!/.*(bash|sh)"' _ {} \; -print
             } | sort -u
           )
@@ -170,3 +185,57 @@ jobs:
           commit_message: 'style: apply super-linter fixes [skip ci]'
           commit_user_name: 'super-linter-bot[bot]'
           commit_user_email: 'super-linter-bot[bot]@users.noreply.github.com'
+
+  megalinter:
+    name: MegaLinter
+    runs-on: ubuntu-latest
+    if: inputs.enable_megalinter
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+
+      - name: MegaLinter
+        id: ml
+        uses: oxsecurity/megalinter@v8
+        env:
+          VALIDATE_ALL_CODEBASE: ${{ inputs.validate_all_codebase }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLY_FIXES: ${{ inputs.apply_fixes && 'all' || 'none' }}
+          MEGALINTER_CONFIG: ${{ inputs.megalinter_config }}
+          FILTER_REGEX_EXCLUDE: ${{ inputs.exclude_dirs }}
+          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
+
+      - name: Archive MegaLinter Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: megalinter-reports
+          path: |
+            megalinter-reports
+            mega-linter.log
+          retention-days: 7
+
+      - name: Create MegaLinter Job Summary
+        if: always()
+        run: |
+          echo "## MegaLinter Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ steps.ml.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f megalinter-reports/summary.md ]; then
+            cat megalinter-reports/summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Commit MegaLinter Fixes
+        if: steps.ml.outputs.has_updated_sources == 1 && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'style: apply MegaLinter fixes [skip ci]'
+          branch: ${{ github.head_ref || github.ref_name }}
+          commit_user_name: 'megalinter-bot[bot]'
+          commit_user_email: 'megalinter-bot[bot]@users.noreply.github.com'
