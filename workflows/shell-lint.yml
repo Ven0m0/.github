@@ -1,4 +1,4 @@
-name: Shell Lint (Reusable)
+name: Shell Lint & Format (Reusable)
 
 on:
   workflow_call:
@@ -19,12 +19,12 @@ on:
         default: 2
         required: false
       apply_fixes:
-        description: 'Apply automatic fixes'
+        description: 'Apply automatic fixes (shellharden + shellcheck patches + shfmt)'
         type: boolean
         default: true
         required: false
       commit_changes:
-        description: 'Commit and push fixes'
+        description: 'Commit and push formatting changes'
         type: boolean
         default: true
         required: false
@@ -38,7 +38,7 @@ permissions:
 
 jobs:
   lint:
-    name: Shell Lint
+    name: Shell Lint & Format
     runs-on: ubuntu-latest
 
     steps:
@@ -116,15 +116,51 @@ jobs:
           set -euo pipefail
           shopt -s nullglob
 
+          shellharden_count=0
+          shellcheck_count=0
+          shfmt_count=0
+
+          echo "## Formatting Shell Files" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
           while IFS= read -r file; do
-            echo "Fixing: $file"
-            # Apply shellharden
-            shellharden --replace "$file" 2>/dev/null || true
-            # Apply shellcheck fixes
-            shellcheck -f diff "$file" 2>/dev/null | patch -Np1 2>/dev/null || true
-            # Apply shfmt formatting
-            shfmt -i ${{ inputs.shfmt_indent }} -s -ln bash -w "$file" 2>/dev/null || true
+            echo "Processing: $file"
+
+            # 1. Apply shellharden (hardens shell scripts for safety)
+            echo "  → Running shellharden --replace..."
+            if shellharden --replace "$file" 2>/dev/null; then
+              ((shellharden_count++)) || true
+              echo "    ✓ shellharden applied"
+            else
+              echo "    ⚠ shellharden skipped (no changes or error)"
+            fi
+
+            # 2. Apply shellcheck fixes (applies suggested fixes via diff/patch)
+            echo "  → Running shellcheck -f diff | patch -Np1..."
+            if shellcheck -f diff "$file" 2>/dev/null | patch -Np1 2>/dev/null; then
+              ((shellcheck_count++)) || true
+              echo "    ✓ shellcheck fixes applied"
+            else
+              echo "    ⚠ shellcheck skipped (no fixes available)"
+            fi
+
+            # 3. Apply shfmt formatting (final formatting pass)
+            # Flags: -i=indent -s=simplify -ln=language -bn=binary next line -ci=switch case indent -w=write
+            echo "  → Running shfmt in-place..."
+            if shfmt -i ${{ inputs.shfmt_indent }} -s -ln bash -bn -ci -w "$file" 2>/dev/null; then
+              ((shfmt_count++)) || true
+              echo "    ✓ shfmt applied"
+            else
+              echo "    ⚠ shfmt skipped (no changes or error)"
+            fi
+
+            echo ""
           done < /tmp/shell_files.txt
+
+          echo "### Formatting Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **shellharden**: Modified $shellharden_count files" >> $GITHUB_STEP_SUMMARY
+          echo "- **shellcheck**: Applied fixes to $shellcheck_count files" >> $GITHUB_STEP_SUMMARY
+          echo "- **shfmt**: Formatted $shfmt_count files" >> $GITHUB_STEP_SUMMARY
 
       - name: Check for Changes
         id: check-changes
@@ -144,7 +180,7 @@ jobs:
         if: inputs.commit_changes && steps.check-changes.outputs.changes_detected == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'style: apply shell linting fixes [skip ci]'
+          commit_message: 'style: apply shell formatting (shellharden + shellcheck + shfmt) [skip ci]'
           branch: ${{ github.head_ref || github.ref_name }}
-          commit_user_name: 'shellcheck-bot[bot]'
-          commit_user_email: 'shellcheck-bot[bot]@users.noreply.github.com'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
