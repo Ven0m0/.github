@@ -1,5 +1,4 @@
 name: Dependabot Auto-Merge (Reusable)
-
 on:
   workflow_call:
     inputs:
@@ -28,63 +27,56 @@ on:
         type: string
         default: ''
         required: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
-
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
   dependabot:
     name: Dependabot Auto-Merge
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
-
     steps:
       - name: Get Dependabot Metadata
         id: metadata
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Check Update Type
         id: check-update
         run: |
+          set -euo pipefail
           update_type="${{ steps.metadata.outputs.update-type }}"
           allowed_types="${{ inputs.update_types }}"
           package_name="${{ steps.metadata.outputs.dependency-names }}"
           excluded="${{ inputs.exclude_packages }}"
-
-          echo "## Dependabot Update Details" >> $GITHUB_STEP_SUMMARY
-          echo "- **Package**: $package_name" >> $GITHUB_STEP_SUMMARY
-          echo "- **Update Type**: $update_type" >> $GITHUB_STEP_SUMMARY
-          echo "- **Allowed Types**: $allowed_types" >> $GITHUB_STEP_SUMMARY
-
-          # Check if package is excluded
-          if [[ -n "$excluded" ]] && echo "$excluded" | grep -qF "$package_name"; then
+          {
+            echo "## Dependabot Update Details"
+            echo "- **Package**: $package_name"
+            echo "- **Update Type**: $update_type"
+            echo "- **Allowed Types**: $allowed_types"
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Check exclusions
+          if [[ -n $excluded ]] && grep -qF "$package_name" <<<"$excluded"; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "- **Status**: Skipped (excluded package)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Status**: Skipped (excluded package)" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-
-          # Check if update type is allowed
-          if echo "$allowed_types" | grep -qF "$update_type"; then
+          # Check update type
+          if grep -qF "$update_type" <<<"$allowed_types"; then
             echo "skip=false" >> "$GITHUB_OUTPUT"
-            echo "- **Status**: Eligible for auto-merge" >> $GITHUB_STEP_SUMMARY
+            echo "- **Status**: Eligible for auto-merge" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "- **Status**: Skipped (update type not allowed)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Status**: Skipped (update type not allowed)" >> "$GITHUB_STEP_SUMMARY"
           fi
-
       - name: Auto-approve PR
         if: inputs.auto_approve && steps.check-update.outputs.skip == 'false'
         uses: hmarr/auto-approve-action@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Enable Auto-merge
         if: inputs.auto_merge && steps.check-update.outputs.skip == 'false'
         uses: peter-evans/enable-pull-request-automerge@v3
@@ -92,16 +84,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           pull-request-number: ${{ github.event.pull_request.number }}
           merge-method: ${{ inputs.merge_method }}
-
       - name: Comment on PR
         if: steps.check-update.outputs.skip == 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            const reason = '${{ steps.check-update.outputs.skip }}' === 'true' ? 'excluded or update type not allowed' : '';
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Dependabot Auto-Merge\n\nThis PR was not auto-merged because: ${reason}\n\nPlease review and merge manually if appropriate.`
+              body: '## Dependabot Auto-Merge\n\nThis PR was not auto-merged (excluded or update type not allowed).\n\nPlease review and merge manually if appropriate.'
             });
