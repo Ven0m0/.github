@@ -1,5 +1,4 @@
 name: Unified Linters (Reusable)
-
 on:
   workflow_call:
     inputs:
@@ -48,29 +47,24 @@ on:
         type: string
         default: '.megalinter.yml'
         required: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
   issues: write
   statuses: write
-
 jobs:
   shellcheck-reviewdog:
     name: ShellCheck (Reviewdog)
     runs-on: ubuntu-latest
     if: inputs.enable_shellcheck && inputs.enable_reviewdog
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Run ShellCheck via Reviewdog
         uses: reviewdog/action-shellcheck@v1
         with:
@@ -86,25 +80,23 @@ jobs:
           exclude: ${{ inputs.exclude_paths }}
           check_all_files_with_shebangs: "true"
           shellcheck_flags: "-x -s bash -S warning"
-
   shellcheck-fix:
     name: ShellCheck (Auto-fix)
     runs-on: ubuntu-latest
     if: inputs.enable_shellcheck && inputs.apply_fixes
     needs: [shellcheck-reviewdog]
     continue-on-error: true
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-
       - name: Find Shell Files
         id: find-files
         run: |
           set -euo pipefail
+          shopt -s nullglob globstar
           mapfile -t files < <(
             {
               find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '.bashrc' -o -name 'bash_*' \) \
@@ -113,30 +105,26 @@ jobs:
                 -exec sh -c 'head -n1 "$1" | grep -qE "^#!/.*(bash|sh)"' _ {} \; -print
             } | sort -u
           )
-
           echo "file_count=${#files[@]}" >> "$GITHUB_OUTPUT"
           printf '%s\n' "${files[@]}" > /tmp/shell_files.txt
-
-          echo "## Shell Files Found" >> $GITHUB_STEP_SUMMARY
-          echo "Found ${#files[@]} shell files" >> $GITHUB_STEP_SUMMARY
-
+          {
+            echo "## Shell Files Found"
+            echo "Found ${#files[@]} shell files"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Apply ShellCheck Fixes
         if: steps.find-files.outputs.file_count > 0
         run: |
           set -euo pipefail
           fixed=0
-
           while IFS= read -r file; do
-            if [[ -f "$file" ]]; then
-              if shellcheck -f diff "$file" 2>/dev/null | patch -Np1 2>/dev/null; then
-                ((fixed++)) || true
-              fi
-            fi
+            [[ -f $file ]] && {
+              shellcheck -f diff "$file" 2>/dev/null | patch -Np1 2>/dev/null && fixed=$((fixed + 1))
+            }
           done < /tmp/shell_files.txt
-
-          echo "## ShellCheck Fixes Applied" >> $GITHUB_STEP_SUMMARY
-          echo "Fixed $fixed files" >> $GITHUB_STEP_SUMMARY
-
+          {
+            echo "## ShellCheck Fixes Applied"
+            echo "Fixed $fixed files"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Commit ShellCheck Fixes
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -145,27 +133,22 @@ jobs:
           commit_message: 'style: apply shellcheck fixes [skip ci]'
           commit_user_name: 'shellcheck-bot[bot]'
           commit_user_email: 'shellcheck-bot[bot]@users.noreply.github.com'
-
   super-linter:
     name: Super-Linter
     runs-on: ubuntu-latest
     if: inputs.enable_super_linter
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-
       - name: Cache Super-Linter
         uses: actions/cache@v4
         with:
           path: ~/.cache/super-linter
           key: ${{ runner.os }}-super-linter-v8
-          restore-keys: |
-            ${{ runner.os }}-super-linter-
-
+          restore-keys: ${{ runner.os }}-super-linter-
       - name: Run Super-Linter
         uses: super-linter/super-linter@v7
         env:
@@ -176,7 +159,6 @@ jobs:
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
           DISABLE_ERRORS: ${{ inputs.apply_fixes }}
           FIX_MODE_ENABLED: ${{ inputs.apply_fixes }}
-
       - name: Commit Super-Linter Fixes
         if: inputs.apply_fixes && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -185,19 +167,16 @@ jobs:
           commit_message: 'style: apply super-linter fixes [skip ci]'
           commit_user_name: 'super-linter-bot[bot]'
           commit_user_email: 'super-linter-bot[bot]@users.noreply.github.com'
-
   megalinter:
     name: MegaLinter
     runs-on: ubuntu-latest
     if: inputs.enable_megalinter
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-
       - name: MegaLinter
         id: ml
         uses: oxsecurity/megalinter@v8
@@ -208,7 +187,6 @@ jobs:
           MEGALINTER_CONFIG: ${{ inputs.megalinter_config }}
           FILTER_REGEX_EXCLUDE: ${{ inputs.exclude_dirs }}
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-
       - name: Archive MegaLinter Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -218,19 +196,17 @@ jobs:
             megalinter-reports
             mega-linter.log
           retention-days: 7
-
       - name: Create MegaLinter Job Summary
         if: always()
         run: |
-          echo "## MegaLinter Results" >> $GITHUB_STEP_SUMMARY
-          echo "- **Status**: ${{ steps.ml.outcome }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f megalinter-reports/summary.md ]; then
-            cat megalinter-reports/summary.md >> $GITHUB_STEP_SUMMARY
-          fi
-
+          {
+            echo "## MegaLinter Results"
+            echo "- **Status**: ${{ steps.ml.outcome }}"
+            echo "- **Repository**: ${{ github.repository }}"
+            echo "- **Branch**: ${{ github.ref_name }}"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+          [[ -f megalinter-reports/summary.md ]] && cat megalinter-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Commit MegaLinter Fixes
         if: steps.ml.outputs.has_updated_sources == 1 && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
