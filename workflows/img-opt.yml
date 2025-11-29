@@ -1,5 +1,4 @@
 name: Optimize Images (Reusable)
-
 on:
   workflow_call:
     inputs:
@@ -38,39 +37,32 @@ on:
         type: number
         default: 85
         required: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
   optimize-images:
     name: Optimize Images
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-
       - name: Cache Image Tools
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/image-tools
+          path: ~/.cache/image-tools
           key: ${{ runner.os }}-image-tools-v1
-
       - name: Find Images
         id: find-images
         run: |
           set -euo pipefail
-
+          shopt -s nullglob globstar
           mapfile -t images < <(
             find . -type f \( \
               -iname '*.png' -o \
@@ -80,12 +72,11 @@ jobs:
               -iname '*.svg' \
             \) ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/node_modules/*'
           )
-
           echo "image_count=${#images[@]}" >> "$GITHUB_OUTPUT"
-
-          echo "## Images Found" >> $GITHUB_STEP_SUMMARY
-          echo "Found ${#images[@]} images to process" >> $GITHUB_STEP_SUMMARY
-
+          {
+            echo "## Images Found"
+            echo "Found ${#images[@]} images to process"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Compress and Convert Images
         id: compress
         if: steps.find-images.outputs.image_count > 0
@@ -102,61 +93,50 @@ jobs:
           replace-original-after-export-webp: ${{ inputs.replace_original }}
           webp-quality: ${{ inputs.quality }}
           avif-quality: ${{ inputs.quality }}
-
       - name: Remove Originals
         if: steps.compress.outputs.changes_detected == 'true' && inputs.replace_original
         run: |
           set -euo pipefail
+          shopt -s nullglob globstar
           removed=0
-
-          # Remove original files if AVIF was created
-          if [[ "${{ inputs.export_avif }}" == "true" ]]; then
-            while IFS= read -r -d '' avif; do
+          # Remove originals for AVIF
+          [[ "${{ inputs.export_avif }}" == "true" ]] && {
+            for avif in **/*.avif; do
               base="${avif%.avif}"
               for ext in png jpg jpeg gif; do
-                if [[ -f "${base}.${ext}" ]]; then
-                  rm -v "${base}.${ext}"
-                  ((removed++))
-                fi
+                [[ -f ${base}.${ext} ]] && { rm -v "${base}.${ext}"; removed=$((removed + 1)); }
               done
-            done < <(find . -type f -name '*.avif' -print0)
-          fi
-
-          # Remove original files if WebP was created
-          if [[ "${{ inputs.export_webp }}" == "true" ]]; then
-            while IFS= read -r -d '' webp; do
+            done
+          }
+          # Remove originals for WebP
+          [[ "${{ inputs.export_webp }}" == "true" ]] && {
+            for webp in **/*.webp; do
               base="${webp%.webp}"
               for ext in png jpg jpeg gif; do
-                if [[ -f "${base}.${ext}" ]]; then
-                  rm -v "${base}.${ext}"
-                  ((removed++))
-                fi
+                [[ -f ${base}.${ext} ]] && { rm -v "${base}.${ext}"; removed=$((removed + 1)); }
               done
-            done < <(find . -type f -name '*.webp' -print0)
-          fi
-
-          echo "## Originals Removed" >> $GITHUB_STEP_SUMMARY
-          echo "Removed $removed original files" >> $GITHUB_STEP_SUMMARY
-
+            done
+          }
+          {
+            echo "## Originals Removed"
+            echo "Removed $removed original files"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Calculate Savings
         if: steps.compress.outputs.changes_detected == 'true'
         id: savings
         run: |
           set -euo pipefail
-
-          # Get total size of optimized images
-          total_before=$(git diff HEAD --numstat | awk '{sum += $2} END {print sum}')
-          total_after=$(git diff HEAD --numstat | awk '{sum += $1} END {print sum}')
-
-          if [[ -n "$total_before" ]] && [[ "$total_before" -gt 0 ]]; then
-            savings=$(( (total_before - total_after) * 100 / total_before ))
+          total_before=$(git diff HEAD --numstat | awk '{sum += $2} END {print sum+0}')
+          total_after=$(git diff HEAD --numstat | awk '{sum += $1} END {print sum+0}')
+          [[ $total_before -gt 0 ]] && {
+            savings=$(awk "BEGIN {printf \"%.0f\", (($total_before - $total_after) * 100 / $total_before)}")
             echo "savings_percent=$savings" >> "$GITHUB_OUTPUT"
-
-            echo "## Optimization Results" >> $GITHUB_STEP_SUMMARY
-            echo "- **Space saved**: ~${savings}%" >> $GITHUB_STEP_SUMMARY
-            echo "- **Files modified**: $(git diff --name-only | wc -l)" >> $GITHUB_STEP_SUMMARY
-          fi
-
+            {
+              echo "## Optimization Results"
+              echo "- **Space saved**: ~${savings}%"
+              echo "- **Files modified**: $(git diff --name-only | wc -l)"
+            } >> "$GITHUB_STEP_SUMMARY"
+          }
       - name: Commit and Push
         if: steps.compress.outputs.changes_detected == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -166,7 +146,6 @@ jobs:
           commit_user_name: 'image-optimizer-bot[bot]'
           commit_user_email: 'image-optimizer-bot[bot]@users.noreply.github.com'
           file_pattern: '*.png *.jpg *.jpeg *.gif *.svg *.webp *.avif'
-
       - name: Comment on PR
         if: steps.compress.outputs.changes_detected == 'true' && github.event_name == 'pull_request' && steps.savings.outputs.savings_percent != ''
         uses: actions/github-script@v7
