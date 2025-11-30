@@ -10,7 +10,7 @@ updates:
   # GitHub Actions Dependencies
   # ===========================
   - package-ecosystem: github-actions
-    directory: /.github/workflows
+    directory: "/"
 
     # Update schedule
     schedule:
