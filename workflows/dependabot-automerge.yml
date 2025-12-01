@@ -1,34 +1,34 @@
 name: Dependabot Auto-Merge (Reusable)
-on:
+"on":
   workflow_call:
     inputs:
       merge_method:
-        description: 'Merge method (merge, squash, rebase)'
+        description: Merge method (merge, squash, rebase)
         type: string
-        default: 'squash'
+        default: squash
         required: false
       auto_approve:
-        description: 'Auto-approve Dependabot PRs'
+        description: Auto-approve Dependabot PRs
         type: boolean
         default: true
         required: false
       auto_merge:
-        description: 'Auto-merge Dependabot PRs'
+        description: Auto-merge Dependabot PRs
         type: boolean
         default: true
         required: false
       update_types:
-        description: 'Comma-separated list of update types to auto-merge (patch, minor, major)'
+        description: Comma-separated list of update types to auto-merge (patch, minor, major)
         type: string
-        default: 'patch,minor'
+        default: patch,minor
         required: false
       exclude_packages:
-        description: 'Comma-separated list of package names to exclude from auto-merge'
+        description: Comma-separated list of package names to exclude from auto-merge
         type: string
-        default: ''
+        default: ""
         required: false
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: false
 permissions:
   contents: write
@@ -43,7 +43,7 @@ jobs:
         id: metadata
         uses: dependabot/fetch-metadata@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
       - name: Check Update Type
         id: check-update
         run: |
@@ -76,22 +76,30 @@ jobs:
         if: inputs.auto_approve && steps.check-update.outputs.skip == 'false'
         uses: hmarr/auto-approve-action@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
       - name: Enable Auto-merge
         if: inputs.auto_merge && steps.check-update.outputs.skip == 'false'
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT || github.token }}
           pull-request-number: ${{ github.event.pull_request.number }}
           merge-method: ${{ inputs.merge_method }}
       - name: Comment on PR
         if: steps.check-update.outputs.skip == 'true'
         uses: actions/github-script@v7
         with:
-          script: |
+          script: |-
+            const body = [
+              '## Dependabot Auto-Merge',
+              '',
+              'This PR was not auto-merged.',
+              'Reason: Package excluded or update type not allowed.',
+              '',
+              'Please review and merge manually if appropriate.'
+            ].join('\n');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '## Dependabot Auto-Merge\n\nThis PR was not auto-merged (excluded or update type not allowed).\n\nPlease review and merge manually if appropriate.'
+              body
             });

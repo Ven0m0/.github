@@ -1,51 +1,46 @@
 name: Unified Linters (Reusable)
-on:
+"on":
   workflow_call:
     inputs:
       enable_shellcheck:
-        description: 'Enable ShellCheck linting'
-        type: boolean
-        default: true
-        required: false
-      enable_super_linter:
-        description: 'Enable Super-Linter'
+        description: Enable ShellCheck linting
         type: boolean
         default: true
         required: false
       enable_megalinter:
-        description: 'Enable MegaLinter (comprehensive multi-language linting)'
+        description: Enable MegaLinter (comprehensive multi-language linting)
         type: boolean
         default: false
         required: false
       enable_reviewdog:
-        description: 'Enable Reviewdog for PR comments'
+        description: Enable Reviewdog for PR comments
         type: boolean
         default: true
         required: false
       validate_all_codebase:
-        description: 'Validate entire codebase (not just diff)'
+        description: Validate entire codebase (not just diff)
         type: boolean
         default: false
         required: false
       exclude_paths:
-        description: 'Paths to exclude from linting (glob patterns for ShellCheck/Super-Linter)'
+        description: Paths to exclude from linting (glob patterns for ShellCheck)
         type: string
-        default: '*/.git/*,./.cache/*,./.claude/*,node_modules/*'
+        default: "*/.git/*,./.cache/*,./.claude/*,node_modules/*"
         required: false
       exclude_dirs:
-        description: 'Directories to exclude from MegaLinter (comma-separated)'
+        description: Directories to exclude from MegaLinter (comma-separated)
         type: string
-        default: '.github,.git,.cache,node_modules'
+        default: ".github,.git,.cache,node_modules"
         required: false
       apply_fixes:
-        description: 'Apply automatic fixes'
+        description: Apply automatic fixes
         type: boolean
         default: true
         required: false
       megalinter_config:
-        description: 'Path to MegaLinter config file'
+        description: Path to MegaLinter config file
         type: string
-        default: '.megalinter.yml'
+        default: ".megalinter.yml"
         required: false
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
@@ -69,7 +64,7 @@ jobs:
       - name: Run ShellCheck via Reviewdog
         uses: reviewdog/action-shellcheck@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           level: warning
           path: "."
@@ -102,7 +97,8 @@ jobs:
             {
               find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '.bashrc' -o -name 'bash_*' \) \
                 ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' ! -path '*/node_modules/*'
-              find . -type f -executable ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' ! -path '*/node_modules/*' \
+              find . -type f -executable \
+                ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' ! -path '*/node_modules/*' \
                 -exec sh -c 'head -n1 "$1" | grep -qE "^#!/.*(bash|sh)"' _ {} \; -print
             } | sort -u
           )
@@ -126,48 +122,15 @@ jobs:
             echo "## ShellCheck Fixes Applied"; echo "Fixed $fixed files"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Commit ShellCheck Fixes
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: ${{ github.head_ref || github.ref }}
-          commit_message: 'style: apply shellcheck fixes [skip ci]'
-          commit_user_name: 'shellcheck-bot[bot]'
-          commit_user_email: 'shellcheck-bot[bot]@users.noreply.github.com'
-  super-linter:
-    name: Super-Linter
-    runs-on: ubuntu-latest
-    if: inputs.enable_super_linter
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT || github.token }}
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-      - name: Cache Super-Linter
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/super-linter
-          key: ${{ runner.os }}-super-linter-v8
-          restore-keys: ${{ runner.os }}-super-linter-
-      - name: Run Super-Linter
-        uses: super-linter/super-linter@v7
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: ${{ inputs.validate_all_codebase }}
-          IGNORE_GITIGNORED_FILES: true
-          IGNORE_GENERATED_FILES: true
-          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-          DISABLE_ERRORS: ${{ inputs.apply_fixes }}
-          FIX_MODE_ENABLED: ${{ inputs.apply_fixes }}
-      - name: Commit Super-Linter Fixes
-        if: inputs.apply_fixes && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: ${{ github.head_ref || github.ref }}
-          commit_message: 'style: apply super-linter fixes [skip ci]'
-          commit_user_name: 'super-linter-bot[bot]'
-          commit_user_email: 'super-linter-bot[bot]@users.noreply.github.com'
+          commit_message: "style: apply shellcheck fixes [skip ci]"
+          commit_user_name: shellcheck-bot[bot]
+          commit_user_email: shellcheck-bot[bot]@users.noreply.github.com
   megalinter:
     name: MegaLinter
     runs-on: ubuntu-latest
@@ -177,13 +140,14 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT || github.token }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
       - name: MegaLinter
         id: ml
-        uses: oxsecurity/megalinter@v8
+        uses: oxsecurity/megalinter@v9
         env:
           VALIDATE_ALL_CODEBASE: ${{ inputs.validate_all_codebase }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
           APPLY_FIXES: ${{ inputs.apply_fixes && 'all' || 'none' }}
           MEGALINTER_CONFIG: ${{ inputs.megalinter_config }}
           FILTER_REGEX_EXCLUDE: ${{ inputs.exclude_dirs }}
@@ -206,12 +170,17 @@ jobs:
             echo "- **Repository**: ${{ github.repository }}"
             echo "- **Branch**: ${{ github.ref_name }}"; echo ""
           } >> "$GITHUB_STEP_SUMMARY"
-          [[ -f megalinter-reports/summary.md ]] && cat megalinter-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f megalinter-reports/summary.md ]]; then
+            cat megalinter-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Commit MegaLinter Fixes
-        if: steps.ml.outputs.has_updated_sources == 1 && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: >-
+          steps.ml.outputs.has_updated_sources == 1 &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'style: apply MegaLinter fixes [skip ci]'
+          commit_message: "style: apply MegaLinter fixes [skip ci]"
           branch: ${{ github.head_ref || github.ref_name }}
-          commit_user_name: 'megalinter-bot[bot]'
-          commit_user_email: 'megalinter-bot[bot]@users.noreply.github.com'
+          commit_user_name: megalinter-bot[bot]
+          commit_user_email: megalinter-bot[bot]@users.noreply.github.com
