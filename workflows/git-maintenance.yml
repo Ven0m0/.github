@@ -62,7 +62,7 @@ jobs:
       size_after: ${{ steps.stats-after.outputs.repo_size }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT || github.token }}
@@ -134,22 +134,22 @@ jobs:
           git fetch --prune --prune-tags
           default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
           current_branch=$(git branch --show-current)
-          echo "## Branch Analysis" >> "$GITHUB_STEP_SUMMARY"
-          # Merged branches
-          echo "### Merged Branches" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
           merged_branches=$(git branch -r --merged "origin/$default_branch" 2>/dev/null | \
             grep -vE "(->|$default_branch|$current_branch)" | \
             sed 's/origin\///' | tr -d ' ' || true)
-          if [[ -n "$merged_branches" ]]; then
-            echo "$merged_branches" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "No merged branches found" >> "$GITHUB_STEP_SUMMARY"
-          fi
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          # Stale branches
-          echo "### Stale Branches (>${{ inputs.branch_retention_days }} days)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## Branch Analysis"
+            echo "### Merged Branches"
+            echo '```'
+            if [[ -n "$merged_branches" ]]; then
+              echo "$merged_branches"
+            else
+              echo "No merged branches found"
+            fi
+            echo '```'
+            echo "### Stale Branches (>${{ inputs.branch_retention_days }} days)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
           stale_date=$(date -d "${{ inputs.branch_retention_days }} days ago" +%s)
           found_stale=false
           while IFS= read -r branch; do
@@ -161,8 +161,10 @@ jobs:
               found_stale=true
             fi
           done < <(git branch -r | grep -v '\->' | sed 's/origin\///' | tr -d ' ')
-          [[ "$found_stale" == "false" ]] && echo "No stale branches found" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          {
+            [[ "$found_stale" == "false" ]] && echo "No stale branches found"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Repository Statistics (After)
         id: stats-after
         if: always()
