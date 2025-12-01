@@ -48,7 +48,7 @@ on:
         default: '.megalinter.yml'
         required: false
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
 permissions:
   contents: write
@@ -62,9 +62,10 @@ jobs:
     if: inputs.enable_shellcheck && inputs.enable_reviewdog
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT || github.token }}
       - name: Run ShellCheck via Reviewdog
         uses: reviewdog/action-shellcheck@v1
         with:
@@ -88,15 +89,15 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT || github.token }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
       - name: Find Shell Files
         id: find-files
         run: |
-          set -euo pipefail
-          shopt -s nullglob globstar
+          set -euo pipefail; shopt -s nullglob globstar
           mapfile -t files < <(
             {
               find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '.bashrc' -o -name 'bash_*' \) \
@@ -122,14 +123,13 @@ jobs:
             }
           done < /tmp/shell_files.txt
           {
-            echo "## ShellCheck Fixes Applied"
-            echo "Fixed $fixed files"
+            echo "## ShellCheck Fixes Applied"; echo "Fixed $fixed files"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Commit ShellCheck Fixes
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          branch: ${{ github.head_ref }}
+          branch: ${{ github.head_ref || github.ref }}
           commit_message: 'style: apply shellcheck fixes [skip ci]'
           commit_user_name: 'shellcheck-bot[bot]'
           commit_user_email: 'shellcheck-bot[bot]@users.noreply.github.com'
@@ -139,12 +139,13 @@ jobs:
     if: inputs.enable_super_linter
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT || github.token }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
       - name: Cache Super-Linter
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/super-linter
           key: ${{ runner.os }}-super-linter-v8
@@ -163,7 +164,7 @@ jobs:
         if: inputs.apply_fixes && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          branch: ${{ github.head_ref }}
+          branch: ${{ github.head_ref || github.ref }}
           commit_message: 'style: apply super-linter fixes [skip ci]'
           commit_user_name: 'super-linter-bot[bot]'
           commit_user_email: 'super-linter-bot[bot]@users.noreply.github.com'
@@ -173,7 +174,7 @@ jobs:
     if: inputs.enable_megalinter
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
@@ -203,8 +204,7 @@ jobs:
             echo "## MegaLinter Results"
             echo "- **Status**: ${{ steps.ml.outcome }}"
             echo "- **Repository**: ${{ github.repository }}"
-            echo "- **Branch**: ${{ github.ref_name }}"
-            echo ""
+            echo "- **Branch**: ${{ github.ref_name }}"; echo ""
           } >> "$GITHUB_STEP_SUMMARY"
           [[ -f megalinter-reports/summary.md ]] && cat megalinter-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Commit MegaLinter Fixes
