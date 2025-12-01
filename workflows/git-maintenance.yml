@@ -181,7 +181,8 @@ jobs:
           EOF
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           # Calculate size difference
-          before=${{ steps.stats-before.outputs.repo_size || 0 }}
+          before="${{ steps.stats-before.outputs.repo_size }}"
+          before="${before:-0}"
           after=${stats[size-pack]:-0}
           if [[ $before -gt 0 && $after -gt 0 ]]; then
             diff=$((before - after))

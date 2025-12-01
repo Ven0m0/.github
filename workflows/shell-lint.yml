@@ -44,7 +44,7 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || github.token }}
       - name: Cache APT Packages
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: shellcheck shfmt
           version: 1.0

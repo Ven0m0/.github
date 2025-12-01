@@ -74,7 +74,7 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Create Pull Request
-        if: inputs.create_pr && steps.submodules.outputs.json != '[]'
+        if: inputs.create_pr && steps.submodules.outputs.json != '' && steps.submodules.outputs.json != '[]'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.PAT || github.token }}
