@@ -80,7 +80,6 @@ jobs:
     name: ShellCheck (Auto-fix)
     runs-on: ubuntu-latest
     if: inputs.enable_shellcheck && inputs.apply_fixes
-    needs: [shellcheck-reviewdog]
     continue-on-error: true
     steps:
       - name: Checkout Code
