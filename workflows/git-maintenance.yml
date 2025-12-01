@@ -43,7 +43,7 @@ on:
         default: false
         required: false
 concurrency:
-  group: ${{ github.workflow }}-maintenance
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: false
 permissions:
   contents: write
@@ -54,10 +54,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT || github.token }}
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
@@ -67,8 +67,7 @@ jobs:
         run: |
           set -euo pipefail
           {
-            echo "## Repository Statistics (Before Maintenance)"
-            echo '```'
+            echo "## Repository Statistics (Before Maintenance)"; echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           # Extract stats efficiently
           while IFS=': ' read -r key value; do
