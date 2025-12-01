@@ -1,0 +1,91 @@
+name: Update Git Submodules (Reusable)
+"on":
+  workflow_call:
+    inputs:
+      strategy:
+        description: Strategy for updating submodules (commit or tag)
+        type: string
+        default: commit
+        required: false
+      submodules:
+        description: |
+          Specific submodules to update (newline-separated paths).
+          Leave empty to update all submodules.
+        type: string
+        default: ""
+        required: false
+      gitmodules_path:
+        description: Path to the .gitmodules file
+        type: string
+        default: .gitmodules
+        required: false
+      create_pr:
+        description: Create a pull request with the submodule updates
+        type: boolean
+        default: true
+        required: false
+      pr_branch_prefix:
+        description: Prefix for the pull request branch name
+        type: string
+        default: chore/update-submodules
+        required: false
+      commit_message:
+        description: Custom commit message for the submodule update
+        type: string
+        default: "chore(deps): update git submodules"
+        required: false
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
+  cancel-in-progress: true
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update-submodules:
+    name: Update Git Submodules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          token: ${{ secrets.PAT || github.token }}
+      - name: Update Submodules
+        id: submodules
+        uses: sgoudham/update-git-submodules@v2
+        with:
+          gitmodulesPath: ${{ inputs.gitmodules_path }}
+          strategy: ${{ inputs.strategy }}
+          submodules: ${{ inputs.submodules }}
+      - name: Generate Summary
+        run: |
+          {
+            echo "## Git Submodules Update"
+            echo ""
+            echo "**Strategy**: ${{ inputs.strategy }}"
+            echo ""
+            if [[ -n "${{ steps.submodules.outputs.json }}" ]]; then
+              echo "### Updated Submodules"
+              echo ""
+              echo "${{ steps.submodules.outputs.prBody }}"
+            else
+              echo "No submodules were updated."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Create Pull Request
+        if: inputs.create_pr && steps.submodules.outputs.json != '' && steps.submodules.outputs.json != '[]'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT || github.token }}
+          commit-message: ${{ inputs.commit_message }}
+          branch: ${{ inputs.pr_branch_prefix }}-${{ github.run_id }}
+          title: ${{ inputs.commit_message }}
+          body: |
+            ## Submodule Updates
+
+            ${{ steps.submodules.outputs.prBody }}
+
+            ---
+            _Automated by [update-git-submodules](https://github.com/sgoudham/update-git-submodules)_
+          labels: dependencies,automated

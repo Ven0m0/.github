@@ -43,23 +43,27 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || github.token }}
-      - name: Cache Tools
-        id: cache-tools
-        uses: actions/cache@v4.3.0
+      - name: Cache APT Packages
+        uses: awalsh128/cache-apt-pkgs-action@v1
         with:
-          path: |
-            /usr/local/bin/shellharden
-            ~/.cache/shellcheck
-          key: ${{ runner.os }}-shell-tools-v1
-      - name: Install Tools
+          packages: shellcheck shfmt
+          version: 1.0
+      - name: Cache Shellharden
+        id: cache-shellharden
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/shellharden
+          key: ${{ runner.os }}-shellharden-v1
+      - name: Install Shellharden
+        if: steps.cache-shellharden.outputs.cache-hit != 'true'
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y shellcheck shfmt
-          if [[ ! -x /usr/local/bin/shellharden ]]; then
-            shellharden_url="https://github.com/anordal/shellharden/releases/latest/download"
-            curl -sfL "${shellharden_url}/shellharden-x86_64-unknown-linux-gnu.tar.gz" | \
-              sudo tar xz -C /usr/local/bin shellharden
-          fi
+          shellharden_url="https://github.com/anordal/shellharden/releases/latest/download"
+          curl -sfL "${shellharden_url}/shellharden-x86_64-unknown-linux-gnu.tar.gz" | \
+            sudo tar xz -C /usr/local/bin shellharden
+      - name: Verify Tools
+        run: |
+          shellcheck --version
+          shfmt --version
           shellharden --version
       - name: Find Shell Files
         id: find-files
