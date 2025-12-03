@@ -1,5 +1,6 @@
 name: Unified Linters (Reusable)
 "on":
+  workflow_dispatch:
   workflow_call:
     inputs:
       enable_shellcheck:
@@ -50,6 +51,11 @@ permissions:
   pull-requests: write
   issues: write
   statuses: write
+env:
+  DEBIAN_FRONTEND: noninteractive
+  LC_ALL: C
+  GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+
 jobs:
   shellcheck-reviewdog:
     name: ShellCheck (Reviewdog)
@@ -95,17 +101,16 @@ jobs:
           mapfile -t files < <(
             {
               find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '.bashrc' -o -name 'bash_*' \) \
-                ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' ! -path '*/node_modules/*'
+                ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/node_modules/*'
               find . -type f -executable \
-                ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/.claude/*' ! -path '*/node_modules/*' \
+                ! -path '*/.git/*' ! -path '*/.cache/*' ! -path '*/node_modules/*' \
                 -exec sh -c 'head -n1 "$1" | grep -qE "^#!/.*(bash|sh)"' _ {} \; -print
             } | sort -u
           )
           echo "file_count=${#files[@]}" >> "$GITHUB_OUTPUT"
           printf '%s\n' "${files[@]}" > /tmp/shell_files.txt
           {
-            echo "## Shell Files Found"
-            echo "Found ${#files[@]} shell files"
+            echo "## Shell Files Found"; echo "Found ${#files[@]} shell files"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Apply ShellCheck Fixes
         if: steps.find-files.outputs.file_count > 0
@@ -115,8 +120,7 @@ jobs:
           while IFS= read -r file; do
             [[ -f $file ]] && {
               shellcheck -f diff "$file" 2>/dev/null | patch -Np1 2>/dev/null && fixed=$((fixed + 1))
-            }
-          done < /tmp/shell_files.txt
+            }; done < /tmp/shell_files.txt
           {
             echo "## ShellCheck Fixes Applied"; echo "Fixed $fixed files"
           } >> "$GITHUB_STEP_SUMMARY"

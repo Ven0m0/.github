@@ -124,7 +124,7 @@ jobs:
         if: >-
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           branch: ${{ github.head_ref || github.ref }}
           commit_message: "style: apply shellcheck fixes [skip ci]"
@@ -177,7 +177,7 @@ jobs:
           steps.ml.outputs.has_updated_sources == 1 &&
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: apply MegaLinter fixes [skip ci]"
           branch: ${{ github.head_ref || github.ref_name }}
