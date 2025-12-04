@@ -43,7 +43,7 @@ jobs:
         id: metadata
         uses: dependabot/fetch-metadata@v2
         with:
-          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT || github.token }}
       - name: Check Update Type
         id: check-update
         run: |
@@ -76,7 +76,7 @@ jobs:
         if: inputs.auto_approve && steps.check-update.outputs.skip == 'false'
         uses: hmarr/auto-approve-action@v4
         with:
-          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT || github.token }}
       - name: Enable Auto-merge
         if: inputs.auto_merge && steps.check-update.outputs.skip == 'false'
         uses: peter-evans/enable-pull-request-automerge@v3
