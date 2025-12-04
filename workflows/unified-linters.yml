@@ -54,7 +54,7 @@ permissions:
 env:
   DEBIAN_FRONTEND: noninteractive
   LC_ALL: C
-  GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.PAT || github.token }}
 
 jobs:
   shellcheck-reviewdog:
@@ -70,7 +70,7 @@ jobs:
       - name: Run ShellCheck via Reviewdog
         uses: reviewdog/action-shellcheck@v1
         with:
-          github_token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT || github.token }}
           reporter: github-pr-review
           level: warning
           path: "."
@@ -128,7 +128,7 @@ jobs:
         if: >-
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           branch: ${{ github.head_ref || github.ref }}
           commit_message: "style: apply shellcheck fixes [skip ci]"
@@ -150,14 +150,14 @@ jobs:
         uses: oxsecurity/megalinter@v9
         env:
           VALIDATE_ALL_CODEBASE: ${{ inputs.validate_all_codebase }}
-          GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT || github.token }}
           APPLY_FIXES: ${{ inputs.apply_fixes && 'all' || 'none' }}
           MEGALINTER_CONFIG: ${{ inputs.megalinter_config }}
           FILTER_REGEX_EXCLUDE: ${{ inputs.exclude_dirs }}
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
       - name: Archive MegaLinter Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: megalinter-reports
           path: |
@@ -181,7 +181,7 @@ jobs:
           steps.ml.outputs.has_updated_sources == 1 &&
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: apply MegaLinter fixes [skip ci]"
           branch: ${{ github.head_ref || github.ref_name }}

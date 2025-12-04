@@ -43,23 +43,30 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || github.token }}
-      - name: Cache APT Packages
-        uses: awalsh128/cache-apt-pkgs-action@v1
-        with:
-          packages: shellcheck shfmt
-          version: 1.0
-      - name: Cache Shellharden
-        id: cache-shellharden
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Cache Shell Tools
+        id: cache-tools
         uses: actions/cache@v4
         with:
-          path: /usr/local/bin/shellharden
-          key: ${{ runner.os }}-shellharden-v1
+          path: |
+            /usr/local/bin/shellharden
+            /usr/local/bin/shfmt
+          key: ${{ runner.os }}-shell-tools-v2
       - name: Install Shellharden
-        if: steps.cache-shellharden.outputs.cache-hit != 'true'
+        if: steps.cache-tools.outputs.cache-hit != 'true'
         run: |
           shellharden_url="https://github.com/anordal/shellharden/releases/latest/download"
           curl -sfL "${shellharden_url}/shellharden-x86_64-unknown-linux-gnu.tar.gz" | \
             sudo tar xz -C /usr/local/bin shellharden
+      - name: Install shfmt
+        if: steps.cache-tools.outputs.cache-hit != 'true'
+        run: |
+          shfmt_url="https://github.com/mvdan/sh/releases/latest/download"
+          curl -sfL "${shfmt_url}/shfmt_v3.8.0_linux_amd64" -o /tmp/shfmt
+          chmod +x /tmp/shfmt
+          sudo mv /tmp/shfmt /usr/local/bin/shfmt
       - name: Verify Tools
         run: |
           shellcheck --version
@@ -176,7 +183,7 @@ jobs:
           inputs.commit_changes &&
           steps.check-changes.outputs.changes_detected == 'true' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: apply shell formatting (shellharden + shellcheck + shfmt) [skip ci]"
           branch: ${{ github.head_ref || github.ref_name }}

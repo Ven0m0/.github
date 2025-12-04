@@ -74,7 +74,7 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           declare -A stats
           while IFS=': ' read -r key value; do
-            stats[$key]=$value
+            stats["$key"]="$value"
           done < <(git count-objects -v | grep -E '^(count|in-pack|size-pack):')
           branch_count=$(git branch -r 2>/dev/null | grep -vc '\->' || echo "0")
           cat >> "$GITHUB_STEP_SUMMARY" <<EOF
@@ -174,7 +174,7 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           declare -A stats
           while IFS=': ' read -r key value; do
-            stats[$key]=$value
+            stats["$key"]="$value"
           done < <(git count-objects -v | grep -E '^(count|in-pack|size-pack):')
           cat >> "$GITHUB_STEP_SUMMARY" <<EOF
           Objects (loose): ${stats[count]:-0}

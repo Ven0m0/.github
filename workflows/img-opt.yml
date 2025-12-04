@@ -77,7 +77,7 @@ jobs:
         if: steps.find-images.outputs.image_count > 0
         uses: stellasoftio/image-optimizer-action@v2
         with:
-          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT || github.token }}
           export-webp: ${{ inputs.export_webp }}
           export-avif: ${{ inputs.export_avif }}
           compress-png: ${{ inputs.compress_png }}
@@ -133,7 +133,7 @@ jobs:
         if: >-
           steps.compress.outputs.changes_detected == 'true' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore(img): optimize images [skip ci]"
           branch: ${{ github.head_ref || github.ref_name }}
