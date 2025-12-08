@@ -1,3 +1,12 @@
+# Unified Linters (Reusable Workflow)
+#
+# Required secrets:
+#   - PAT (optional): Personal Access Token with repo scope
+#     Falls back to github.token if not provided
+#
+# Security: Uses restricted permissions by default (contents: read)
+# Jobs override permissions as needed for commit/PR operations
+
 name: Unified Linters (Reusable)
 "on":
   workflow_dispatch:
@@ -46,26 +55,27 @@ name: Unified Linters (Reusable)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
+
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-  statuses: write
+  contents: read
+
 env:
   DEBIAN_FRONTEND: noninteractive
   LC_ALL: C
-  GITHUB_TOKEN: ${{ secrets.PAT || github.token }}
 
 jobs:
   shellcheck-reviewdog:
     name: ShellCheck (Reviewdog)
     runs-on: ubuntu-latest
     if: inputs.enable_shellcheck && inputs.enable_reviewdog
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           token: ${{ secrets.PAT || github.token }}
       - name: Run ShellCheck via Reviewdog
         uses: reviewdog/action-shellcheck@v1
@@ -87,11 +97,13 @@ jobs:
     runs-on: ubuntu-latest
     if: inputs.enable_shellcheck && inputs.apply_fixes
     continue-on-error: true
+    permissions:
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           token: ${{ secrets.PAT || github.token }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
       - name: Find Shell Files
@@ -138,11 +150,16 @@ jobs:
     name: MegaLinter
     runs-on: ubuntu-latest
     if: inputs.enable_megalinter
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      statuses: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           token: ${{ secrets.PAT || github.token }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
       - name: MegaLinter

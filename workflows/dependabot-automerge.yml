@@ -1,3 +1,12 @@
+# Dependabot Auto-Merge (Reusable Workflow)
+#
+# Required secrets:
+#   - PAT (optional): Personal Access Token with repo scope
+#     Falls back to github.token if not provided
+#
+# Security: Uses restricted permissions by default (contents: read)
+# Jobs override permissions as needed for PR operations
+
 name: Dependabot Auto-Merge (Reusable)
 "on":
   workflow_call:
@@ -30,14 +39,17 @@ name: Dependabot Auto-Merge (Reusable)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: false
+
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 jobs:
   dependabot:
     name: Dependabot Auto-Merge
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Get Dependabot Metadata
         id: metadata
