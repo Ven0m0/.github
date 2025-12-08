@@ -1,3 +1,12 @@
+# Update Git Submodules (Reusable Workflow)
+#
+# Required secrets:
+#   - PAT (optional): Personal Access Token with repo scope
+#     Falls back to github.token if not provided
+#
+# Security: Uses restricted permissions by default (contents: read)
+# Jobs override permissions as needed for PR creation
+
 name: Update Git Submodules (Reusable)
 "on":
   workflow_call:
@@ -37,13 +46,16 @@ name: Update Git Submodules (Reusable)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
+
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 jobs:
   update-submodules:
     name: Update Git Submodules
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6

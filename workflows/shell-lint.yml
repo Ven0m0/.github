@@ -1,3 +1,12 @@
+# Shell Lint & Format (Reusable Workflow)
+#
+# Required secrets:
+#   - PAT (optional): Personal Access Token with repo scope
+#     Falls back to github.token if not provided
+#
+# Security: Uses restricted permissions by default (contents: read)
+# Jobs override permissions as needed for commit operations
+
 name: Shell Lint & Format (Reusable)
 "on":
   workflow_call:
@@ -30,17 +39,20 @@ name: Shell Lint & Format (Reusable)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
+
 permissions:
-  contents: write
+  contents: read
 jobs:
   lint:
     name: Shell Lint & Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || github.token }}
       - name: Install ShellCheck
@@ -64,7 +76,7 @@ jobs:
         if: steps.cache-tools.outputs.cache-hit != 'true'
         run: |
           shfmt_url="https://github.com/mvdan/sh/releases/latest/download"
-          curl -sfL "${shfmt_url}/shfmt_v3.8.0_linux_amd64" -o /tmp/shfmt
+          curl -sfL "${shfmt_url}/shfmt_v3.10.0_linux_amd64" -o /tmp/shfmt
           chmod +x /tmp/shfmt
           sudo mv /tmp/shfmt /usr/local/bin/shfmt
       - name: Verify Tools
