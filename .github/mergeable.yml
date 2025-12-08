@@ -1,39 +1,42 @@
+# ========================================
+# Mergeable Bot Configuration Template
+# Documentation: https://github.com/mergeability/mergeable
+# ========================================
+# This is a template file showing the structure for mergeable bot configuration.
+# Replace placeholder values with actual configuration based on your needs.
+# ========================================
+
 version: 2
 mergeable:
-  - when: {{event}}, {{event}} # can be one or more
-    name: check name A
-    filter:
-      # list of filters (optional). Specify one or more.
-      - do: {{filter}}
-        {{option}}: # name of an option supported by the validator.
-          {{sub-option}}: {{value}} # an option will have one or more sub-options.
+  # Recipe A: Example pull request validation
+  - when: pull_request.opened, pull_request.edited
+    name: PR Title Validation
     validate:
-      # list of validators. Specify one or more.
-      - do: {{validator}}
-        {{option}}: # name of an option supported by the validator.
-          {{sub-option}}: {{value}} # an option will have one or more sub-options.
-    pass: # list of actions to be executed if all validation passes. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}
-    fail: # list of actions to be executed when at least one validation fails. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}
-    error: # list of actions to be executed when at least one validator throws an error. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}
+      - do: title
+        must_include:
+          regex: "^(feat|fix|docs|style|refactor|test|chore):"
+          message: "Title must start with a conventional commit type"
+    fail:
+      - do: comment
+        payload:
+          body: "Please update the PR title to follow conventional commit format"
 
-  - when: {{event}}, {{event}} # example for second recipe
-    name: check name B
+  # Recipe B: Example label-based checks
+  - when: pull_request.labeled
+    name: Label-Based Checks
     filter:
-      # list of filters (optional). Specify one or more.
-      - do: {{filter}}
-        {{option}}: # name of an option supported by the validator.
-          {{sub-option}}: {{value}} # an option will have one or more sub-options.
+      - do: label
+        must_include:
+          regex: "(ready|review)"
     validate:
-      # list of validators. Specify one or more.
-      - do: {{validator}}
-        {{option}}: # name of an option supported by the validator.
-          {{sub-option}}: {{value}} # an option will have one or more sub-options.
-    pass: # list of actions to be executed if all validation passes. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}
-    fail: # list of actions to be executed when at least one validation fails. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}
-    error: # list of actions to be executed when at least one validator throws an error. Specify one or more. Omit this tag if no actions are needed.
-      - do: {{action}}
+      - do: approvals
+        min:
+          count: 1
+        message: "At least one approval required"
+    pass:
+      - do: checks
+        status: success
+    fail:
+      - do: comment
+        payload:
+          body: "This PR needs at least one approval before merging"
