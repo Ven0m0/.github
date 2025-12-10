@@ -1,0 +1,266 @@
+# Reusable Release Management Workflow
+# Features: Semantic versioning, changelog generation, GitHub releases, artifact uploads
+#
+# Required secrets: GITHUB_TOKEN (automatically provided)
+# Optional secrets:
+#   - NPM_TOKEN: for npm package publishing
+#   - PYPI_TOKEN: for PyPI package publishing
+#
+# Usage example:
+# jobs:
+#   release:
+#     uses: Ven0m0/.github/.github/workflows/release.yml@main
+#     with:
+#       create-github-release: true
+#       generate-changelog: true
+#     permissions:
+#       contents: write
+
+name: Release Management (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: 'Working directory for the project'
+        required: false
+        type: string
+        default: '.'
+      create-github-release:
+        description: 'Create GitHub release'
+        required: false
+        type: boolean
+        default: true
+      generate-changelog:
+        description: 'Generate changelog automatically'
+        required: false
+        type: boolean
+        default: true
+      publish-npm:
+        description: 'Publish to npm registry'
+        required: false
+        type: boolean
+        default: false
+      publish-pypi:
+        description: 'Publish to PyPI'
+        required: false
+        type: boolean
+        default: false
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+      draft:
+        description: 'Create as draft release'
+        required: false
+        type: boolean
+        default: false
+      tag-name:
+        description: 'Release tag name (leave empty for auto-detection)'
+        required: false
+        type: string
+        default: ''
+      release-notes:
+        description: 'Custom release notes (markdown)'
+        required: false
+        type: string
+        default: ''
+      artifact-paths:
+        description: 'Paths to artifacts to upload (newline-separated)'
+        required: false
+        type: string
+        default: ''
+      timeout-minutes:
+        description: 'Job timeout in minutes'
+        required: false
+        type: number
+        default: 20
+    secrets:
+      NPM_TOKEN:
+        description: 'NPM authentication token'
+        required: false
+      PYPI_TOKEN:
+        description: 'PyPI authentication token'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+
+    permissions:
+      contents: write
+      pull-requests: read
+      id-token: write
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      release-url: ${{ steps.create-release.outputs.url }}
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ -n "${{ inputs.tag-name }}" ]; then
+            VERSION="${{ inputs.tag-name }}"
+          elif [ -f "package.json" ]; then
+            VERSION="v$(jq -r .version package.json)"
+          elif [ -f "pyproject.toml" ]; then
+            VERSION="v$(grep -Po '(?<=version = ")[^"]*' pyproject.toml | head -1)"
+          elif [ -f "setup.py" ]; then
+            VERSION="v$(grep -Po '(?<=version=")[^"]*' setup.py | head -1)"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version: ${VERSION}"
+
+      - name: Generate changelog
+        id: changelog
+        if: inputs.generate-changelog
+        uses: mikepenz/release-changelog-builder-action@f972bd5645c717cc74bb63bb683e0c0c5d81fa28 # v5.1.2
+        with:
+          fromTag: ${{ github.event.before }}
+          toTag: ${{ github.sha }}
+          commitMode: true
+          configurationJson: |
+            {
+              "categories": [
+                {"title": "## 🚀 Features", "labels": ["feature", "enhancement"]},
+                {"title": "## 🐛 Bug Fixes", "labels": ["bug", "fix"]},
+                {"title": "## 📚 Documentation", "labels": ["documentation", "docs"]},
+                {"title": "## 🔧 Maintenance", "labels": ["chore", "dependencies"]},
+                {"title": "## 🔒 Security", "labels": ["security"]}
+              ],
+              "ignore_labels": ["ignore", "skip-changelog"],
+              "sort": "ASC",
+              "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in ##{{NUMBER}}",
+              "empty_template": "- No changes"
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        id: create-release
+        if: inputs.create-github-release
+        uses: softprops/action-gh-release@da05d552573ad5d03ea85af4e1eb4f6a971e2b67 # v2.2.1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          body: ${{ inputs.release-notes || steps.changelog.outputs.changelog }}
+          draft: ${{ inputs.draft }}
+          prerelease: ${{ inputs.prerelease }}
+          files: ${{ inputs.artifact-paths }}
+          generate_release_notes: ${{ !inputs.generate-changelog }}
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-npm:
+    name: Publish to npm
+    if: inputs.publish-npm
+    needs: release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      id-token: write
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build package
+        run: npm run build --if-present
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-pypi:
+    name: Publish to PyPI
+    if: inputs.publish-pypi
+    needs: release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      id-token: write
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: '3.12'
+
+      - name: Install build tools
+        run: python -m pip install --upgrade pip build twine
+
+      - name: Build package
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@fa3f8330a808eb9c2fc675c0f88955e265633eec # v1.12.4
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+          packages-dir: ${{ inputs.working-directory }}/dist
