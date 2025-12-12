@@ -1,54 +1,43 @@
-# ========================================
-# yamlfmt Configuration
-# Documentation: https://github.com/google/yamlfmt
-# ========================================
-# Note: yamlfmt is a Google-maintained YAML formatter
-# Complements yamllint (linter) and provides formatting
-# ========================================
-
-# Formatter settings
-formatter:
-  type: basic
-  retain_line_breaks: true
-  disallow_anchors: false
-  max_line_length: 120
-  scan_folded_as_literal: true
-  indentless_arrays: false
-  drop_merge_tag: false
-  pad_line_comments: 2
-  trim_trailing_whitespace: true
-  eof_newline: true
-
-# Include/exclude patterns
-include:
-  - "**/*.yaml"
-  - "**/*.yml"
-
+continue_on_error: true
+use_editorconfig: true
+doublestar: false
 exclude:
-  - "**/node_modules/**"
-  - "**/.git/**"
-  - "**/.cache/**"
-  - "**/.claude/**"
-  - "**/.venv/**"
-  - "**/venv/**"
-  - "**/dist/**"
-  - "**/build/**"
-  - "**/coverage/**"
-  - "**/megalinter-reports/**"
-  - "**/package-lock.json"
-  - "**/yarn.lock"
-  - "**/pnpm-lock.yaml"
-
-# Line formatting
+  - .git/**
+  - node_modules/**
+  - vendor/**
+  - .venv/**
+  - __pycache__/**
+  - dist/**
+  - build/**
+  - .cache/**
+  - "*.min.yaml"
+  - "*.min.yml"
+extensions:
+  - yaml
+  - yml
+gitignore_excludes: false
+gitignore_path: .gitignore
+include: []
 line_ending: lf
-
-# Indentation
-indent: 2
-
-# Array formatting
-array_formatting:
-  retain_style: true
-
-# Map formatting
-map_formatting:
-  retain_style: true
+match_type: standard
+output_format: default
+regex_exclude: []
+formatter:
+  array_indent: 0
+  disable_alias_key_correction: true
+  disallow_anchors: false
+  drop_merge_tag: false
+  eof_newline: false
+  force_array_style: ""
+  include_document_start: false
+  indent: 2
+  indent_root_array: false
+  indentless_arrays: false
+  max_line_length: 0
+  pad_line_comments: 1
+  retain_line_breaks: false
+  retain_line_breaks_single: false
+  scan_folded_as_literal: false
+  strip_directives: false
+  trim_trailing_whitespace: true
+  type: basic
