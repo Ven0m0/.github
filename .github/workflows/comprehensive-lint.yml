@@ -6,7 +6,6 @@ on:
       working-directory:
         type: string
         default: '.'
-      # Shell-specific (not in MegaLinter)
       apply-shellharden:
         type: boolean
         default: true
@@ -16,7 +15,6 @@ on:
       shell-exclude-pattern:
         type: string
         default: '(^|/)\\.(git|cache|claude|venv)(/|$)'
-      # MegaLinter
       megalinter-validate-all:
         type: boolean
         default: false
@@ -26,7 +24,6 @@ on:
       megalinter-exclude-dirs:
         type: string
         default: '.github,.git,.cache,node_modules'
-      # General
       commit-fixes:
         type: boolean
         default: true
