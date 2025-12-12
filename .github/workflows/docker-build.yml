@@ -1,20 +1,6 @@
-# Reusable Docker Build & Push Workflow
-# Features: Multi-platform builds, SBOM generation, provenance attestation, vulnerability scanning
-#
-# Required secrets:
-#   - DOCKER_USERNAME: Docker Hub username (or use GHCR)
-#   - DOCKER_PASSWORD: Docker Hub token/password (or use GHCR)
-#
-# Usage example:
-# jobs:
-#   docker:
-#     uses: Ven0m0/.github/.github/workflows/docker-build.yml@main
-#     with:
-#       image-name: 'myorg/myapp'
-#       platforms: 'linux/amd64,linux/arm64'
-#     secrets:
-#       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+# Docker Build & Push Workflow (Reusable)
+# Multi-platform builds with SBOM, provenance, and vulnerability scanning
+
 
 name: Docker Build & Push (Reusable)
 

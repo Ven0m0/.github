@@ -1,18 +1,5 @@
-# Reusable Pull Request Automation Workflow
-# Features: Auto-labeling, size checking, conflict detection, auto-assignment
-#
-# Required secrets: GITHUB_TOKEN (automatically provided)
-#
-# Usage example:
-# jobs:
-#   pr-automation:
-#     uses: Ven0m0/.github/.github/workflows/pr-automation.yml@main
-#     with:
-#       enable-auto-label: true
-#       enable-size-label: true
-#     permissions:
-#       pull-requests: write
-#       issues: write
+# Pull Request Automation Workflow (Reusable)
+# Features: Auto-labeling, size checking, conflict detection, optional auto-assignment
 
 name: PR Automation (Reusable)
 
@@ -21,58 +8,58 @@ on:
     inputs:
       enable-auto-label:
         description: 'Enable automatic PR labeling based on files changed'
-        required: false
         type: boolean
+        required: false
         default: true
       enable-size-label:
         description: 'Add size labels based on lines changed'
-        required: false
         type: boolean
+        required: false
         default: true
       enable-conflict-check:
         description: 'Check for merge conflicts'
-        required: false
         type: boolean
+        required: false
         default: true
       enable-auto-assign:
         description: 'Auto-assign reviewers'
-        required: false
         type: boolean
+        required: false
         default: false
       enable-conventional-commits:
         description: 'Validate conventional commit format'
-        required: false
         type: boolean
+        required: false
         default: false
       enable-checklist:
         description: 'Validate PR checklist completion'
-        required: false
         type: boolean
+        required: false
         default: false
       size-xs-lines:
         description: 'Max lines for XS size'
-        required: false
         type: number
+        required: false
         default: 10
       size-s-lines:
         description: 'Max lines for S size'
-        required: false
         type: number
+        required: false
         default: 100
       size-m-lines:
         description: 'Max lines for M size'
-        required: false
         type: number
+        required: false
         default: 500
       size-l-lines:
         description: 'Max lines for L size'
-        required: false
         type: number
+        required: false
         default: 1000
       timeout-minutes:
         description: 'Job timeout in minutes'
-        required: false
         type: number
+        required: false
         default: 10
 
 permissions:
@@ -257,51 +244,3 @@ jobs:
         uses: kentaro-m/auto-assign-action@f5d904c8f9de8fc5a9b7aba34f44ea600bb0434b # v2.0.0
         with:
           configuration-path: '.github/auto-assign.yml'
-
-  pr-commenter:
-    name: Add Helpful PR Comment
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-
-    permissions:
-      contents: read
-      pull-requests: write
-
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
-        with:
-          egress-policy: audit
-
-      - name: Add PR comment
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-        with:
-          script: |
-            const prNumber = context.payload.pull_request.number;
-            const author = context.payload.pull_request.user.login;
-
-            const message = `👋 Thanks for opening this PR, @${author}!
-
-            📋 **Automated Checks:**
-            - ✅ PR size and conflict checks are running
-            - ✅ Automated labeling is in progress
-            - ✅ Security and quality scans will run on every commit
-
-            🔍 **Next Steps:**
-            1. Ensure all CI checks pass
-            2. Request review when ready
-            3. Address any feedback from reviewers
-
-            💡 **Tips:**
-            - Keep PRs focused and reasonably sized
-            - Write clear commit messages
-            - Update documentation if needed
-            - Add tests for new features`;
-
-            await github.rest.issues.createComment({
-              issue_number: prNumber,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message
-            });

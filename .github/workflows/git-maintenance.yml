@@ -1,122 +1,102 @@
 # Git Maintenance & Cleanup (Reusable Workflow)
-#
-# Required secrets:
-#   - PAT (optional): Personal Access Token with repo scope for enhanced permissions
-#     Falls back to github.token if not provided
-#
-# Security: Uses restricted permissions by default (contents: read)
-# Jobs override permissions as needed for write operations
 
 name: Git Maintenance & Cleanup (Reusable)
-"on":
+
+on:
   workflow_call:
     inputs:
       run_gc:
-        description: Run git garbage collection
+        description: 'Run git garbage collection'
         type: boolean
         default: true
         required: false
       run_prune:
-        description: Prune unreachable objects older than specified time
+        description: 'Prune unreachable objects'
         type: boolean
         default: true
         required: false
       prune_expire:
-        description: Expiration time for pruning (e.g., "2.weeks.ago", "1.month.ago")
+        description: 'Expiration time for pruning'
         type: string
-        default: 2.weeks.ago
+        default: '2.weeks.ago'
         required: false
       optimize_repo:
-        description: Run repository optimization (repack, etc.)
+        description: 'Run repository optimization'
         type: boolean
         default: true
         required: false
       verify_integrity:
-        description: Verify repository integrity with git fsck
+        description: 'Verify repository integrity'
         type: boolean
         default: true
         required: false
-      cleanup_branches:
-        description: Clean up merged and stale remote-tracking branches
-        type: boolean
-        default: false
-        required: false
-      branch_retention_days:
-        description: Days to keep branches without activity before marking as stale
-        type: number
-        default: 90
-        required: false
       aggressive_gc:
-        description: Use aggressive garbage collection (slower but more thorough)
+        description: 'Use aggressive garbage collection'
         type: boolean
         default: false
         required: false
-env:
-  GIT_AUTHOR_NAME: github-actions[bot]
-  GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-  GIT_COMMITTER_NAME: github-actions[bot]
-  GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: false
 
 permissions:
   contents: read
+
 jobs:
   maintenance:
     name: Git Repository Maintenance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
     permissions:
       contents: write
+
     outputs:
       size_before: ${{ steps.stats-before.outputs.repo_size }}
       size_after: ${{ steps.stats-after.outputs.repo_size }}
+
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT || github.token }}
+
       - name: Repository Statistics (Before)
         id: stats-before
         run: |
           set -euo pipefail
           echo "## Repository Statistics (Before Maintenance)" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          declare -A stats
-          while IFS=': ' read -r key value; do
-            stats["$key"]="$value"
-          done < <(git count-objects -v | grep -E '^(count|in-pack|size-pack):')
-          branch_count=$(git branch -r 2>/dev/null | grep -vc '\->' || echo "0")
-          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          Objects (loose): ${stats[count]:-0}
-          Objects (packed): ${stats[in-pack]:-0}
-          Repository size: ${stats[size-pack]:-0} KiB
-          Remote branches: $branch_count
-          EOF
+          stats=$(git count-objects -v)
+          echo "$stats" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          echo "repo_size=${stats[size-pack]:-0}" >> "$GITHUB_OUTPUT"
+          size=$(echo "$stats" | grep 'size-pack:' | awk '{print $2}')
+          echo "repo_size=${size:-0}" >> "$GITHUB_OUTPUT"
+
       - name: Verify Repository Integrity
         if: inputs.verify_integrity
         run: |
           set -euo pipefail
           echo "## Repository Integrity Check" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          if git fsck --full --no-progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; then
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            echo "✅ Repository integrity verified" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            echo "⚠️ Integrity issues detected" >> "$GITHUB_STEP_SUMMARY"
-          fi
+          git fsck --full --no-progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || echo "Integrity issues detected"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
       - name: Prune Unreachable Objects
         if: inputs.run_prune
         run: |
           set -euo pipefail
           echo "## Pruning Objects (older than ${{ inputs.prune_expire }})" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          git prune --expire="${{ inputs.prune_expire }}" --progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || echo "No objects to prune" >> "$GITHUB_STEP_SUMMARY"
+          git prune --expire="${{ inputs.prune_expire }}" --progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || echo "No objects to prune"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
+
       - name: Run Garbage Collection
         if: inputs.run_gc
         run: |
@@ -126,9 +106,9 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           gc_flags="--prune=now"
           [[ "${{ inputs.aggressive_gc }}" == "true" ]] && gc_flags="$gc_flags --aggressive"
-          # shellcheck disable=SC2086
           git gc $gc_flags 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
+
       - name: Optimize Repository
         if: inputs.optimize_repo
         run: |
@@ -138,44 +118,7 @@ jobs:
           git maintenance run --task=loose-objects --task=incremental-repack 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
           git repack -a -d --depth=250 --window=250 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-      - name: Analyze Branches
-        if: inputs.cleanup_branches
-        run: |
-          set -euo pipefail
-          git fetch --prune --prune-tags
-          default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
-          current_branch=$(git branch --show-current)
-          merged_branches=$(git branch -r --merged "origin/$default_branch" 2>/dev/null | \
-            grep -vE "(->|$default_branch|$current_branch)" | \
-            sed 's/origin\///' | tr -d ' ' || true)
-          {
-            echo "## Branch Analysis"
-            echo "### Merged Branches"
-            echo '```'
-            if [[ -n "$merged_branches" ]]; then
-              echo "$merged_branches"
-            else
-              echo "No merged branches found"
-            fi
-            echo '```'
-            echo "### Stale Branches (>${{ inputs.branch_retention_days }} days)"
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-          stale_date=$(date -d "${{ inputs.branch_retention_days }} days ago" +%s)
-          found_stale=false
-          while IFS= read -r branch; do
-            [[ -z "$branch" || "$branch" == "$default_branch" || "$branch" == "$current_branch" ]] && continue
-            last_commit=$(git log -1 --format=%ct "origin/$branch" 2>/dev/null || echo "0")
-            if [[ "$last_commit" -lt "$stale_date" && "$last_commit" != "0" ]]; then
-              days_old=$(( ($(date +%s) - last_commit) / 86400 ))
-              echo "$branch (${days_old} days inactive)" >> "$GITHUB_STEP_SUMMARY"
-              found_stale=true
-            fi
-          done < <(git branch -r | grep -v '\->' | sed 's/origin\///' | tr -d ' ')
-          {
-            [[ "$found_stale" == "false" ]] && echo "No stale branches found"
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Repository Statistics (After)
         id: stats-after
         if: always()
@@ -183,20 +126,15 @@ jobs:
           set -euo pipefail
           echo "## Repository Statistics (After Maintenance)" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          declare -A stats
-          while IFS=': ' read -r key value; do
-            stats["$key"]="$value"
-          done < <(git count-objects -v | grep -E '^(count|in-pack|size-pack):')
-          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          Objects (loose): ${stats[count]:-0}
-          Objects (packed): ${stats[in-pack]:-0}
-          Repository size: ${stats[size-pack]:-0} KiB
-          EOF
+          stats=$(git count-objects -v)
+          echo "$stats" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          # Calculate size difference
+          size=$(echo "$stats" | grep 'size-pack:' | awk '{print $2}')
+          echo "repo_size=${size:-0}" >> "$GITHUB_OUTPUT"
+          
+          # Calculate savings
           before="${{ steps.stats-before.outputs.repo_size }}"
-          before="${before:-0}"
-          after=${stats[size-pack]:-0}
+          after="${size:-0}"
           if [[ $before -gt 0 && $after -gt 0 ]]; then
             diff=$((before - after))
             if [[ $diff -gt 0 ]]; then
@@ -208,29 +146,21 @@ jobs:
               echo "➡️ Size unchanged" >> "$GITHUB_STEP_SUMMARY"
             fi
           fi
-          echo "repo_size=$after" >> "$GITHUB_OUTPUT"
+
       - name: Maintenance Summary
         if: always()
-        env:
-          VERIFY: ${{ inputs.verify_integrity }}
-          PRUNE: ${{ inputs.run_prune }}
-          GC: ${{ inputs.run_gc }}
-          OPTIMIZE: ${{ inputs.optimize_repo }}
-          BRANCHES: ${{ inputs.cleanup_branches }}
         run: |
-          mark() { [[ "$1" == "true" ]] && echo "x" || echo " "; }
           cat >> "$GITHUB_STEP_SUMMARY" <<EOF
           ## Maintenance Summary
-
+          
           | Task | Status |
           |------|--------|
           | Repository statistics | ✅ |
-          | Integrity verification | $([ "$VERIFY" = "true" ] && echo "✅" || echo "⏭️") |
-          | Prune unreachable objects | $([ "$PRUNE" = "true" ] && echo "✅" || echo "⏭️") |
-          | Garbage collection | $([ "$GC" = "true" ] && echo "✅" || echo "⏭️") |
-          | Repository optimization | $([ "$OPTIMIZE" = "true" ] && echo "✅" || echo "⏭️") |
-          | Branch analysis | $([ "$BRANCHES" = "true" ] && echo "✅" || echo "⏭️") |
-
+          | Integrity verification | $([ "${{ inputs.verify_integrity }}" = "true" ] && echo "✅" || echo "⏭️") |
+          | Prune unreachable objects | $([ "${{ inputs.run_prune }}" = "true" ] && echo "✅" || echo "⏭️") |
+          | Garbage collection | $([ "${{ inputs.run_gc }}" = "true" ] && echo "✅" || echo "⏭️") |
+          | Repository optimization | $([ "${{ inputs.optimize_repo }}" = "true" ] && echo "✅" || echo "⏭️") |
+          
           ---
           🔗 [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           EOF
