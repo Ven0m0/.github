@@ -5,22 +5,12 @@ on:
     inputs:
       # ---- Maintenance inputs ----
       run_gc:
-        description: Run git garbage collection
+        description: Run git garbage collection task
         type: boolean
         default: true
-        required: false
-      run_prune:
-        description: Prune unreachable objects
-        type: boolean
-        default: true
-        required: false
-      prune_expire:
-        description: Expiration time for pruning
-        type: string
-        default: "2.weeks.ago"
         required: false
       optimize_repo:
-        description: Run repository optimization
+        description: Run repository optimization tasks (loose-objects, incremental-repack, etc.)
         type: boolean
         default: true
         required: false
@@ -28,11 +18,6 @@ on:
         description: Verify repository integrity
         type: boolean
         default: true
-        required: false
-      aggressive_gc:
-        description: Use aggressive garbage collection
-        type: boolean
-        default: false
         required: false
       # ---- Submodules inputs ----
       strategy:
@@ -71,7 +56,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: false
 permissions:
-  contents: read
+  contents: write
 jobs:
   maintenance-and-submodules:
     name: Git Maintenance + Submodules Update
@@ -116,12 +101,9 @@ jobs:
         run: |
           {
             echo "## Git Submodules Update"
-            echo ""
             echo "**Strategy**: ${{ inputs.strategy }}"
-            echo ""
             if [[ -n "${{ steps.submodules.outputs.json }}" ]]; then
               echo "### Updated Submodules"
-              echo ""
               echo "${{ steps.submodules.outputs.prBody }}"
             else
               echo "No submodules were updated."
@@ -147,33 +129,24 @@ jobs:
           echo '```' >>"$GITHUB_STEP_SUMMARY"
           git fsck --full --no-progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || echo "Integrity issues detected"
           echo '```' >>"$GITHUB_STEP_SUMMARY"
-      - name: Prune Unreachable Objects
-        if: inputs.run_prune
+      - name: Run Git Maintenance
+        if: inputs.optimize_repo || inputs.run_gc
         run: |
           set -euo pipefail
-          echo "## Pruning Objects (older than ${{ inputs.prune_expire }})" >>"$GITHUB_STEP_SUMMARY"
+          echo "## Git Maintenance" >>"$GITHUB_STEP_SUMMARY"
           echo '```' >>"$GITHUB_STEP_SUMMARY"
-          git prune --expire="${{ inputs.prune_expire }}" --progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || echo "No objects to prune"
-          echo '```' >>"$GITHUB_STEP_SUMMARY"
-      - name: Run Garbage Collection
-        if: inputs.run_gc
-        run: |
-          set -euo pipefail
-          gc_mode=$([[ "${{ inputs.aggressive_gc }}" == "true" ]] && echo "aggressive" || echo "standard")
-          echo "## Garbage Collection ($gc_mode)" >>"$GITHUB_STEP_SUMMARY"
-          echo '```' >>"$GITHUB_STEP_SUMMARY"
-          gc_flags="--prune=now"
-          [[ "${{ inputs.aggressive_gc }}" == "true" ]] && gc_flags="$gc_flags --aggressive"
-          git gc $gc_flags 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
-          echo '```' >>"$GITHUB_STEP_SUMMARY"
-      - name: Optimize Repository
-        if: inputs.optimize_repo
-        run: |
-          set -euo pipefail
-          echo "## Repository Optimization" >>"$GITHUB_STEP_SUMMARY"
-          echo '```' >>"$GITHUB_STEP_SUMMARY"
-          git maintenance run --task=loose-objects --task=incremental-repack 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
-          git repack -a -d --depth=250 --window=250 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
+          # Construct tasks list
+          tasks=""
+          [[ "${{ inputs.optimize_repo }}" == "true" ]] && tasks="$tasks --task=commit-graph --task=loose-objects --task=incremental-repack"
+          [[ "${{ inputs.run_gc }}" == "true" ]] && tasks="$tasks --task=gc"
+          # Run maintenance
+          if [[ -n "$tasks" ]]; then
+            echo "Running maintenance tasks:$tasks"
+            # shellcheck disable=SC2086
+            git maintenance run $tasks 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No maintenance tasks selected."
+          fi
           echo '```' >>"$GITHUB_STEP_SUMMARY"
       - name: Repository Statistics (After)
         id: stats-after
@@ -209,9 +182,7 @@ jobs:
           |------|--------|
           | Repository statistics | ✅ |
           | Integrity verification | $([ "${{ inputs.verify_integrity }}" = "true" ] && echo "✅" || echo "⏭️") |
-          | Prune unreachable objects | $([ "${{ inputs.run_prune }}" = "true" ] && echo "✅" || echo "⏭️") |
-          | Garbage collection | $([ "${{ inputs.run_gc }}" = "true" ] && echo "✅" || echo "⏭️") |
-          | Repository optimization | $([ "${{ inputs.optimize_repo }}" = "true" ] && echo "✅" || echo "⏭️") |
+          | Git Maintenance (GC/Optimize) | $( ([ "${{ inputs.run_gc }}" = "true" ] || [ "${{ inputs.optimize_repo }}" = "true" ]) && echo "✅" || echo "⏭️") |
           ---
           🔗 [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           EOF
