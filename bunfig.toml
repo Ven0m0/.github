@@ -1,77 +1,38 @@
-# ========================================
-# Bun Configuration
-# Documentation: https://bun.sh/docs/runtime/bunfig
-# ========================================
-
-# ===========================
-# Package Manager Settings
-# ===========================
+# https://bun.sh/docs/runtime/bunfig
+telemetry = false
+smol = false
+logLevel = "error"
+trimWildcards = true
 
 [install]
-# Package installation behavior
-registry = "https://registry.npmjs.org/"
-production = false
-optional = true
-dev = true
-peer = true
-
-# Caching and performance
-cache = true
+auto = "auto"
+production = true
+optional = false
+peer = false
+dev = false
 exact = false
-frozen = false
+frozenLockfile = false
+linkWorkspacePackages = true
+linker = "hoisted"
+cacheHardLinks = true
+preferOffline = true
+preferLatest = true
+concurrency = 16
 
-# Security
-audit = true
+[install.lockfile]
+save = true
+print = "yarn"
 
-# Logging
-loglevel = "info"
-
-[install.scopes]
-# Scope-specific registries can be defined here
-# Example: "@myorg" = "https://npm.myorg.com/"
-
-# ===========================
-# Runtime Settings
-# ===========================
-
-[runtime]
-# Preload scripts
-# preload = ["./setup.ts"]
-
-# ===========================
-# Test Runner
-# ===========================
+[run]
+silent = true
+bun = true
+hot = false
+shell = "bash"
 
 [test]
-# Test timeout in milliseconds
+coverageSkipTestFiles = true
+bail = true
 timeout = 5000
-
-# Code coverage
+preload = []
 coverage = false
-
-# Bail on first failure
-bail = false
-
-# ===========================
-# Build & Transpiler
-# ===========================
-
-[transpiler]
-# Target JavaScript version (default: "browser")
-target = "node"
-
-# Enable JSX
-jsx = "react"
-jsxFactory = "React.createElement"
-jsxFragment = "React.Fragment"
-
-# ===========================
-# Performance
-# ===========================
-
-[performance]
-# Enable optimizations
-optimize = true
-
-# Minify output
-minify = false
+smol = true
