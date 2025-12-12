@@ -1,0 +1,90 @@
+name: shared-ci
+on:
+  workflow_call:
+    inputs:
+      language:
+        description: "Primary language: shell|node|python|none"
+        type: string
+        default: "none"
+      run-tests:
+        description: "Run project tests"
+        type: boolean
+        default: false
+    secrets:
+      github-token:
+        required: false
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Shell lint
+        if: always()
+        run: |
+          set -euo pipefail
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y shellcheck
+          fi
+          shopt -s nullglob
+          files=(**/*.sh)
+          if ((${#files[@]} == 0)); then
+            echo "No shell scripts to lint"
+            exit 0
+          fi
+          shellcheck -S warning "${files[@]}"
+      - name: YAML lint
+        run: |
+          set -euo pipefail
+          if ! command -v yamllint >/dev/null 2>&1; then
+            pipx install yamllint >/dev/null 2>&1 || pip install --user yamllint
+          fi
+          yamllint .
+      - name: Node setup
+        if: inputs.language == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Node install & lint
+        if: inputs.language == 'node' && hashFiles('package.json') != ''
+        run: |
+          set -euo pipefail
+          npm ci
+          if jq -e '.scripts.lint' package.json >/dev/null 2>&1; then
+            npm run lint
+          else
+            echo "No lint script defined"
+          fi
+      - name: Python setup
+        if: inputs.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Python install & lint
+        if: inputs.language == 'python'
+        run: |
+          set -euo pipefail
+          if [[ -f requirements.txt ]]; then
+            pip install -r requirements.txt
+          fi
+          if python -m pip show ruff >/dev/null 2>&1; then
+            ruff check .
+          else
+            echo "ruff not installed; skipping"
+          fi
+      - name: Run tests
+        if: inputs.run-tests
+        run: |
+          set -euo pipefail
+          if [[ -f package.json ]] && jq -e '.scripts.test' package.json >/dev/null 2>&1; then
+            npm test
+          elif [[ -f pyproject.toml || -f pytest.ini || -d tests ]]; then
+            pytest -q
+          else
+            echo "No tests configured"
+          fi
