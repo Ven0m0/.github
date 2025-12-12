@@ -1,22 +1,4 @@
 # Comprehensive Linting Workflow (Reusable)
-# Consolidated from: lint.yml, shell-lint.yml, unified-linters.yml
-# Supports: Biome, Prettier, Ruff, Black, mypy, actionlint, yamllint, markdownlint,
-#           ShellCheck, shellharden, shfmt, MegaLinter
-#
-# Required secrets: none (GITHUB_TOKEN automatically provided)
-# Optional secrets:
-#   - PAT: Personal Access Token with repo scope for enhanced permissions
-#
-# Usage example:
-# jobs:
-#   lint:
-#     uses: Ven0m0/.github/.github/workflows/comprehensive-lint.yml@main
-#     with:
-#       run-biome: true
-#       run-prettier: true
-#       run-shellcheck: true
-#       apply-shell-fixes: true
-
 name: Comprehensive Lint (Reusable)
 
 on:
@@ -28,9 +10,9 @@ on:
         type: string
         default: '.'
 
-      # JavaScript/TypeScript linting
+      # JavaScript/TypeScript
       run-biome:
-        description: 'Run Biome for JavaScript/TypeScript linting and formatting'
+        description: 'Run Biome for JS/TS'
         required: false
         type: boolean
         default: false
@@ -40,7 +22,7 @@ on:
         type: boolean
         default: false
 
-      # Python linting
+      # Python
       run-ruff:
         description: 'Run Ruff for Python'
         required: false
@@ -57,7 +39,7 @@ on:
         type: boolean
         default: false
 
-      # Shell linting
+      # Shell
       run-shellcheck:
         description: 'Run ShellCheck for shell scripts'
         required: false
@@ -69,46 +51,46 @@ on:
         type: boolean
         default: false
       shellcheck-severity:
-        description: 'Minimum severity level for ShellCheck (error, warning, info, style)'
+        description: 'Minimum severity level for ShellCheck'
         required: false
         type: string
         default: 'warning'
       shfmt-indent:
-        description: 'Number of spaces for shfmt indentation'
+        description: 'Spaces for shfmt indentation'
         required: false
         type: number
         default: 2
       shell-exclude-pattern:
-        description: 'Regex pattern to exclude files/directories from shell linting'
+        description: 'Regex pattern to exclude files/directories'
         required: false
         type: string
-        default: '(^|/)\\.(git|cache|claude)(/|$)'
+        default: '(^|/)\\.(git|cache|claude|venv)(/|$)'
 
-      # Other linters
+      # Other
       run-actionlint:
-        description: 'Run actionlint for GitHub Actions workflows'
+        description: 'Run actionlint'
         required: false
         type: boolean
         default: true
       run-yamllint:
-        description: 'Run yamllint for YAML files'
+        description: 'Run yamllint'
         required: false
         type: boolean
         default: false
       run-markdownlint:
-        description: 'Run markdownlint for Markdown files'
+        description: 'Run markdownlint'
         required: false
         type: boolean
         default: false
 
       # MegaLinter
       run-megalinter:
-        description: 'Run MegaLinter (comprehensive multi-language linting)'
+        description: 'Run MegaLinter'
         required: false
         type: boolean
         default: false
       megalinter-validate-all:
-        description: 'Validate entire codebase (not just diff) with MegaLinter'
+        description: 'Validate entire codebase'
         required: false
         type: boolean
         default: false
@@ -118,17 +100,17 @@ on:
         type: boolean
         default: false
       megalinter-config:
-        description: 'Path to MegaLinter config file'
+        description: 'Path to MegaLinter config'
         required: false
         type: string
         default: '.megalinter.yml'
       megalinter-exclude-dirs:
-        description: 'Directories to exclude from MegaLinter (comma-separated)'
+        description: 'Excluded directories'
         required: false
         type: string
         default: '.github,.git,.cache,node_modules'
 
-      # General settings
+      # General
       commit-fixes:
         description: 'Commit and push automatic fixes'
         required: false
@@ -143,12 +125,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   DEBIAN_FRONTEND: noninteractive
   LC_ALL: C
 
 jobs:
-  # JavaScript/TypeScript + Python + General linting
+  # -------------------------------------------------------------------------
+  # Lint Code (JS/TS, Python, General)
+  # -------------------------------------------------------------------------
   lint-code:
     name: Lint Code
     if: |
@@ -157,11 +145,9 @@ jobs:
       inputs.run-yamllint || inputs.run-markdownlint
     runs-on: ubuntu-24.04
     timeout-minutes: ${{ inputs.timeout-minutes }}
-
     permissions:
       contents: read
-      pull-requests: write
-
+      pull-requests: write # For actionlint reporter
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
@@ -176,103 +162,70 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          persist-credentials: false
 
-      # JavaScript/TypeScript setup
+      # --- JS/TS Setup ---
       - name: Setup Bun
         if: inputs.run-biome || inputs.run-prettier
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: Cache Bun dependencies
-        if: inputs.run-biome || inputs.run-prettier
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - name: Install dependencies
+      - name: Install JS tools
         if: inputs.run-biome || inputs.run-prettier
         run: |
-          if [ -f "bun.lockb" ]; then
-            bun install --frozen-lockfile
-          elif [ -f "package.json" ]; then
-            bun install
+          if [ -f "bun.lockb" ]; then bun install --frozen-lockfile
+          elif [ -f "package.json" ]; then bun install
           fi
 
       - name: Run Biome
         if: inputs.run-biome
         run: bunx @biomejs/biome check .
-        continue-on-error: false
 
-      - name: Run Prettier check
+      - name: Run Prettier
         if: inputs.run-prettier
         run: bunx prettier --check .
-        continue-on-error: false
 
-      # Python setup
-      - name: Setup Python
-        if: inputs.run-ruff || inputs.run-black || inputs.run-mypy
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Setup uv
+      # --- Python Setup ---
+      - name: Setup uv (Python)
         if: inputs.run-ruff || inputs.run-black || inputs.run-mypy
         uses: astral-sh/setup-uv@v5
         with:
+          python-version: '3.12'
           enable-cache: true
           cache-dependency-glob: |
             **/requirements*.txt
             **/pyproject.toml
             **/uv.lock
 
-      - name: Cache uv tools
-        if: inputs.run-ruff || inputs.run-black || inputs.run-mypy
-        uses: actions/cache@v4
-        with:
-          path: ~/.local/share/uv
-          key: ${{ runner.os }}-uv-tools-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-uv-tools-
-
-      - name: Install Python linting tools
+      - name: Install & Run Python Tools
         if: inputs.run-ruff || inputs.run-black || inputs.run-mypy
         run: |
+          # Install tools
+          [ "${{ inputs.run-ruff }}" = "true" ]  && uv tool install ruff
+          [ "${{ inputs.run-black }}" = "true" ] && uv tool install black
+          [ "${{ inputs.run-mypy }}" = "true" ]  && uv tool install mypy
+
+          # Run tools
           if [ "${{ inputs.run-ruff }}" = "true" ]; then
-            uv tool install ruff
+             echo "::group::Ruff"
+             uvx ruff check .
+             uvx ruff format --check .
+             echo "::endgroup::"
           fi
+          
           if [ "${{ inputs.run-black }}" = "true" ]; then
-            uv tool install black
+             echo "::group::Black"
+             uvx black --check .
+             echo "::endgroup::"
           fi
+          
           if [ "${{ inputs.run-mypy }}" = "true" ]; then
-            uv tool install mypy
+             echo "::group::mypy"
+             uvx mypy .
+             echo "::endgroup::"
           fi
 
-      - name: Run Ruff check
-        if: inputs.run-ruff
-        run: uvx ruff check .
-        continue-on-error: false
-
-      - name: Run Ruff format check
-        if: inputs.run-ruff
-        run: uvx ruff format --check .
-        continue-on-error: false
-
-      - name: Run Black check
-        if: inputs.run-black
-        run: uvx black --check .
-        continue-on-error: false
-
-      - name: Run mypy
-        if: inputs.run-mypy
-        run: uvx mypy .
-        continue-on-error: false
-
-      # Other linters
+      # --- General Linters ---
       - name: Run actionlint
         if: inputs.run-actionlint
         uses: reviewdog/action-actionlint@v1
@@ -297,28 +250,21 @@ jobs:
           globs: '**/*.md'
           fix: false
 
-  # ShellCheck basic linting
+  # -------------------------------------------------------------------------
+  # ShellCheck (Read-Only)
+  # -------------------------------------------------------------------------
   shellcheck-lint:
     name: ShellCheck Lint
-    if: inputs.run-shellcheck
+    if: inputs.run-shellcheck && !inputs.apply-shell-fixes
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-
-    permissions:
-      contents: read
-
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
         with:
           egress-policy: audit
-
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          persist-credentials: false
-
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@v2
         with:
@@ -326,186 +272,150 @@ jobs:
           severity: ${{ inputs.shellcheck-severity }}
           check_together: 'yes'
 
-  # Shell auto-fix (shellharden + shfmt + shellcheck patches)
+  # -------------------------------------------------------------------------
+  # Shell Auto-Fix (Write)
+  # -------------------------------------------------------------------------
   shell-auto-fix:
     name: Shell Auto-Fix
     if: inputs.apply-shell-fixes
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-
     permissions:
       contents: write
       pull-requests: write
-
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
         with:
           egress-policy: audit
 
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
-      - name: Install ShellCheck
+      - name: Install Shell Tools
+        id: install-tools
         run: |
-          sudo apt-get update && sudo apt-get install -y shellcheck
+          mkdir -p $HOME/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          
+          # Install ShellCheck (Binary)
+          sc_version="v0.10.0"
+          wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${sc_version}/shellcheck-${sc_version}.linux.x86_64.tar.xz" | tar -xJv
+          mv "shellcheck-${sc_version}/shellcheck" $HOME/.local/bin/
+          rm -rf "shellcheck-${sc_version}"
+          
+          # Install shellharden
+          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | tar xz -C $HOME/.local/bin shellharden
+          
+          # Install shfmt
+          curl -sfL https://github.com/mvdan/sh/releases/latest/download/shfmt_v3.10.0_linux_amd64 -o $HOME/.local/bin/shfmt
+          chmod +x $HOME/.local/bin/shfmt
 
-      - name: Cache shell tools
-        id: cache-tools
-        uses: actions/cache@v4
-        with:
-          path: |
-            /usr/local/bin/shellharden
-            /usr/local/bin/shfmt
-          key: ${{ runner.os }}-shell-tools-v2
-
-      - name: Install shellharden
-        if: steps.cache-tools.outputs.cache-hit != 'true'
-        run: |
-          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | \
-            sudo tar xz -C /usr/local/bin shellharden
-
-      - name: Install shfmt
-        if: steps.cache-tools.outputs.cache-hit != 'true'
-        run: |
-          curl -sfL https://github.com/mvdan/sh/releases/latest/download/shfmt_v3.10.0_linux_amd64 -o /tmp/shfmt
-          chmod +x /tmp/shfmt
-          sudo mv /tmp/shfmt /usr/local/bin/shfmt
-
-      - name: Find shell files
-        id: find-files
+      - name: Find & Fix Shell Files
         env:
-          EXCLUDE_PATTERN: ${{ inputs.shell-exclude-pattern }}
-        run: |
-          set -euo pipefail
-          shopt -s nullglob globstar
-          mapfile -t files < <(
-            {
-              find . -type f \( -name '*.sh' -o -name '*.bash' -o -name '*bashrc' -o -name '*profile' -o -name 'bash_*' \)
-              find . -type f -executable -exec sh -c 'head -n1 "$1" | grep -qE "^#!/.*(bash|sh)"' _ {} \; -print
-            } | grep -vE "$EXCLUDE_PATTERN" | sort -u
-          )
-          echo "file_count=${#files[@]}" >> "$GITHUB_OUTPUT"
-          printf '%s\n' "${files[@]}" > /tmp/shell_files.txt
-          {
-            echo "## Shell Files Found"
-            echo "Found ${#files[@]} shell files"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Apply fixes
-        if: steps.find-files.outputs.file_count > 0
-        env:
-          SHELLCHECK_OPTS: --source-path=SCRIPTDIR --external-sources --check-sourced --shell=bash --severity=${{ inputs.shellcheck-severity }}
+          EXCLUDE: ${{ inputs.shell-exclude-pattern }}
+          SC_OPTS: --source-path=SCRIPTDIR --external-sources --check-sourced --shell=bash --severity=${{ inputs.shellcheck-severity }}
           SHFMT_INDENT: ${{ inputs.shfmt-indent }}
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          shellharden_count=0
-          shellcheck_count=0
-          shfmt_count=0
+          shopt -s globstar nullglob
+          
+          echo "Finding shell files..."
+          # Find files efficiently
+          mapfile -t files < <(
+            grep -rIl "^#!" . | grep -E "^.*(bash|sh)$" | grep -vE "$EXCLUDE" || true
+            find . -type f -name "*.sh" -not -path "*/.git/*" | grep -vE "$EXCLUDE" || true
+          )
+          # Remove duplicates
+          files=($(printf "%s\n" "${files[@]}" | sort -u))
+          
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No shell files found."
+            exit 0
+          fi
+          
+          echo "Processing ${#files[@]} files..."
+          
+          count_sharden=0
+          count_patch=0
+          count_shfmt=0
+          
+          for file in "${files[@]}"; do
+            # 1. Shellharden
+            if shellharden --replace "$file" 2>/dev/null; then ((count_sharden++)); fi
+            
+            # 2. Shellcheck Patches
+            if shellcheck -f diff "$file" 2>/dev/null | patch -Np1 2>/dev/null; then ((count_patch++)); fi
+            
+            # 3. shfmt
+            if shfmt -i "$SHFMT_INDENT" -s -ln bash -bn -ci -w "$file" 2>/dev/null; then ((count_shfmt++)); fi
+          done
+          
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Shell Formatting Summary
+          | Tool | Files Fixed |
+          |------|-------------|
+          | shellharden | $count_sharden |
+          | shellcheck | $count_patch |
+          | shfmt | $count_shfmt |
+          EOF
 
-          while IFS= read -r file; do
-            echo "Processing: $file"
-            # shellharden
-            if shellharden --replace "$file" 2>/dev/null; then
-              shellharden_count=$((shellharden_count + 1))
-            fi
-            # shellcheck patches
-            if shellcheck -f diff "$file" 2>/dev/null | patch -Np1 2>/dev/null; then
-              shellcheck_count=$((shellcheck_count + 1))
-            fi
-            # shfmt
-            if shfmt -i "${SHFMT_INDENT}" -s -ln bash -bn -ci -w "$file" 2>/dev/null; then
-              shfmt_count=$((shfmt_count + 1))
-            fi
-          done < /tmp/shell_files.txt
-
-          {
-            echo "## Formatting Summary"
-            echo "- **shellharden**: $shellharden_count files"
-            echo "- **shellcheck patches**: $shellcheck_count files"
-            echo "- **shfmt**: $shfmt_count files"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Commit and push fixes
+      - name: Commit fixes
         if: inputs.commit-fixes && github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'style: apply shell formatting (shellharden + shellcheck + shfmt) [skip ci]'
-          branch: ${{ github.head_ref || github.ref_name }}
+          commit_message: 'style: apply shell formatting [skip ci]'
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
 
-  # MegaLinter (comprehensive multi-language linting)
+  # -------------------------------------------------------------------------
+  # MegaLinter
+  # -------------------------------------------------------------------------
   megalinter:
     name: MegaLinter
     if: inputs.run-megalinter
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-
     permissions:
       contents: write
       issues: write
       pull-requests: write
       statuses: write
-
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
         with:
           egress-policy: audit
-
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          fetch-depth: 0
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-
       - name: MegaLinter
         id: ml
-        uses: oxsecurity/megalinter@v9
+        uses: oxsecurity/megalinter@v8
         env:
           VALIDATE_ALL_CODEBASE: ${{ inputs.megalinter-validate-all }}
           GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
           APPLY_FIXES: ${{ inputs.megalinter-apply-fixes && 'all' || 'none' }}
           MEGALINTER_CONFIG: ${{ inputs.megalinter-config }}
           FILTER_REGEX_EXCLUDE: ${{ inputs.megalinter-exclude-dirs }}
-          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-
       - name: Archive reports
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: megalinter-reports
           path: |
             megalinter-reports
             mega-linter.log
-          retention-days: 7
-
-      - name: Create summary
-        if: always()
-        run: |
-          {
-            echo "## MegaLinter Results"
-            echo "- **Status**: ${{ steps.ml.outcome }}"
-            echo "- **Branch**: ${{ github.ref_name }}"
-          } >> "$GITHUB_STEP_SUMMARY"
-          [[ -f megalinter-reports/summary.md ]] && cat megalinter-reports/summary.md >> "$GITHUB_STEP_SUMMARY" || true
-
       - name: Commit fixes
-        if: |
-          inputs.commit-fixes &&
-          steps.ml.outputs.has_updated_sources == 1 &&
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v7
+        if: inputs.commit-fixes && steps.ml.outputs.has_updated_sources == 1
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'style: apply MegaLinter fixes [skip ci]'
-          branch: ${{ github.head_ref || github.ref_name }}
           commit_user_name: megalinter-bot[bot]
           commit_user_email: megalinter-bot[bot]@users.noreply.github.com
