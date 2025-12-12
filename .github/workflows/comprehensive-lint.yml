@@ -78,7 +78,6 @@ jobs:
           commit_message: 'style: apply shellharden [skip ci]'
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
-
   megalinter:
     name: MegaLinter
     runs-on: ubuntu-latest
