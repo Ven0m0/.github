@@ -1,158 +1,210 @@
-# Git Maintenance & Cleanup (Reusable Workflow)
-
-name: Git Maintenance & Cleanup (Reusable)
-
+# Git Maintenance & Cleanup + Submodules Update (Reusable Workflow)
+name: Git Maintenance, Cleanup & Submodules Update (Reusable)
 on:
   workflow_call:
     inputs:
+      # ---- Maintenance inputs ----
       run_gc:
-        description: 'Run git garbage collection'
+        description: Run git garbage collection
         type: boolean
         default: true
         required: false
       run_prune:
-        description: 'Prune unreachable objects'
+        description: Prune unreachable objects
         type: boolean
         default: true
         required: false
       prune_expire:
-        description: 'Expiration time for pruning'
+        description: Expiration time for pruning
         type: string
-        default: '2.weeks.ago'
+        default: "2.weeks.ago"
         required: false
       optimize_repo:
-        description: 'Run repository optimization'
+        description: Run repository optimization
         type: boolean
         default: true
         required: false
       verify_integrity:
-        description: 'Verify repository integrity'
+        description: Verify repository integrity
         type: boolean
         default: true
         required: false
       aggressive_gc:
-        description: 'Use aggressive garbage collection'
+        description: Use aggressive garbage collection
         type: boolean
         default: false
         required: false
-
+      # ---- Submodules inputs ----
+      strategy:
+        description: Strategy for updating submodules (commit or tag)
+        type: string
+        default: commit
+        required: false
+      submodules:
+        description: |
+          Specific submodules to update (newline-separated paths).
+          Leave empty to update all submodules.
+        type: string
+        default: ""
+        required: false
+      gitmodules_path:
+        description: Path to the .gitmodules file
+        type: string
+        default: .gitmodules
+        required: false
+      create_pr:
+        description: Create a pull request with the submodule updates
+        type: boolean
+        default: true
+        required: false
+      pr_branch_prefix:
+        description: Prefix for the pull request branch name
+        type: string
+        default: chore/update-submodules
+        required: false
+      commit_message:
+        description: Custom commit message for the submodule update
+        type: string
+        default: "chore(deps): update git submodules"
+        required: false
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: false
-
 permissions:
   contents: read
-
 jobs:
-  maintenance:
-    name: Git Repository Maintenance
-    runs-on: ubuntu-24.04
-
+  maintenance-and-submodules:
+    name: Git Maintenance + Submodules Update
+    runs-on: ubuntu-latest
     permissions:
       contents: write
-
+      pull-requests: write
     outputs:
       size_before: ${{ steps.stats-before.outputs.repo_size }}
       size_after: ${{ steps.stats-after.outputs.repo_size }}
-
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
-        with:
-          egress-policy: audit
-
       - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@v6
         with:
+          submodules: recursive
           fetch-depth: 0
           token: ${{ secrets.PAT || github.token }}
-
+      # -------------------- Submodules update --------------------
+      - name: Update Submodules
+        id: submodules
+        uses: sgoudham/update-git-submodules@v2
+        with:
+          gitmodulesPath: ${{ inputs.gitmodules_path }}
+          strategy: ${{ inputs.strategy }}
+          submodules: ${{ inputs.submodules }}
+      - name: Create Pull Request (Submodule Updates)
+        if: inputs.create_pr && steps.submodules.outputs.json != '' && steps.submodules.outputs.json != '[]'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT || github.token }}
+          commit-message: ${{ inputs.commit_message }}
+          branch: ${{ inputs.pr_branch_prefix }}-${{ github.run_id }}
+          title: ${{ inputs.commit_message }}
+          body: |
+            ## Submodule Updates
+            ${{ steps.submodules.outputs.prBody }}
+            ---
+            _Automated by [update-git-submodules](https://github.com/sgoudham/update-git-submodules)_
+          labels: dependencies,automated
+      - name: Submodules Summary
+        if: always()
+        run: |
+          {
+            echo "## Git Submodules Update"
+            echo ""
+            echo "**Strategy**: ${{ inputs.strategy }}"
+            echo ""
+            if [[ -n "${{ steps.submodules.outputs.json }}" ]]; then
+              echo "### Updated Submodules"
+              echo ""
+              echo "${{ steps.submodules.outputs.prBody }}"
+            else
+              echo "No submodules were updated."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      # -------------------- Maintenance --------------------
       - name: Repository Statistics (Before)
         id: stats-before
         run: |
           set -euo pipefail
-          echo "## Repository Statistics (Before Maintenance)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "## Repository Statistics (Before Maintenance)" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           stats=$(git count-objects -v)
-          echo "$stats" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "$stats" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           size=$(echo "$stats" | grep 'size-pack:' | awk '{print $2}')
-          echo "repo_size=${size:-0}" >> "$GITHUB_OUTPUT"
-
+          echo "repo_size=${size:-0}" >>"$GITHUB_OUTPUT"
       - name: Verify Repository Integrity
         if: inputs.verify_integrity
         run: |
           set -euo pipefail
-          echo "## Repository Integrity Check" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "## Repository Integrity Check" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           git fsck --full --no-progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || echo "Integrity issues detected"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
       - name: Prune Unreachable Objects
         if: inputs.run_prune
         run: |
           set -euo pipefail
-          echo "## Pruning Objects (older than ${{ inputs.prune_expire }})" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "## Pruning Objects (older than ${{ inputs.prune_expire }})" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           git prune --expire="${{ inputs.prune_expire }}" --progress 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || echo "No objects to prune"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
       - name: Run Garbage Collection
         if: inputs.run_gc
         run: |
           set -euo pipefail
           gc_mode=$([[ "${{ inputs.aggressive_gc }}" == "true" ]] && echo "aggressive" || echo "standard")
-          echo "## Garbage Collection ($gc_mode)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "## Garbage Collection ($gc_mode)" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           gc_flags="--prune=now"
           [[ "${{ inputs.aggressive_gc }}" == "true" ]] && gc_flags="$gc_flags --aggressive"
           git gc $gc_flags 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
       - name: Optimize Repository
         if: inputs.optimize_repo
         run: |
           set -euo pipefail
-          echo "## Repository Optimization" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "## Repository Optimization" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           git maintenance run --task=loose-objects --task=incremental-repack 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
           git repack -a -d --depth=250 --window=250 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
       - name: Repository Statistics (After)
         id: stats-after
         if: always()
         run: |
           set -euo pipefail
-          echo "## Repository Statistics (After Maintenance)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "## Repository Statistics (After Maintenance)" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           stats=$(git count-objects -v)
-          echo "$stats" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "$stats" >>"$GITHUB_STEP_SUMMARY"
+          echo '```' >>"$GITHUB_STEP_SUMMARY"
           size=$(echo "$stats" | grep 'size-pack:' | awk '{print $2}')
-          echo "repo_size=${size:-0}" >> "$GITHUB_OUTPUT"
-          
-          # Calculate savings
+          echo "repo_size=${size:-0}" >>"$GITHUB_OUTPUT"
           before="${{ steps.stats-before.outputs.repo_size }}"
           after="${size:-0}"
           if [[ $before -gt 0 && $after -gt 0 ]]; then
             diff=$((before - after))
             if [[ $diff -gt 0 ]]; then
               pct=$(awk "BEGIN {printf \"%.1f\", ($diff / $before) * 100}")
-              echo "✅ Size reduced by ${diff} KiB (${pct}%)" >> "$GITHUB_STEP_SUMMARY"
+              echo "✅ Size reduced by ${diff} KiB (${pct}%)" >>"$GITHUB_STEP_SUMMARY"
             elif [[ $diff -lt 0 ]]; then
-              echo "📈 Size increased by $((-diff)) KiB" >> "$GITHUB_STEP_SUMMARY"
+              echo "📈 Size increased by $((-diff)) KiB" >>"$GITHUB_STEP_SUMMARY"
             else
-              echo "➡️ Size unchanged" >> "$GITHUB_STEP_SUMMARY"
+              echo "➡️ Size unchanged" >>"$GITHUB_STEP_SUMMARY"
             fi
           fi
-
       - name: Maintenance Summary
         if: always()
         run: |
-          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          cat >>"$GITHUB_STEP_SUMMARY" <<EOF
           ## Maintenance Summary
-          
           | Task | Status |
           |------|--------|
           | Repository statistics | ✅ |
@@ -160,7 +212,6 @@ jobs:
           | Prune unreachable objects | $([ "${{ inputs.run_prune }}" = "true" ] && echo "✅" || echo "⏭️") |
           | Garbage collection | $([ "${{ inputs.run_gc }}" = "true" ] && echo "✅" || echo "⏭️") |
           | Repository optimization | $([ "${{ inputs.optimize_repo }}" = "true" ] && echo "✅" || echo "⏭️") |
-          
           ---
           🔗 [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           EOF
