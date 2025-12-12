@@ -1,6 +1,5 @@
 # Comprehensive Linting Workflow (Reusable)
 name: Comprehensive Lint (Reusable)
-
 on:
   workflow_call:
     inputs:
@@ -34,20 +33,16 @@ on:
       timeout-minutes:
         type: number
         default: 20
-
 permissions:
   contents: write
   pull-requests: write
   issues: write
   statuses: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
-
 env:
   DEBIAN_FRONTEND: noninteractive
-
 jobs:
   shellharden-fix:
     name: Shell Hardening
@@ -62,7 +57,6 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-
       - name: Install & Run shellharden
         env:
           EXCLUDE: ${{ inputs.shell-exclude-pattern }}
@@ -77,7 +71,6 @@ jobs:
           c=0
           for f in "${files[@]}"; do shellharden --replace "$f" &>/dev/null && ((c++)) || :; done
           echo "Hardened $c/${#files[@]} shell files"
-
       - name: Commit Fixes
         if: inputs.commit-fixes && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -100,7 +93,6 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-
       - name: MegaLinter
         id: ml
         uses: oxsecurity/megalinter@v8
@@ -110,7 +102,6 @@ jobs:
           APPLY_FIXES: all
           MEGALINTER_CONFIG: ${{ inputs.megalinter-config }}
           FILTER_REGEX_EXCLUDE: ${{ inputs.megalinter-exclude-dirs }}
-
       - name: Archive Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -119,7 +110,6 @@ jobs:
           path: |
             megalinter-reports
             mega-linter.log
-
       - name: Commit Fixes
         if: inputs.commit-fixes && steps.ml.outputs.has_updated_sources == 1
         uses: stefanzweifel/git-auto-commit-action@v5
