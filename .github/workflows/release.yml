@@ -1,20 +1,6 @@
-# Reusable Release Management Workflow
-# Features: Semantic versioning, changelog generation, GitHub releases, artifact uploads
-#
-# Required secrets: GITHUB_TOKEN (automatically provided)
-# Optional secrets:
-#   - NPM_TOKEN: for npm package publishing
-#   - PYPI_TOKEN: for PyPI package publishing
-#
-# Usage example:
-# jobs:
-#   release:
-#     uses: Ven0m0/.github/.github/workflows/release.yml@main
-#     with:
-#       create-github-release: true
-#       generate-changelog: true
-#     permissions:
-#       contents: write
+# Release Management Workflow (Reusable)
+# Semantic versioning, changelog generation, GitHub releases, artifact uploads
+
 
 name: Release Management (Reusable)
 

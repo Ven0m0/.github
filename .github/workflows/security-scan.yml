@@ -1,18 +1,5 @@
 # Reusable Security Scanning Workflow
-# Includes: CodeQL SAST, Trivy vulnerability scanning, Dependency Review
-#
-# Required secrets: none (uses GITHUB_TOKEN)
-# Optional secrets:
-#   - SNYK_TOKEN: for Snyk scanning
-#
-# Usage example:
-# jobs:
-#   security:
-#     uses: Ven0m0/.github/.github/workflows/security-scan.yml@main
-#     with:
-#       language: 'javascript'
-#       run-codeql: true
-#       run-trivy: true
+# Includes: CodeQL SAST, Trivy vulnerability scanning, Dependency Review, Snyk (optional)
 
 name: Security Scan (Reusable)
 
@@ -44,6 +31,11 @@ on:
         required: false
         type: boolean
         default: true
+      run-snyk:
+        description: 'Run Snyk security scan (requires SNYK_TOKEN)'
+        required: false
+        type: boolean
+        default: false
       trivy-scan-type:
         description: 'Trivy scan type: fs, repo, or config'
         required: false
@@ -66,7 +58,7 @@ on:
         default: 20
     secrets:
       SNYK_TOKEN:
-        description: 'Snyk authentication token (optional)'
+        description: 'Snyk authentication token (required if run-snyk is true)'
         required: false
 
 permissions:
@@ -206,6 +198,7 @@ jobs:
 
   snyk-scan:
     name: Snyk Security Scan
+    if: inputs.run-snyk
     runs-on: ubuntu-24.04
     timeout-minutes: ${{ inputs.timeout-minutes }}
 
@@ -225,18 +218,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Check if Snyk token is available
-        id: snyk-token-check
-        run: |
-          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
-            echo "available=true" >> $GITHUB_OUTPUT
-          else
-            echo "available=false" >> $GITHUB_OUTPUT
-            echo "Snyk token not available, skipping Snyk scan"
-          fi
-
       - name: Run Snyk to check for vulnerabilities
-        if: steps.snyk-token-check.outputs.available == 'true'
         uses: snyk/actions/node@master
         continue-on-error: true
         env:
@@ -245,7 +227,6 @@ jobs:
           args: --sarif-file-output=snyk.sarif --severity-threshold=high
 
       - name: Upload Snyk results to GitHub Security
-        if: steps.snyk-token-check.outputs.available == 'true'
         uses: github/codeql-action/upload-sarif@48d47745fc8a36e27cd91067236e3ed03299a3eb # v3.27.9
         with:
           sarif_file: snyk.sarif

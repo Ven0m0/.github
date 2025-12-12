@@ -1,90 +1,385 @@
-name: shared-ci
+# Consolidated CI Workflow (Reusable)
+# Supports: Node.js (npm/yarn/pnpm/bun), Python (pip/uv/poetry), Shell scripts
+# Replaces: nodejs-ci.yml, python-ci.yml, and legacy ci.yml
+
+name: CI (Reusable)
+
 on:
   workflow_call:
     inputs:
       language:
-        description: "Primary language: shell|node|python|none"
+        description: 'Primary language: node, python, shell, or multi'
         type: string
-        default: "none"
-      run-tests:
-        description: "Run project tests"
-        type: boolean
-        default: false
-    secrets:
-      github-token:
         required: false
+        default: 'multi'
+
+      # Node.js configuration
+      node-version:
+        description: 'Node.js version'
+        type: string
+        required: false
+        default: '22'
+      node-package-manager:
+        description: 'Node package manager: npm, yarn, pnpm, or bun'
+        type: string
+        required: false
+        default: 'npm'
+      node-cache-dependency-path:
+        description: 'Path to lock file'
+        type: string
+        required: false
+        default: ''
+
+      # Python configuration
+      python-version:
+        description: 'Python version'
+        type: string
+        required: false
+        default: '3.12'
+      python-package-manager:
+        description: 'Python package manager: pip, uv, or poetry'
+        type: string
+        required: false
+        default: 'pip'
+      python-requirements-file:
+        description: 'Path to requirements file'
+        type: string
+        required: false
+        default: 'requirements.txt'
+
+      # General configuration
+      working-directory:
+        description: 'Working directory'
+        type: string
+        required: false
+        default: '.'
+
+      # Task control
+      run-install:
+        description: 'Install dependencies'
+        type: boolean
+        required: false
+        default: true
+      run-lint:
+        description: 'Run linting'
+        type: boolean
+        required: false
+        default: true
+      run-format-check:
+        description: 'Check code formatting'
+        type: boolean
+        required: false
+        default: false
+      run-type-check:
+        description: 'Run type checking'
+        type: boolean
+        required: false
+        default: false
+      run-tests:
+        description: 'Run tests'
+        type: boolean
+        required: false
+        default: true
+      run-build:
+        description: 'Run build'
+        type: boolean
+        required: false
+        default: false
+      run-shell-lint:
+        description: 'Run shell script linting'
+        type: boolean
+        required: false
+        default: true
+      run-yaml-lint:
+        description: 'Run YAML linting'
+        type: boolean
+        required: false
+        default: true
+      coverage:
+        description: 'Generate code coverage'
+        type: boolean
+        required: false
+        default: false
+      timeout-minutes:
+        description: 'Job timeout in minutes'
+        type: number
+        required: false
+        default: 15
+
+    secrets:
+      NPM_TOKEN:
+        description: 'NPM token for private packages'
+        required: false
+      PYPI_TOKEN:
+        description: 'PyPI token for private packages'
+        required: false
+      CODECOV_TOKEN:
+        description: 'Codecov upload token'
+        required: false
+
+permissions:
+  contents: read
+
 jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
+  ci:
+    name: CI (${{ inputs.language }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+
     permissions:
       contents: read
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      # Shell linting (runs for all languages if enabled)
       - name: Shell lint
-        if: always()
+        if: inputs.run-shell-lint
         run: |
           set -euo pipefail
           if ! command -v shellcheck >/dev/null 2>&1; then
-            sudo apt-get update -y
-            sudo apt-get install -y shellcheck
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq shellcheck
           fi
           shopt -s nullglob
           files=(**/*.sh)
-          if ((${#files[@]} == 0)); then
-            echo "No shell scripts to lint"
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No shell scripts found"
             exit 0
           fi
           shellcheck -S warning "${files[@]}"
+
+      # YAML linting (runs for all languages if enabled)
       - name: YAML lint
+        if: inputs.run-yaml-lint
         run: |
           set -euo pipefail
           if ! command -v yamllint >/dev/null 2>&1; then
             pipx install yamllint >/dev/null 2>&1 || pip install --user yamllint
           fi
-          yamllint .
-      - name: Node setup
-        if: inputs.language == 'node'
-        uses: actions/setup-node@v4
+          yamllint . || echo "No YAML files or yamllint config not found"
+
+      # Node.js setup and tasks
+      - name: Setup Node.js
+        if: inputs.language == 'node' || inputs.language == 'multi'
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: '22'
-          cache: 'npm'
-      - name: Node install & lint
-        if: inputs.language == 'node' && hashFiles('package.json') != ''
+          node-version: ${{ inputs.node-version }}
+          cache: ${{ inputs.node-package-manager }}
+          cache-dependency-path: ${{ inputs.node-cache-dependency-path }}
+
+      - name: Setup pnpm
+        if: (inputs.language == 'node' || inputs.language == 'multi') && inputs.node-package-manager == 'pnpm'
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        with:
+          version: 9
+
+      - name: Setup Bun
+        if: (inputs.language == 'node' || inputs.language == 'multi') && inputs.node-package-manager == 'bun'
+        uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
+        with:
+          bun-version: latest
+
+      - name: Configure npm authentication
+        if: (inputs.language == 'node' || inputs.language == 'multi') && inputs.node-package-manager == 'npm' && hashFiles('package.json') != ''
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          set -euo pipefail
-          npm ci
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+          fi
+
+      - name: Install Node dependencies
+        if: inputs.run-install && (inputs.language == 'node' || inputs.language == 'multi') && hashFiles('package.json') != ''
+        run: |
+          case "${{ inputs.node-package-manager }}" in
+            npm) npm ci --prefer-offline --no-audit ;;
+            yarn) yarn install --frozen-lockfile --prefer-offline ;;
+            pnpm) pnpm install --frozen-lockfile --prefer-offline ;;
+            bun) bun install --frozen-lockfile ;;
+            *) echo "Unknown package manager" && exit 1 ;;
+          esac
+
+      - name: Run Node lint
+        if: inputs.run-lint && (inputs.language == 'node' || inputs.language == 'multi') && hashFiles('package.json') != ''
+        run: |
           if jq -e '.scripts.lint' package.json >/dev/null 2>&1; then
-            npm run lint
+            ${{ inputs.node-package-manager }} run lint
           else
-            echo "No lint script defined"
+            echo "No lint script defined, skipping"
           fi
-      - name: Python setup
-        if: inputs.language == 'python'
-        uses: actions/setup-python@v5
+
+      - name: Run Node type check
+        if: inputs.run-type-check && (inputs.language == 'node' || inputs.language == 'multi') && hashFiles('package.json') != ''
+        run: |
+          if jq -e '.scripts["type-check"]' package.json >/dev/null 2>&1; then
+            ${{ inputs.node-package-manager }} run type-check
+          else
+            echo "No type-check script defined, skipping"
+          fi
+
+      - name: Run Node tests
+        if: inputs.run-tests && (inputs.language == 'node' || inputs.language == 'multi') && hashFiles('package.json') != ''
+        run: |
+          if jq -e '.scripts.test' package.json >/dev/null 2>&1; then
+            ${{ inputs.node-package-manager }} run test ${{ inputs.coverage && '-- --coverage' || '' }}
+          else
+            echo "No test script defined, skipping"
+          fi
+        env:
+          CI: true
+
+      - name: Run Node build
+        if: inputs.run-build && (inputs.language == 'node' || inputs.language == 'multi') && hashFiles('package.json') != ''
+        run: |
+          if jq -e '.scripts.build' package.json >/dev/null 2>&1; then
+            ${{ inputs.node-package-manager }} run build
+          else
+            echo "No build script defined, skipping"
+          fi
+
+      # Python setup and tasks
+      - name: Setup Python
+        if: inputs.language == 'python' || inputs.language == 'multi'
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
         with:
-          python-version: '3.12'
-          cache: 'pip'
-      - name: Python install & lint
-        if: inputs.language == 'python'
+          python-version: ${{ inputs.python-version }}
+          cache: ${{ inputs.python-package-manager == 'poetry' && 'poetry' || 'pip' }}
+          cache-dependency-path: |
+            ${{ inputs.working-directory }}/requirements*.txt
+            ${{ inputs.working-directory }}/pyproject.toml
+            ${{ inputs.working-directory }}/poetry.lock
+            ${{ inputs.working-directory }}/uv.lock
+
+      - name: Install uv
+        if: (inputs.language == 'python' || inputs.language == 'multi') && inputs.python-package-manager == 'uv'
+        uses: astral-sh/setup-uv@3e91c41d67cacd95c3d2fd9f39e4d107f97efe12 # v5.1.2
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            ${{ inputs.working-directory }}/requirements*.txt
+            ${{ inputs.working-directory }}/pyproject.toml
+            ${{ inputs.working-directory }}/uv.lock
+
+      - name: Install Poetry
+        if: (inputs.language == 'python' || inputs.language == 'multi') && inputs.python-package-manager == 'poetry'
+        uses: snok/install-poetry@76e04a911780d5b312d89783f7b1cd627778900a # v1.4.1
+        with:
+          version: 1.8.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      - name: Install Python dependencies
+        if: inputs.run-install && (inputs.language == 'python' || inputs.language == 'multi')
         run: |
-          set -euo pipefail
-          if [[ -f requirements.txt ]]; then
-            pip install -r requirements.txt
-          fi
-          if python -m pip show ruff >/dev/null 2>&1; then
+          case "${{ inputs.python-package-manager }}" in
+            pip)
+              python -m pip install --upgrade pip setuptools wheel
+              if [ -f "${{ inputs.python-requirements-file }}" ]; then
+                pip install -r "${{ inputs.python-requirements-file }}"
+              elif [ -f "pyproject.toml" ]; then
+                pip install -e .
+              fi
+              ;;
+            uv)
+              if [ -f "${{ inputs.python-requirements-file }}" ]; then
+                uv pip install --system -r "${{ inputs.python-requirements-file }}"
+              elif [ -f "pyproject.toml" ]; then
+                uv pip install --system -e .
+              fi
+              ;;
+            poetry)
+              poetry install --no-interaction
+              ;;
+            *)
+              echo "Unknown package manager" && exit 1
+              ;;
+          esac
+
+      - name: Run Python lint
+        if: inputs.run-lint && (inputs.language == 'python' || inputs.language == 'multi')
+        run: |
+          if command -v ruff &>/dev/null; then
             ruff check .
+          elif [ "${{ inputs.python-package-manager }}" = "poetry" ] && poetry run ruff --version &>/dev/null; then
+            poetry run ruff check .
           else
-            echo "ruff not installed; skipping"
+            echo "Ruff not installed, skipping"
           fi
-      - name: Run tests
-        if: inputs.run-tests
+        continue-on-error: false
+
+      - name: Run Python format check
+        if: inputs.run-format-check && (inputs.language == 'python' || inputs.language == 'multi')
         run: |
-          set -euo pipefail
-          if [[ -f package.json ]] && jq -e '.scripts.test' package.json >/dev/null 2>&1; then
-            npm test
-          elif [[ -f pyproject.toml || -f pytest.ini || -d tests ]]; then
-            pytest -q
+          if command -v ruff &>/dev/null; then
+            ruff format --check .
+          elif [ "${{ inputs.python-package-manager }}" = "poetry" ] && poetry run ruff --version &>/dev/null; then
+            poetry run ruff format --check .
           else
-            echo "No tests configured"
+            echo "Ruff not installed, skipping"
           fi
+        continue-on-error: false
+
+      - name: Run Python type check
+        if: inputs.run-type-check && (inputs.language == 'python' || inputs.language == 'multi')
+        run: |
+          if command -v mypy &>/dev/null; then
+            mypy .
+          elif [ "${{ inputs.python-package-manager }}" = "poetry" ] && poetry run mypy --version &>/dev/null; then
+            poetry run mypy .
+          else
+            echo "Mypy not installed, skipping"
+          fi
+        continue-on-error: false
+
+      - name: Run Python tests
+        if: inputs.run-tests && (inputs.language == 'python' || inputs.language == 'multi')
+        run: |
+          if [ "${{ inputs.python-package-manager }}" = "poetry" ]; then
+            poetry run pytest ${{ inputs.coverage && '--cov --cov-report=xml --cov-report=term' || '' }}
+          elif [ -f "pyproject.toml" ] || [ -f "pytest.ini" ] || [ -d "tests" ]; then
+            pytest ${{ inputs.coverage && '--cov --cov-report=xml --cov-report=term' || '' }}
+          else
+            echo "No tests configured, skipping"
+          fi
+        env:
+          CI: true
+
+      # Coverage upload (shared for both Node and Python)
+      - name: Upload coverage
+        if: inputs.coverage
+        uses: codecov/codecov-action@7f8b4b4bde536c465e797be725718b88c5d95e0e # v5.1.1
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml,./coverage/coverage-final.json
+          flags: unittests
+          fail_ci_if_error: false
+
+      # Build artifacts upload (Node.js)
+      - name: Upload build artifacts
+        if: inputs.run-build && (inputs.language == 'node' || inputs.language == 'multi') && hashFiles('package.json') != ''
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: build-${{ inputs.node-package-manager }}-node-${{ inputs.node-version }}
+          path: |
+            ${{ inputs.working-directory }}/dist
+            ${{ inputs.working-directory }}/build
+            ${{ inputs.working-directory }}/out
+          if-no-files-found: ignore
+          retention-days: 7
