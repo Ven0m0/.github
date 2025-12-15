@@ -100,7 +100,7 @@ jobs:
           FILTER_REGEX_EXCLUDE: ${{ inputs.megalinter-exclude-dirs }}
       - name: Archive Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: megalinter-reports
           path: |
