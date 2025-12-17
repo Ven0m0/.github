@@ -70,7 +70,7 @@ jobs:
           echo "Hardened $c/${#files[@]} shell files"
       - name: Commit Fixes
         if: inputs.commit-fixes && github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 'style: apply shellharden [skip ci]'
           commit_user_name: github-actions[bot]
@@ -100,7 +100,7 @@ jobs:
           FILTER_REGEX_EXCLUDE: ${{ inputs.megalinter-exclude-dirs }}
       - name: Archive Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: megalinter-reports
           path: |
@@ -108,7 +108,7 @@ jobs:
             mega-linter.log
       - name: Commit Fixes
         if: inputs.commit-fixes && steps.ml.outputs.has_updated_sources == 1
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 'style: apply MegaLinter fixes [skip ci]'
           commit_user_name: megalinter-bot[bot]
