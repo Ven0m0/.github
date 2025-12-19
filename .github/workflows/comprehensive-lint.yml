@@ -54,15 +54,28 @@ jobs:
           fetch-depth: 1
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - name: Install & Run shellharden
+      - name: Cache shellharden
+        uses: actions/cache@v5
+        id: cache-shellharden
+        with:
+          path: ~/.local/bin/shellharden
+          key: shellharden-${{ runner.os }}-${{ runner.arch }}
+      - name: Install shellharden
+        if: steps.cache-shellharden.outputs.cache-hit != 'true'
+        run: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+          bin=$HOME/.local/bin; mkdir -p "$bin"
+          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | tar xz -C "$bin" shellharden
+          chmod +x "$bin/shellharden"
+      - name: Run shellharden
         env:
           EXCLUDE: ${{ inputs.shell-exclude-pattern }}
         run: |
           #!/usr/bin/env bash
           set -euo pipefail; shopt -s globstar nullglob
-          bin=$HOME/.local/bin; mkdir -p "$bin"; echo "$bin" >> "$GITHUB_PATH"
-          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | tar xz -C "$bin" shellharden
-          chmod +x "$bin/shellharden"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
           mapfile -t files < <({ grep -rIl "^#!" . 2>/dev/null | grep -E "\.(ba)?sh$"; find . -name "*.sh" -type f; } | grep -vE "$EXCLUDE" | sort -u)
           [[ ${#files[@]} -eq 0 ]] && { echo "No shell files"; exit 0; }
           c=0

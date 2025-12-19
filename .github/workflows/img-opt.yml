@@ -25,6 +25,7 @@ jobs:
   optimize:
     name: Optimize Images
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
         with:
@@ -39,8 +40,8 @@ jobs:
         id: find
         run: |
           #!/usr/bin/env bash
-          set -euo pipefail; shopt -s nullglob globstar
-          mapfile -t imgs < <(find . -type f \( -iname '*.gif' -o -iname '*.svg' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) -not -path '*/.git/*' -not -path '*/node_modules/*' -not -path '*/.cache/*')
+          set -euo pipefail
+          mapfile -t imgs < <(find . -type f \( -iname '*.gif' -o -iname '*.svg' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) ! -path '*/.git/*' ! -path '*/node_modules/*' ! -path '*/.cache/*')
           c=${#imgs[@]}
           echo "count=$c" >>"$GITHUB_OUTPUT"
           [[ $c -gt 0 ]] && echo "## 🖼️ Found $c images" >>"$GITHUB_STEP_SUMMARY" || echo "No images found"
@@ -64,11 +65,12 @@ jobs:
         if: steps.compress.outputs.changes_detected == 'true' && inputs.replace_original
         run: |
           #!/usr/bin/env bash
-          set -euo pipefail; shopt -s nullglob globstar
+          set -euo pipefail
+          shopt -s nullglob globstar
           rm_base(){ local b=$1; for e in png jpg jpeg gif; do [[ -f $b.$e ]] && rm -v "$b.$e"; done; }
           c=0
-          [[ "${{ inputs.export_avif }}" == "true" ]] && for f in **/*.avif; do rm_base "${f%.avif}"; ((c++)); done
-          [[ "${{ inputs.export_webp }}" == "true" ]] && for f in **/*.webp; do rm_base "${f%.webp}"; ((c++)); done
+          [[ "${{ inputs.export_avif }}" == "true" ]] && while IFS= read -r -d '' f; do rm_base "${f%.avif}"; ((c++)); done < <(find . -name "*.avif" -type f -print0)
+          [[ "${{ inputs.export_webp }}" == "true" ]] && while IFS= read -r -d '' f; do rm_base "${f%.webp}"; ((c++)); done < <(find . -name "*.webp" -type f -print0)
           echo "## 🗑️ Removed $c originals" >>"$GITHUB_STEP_SUMMARY"
       - name: Stats & Commit
         if: steps.compress.outputs.changes_detected == 'true'

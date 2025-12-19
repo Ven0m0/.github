@@ -28,6 +28,7 @@ jobs:
   dependabot:
     name: Dependabot Auto-Merge
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.actor == 'dependabot[bot]'
     steps:
       - name: Get Metadata
@@ -46,8 +47,13 @@ jobs:
           excluded="${{ inputs.exclude_packages }}"
           skip=false
           status="Eligible for auto-merge"
-          [[ -n $excluded ]] && grep -qF "$pkg" <<<"$excluded" && { skip=true; status="Excluded package"; }
-          [[ $skip == false ]] && ! grep -qF "$type" <<<"$allowed" && { skip=true; status="Update type not allowed"; }
+          if [[ -n $excluded ]] && grep -qF "$pkg" <<<"$excluded"; then
+            skip=true
+            status="Excluded package"
+          elif ! grep -qF "$type" <<<"$allowed"; then
+            skip=true
+            status="Update type not allowed"
+          fi
           cat >>"$GITHUB_STEP_SUMMARY" <<EOF
           ## Dependabot Update
           - **Package**: $pkg

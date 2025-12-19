@@ -40,6 +40,7 @@ jobs:
   maintenance:
     name: Git Maintenance & Submodules
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
         with:
@@ -70,7 +71,7 @@ jobs:
           #!/usr/bin/env bash
           set -euo pipefail
           stats(){ git count-objects -v; }
-          get_size(){ grep 'size-pack:' | awk '{print $2}'; }
+          get_size(){ awk '/size-pack:/ {print $2}'; }
           before=$(stats | get_size)
           cat >>"$GITHUB_STEP_SUMMARY" <<EOF
           ## Repository Stats (Before)
@@ -81,16 +82,16 @@ jobs:
           [[ "${{ inputs.verify_integrity }}" == "true" ]] && {
             echo "## Integrity Check" >>"$GITHUB_STEP_SUMMARY"
             echo '```' >>"$GITHUB_STEP_SUMMARY"
-            git fsck --full --no-progress &>>"$GITHUB_STEP_SUMMARY" || echo "Issues detected" >>"$GITHUB_STEP_SUMMARY"
+            git fsck --full --no-progress 2>&1 >>"$GITHUB_STEP_SUMMARY" || echo "Issues detected" >>"$GITHUB_STEP_SUMMARY"
             echo '```' >>"$GITHUB_STEP_SUMMARY"
           }
-          tasks=""
-          [[ "${{ inputs.optimize_repo }}" == "true" ]] && tasks="--task=commit-graph --task=loose-objects --task=incremental-repack"
-          [[ "${{ inputs.run_gc }}" == "true" ]] && tasks="$tasks --task=gc"
-          [[ -n $tasks ]] && {
+          tasks=()
+          [[ "${{ inputs.optimize_repo }}" == "true" ]] && tasks+=(--task=commit-graph --task=loose-objects --task=incremental-repack)
+          [[ "${{ inputs.run_gc }}" == "true" ]] && tasks+=(--task=gc)
+          [[ ${#tasks[@]} -gt 0 ]] && {
             echo "## Maintenance" >>"$GITHUB_STEP_SUMMARY"
             echo '```' >>"$GITHUB_STEP_SUMMARY"
-            git maintenance run $tasks &>>"$GITHUB_STEP_SUMMARY"
+            git maintenance run "${tasks[@]}" 2>&1 >>"$GITHUB_STEP_SUMMARY"
             echo '```' >>"$GITHUB_STEP_SUMMARY"
           }
           after=$(stats | get_size)
