@@ -61,7 +61,6 @@ jobs:
         if: steps.cache-shellharden.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          #!/usr/bin/env bash
           set -euo pipefail
           bin=$HOME/.local/bin; mkdir -p "$bin"
           curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | tar xz -C "$bin" shellharden
@@ -71,7 +70,6 @@ jobs:
           EXCLUDE: ${{ inputs.shell-exclude-pattern }}
         shell: bash
         run: |
-          #!/usr/bin/env bash
           set -euo pipefail; shopt -s globstar nullglob
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           export PATH="$HOME/.local/bin:$PATH"
