@@ -59,6 +59,7 @@ jobs:
           key: shellharden-${{ runner.os }}-${{ runner.arch }}
       - name: Install shellharden
         if: steps.cache-shellharden.outputs.cache-hit != 'true'
+        shell: bash
         run: |
           #!/usr/bin/env bash
           set -euo pipefail
@@ -68,6 +69,7 @@ jobs:
       - name: Run shellharden
         env:
           EXCLUDE: ${{ inputs.shell-exclude-pattern }}
+        shell: bash
         run: |
           #!/usr/bin/env bash
           set -euo pipefail; shopt -s globstar nullglob
