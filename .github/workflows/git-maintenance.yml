@@ -67,9 +67,8 @@ jobs:
             ${{ steps.submodules.outputs.prBody }}
           labels: dependencies,automated
       - name: Stats & Maintenance
+        shell: bash
         run: |
-          #!/usr/bin/env bash
-          set -euo pipefail
           stats(){ git count-objects -v; }
           get_size(){ awk '/size-pack:/ {print $2}'; }
           before=$(stats | get_size)
