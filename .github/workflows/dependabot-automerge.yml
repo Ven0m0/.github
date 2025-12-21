@@ -38,9 +38,8 @@ jobs:
           github-token: ${{ secrets.PAT || github.token }}
       - name: Check Update Type
         id: check
+        shell: bash
         run: |
-          #!/usr/bin/env bash
-          set -euo pipefail
           type="${{ steps.metadata.outputs.update-type }}"
           allowed="${{ inputs.update_types }}"
           pkg="${{ steps.metadata.outputs.dependency-names }}"
