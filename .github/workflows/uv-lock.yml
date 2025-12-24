@@ -1,4 +1,6 @@
-name: autofix.ci
+# Python UV Lock & Autofix Workflow (Reusable)
+name: Python UV Autofix (Reusable)
+
 on:
   workflow_call:
   workflow_dispatch:
@@ -6,16 +8,18 @@ on:
     branches: [main, master]
   push:
     branches: [main, master]
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
+
 env:
   DEBIAN_FRONTEND: noninteractive
   LC_ALL: C
-  GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
   UV_FORK_STRATEGY: requires-python
   UV_RESOLUTION: highest
   UV_PRERELEASE: if-necessary-or-explicit
@@ -25,13 +29,17 @@ env:
 
 jobs:
   autofix:
+    name: Python UV Autofix
     runs-on: ubuntu-slim
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout Repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - name: Install the latest version of uv and activate the environment
+
+      - name: Setup UV
         uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.13"
@@ -39,13 +47,25 @@ jobs:
           github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
           cache-python: "true"
           resolution-strategy: "highest"
-      - run: |
+
+      - name: Install Dependencies
+        run: |
           uv pip install pip
           uv pip install -r requirements.txt
-          uv lock -U --fork-strategy requires-python --index-strategy unsafe-best-match --resolution highest
-      - uses: astral-sh/ruff-action@v3
-      - run: ruff check --fix-only
-      - run: ruff format
 
-      - name: autofix.ci
+      - name: Update Lock File
+        run: uv lock -U --fork-strategy requires-python --index-strategy unsafe-best-match --resolution highest
+
+      - name: Lint with Ruff
+        uses: astral-sh/ruff-action@v3
+
+      - name: Fix Lint Issues
+        run: ruff check --fix-only
+
+      - name: Format Code
+        run: ruff format
+
+      - name: Run Autofix
         uses: autofix-ci/action@v1.3.2
+        with:
+          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}

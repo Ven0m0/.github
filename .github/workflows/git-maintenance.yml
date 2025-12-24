@@ -1,38 +1,50 @@
 # Git Maintenance & Cleanup + Submodules Update (Reusable)
 name: Git Maintenance & Submodules (Reusable)
+
 on:
   workflow_call:
     inputs:
       run_gc:
         type: boolean
         default: true
+        description: 'Run git garbage collection'
       optimize_repo:
         type: boolean
         default: true
+        description: 'Optimize repository (commit-graph, loose-objects, repack)'
       verify_integrity:
         type: boolean
         default: true
+        description: 'Verify repository integrity with fsck'
       strategy:
         type: string
         default: commit
+        description: 'Submodule update strategy (commit, branch, tag)'
       submodules:
         type: string
         default: ""
+        description: 'Space-separated list of submodules to update (empty = all)'
       gitmodules_path:
         type: string
         default: .gitmodules
+        description: 'Path to .gitmodules file'
       create_pr:
         type: boolean
         default: true
+        description: 'Create pull request for submodule updates'
       pr_branch_prefix:
         type: string
         default: chore/update-submodules
+        description: 'Branch prefix for submodule update PRs'
       commit_message:
         type: string
         default: "chore(deps): update git submodules"
+        description: 'Commit message for submodule updates'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
@@ -42,11 +54,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout Repository
+        uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0
           token: ${{ secrets.PAT || github.token }}
+
       - name: Update Submodules
         id: submodules
         uses: sgoudham/update-git-submodules@v2
@@ -54,7 +68,8 @@ jobs:
           gitmodulesPath: ${{ inputs.gitmodules_path }}
           strategy: ${{ inputs.strategy }}
           submodules: ${{ inputs.submodules }}
-      - name: Create PR (Submodules)
+
+      - name: Create Pull Request for Submodule Updates
         if: inputs.create_pr && steps.submodules.outputs.json != '' && steps.submodules.outputs.json != '[]'
         uses: peter-evans/create-pull-request@v8
         with:
@@ -66,43 +81,82 @@ jobs:
             ## Submodule Updates
             ${{ steps.submodules.outputs.prBody }}
           labels: dependencies,automated
-      - name: Stats & Maintenance
+      - name: Run Git Maintenance
         shell: bash
         run: |
-          stats(){ git count-objects -v; }
-          get_size(){ awk '/size-pack:/ {print $2}'; }
-          before=$(stats | get_size)
-          cat >>"$GITHUB_STEP_SUMMARY" <<EOF
+          set -euo pipefail
+
+          # Helper functions
+          get_stats() {
+            git count-objects -v
+          }
+
+          get_pack_size() {
+            awk '/size-pack:/ {print $2}'
+          }
+
+          # Capture stats before maintenance
+          before_size=$(get_stats | get_pack_size)
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
           ## Repository Stats (Before)
-          \`\`\`
-          $(stats)
-          \`\`\`
+          ```
           EOF
-          [[ "${{ inputs.verify_integrity }}" == "true" ]] && {
-            echo "## Integrity Check" >>"$GITHUB_STEP_SUMMARY"
-            echo '```' >>"$GITHUB_STEP_SUMMARY"
-            git fsck --full --no-progress 2>&1 >>"$GITHUB_STEP_SUMMARY" || echo "Issues detected" >>"$GITHUB_STEP_SUMMARY"
-            echo '```' >>"$GITHUB_STEP_SUMMARY"
-          }
+          get_stats >> "$GITHUB_STEP_SUMMARY"
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ```
+          EOF
+
+          # Verify repository integrity
+          if [[ "${{ inputs.verify_integrity }}" == "true" ]]; then
+            echo "## Integrity Check" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            if git fsck --full --no-progress 2>&1 >> "$GITHUB_STEP_SUMMARY"; then
+              echo "✅ No issues detected" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "⚠️ Issues detected" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # Build maintenance task list
           tasks=()
-          [[ "${{ inputs.optimize_repo }}" == "true" ]] && tasks+=(--task=commit-graph --task=loose-objects --task=incremental-repack)
-          [[ "${{ inputs.run_gc }}" == "true" ]] && tasks+=(--task=gc)
-          [[ ${#tasks[@]} -gt 0 ]] && {
-            echo "## Maintenance" >>"$GITHUB_STEP_SUMMARY"
-            echo '```' >>"$GITHUB_STEP_SUMMARY"
-            git maintenance run "${tasks[@]}" 2>&1 >>"$GITHUB_STEP_SUMMARY"
-            echo '```' >>"$GITHUB_STEP_SUMMARY"
-          }
-          after=$(stats | get_size)
-          cat >>"$GITHUB_STEP_SUMMARY" <<EOF
-          ## Stats (After)
-          \`\`\`
-          $(stats)
-          \`\`\`
+          if [[ "${{ inputs.optimize_repo }}" == "true" ]]; then
+            tasks+=(--task=commit-graph --task=loose-objects --task=incremental-repack)
+          fi
+          if [[ "${{ inputs.run_gc }}" == "true" ]]; then
+            tasks+=(--task=gc)
+          fi
+
+          # Run maintenance tasks
+          if [[ ${#tasks[@]} -gt 0 ]]; then
+            echo "## Maintenance Tasks" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            git maintenance run "${tasks[@]}" 2>&1 >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # Capture stats after maintenance
+          after_size=$(get_stats | get_pack_size)
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ## Repository Stats (After)
+          ```
           EOF
-          [[ $before -gt 0 && $after -gt 0 ]] && {
-            diff=$((before - after))
-            [[ $diff -gt 0 ]] && pct=$(awk "BEGIN {printf \"%.1f\", ($diff / $before) * 100}") && echo "✅ Reduced by ${diff}KB (${pct}%)" >>"$GITHUB_STEP_SUMMARY"
-            [[ $diff -lt 0 ]] && echo "📈 Increased by $((-diff))KB" >>"$GITHUB_STEP_SUMMARY"
-            [[ $diff -eq 0 ]] && echo "➡️ Unchanged" >>"$GITHUB_STEP_SUMMARY"
-          }
+          get_stats >> "$GITHUB_STEP_SUMMARY"
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ```
+          EOF
+
+          # Calculate and display size difference
+          if [[ $before_size -gt 0 && $after_size -gt 0 ]]; then
+            diff=$((before_size - after_size))
+            if [[ $diff -gt 0 ]]; then
+              pct=$(awk "BEGIN {printf \"%.1f\", ($diff / $before_size) * 100}")
+              echo "✅ Reduced by ${diff}KB (${pct}%)" >> "$GITHUB_STEP_SUMMARY"
+            elif [[ $diff -lt 0 ]]; then
+              echo "📈 Increased by $((-diff))KB" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "➡️ Unchanged" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
