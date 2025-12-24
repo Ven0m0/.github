@@ -1,40 +1,52 @@
 # Comprehensive Linting Workflow (Reusable)
 name: Comprehensive Lint (Reusable)
+
 on:
   workflow_call:
     inputs:
       working-directory:
         type: string
         default: '.'
+        description: 'Working directory for the workflow'
       apply-shellharden:
         type: boolean
         default: true
+        description: 'Apply shellharden fixes to shell scripts'
       shfmt-indent:
         type: number
         default: 2
+        description: 'Indentation size for shfmt'
       shell-exclude-pattern:
         type: string
         default: '(^|/)\\.(git|cache|claude|venv)(/|$)'
+        description: 'Pattern to exclude shell files from processing'
       megalinter-validate-all:
         type: boolean
         default: false
+        description: 'Validate all files or only changed files'
       megalinter-config:
         type: string
         default: '.megalinter.yml'
+        description: 'Path to MegaLinter configuration file'
       megalinter-exclude-dirs:
         type: string
         default: '.github,.git,.cache,node_modules'
+        description: 'Directories to exclude from MegaLinter'
       commit-fixes:
         type: boolean
         default: true
+        description: 'Automatically commit fixes'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
   issues: write
   statuses: write
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+
 env:
   DEBIAN_FRONTEND: noninteractive
 jobs:
@@ -46,38 +58,62 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout Repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - name: Cache shellharden
+
+      - name: Cache Shellharden Binary
         uses: actions/cache@v5
         id: cache-shellharden
         with:
           path: ~/.local/bin/shellharden
           key: shellharden-${{ runner.os }}-${{ runner.arch }}
-      - name: Install shellharden
+
+      - name: Install Shellharden
         if: steps.cache-shellharden.outputs.cache-hit != 'true'
         shell: bash
         run: |
           set -euo pipefail
-          bin=$HOME/.local/bin; mkdir -p "$bin"
-          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz | tar xz -C "$bin" shellharden
+          bin="$HOME/.local/bin"
+          mkdir -p "$bin"
+          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
+            | tar xz -C "$bin" shellharden
           chmod +x "$bin/shellharden"
-      - name: Run shellharden
+
+      - name: Run Shellharden
         env:
           EXCLUDE: ${{ inputs.shell-exclude-pattern }}
         shell: bash
         run: |
-          set -euo pipefail; shopt -s globstar nullglob
+          set -euo pipefail
+          shopt -s globstar nullglob
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           export PATH="$HOME/.local/bin:$PATH"
-          mapfile -t files < <({ grep -rIl "^#!" . 2>/dev/null | grep -E "\.(ba)?sh$"; find . -name "*.sh" -type f; } | grep -vE "$EXCLUDE" | sort -u)
-          [[ ${#files[@]} -eq 0 ]] && { echo "No shell files"; exit 0; }
-          c=0
-          for f in "${files[@]}"; do shellharden --replace "$f" &>/dev/null && ((c++)) || :; done
-          echo "Hardened $c/${#files[@]} shell files"
+
+          # Find all shell files
+          mapfile -t files < <({
+            grep -rIl "^#!" . 2>/dev/null | grep -E "\.(ba)?sh$"
+            find . -name "*.sh" -type f
+          } | grep -vE "$EXCLUDE" | sort -u)
+
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No shell files found"
+            exit 0
+          fi
+
+          # Apply shellharden
+          count=0
+          for file in "${files[@]}"; do
+            if shellharden --replace "$file" &>/dev/null; then
+              ((count++)) || true
+            fi
+          done
+
+          echo "Hardened $count/${#files[@]} shell files"
+
       - name: Commit Fixes
         if: inputs.commit-fixes && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v7
@@ -95,11 +131,13 @@ jobs:
       pull-requests: write
       statuses: write
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout Repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - name: MegaLinter
+
+      - name: Run MegaLinter
         id: ml
         uses: oxsecurity/megalinter@v9
         env:
@@ -108,7 +146,8 @@ jobs:
           APPLY_FIXES: all
           MEGALINTER_CONFIG: ${{ inputs.megalinter-config }}
           FILTER_REGEX_EXCLUDE: ${{ inputs.megalinter-exclude-dirs }}
-      - name: Archive Reports
+
+      - name: Archive MegaLinter Reports
         if: always()
         uses: actions/upload-artifact@v6
         with:
@@ -116,7 +155,8 @@ jobs:
           path: |
             megalinter-reports
             mega-linter.log
-      - name: Commit Fixes
+
+      - name: Commit MegaLinter Fixes
         if: inputs.commit-fixes && steps.ml.outputs.has_updated_sources == 1
         uses: stefanzweifel/git-auto-commit-action@v7
         with:

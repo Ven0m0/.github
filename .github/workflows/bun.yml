@@ -1,4 +1,6 @@
-name: autofix.ci
+# Bun Autofix Workflow (Reusable)
+name: Bun Autofix (Reusable)
+
 on:
   workflow_call:
   workflow_dispatch:
@@ -6,29 +8,40 @@ on:
     branches: [main, master]
   push:
     branches: [main, master]
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
+
 env:
   DEBIAN_FRONTEND: noninteractive
   LC_ALL: C
-  GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
 jobs:
   autofix:
+    name: Bun Autofix
     runs-on: ubuntu-slim
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout Repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - uses: oven-sh/setup-bun@v2
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - run: |
-          bun i
-      - name: autofix.ci
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Run Autofix
         uses: autofix-ci/action@v1.3.2
+        with:
+          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
