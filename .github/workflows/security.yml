@@ -53,7 +53,7 @@ jobs:
     if: inputs.scan_dependencies
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
@@ -83,7 +83,7 @@ jobs:
     if: inputs.scan_secrets
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -103,7 +103,7 @@ jobs:
     if: inputs.scan_sast
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -136,7 +136,7 @@ jobs:
     if: inputs.scan_container && inputs.container_image != ''
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Trivy container scan
         uses: aquasecurity/trivy-action@master
