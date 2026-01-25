@@ -1,10 +1,14 @@
 ---
-name: Custom issue template
-about: Describe this issue template's purpose here.
+name: General issue
+about: General request not covered by other templates
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
+## Summary
+
+## Context
+
+## Desired outcome
 
