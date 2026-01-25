@@ -1,22 +1,39 @@
-# GitHub base configuration
+# .github
 
-This repository provides default community health files, reusable workflows, and GitHub Copilot instructions for all repositories under the Ven0m0 account. GitHub uses these files when a repository does not define its own versions.
+Default community health files and Copilot instructions for all Ven0m0 repositories.
 
-## Default community files
-- CODE_OF_CONDUCT.md
-- CONTRIBUTING.md
-- SECURITY.md
-- SUPPORT.md
-- .github/FUNDING.yml
-- .github/ISSUE_TEMPLATE/*
-- .github/PULL_REQUEST_TEMPLATE.md
+## What This Provides
 
-## Copilot instructions
-- .github/copilot-instructions.md applies to all repositories.
-- .github/instructions/*.instructions.md adds file scoped guidance.
+GitHub automatically uses these files when a repository doesn't define its own:
 
-## Reusable workflows
-Reusable workflows live in .github/workflows and are called with workflow_call. Example:
+| File | Purpose |
+|------|---------|
+| `CODE_OF_CONDUCT.md` | Contributor Covenant v2.1 |
+| `CONTRIBUTING.md` | Contribution guidelines |
+| `SECURITY.md` | Security policy |
+| `SUPPORT.md` | Support channels |
+| `.github/FUNDING.yml` | Sponsorship |
+| `.github/ISSUE_TEMPLATE/*` | Issue templates |
+| `.github/PULL_REQUEST_TEMPLATE.md` | PR template |
+
+## Copilot Instructions
+
+Organization-wide: `.github/copilot-instructions.md`
+
+Scoped by file type in `.github/instructions/`:
+
+| File | Applies To |
+|------|------------|
+| `actions.instructions.md` | `.github/workflows/*.yml` |
+| `bash.instructions.md` | `*.sh`, `*.bash` |
+| `javascript.instructions.md` | `*.js`, `*.ts`, `*.jsx`, `*.tsx` |
+| `python.instructions.md` | `*.py` |
+| `rust.instructions.md` | `*.rs` |
+| `markdown.instructions.md` | `*.md` |
+
+## Reusable Workflows
+
+Call from any repository:
 
 ```yaml
 jobs:
@@ -24,8 +41,8 @@ jobs:
     uses: Ven0m0/.github/.github/workflows/comprehensive-lint.yml@main
 ```
 
-## Overriding defaults
-If a repository includes its own copy of a file, GitHub prefers the local file. Keep overrides small and specific.
+Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-automerge.yml`, `img-opt.yml`, `git-maintenance.yml`, `release.yml`, `security.yml`, `docker-build.yml`, `rust.yml`, `go.yml`
 
-## Maintenance
-Changes here affect all repositories. Keep updates conservative, document behavior changes, and test reusable workflows in a sandbox repo when possible.
+## Overriding
+
+Local files in a repository take precedence over these defaults.

@@ -1,23 +1,11 @@
-# https://bun.sh/docs/runtime/bunfig
 telemetry = false
-smol = false
 logLevel = "error"
-trimWildcards = true
 
 [install]
-auto = "auto"
-exact = false
-linkWorkspacePackages = true
-linker = "hoisted"
-cacheHardLinks = true
 preferOffline = true
-preferLatest = true
 
 [run]
 silent = true
-bun = true
-hot = false
 
 [test]
 coverageSkipTestFiles = true
-smol = true
