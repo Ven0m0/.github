@@ -1,0 +1,67 @@
+# Clippy configuration
+# Copy to project root as clippy.toml
+
+# Cognitive complexity threshold
+cognitive-complexity-threshold = 25
+
+# Maximum number of lines in a function body
+too-many-lines-threshold = 100
+
+# Minimum number of struct fields for the lints about field names to trigger
+struct-field-name-threshold = 3
+
+# Maximum number of arguments for a function
+too-many-arguments-threshold = 7
+
+# Maximum segments in a module path
+allowed-wildcard-imports = []
+
+# Types that are allowed to implement Copy
+avoid-breaking-exported-api = true
+
+# Disallowed methods (function calls that should trigger a warning)
+disallowed-methods = [
+  { path = "std::env::set_var", reason = "Use a configuration struct instead of environment variables" },
+]
+
+# Disallowed types
+disallowed-types = []
+
+# Disallowed macros
+disallowed-macros = [
+  { path = "std::todo", reason = "Remove before merging to main" },
+  { path = "std::unimplemented", reason = "Remove before merging to main" },
+]
+
+# MSRVs
+msrv = "1.75"
+
+# Documentation requirements
+missing-docs-in-crate-items = true
+
+# Allow certain patterns
+allow-expect-in-tests = true
+allow-unwrap-in-tests = true
+allow-dbg-in-tests = true
+allow-print-in-tests = true
+
+# Threshold for triggering large_stack_arrays lint
+stack-size-threshold = 512000
+
+# Arithmetic side effects
+arithmetic-side-effects-allowed = []
+
+# Allow indexing and slicing on these types
+suppress-restriction-lint-in-const = false
+
+# Trivial copy size limit
+trivial-copy-size-limit = 8
+
+# Pass by value size limit
+pass-by-value-size-limit = 256
+
+# Enum variant name threshold
+enum-variant-name-threshold = 3
+
+# Struct field name threshold
+verbose-bit-mask-threshold = 1

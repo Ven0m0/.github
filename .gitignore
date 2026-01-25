@@ -207,6 +207,7 @@ target/
 *.mutants.out*/
 # Go
 go/
+!configs/go/
 *.test
 # Generic build / dist
 dist/

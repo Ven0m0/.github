@@ -1,0 +1,78 @@
+# Cargo.toml template
+# Copy to project root as Cargo.toml and customize
+
+[package]
+name = "my-project"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["Your Name <your.email@example.com>"]
+description = "A brief description of your project"
+documentation = "https://docs.rs/my-project"
+homepage = "https://github.com/username/my-project"
+repository = "https://github.com/username/my-project"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+keywords = ["keyword1", "keyword2"]
+categories = ["category"]
+exclude = [
+  ".github/",
+  ".gitignore",
+  "tests/",
+  "benches/",
+  "examples/",
+]
+
+[lib]
+# name = "my_project"
+# path = "src/lib.rs"
+
+[[bin]]
+name = "my-project"
+path = "src/main.rs"
+
+[dependencies]
+# thiserror = "1.0"
+# serde = { version = "1.0", features = ["derive"] }
+# tokio = { version = "1.35", features = ["full"] }
+
+[dev-dependencies]
+# proptest = "1.4"
+# criterion = { version = "0.5", features = ["html_reports"] }
+
+[build-dependencies]
+
+[features]
+default = []
+# full = ["feature1", "feature2"]
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+debug = false
+
+[profile.bench]
+inherits = "release"
+debug = true
+
+[lints.rust]
+unsafe_code = "warn"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+cargo = "warn"
+# Customize specific lints
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
