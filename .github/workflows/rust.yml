@@ -166,6 +166,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Cargo deny
-        uses: EmbarkStudios/cargo-deny-action@v1
+        uses: EmbarkStudios/cargo-deny-action@v2
         with:
           manifest-path: ${{ inputs.working_directory }}/Cargo.toml
