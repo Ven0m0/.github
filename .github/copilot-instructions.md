@@ -72,7 +72,7 @@ export function createClient(config: UserConfig): Client {
 
 **Standards:**
 - Node.js 22+ with ESM modules
-- Use `pnpm` for package management
+- Use `bun` when `bun.lockb` or `bunfig.toml` is present; otherwise use `pnpm`
 - ESLint 9+ flat config with strict rules
 - Prefer `interface` over `type` for object shapes
 - Use `vitest` for testing
@@ -227,7 +227,7 @@ Projects using VS Code should include `.vscode/mcp.json` with:
 
 1. **No Hardcoded Secrets**: Use environment variables or secret managers
 2. **Dependency Scanning**: Enable Dependabot and review CVEs
-3. **SHA-Pinned Actions**: All GitHub Actions pinned to commit SHAs
+3. **SHA-Pinned Actions**: Prefer commit SHA pinning; at minimum pin to a major version tag
 4. **Minimal Permissions**: GITHUB_TOKEN with least privilege
 5. **Secret Scanning**: Pre-commit hooks with gitleaks
 
@@ -249,13 +249,13 @@ jobs:
     # Build verification
 ```
 
-For language-specific workflows, use the reusable workflows in `.github/workflows/`:
-- `reusable-ci-python.yml`
-- `reusable-ci-typescript.yml`
-- `reusable-ci-go.yml`
-- `reusable-ci-rust.yml`
-- `reusable-release.yml`
-- `reusable-security.yml`
+For reusable workflows, prefer the templates in `.github/workflows/`:
+- `comprehensive-lint.yml`
+- `bun.yml`
+- `uv-lock.yml`
+- `dependabot-automerge.yml`
+- `git-maintenance.yml`
+- `img-opt.yml`
 
 ## Common Patterns
 
