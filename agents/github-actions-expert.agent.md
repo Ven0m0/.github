@@ -12,7 +12,6 @@ tools:
   - LSP
   - search
   - edit/editFiles
-  - terminalCommand
   - githubRepo
   - fetch
 ---

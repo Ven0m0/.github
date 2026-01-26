@@ -8,23 +8,19 @@ category: specialized
 modelParameters:
   temperature: 0.35
 tools:
+  - codebase
+  - semanticSearch
+  - LSP
   - read
   - Write
   - edit
   - search
   - execute
-  - codebase
-  - semanticSearch
-  - LSP
-  - problems
   - usages
   - changes
-  - testFailure
+  - problems
   - runTests
   - terminalLastCommand
-  - github
-  - githubRepo
-  - fetch
 ---
 
 # Rust Expert Agent

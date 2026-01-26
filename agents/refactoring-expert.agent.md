@@ -16,7 +16,6 @@ tools:
   - problems
   - changes
   - runTests
-  - terminalCommand
 ---
 
 # Refactoring Expert

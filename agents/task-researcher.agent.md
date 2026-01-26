@@ -14,7 +14,6 @@ tools:
   - usages
   - problems
   - changes
-  - searchResults
   - fetch
   - githubRepo
   - edit/editFiles

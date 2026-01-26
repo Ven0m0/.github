@@ -8,22 +8,19 @@ modelParameters:
   temperature: 0.35
 category: specialized
 tools:
+  - codebase
+  - semanticSearch
+  - LSP
   - read
   - Write
   - edit
   - search
   - execute
-  - codebase
-  - semanticSearch
-  - LSP
   - usages
   - changes
   - problems
   - runTests
   - terminalLastCommand
-  - github
-  - githubRepo
-  - fetch
 ---
 
 # Python Expert Agent

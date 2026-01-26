@@ -13,7 +13,6 @@ tools:
   - search
   - usages
   - problems
-  - searchResults
   - fetch
   - githubRepo
 ---
