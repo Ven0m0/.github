@@ -7,7 +7,17 @@ category: specialized
 modelParameters:
   temperature: 0.35
 argument-hint: 'Ask about specific libraries/frameworks (e.g., "Next.js routing", "React hooks", "Tailwind CSS")'
-tools: ['read', 'search', 'web', 'context7/*', 'agent/runSubagent', 'codebase', 'fetch', 'edit/editFiles']
+tools:
+  - codebase
+  - semanticSearch
+  - LSP
+  - read
+  - search
+  - usages
+  - fetch
+  - edit/editFiles
+  - context7/*
+  - agent/runSubagent
 mcp-servers:
   context7:
     type: http

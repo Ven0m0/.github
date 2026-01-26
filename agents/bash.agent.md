@@ -8,26 +8,21 @@ category: specialized
 modelParameters:
   temperature: 0.35
 tools:
-  [
-    "read",
-    "Write",
-    "edit",
-    "search",
-    "execute",
-    "web",
-    "todo",
-    "codebase",
-    "semanticSearch",
-    "runTasks",
-    "terminalLastCommand",
-    "terminalSelection",
-    "usages",
-    "changes",
-    "searchResults",
-    "github",
-    "githubRepo",
-    "fetch",
-  ]
+  - read
+  - Write
+  - edit
+  - search
+  - execute
+  - codebase
+  - semanticSearch
+  - LSP
+  - usages
+  - changes
+  - problems
+  - terminalLastCommand
+  - github
+  - githubRepo
+  - fetch
 ---
 
 ## Role

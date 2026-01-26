@@ -6,7 +6,20 @@ model: claude-4-5-sonnet-latest
 category: specialized
 modelParameters:
   temperature: 0.35
-tools: ['Write', 'Read', 'LS', 'Glob', 'Grep', 'github', 'githubRepo', 'codebase', 'search', 'edit/editFiles', 'runTests']
+tools:
+  - codebase
+  - semanticSearch
+  - LSP
+  - Read
+  - Write
+  - edit/editFiles
+  - search
+  - usages
+  - problems
+  - changes
+  - github
+  - githubRepo
+  - runTests
 color: orange
 ---
 

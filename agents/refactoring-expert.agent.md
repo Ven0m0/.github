@@ -6,7 +6,17 @@ model: claude-4-5-sonnet-latest
 category: quality
 modelParameters:
   temperature: 0.35
-tools: ['codebase', 'edit/editFiles', 'search', 'usages', 'problems', 'terminalCommand', 'runTests', 'changes']
+tools:
+  - codebase
+  - semanticSearch
+  - LSP
+  - edit/editFiles
+  - search
+  - usages
+  - problems
+  - changes
+  - runTests
+  - terminalCommand
 ---
 
 # Refactoring Expert

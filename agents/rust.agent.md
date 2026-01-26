@@ -8,31 +8,23 @@ category: specialized
 modelParameters:
   temperature: 0.35
 tools:
-  [
-    "read",
-    "Write",
-    "edit",
-    "search",
-    "execute",
-    "web",
-    "todo",
-    "codebase",
-    "semanticSearch",
-    "problems",
-    "runTasks",
-    "terminalLastCommand",
-    "terminalSelection",
-    "testFailure",
-    "usages",
-    "changes",
-    "searchResults",
-    "vscodeAPI",
-    "extensions",
-    "github",
-    "githubRepo",
-    "fetch",
-    "openSimpleBrowser",
-  ]
+  - read
+  - Write
+  - edit
+  - search
+  - execute
+  - codebase
+  - semanticSearch
+  - LSP
+  - problems
+  - usages
+  - changes
+  - testFailure
+  - runTests
+  - terminalLastCommand
+  - github
+  - githubRepo
+  - fetch
 ---
 
 # Rust Expert Agent

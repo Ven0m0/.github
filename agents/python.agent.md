@@ -8,26 +8,22 @@ modelParameters:
   temperature: 0.35
 category: specialized
 tools:
-  [
-    "read",
-    "Write",
-    "edit",
-    "search",
-    "execute",
-    "web",
-    "todo",
-    "codebase",
-    "semanticSearch",
-    "runTasks",
-    "terminalLastCommand",
-    "terminalSelection",
-    "usages",
-    "changes",
-    "searchResults",
-    "github",
-    "githubRepo",
-    "fetch",
-  ]
+  - read
+  - Write
+  - edit
+  - search
+  - execute
+  - codebase
+  - semanticSearch
+  - LSP
+  - usages
+  - changes
+  - problems
+  - runTests
+  - terminalLastCommand
+  - github
+  - githubRepo
+  - fetch
 ---
 
 # Python Expert Agent

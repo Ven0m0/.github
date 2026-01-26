@@ -7,15 +7,15 @@ category: planning
 modelParameters:
   temperature: 0.6
 tools:
-  - search/codebase
-  - vscode/extensions
-  - web/fetch
-  - web/githubRepo
-  - read/problems
-  - azure-mcp/search
-  - search/searchResults
-  - search/usages
-  - vscode/vscodeAPI
+  - codebase
+  - semanticSearch
+  - LSP
+  - search
+  - usages
+  - problems
+  - searchResults
+  - fetch
+  - githubRepo
 ---
 
 # Plan Mode - Strategic Planning & Architecture Assistant

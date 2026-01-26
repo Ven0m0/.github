@@ -2,11 +2,25 @@
 description: "Generate a comprehensive Product Requirements Document (PRD) in Markdown, detailing user stories, acceptance criteria, technical considerations, and metrics. Optionally create GitHub issues upon user confirmation."
 name: "Create PRD Chat Mode"
 mode: agent
-model: claude-4-5-opus-latest
+model: claude-4-5-sonnet-latest
 category: documentation
 modelParameters:
   temperature: 0.4
-tools: ["codebase", "edit/editFiles", "fetch", "findTestFiles", "list_issues", "githubRepo", "search", "add_issue_comment", "create_issue", "update_issue", "get_issue", "search_issues"]
+tools:
+  - codebase
+  - semanticSearch
+  - LSP
+  - search
+  - usages
+  - edit/editFiles
+  - fetch
+  - githubRepo
+  - list_issues
+  - get_issue
+  - search_issues
+  - create_issue
+  - update_issue
+  - add_issue_comment
 ---
 
 # Create PRD Chat Mode
