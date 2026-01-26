@@ -6,7 +6,7 @@ model: claude-4-5-opus-latest
 category: research
 modelParameters:
   temperature: 0.5
-tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, fetch, githubRepo, edit/editFiles, context7]
+tools: [codebase, semanticSearch, lsp, search, usages, problems, changes, fetch, githubRepo, edit/editFiles, context7]
 ---
 
 # Task Researcher Instructions
