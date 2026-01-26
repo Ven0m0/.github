@@ -1,7 +1,12 @@
 ---
 description: "Improve code quality, apply security best practices, and enhance design whilst maintaining green tests and GitHub issue compliance."
 name: "TDD Refactor Phase - Improve Quality & Security"
-tools: ["github", "findTestFiles", "edit/editFiles", "runTests", "runCommands", "codebase", "filesystem", "search", "problems", "testFailure", "terminalLastCommand"]
+mode: agent
+model: claude-4-5-sonnet-latest
+category: quality
+modelParameters:
+  temperature: 0.35
+tools: ["github", "findTestFiles", "edit/editFiles", "runTests", "runCommands", "codebase", "search", "problems", "testFailure", "terminalLastCommand", "usages", "changes"]
 ---
 
 # TDD Refactor Phase - Improve Quality & Security

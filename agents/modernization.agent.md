@@ -1,6 +1,11 @@
 ---
+name: modernization-architect
 description: 'Human-in-the-loop modernization assistant for analyzing, documenting, and planning complete project modernization with architectural recommendations.'
-model: 'GPT-5'
+mode: agent
+model: claude-opus-4-20250514
+category: strategic
+modelParameters:
+  temperature: 0.6
 tools:
    - search
    - read

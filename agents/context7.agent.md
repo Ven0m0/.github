@@ -1,8 +1,13 @@
 ---
 name: Context7-Expert
 description: 'Expert in latest library versions, best practices, and correct syntax using up-to-date documentation'
+mode: agent
+model: claude-4-5-sonnet-latest
+category: specialized
+modelParameters:
+  temperature: 0.35
 argument-hint: 'Ask about specific libraries/frameworks (e.g., "Next.js routing", "React hooks", "Tailwind CSS")'
-tools: ['read', 'search', 'web', 'context7/*', 'agent/runSubagent']
+tools: ['read', 'search', 'web', 'context7/*', 'agent/runSubagent', 'codebase', 'fetch', 'edit/editFiles']
 mcp-servers:
   context7:
     type: http

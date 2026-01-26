@@ -1,7 +1,12 @@
 ---
 name: github-issue-fixer
 description: GitHub issue resolution specialist. Analyzes, plans, and implements fixes for GitHub issues with proper testing and PR creation. Use when fixing specific GitHub issues.
-tools: Write, Read, LS, Glob, Grep, Bash(gh:*), Bash(git:*)
+mode: agent
+model: claude-4-5-sonnet-latest
+category: specialized
+modelParameters:
+  temperature: 0.35
+tools: ['Write', 'Read', 'LS', 'Glob', 'Grep', 'Bash', 'github', 'githubRepo', 'codebase', 'search', 'edit/editFiles', 'runTests']
 color: orange
 ---
 

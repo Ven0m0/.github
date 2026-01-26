@@ -1,7 +1,12 @@
 ---
 name: 'GitHub Actions Expert'
 description: 'GitHub Actions specialist focused on secure CI/CD workflows, action pinning, OIDC authentication, permissions least privilege, and supply-chain security'
-tools: ['codebase', 'edit/editFiles', 'terminalCommand', 'search', 'githubRepo']
+mode: agent
+model: claude-4-5-sonnet-latest
+category: specialized
+modelParameters:
+  temperature: 0.35
+tools: ['codebase', 'edit/editFiles', 'terminalCommand', 'search', 'githubRepo', 'fetch']
 ---
 
 # GitHub Actions Expert

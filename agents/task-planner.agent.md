@@ -1,7 +1,12 @@
 ---
 description: "Task planner for creating actionable implementation plans - Brought to you by microsoft/edge-ai"
 name: "Task Planner Instructions"
-tools: ["changes", "search/codebase", "edit/editFiles", "extensions", "fetch", "findTestFiles", "githubRepo", "new", "openSimpleBrowser", "problems", "runCommands", "runNotebooks", "runTests", "search", "search/searchResults", "runCommands/terminalLastCommand", "runCommands/terminalSelection", "testFailure", "usages", "vscodeAPI", "terraform", "Microsoft Docs", "azure_get_schema_for_Bicep", "context7"]
+mode: agent
+model: claude-opus-4-20250514
+category: planning
+modelParameters:
+  temperature: 0.5
+tools: ["changes", "codebase", "edit/editFiles", "fetch", "findTestFiles", "githubRepo", "openSimpleBrowser", "problems", "runCommands", "runTests", "search", "searchResults", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "context7"]
 ---
 
 # Task Planner Instructions
@@ -263,7 +268,7 @@ applyTo: ".copilot-tracking/changes/{{date}}-{{task_description}}-changes.md"
 ```markdown
 ---
 mode: agent
-model: Claude Sonnet 4
+model: claude-4-5-sonnet-latest
 ---
 
 <!-- markdownlint-disable-file -->
