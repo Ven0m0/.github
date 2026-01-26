@@ -7,27 +7,7 @@ model: claude-4-5-sonnet-latest
 modelParameters:
   temperature: 0.35
 category: specialized
-tools:
-  [
-    "read",
-    "Write",
-    "edit",
-    "search",
-    "execute",
-    "web",
-    "todo",
-    "codebase",
-    "semanticSearch",
-    "runTasks",
-    "terminalLastCommand",
-    "terminalSelection",
-    "usages",
-    "changes",
-    "searchResults",
-    "github",
-    "githubRepo",
-    "fetch",
-  ]
+tools: [codebase, semanticSearch, LSP, read, write, edit, search, execute, usages, changes, problems, runTests, terminalLastCommand]
 ---
 
 # Python Expert Agent

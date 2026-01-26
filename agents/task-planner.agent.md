@@ -6,7 +6,7 @@ model: claude-4-5-opus-latest
 category: planning
 modelParameters:
   temperature: 0.5
-tools: ["changes", "codebase", "edit/editFiles", "fetch", "findTestFiles", "githubRepo", "openSimpleBrowser", "problems", "runCommands", "runTests", "search", "searchResults", "terminalLastCommand", "terminalSelection", "testFailure", "usages", "context7"]
+tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, fetch, githubRepo, edit/editFiles, context7]
 ---
 
 # Task Planner Instructions

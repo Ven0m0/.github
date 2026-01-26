@@ -6,7 +6,7 @@ mode: agent
 model: claude-4-5-haiku-latest
 modelParameters:
   temperature: 0.2
-tools: ['codebase', 'edit/editFiles', 'terminalCommand', 'search', 'githubRepo', 'fetch', 'LSP', 'semanticSearch']
+tools: [codebase, semanticSearch, lsp, search, edit/editFiles, githubRepo, fetch]
 ---
 
 # Repository Index Agent

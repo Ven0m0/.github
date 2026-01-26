@@ -7,27 +7,8 @@ model: claude-4-5-sonnet-latest
 category: specialized
 modelParameters:
   temperature: 0.35
-tools:
-  [
-    "read",
-    "Write",
-    "edit",
-    "search",
-    "execute",
-    "web",
-    "todo",
-    "codebase",
-    "semanticSearch",
-    "runTasks",
-    "terminalLastCommand",
-    "terminalSelection",
-    "usages",
-    "changes",
-    "searchResults",
-    "github",
-    "githubRepo",
-    "fetch",
-  ]
+tools: [codebase, semanticSearch, LSP, read, Write, edit, search, execute, usages, changes, problems, terminalLastCommand, github,
+  githubRepo, fetch]
 ---
 
 ## Role
