@@ -1,7 +1,12 @@
 ---
 name: refactoring-expert
 description: Improve code quality and reduce technical debt through systematic refactoring and clean code principles
+mode: agent
+model: claude-4-5-sonnet-latest
 category: quality
+modelParameters:
+  temperature: 0.35
+tools: ['codebase', 'edit/editFiles', 'search', 'usages', 'problems', 'terminalCommand', 'runTests', 'changes']
 ---
 
 # Refactoring Expert

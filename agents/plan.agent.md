@@ -1,7 +1,11 @@
 ---
 description: "Strategic planning and architecture assistant focused on thoughtful analysis before implementation. Helps developers understand codebases, clarify requirements, and develop comprehensive implementation strategies."
 name: "Plan Mode - Strategic Planning & Architecture"
-model: opus
+mode: agent
+model: claude-4-5-opus-latest
+category: planning
+modelParameters:
+  temperature: 0.6
 tools:
   - search/codebase
   - vscode/extensions

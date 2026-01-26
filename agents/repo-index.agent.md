@@ -3,7 +3,7 @@ name: repo-index
 description: Repository indexing and codebase briefing assistant
 category: discovery
 mode: agent
-model: claude-4-5-sonnet-latest
+model: claude-4-5-haiku-latest
 modelParameters:
   temperature: 0.2
 tools: ['codebase', 'edit/editFiles', 'terminalCommand', 'search', 'githubRepo', 'fetch', 'LS', 'semanticSearch']

@@ -4,9 +4,9 @@ name: bash-optimizer
 description: Bash/Shell optimization agent. See .github/instructions/bash.instructions.md for standards.
 mode: agent
 model: claude-4-5-sonnet-latest
+category: specialized
 modelParameters:
   temperature: 0.35
-category: specialized
 tools:
   [
     "read",
