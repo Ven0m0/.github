@@ -7,6 +7,7 @@
 
 Successfully optimized all 16 agent configuration files for maximum efficiency by:
 - Selecting appropriate models (Haiku/Sonnet/Opus) based on task complexity
+- Using `-latest` versions for automatic updates
 - Standardizing YAML frontmatter structure
 - Optimizing temperature settings for each use case
 - Minimizing tool permissions to least privilege
@@ -14,6 +15,7 @@ Successfully optimized all 16 agent configuration files for maximum efficiency b
 ## Model Distribution Strategy
 
 ### Haiku - Fast & Cost-Effective (2 agents)
+**Model**: `claude-4-5-haiku-latest`  
 **Use Case**: Simple, repetitive tasks with clear patterns
 
 | Agent | Temperature | Purpose |
@@ -24,6 +26,7 @@ Successfully optimized all 16 agent configuration files for maximum efficiency b
 **Cost Savings**: ~75% cheaper than Opus for simple tasks
 
 ### Sonnet - Balanced Performance (8 agents)
+**Model**: `claude-4-5-sonnet-latest`  
 **Use Case**: Complex code generation and analysis
 
 | Agent | Temperature | Purpose |
@@ -40,6 +43,7 @@ Successfully optimized all 16 agent configuration files for maximum efficiency b
 **Performance**: Best balance of cost and capability for code work
 
 ### Opus - Strategic Capability (6 agents)
+**Model**: `claude-4-5-opus-latest`  
 **Use Case**: Complex planning, architecture, and research
 
 | Agent | Temperature | Purpose |
@@ -73,13 +77,18 @@ All agents now include:
 name: agent-identifier
 description: Clear purpose statement
 mode: agent
-model: claude-{haiku|sonnet|opus}-version
+model: claude-4-5-{haiku|sonnet|opus}-latest
 category: classification
 modelParameters:
   temperature: optimized-value
 tools: [minimal-required-set]
 ---
 ```
+
+**Model Versions**:
+- `claude-4-5-haiku-latest`: Fast, cost-effective for simple tasks
+- `claude-4-5-sonnet-latest`: Balanced for code generation
+- `claude-4-5-opus-latest`: Strategic planning and architecture
 
 ### Categories
 - `specialized`: Language/domain-specific agents
@@ -111,8 +120,13 @@ Each agent has minimum tools required for its specific function, following least
 ## Issues Fixed
 
 ### Invalid Model Names
-1. **modernization.agent.md**: `'GPT-5'` → `'claude-opus-4-20250514'`
+1. **modernization.agent.md**: `'GPT-5'` → `'claude-4-5-opus-latest'`
 2. **task-planner.agent.md** (template): `'Claude Sonnet 4'` → `'claude-4-5-sonnet-latest'`
+
+### Model Version Updates
+- Updated all Haiku agents to use `claude-4-5-haiku-latest`
+- Updated all Opus agents to use `claude-4-5-opus-latest`
+- All Sonnet agents already using `claude-4-5-sonnet-latest`
 
 ### Missing Models Added
 - github-actions-expert
@@ -169,20 +183,20 @@ Each agent has minimum tools required for its specific function, following least
 ## Recommendations for Future Agents
 
 ### Model Selection
-1. **Use Haiku for**:
+1. **Use Haiku (`claude-4-5-haiku-latest`) for**:
    - File organization
    - Pattern matching
    - Simple transformations
    - Repetitive tasks
 
-2. **Use Sonnet for**:
+2. **Use Sonnet (`claude-4-5-sonnet-latest`) for**:
    - Code generation
    - Bug fixing
    - Code review
    - Testing
    - Documentation generation
 
-3. **Use Opus for**:
+3. **Use Opus (`claude-4-5-opus-latest`) for**:
    - Architecture design
    - Complex planning
    - Research analysis

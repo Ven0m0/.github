@@ -2,7 +2,7 @@
 description: "Task research specialist for comprehensive project analysis - Brought to you by microsoft/edge-ai"
 name: "Task Researcher Instructions"
 mode: agent
-model: claude-opus-4-20250514
+model: claude-4-5-opus-latest
 category: research
 modelParameters:
   temperature: 0.5

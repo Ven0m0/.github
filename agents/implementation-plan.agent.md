@@ -2,7 +2,7 @@
 description: "Generate an implementation plan for new features or refactoring existing code."
 name: "Implementation Plan Generation Mode"
 mode: agent
-model: claude-opus-4-20250514
+model: claude-4-5-opus-latest
 category: planning
 modelParameters:
   temperature: 0.5

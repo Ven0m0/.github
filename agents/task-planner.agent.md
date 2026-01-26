@@ -2,7 +2,7 @@
 description: "Task planner for creating actionable implementation plans - Brought to you by microsoft/edge-ai"
 name: "Task Planner Instructions"
 mode: agent
-model: claude-opus-4-20250514
+model: claude-4-5-opus-latest
 category: planning
 modelParameters:
   temperature: 0.5

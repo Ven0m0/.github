@@ -2,7 +2,7 @@
 name: modernization-architect
 description: 'Human-in-the-loop modernization assistant for analyzing, documenting, and planning complete project modernization with architectural recommendations.'
 mode: agent
-model: claude-opus-4-20250514
+model: claude-4-5-opus-latest
 category: strategic
 modelParameters:
   temperature: 0.6

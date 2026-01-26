@@ -2,7 +2,7 @@
 name: code-janitor
 description: 'Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation.'
 mode: agent
-model: claude-3-haiku-20240307
+model: claude-4-5-haiku-latest
 category: maintenance
 modelParameters:
   temperature: 0.3

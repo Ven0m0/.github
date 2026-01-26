@@ -2,7 +2,7 @@
 description: "Generate a comprehensive Product Requirements Document (PRD) in Markdown, detailing user stories, acceptance criteria, technical considerations, and metrics. Optionally create GitHub issues upon user confirmation."
 name: "Create PRD Chat Mode"
 mode: agent
-model: claude-opus-4-20250514
+model: claude-4-5-opus-latest
 category: documentation
 modelParameters:
   temperature: 0.4
