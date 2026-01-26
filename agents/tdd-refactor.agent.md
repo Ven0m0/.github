@@ -6,7 +6,7 @@ model: claude-4-5-sonnet-latest
 category: quality
 modelParameters:
   temperature: 0.35
-tools: [codebase, semanticSearch, lsp, github, edit/editFiles, search, usages, problems, changes, findTestFiles, runTests,  testFailure, terminalLastCommand]
+tools: [codebase, semanticSearch, lsp, github, edit/editFiles, search, usages, problems, changes, findTestFiles, runTests, testFailure, terminalLastCommand]
 ---
 
 # TDD Refactor Phase - Improve Quality & Security
