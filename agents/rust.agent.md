@@ -7,7 +7,7 @@ model: claude-4-5-sonnet-latest
 category: specialized
 modelParameters:
   temperature: 0.35
-tools: [codebase, semanticSearch, LSP, read, Write, edit, search, execute, usages, changes, problems, runTests, terminalLastCommand]
+tools: [codebase, semanticSearch, lsp, read, write, edit, search, execute, usages, changes, problems, runTests, terminalLastCommand]
 ---
 
 # Rust Expert Agent
