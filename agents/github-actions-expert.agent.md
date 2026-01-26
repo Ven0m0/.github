@@ -6,14 +6,7 @@ model: claude-4-5-sonnet-latest
 category: specialized
 modelParameters:
   temperature: 0.35
-tools:
-  - codebase
-  - semanticSearch
-  - LSP
-  - search
-  - edit/editFiles
-  - githubRepo
-  - fetch
+tools: [codebase, semanticSearch, LSP, search, edit/editFiles, githubRepo, fetch]
 ---
 
 # GitHub Actions Expert

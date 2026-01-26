@@ -6,19 +6,8 @@ model: claude-4-5-opus-latest
 category: planning
 modelParameters:
   temperature: 0.5
-tools:
-  - codebase
-  - semanticSearch
-  - LSP
-  - search
-  - usages
-  - problems
-  - changes
-  - searchResults
-  - findTestFiles
-  - fetch
-  - githubRepo
-  - edit/editFiles
+tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, searchResults, findTestFiles, fetch, githubRepo,
+  edit/editFiles]
 ---
 
 # Implementation Plan Generation Mode

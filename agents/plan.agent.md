@@ -6,15 +6,7 @@ model: claude-4-5-opus-latest
 category: planning
 modelParameters:
   temperature: 0.6
-tools:
-  - codebase
-  - semanticSearch
-  - LSP
-  - search
-  - usages
-  - problems
-  - fetch
-  - githubRepo
+tools: [codebase, semanticSearch, LSP, search, usages, problems, fetch, githubRepo]
 ---
 
 # Plan Mode - Strategic Planning & Architecture Assistant

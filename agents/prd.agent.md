@@ -6,21 +6,8 @@ model: claude-4-5-sonnet-latest
 category: documentation
 modelParameters:
   temperature: 0.4
-tools:
-  - codebase
-  - semanticSearch
-  - LSP
-  - search
-  - usages
-  - edit/editFiles
-  - fetch
-  - githubRepo
-  - list_issues
-  - get_issue
-  - search_issues
-  - create_issue
-  - update_issue
-  - add_issue_comment
+tools: [codebase, semanticSearch, LSP, search, usages, edit/editFiles, fetch, githubRepo, list_issues, get_issue, search_issues,
+  create_issue, update_issue, add_issue_comment]
 ---
 
 # Create PRD Chat Mode
