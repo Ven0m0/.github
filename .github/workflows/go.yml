@@ -64,7 +64,7 @@ jobs:
           fi
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v9
         with:
           version: ${{ inputs.golangci_version }}
           working-directory: ${{ inputs.working_directory }}
@@ -121,7 +121,7 @@ jobs:
           fi
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ${{ inputs.working_directory }}/coverage.out
           fail_ci_if_error: false
