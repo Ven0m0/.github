@@ -1,13 +1,7 @@
 ---
 name: copilot-tuner
 description: Optimize GitHub Copilot instructions, CLAUDE.md files, and MCP configurations for maximum AI assistant effectiveness
-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
+tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, edit/editFiles, write, read, fetch, githubRepo, grep, glob, bash, github]
 model: claude-4-5-haiku-latest
 modelParameters:
   temperature: 0.3
