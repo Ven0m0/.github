@@ -8,7 +8,9 @@ tools:
   - Glob
   - Grep
   - Bash
-model: sonnet
+model: claude-4-5-haiku-latest
+modelParameters:
+  temperature: 0.3
 ---
 
 # Copilot Tuner Agent
