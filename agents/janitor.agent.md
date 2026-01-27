@@ -6,8 +6,7 @@ model: claude-4-5-haiku-latest
 category: maintenance
 modelParameters:
   temperature: 0.3
-tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, edit/editFiles, fetch, githubRepo, findTestFiles,
-  runInTerminal, terminalLastCommand, github]
+tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, edit/editFiles, fetch, githubRepo, findTestFiles, runInTerminal, terminalLastCommand, github]
 ---
 # Universal Janitor
 
@@ -67,16 +66,6 @@ Clean any codebase by eliminating tech debt. Every line of code is potential deb
 - Clean up environment-specific hardcoding
 - Consolidate similar infrastructure patterns
 
-## Research Tools
-
-Use `microsoft.docs.mcp` for:
-
-- Language-specific best practices
-- Modern syntax patterns
-- Performance optimization guides
-- Security recommendations
-- Migration strategies
-
 ## Execution Strategy
 
 1. **Measure First**: Identify what's actually used vs. declared
@@ -92,5 +81,3 @@ Use `microsoft.docs.mcp` for:
 3. Eliminate duplicate patterns
 4. Simplify conditional logic
 5. Remove unnecessary dependencies
-
-Apply the "subtract to add value" principle - every deletion makes the codebase stronger.
