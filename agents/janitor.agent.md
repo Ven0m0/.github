@@ -6,7 +6,7 @@ model: claude-4-5-haiku-latest
 category: maintenance
 modelParameters:
   temperature: 0.3
-tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, edit/editFiles, fetch, githubRepo, findTestFiles, runInTerminal, terminalLastCommand, github]
+tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, edit/editFiles, write, read, fetch, githubRepo, grep, glob, bash, github]
 ---
 # Universal Janitor
 
