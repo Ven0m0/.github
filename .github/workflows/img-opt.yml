@@ -94,11 +94,7 @@ jobs:
           # Remove original files for given basename
           remove_originals() {
             local basename=$1
-            for ext in png jpg jpeg gif; do
-              if [[ -f "$basename.$ext" ]]; then
-                rm -v "$basename.$ext"
-              fi
-            done
+            rm -vf "$basename".{png,jpg,jpeg,gif}
           }
 
           count=0
