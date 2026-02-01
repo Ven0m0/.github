@@ -2,33 +2,26 @@
 
 ## Context
 
-- **Target**: Bash/Shell. **Std**: `.github/instructions/bash.instructions.md`.
-- **Platforms**: Arch, Debian, Termux.
+- **Target**: Bash/Shell
+- **Standards**: See `.github/instructions/bash.instructions.md` for complete rules
+- **Platforms**: Arch, Debian, Termux
 
 ## Task: ${TASK_NAME}
 
-- **In**: Files:${FILES}, Trig:${TRIGGER}, Scope:${SCOPE}.
+- **Input**: Files:${FILES}, Trigger:${TRIGGER}, Scope:${SCOPE}
 
-## Exec Steps
+## Execution Steps
 
-1. **Find**: `fd -e sh -e bash -t f -H -E . git`
-1. **Lint**: `shellcheck --severity=style --format=diff ${files}`
-1. **Fmt**: `shfmt -i 2 -bn -s -ln bash -w ${files}`
-1. **Val**: Shebang (`#!/usr/bin/env bash`), Strict (`set -euo pipefail`), opts, traps.
-1. **Rep**: Count mods/fixes/issues; Risk: L/M/H.
-1. **Opt**: Replace external calls with builtins, modern tools (fd, rg, jaq, aria2), min subshell/forks, caching
+Follow the workflow defined in `.github/instructions/bash.instructions.md`:
 
-## Success ✅
+1. **Find**: `fd -e sh -e bash -t f -H -E .git ${scope}`
+2. **Lint**: `shellcheck --severity=style --format=diff ${files}`
+3. **Format**: `shfmt -i 2 -bn -s -ln bash -w ${files}`
+4. **Validate**: Shebang, strict mode, error handling
+5. **Optimize**: Use builtins, modern tools (fd, rg, jaq), minimize forks
+6. **Report**: Changes count, risk level (L/M/H)
 
-- 0 Lint warns. Consist fmt. No break change. Tests pass.
-- PR: Atomic commits (`[agent] task:...`); full changelog.
+## Success Criteria
 
-## Lint check
-
-```bash
-fd -e sh -e bash -t f -H -E .git ${scope}
-bash -n ${files[@]}
-shellcheck -S style -f diff ${files[@]}
-shellharden --replace ${files[@]}
-shfmt -i 2 -bn -s -ln bash ${files[@]}
-```
+- Zero lint warnings, consistent formatting, no breaking changes, tests pass
+- PR with atomic commits: `[agent] task:...`
