@@ -1,52 +1,53 @@
-name: "Copilot Setup Steps"
+name: Copilot Setup Steps
 
-# Automatically run the setup steps when they are changed to allow for easy validation, and
-# allow manual testing through the repository's "Actions" tab
 on:
   workflow_dispatch:
   push:
-    paths:
-      - .github/workflows/copilot-setup-steps.yml
+    paths: [.github/workflows/copilot-setup-steps.yml]
   pull_request:
-    paths:
-      - .github/workflows/copilot-setup-steps.yml
+    paths: [.github/workflows/copilot-setup-steps.yml]
 
 env:
   PYTHONOPTIMIZE: "1"
-  LC_ALL: "C.UTF-8"
-  DEBIAN_FRONTEND: "noninteractive"
+  LC_ALL: C.UTF-8
+  DEBIAN_FRONTEND: noninteractive
   UV_NO_PROGRESS: "1"
-  UV_FORK_STRATEGY: "requires-python"
-  UV_RESOLUTION: "highest"
-  UV_PRERELEASE: "if-necessary-or-explicit"
+  UV_FORK_STRATEGY: requires-python
+  UV_RESOLUTION: highest
+  UV_PRERELEASE: if-necessary-or-explicit
 
 jobs:
-  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
     runs-on: ubuntu-latest
-    # Set the permissions to the lowest permissions possible needed for your steps.
-    # Copilot will be given its own token for its operations.
     permissions:
-      # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
       contents: read
-    # You can define any steps you want, and they will run before the agent starts.
-    # If you do not check out your code, Copilot will do this for you.
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
-          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT || github.token }}
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - name: Install system tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ripgrep fd-find jq tree-sitter-cli
 
-      - name: Setup UV
-        uses: astral-sh/setup-uv@v7
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.13"
-          activate-environment: "true"
-          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-          cache-python: "true"
-          resolution-strategy: "highest"
+          enable-cache: true
+          github-token: ${{ secrets.PAT || github.token }}
+
+      - name: Install code analysis tools
+        run: |
+          bunx -y @yamadashy/repomix --version
+          bunx -y @ast-grep/cli --version
+
+      - name: Install TOON formatter
+        run: |
+          sudo tee /usr/local/bin/toon >/dev/null <<'EOF'
+          #!/bin/bash
+          awk 'BEGIN{print "{"} /^[A-Z_]+:/{if(NR>1)print",";split($0,a,":");gsub(/^ +| +$/,"",a[2]);printf"  \"%s\":\"%s\"",a[1],a[2]} /^\t/{gsub(/^\t/,"");printf",\"%s\"",$0} END{print"\n}"}' | jq -c
+          EOF
+          sudo chmod +x /usr/local/bin/toon
