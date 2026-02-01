@@ -40,6 +40,12 @@ jobs:
           github-token: ${{ secrets.PAT || github.token }}
 
       - name: Install code analysis tools
+        run: bunx repomix --version
+
+      - name: Install TOON formatter
         run: |
-          bun a @yamadashy/repomix
-          bun a @ast-grep/cli
+          sudo tee /usr/local/bin/toon >/dev/null <<'EOF'
+          #!/bin/bash
+          awk 'BEGIN{print "{"} /^[A-Z_]+:/{if(NR>1)print",";split($0,a,":");gsub(/^ +| +$/,"",a[2]);printf"  \"%s\":\"%s\"",a[1],a[2]} /^\t/{gsub(/^\t/,"");printf",\"%s\"",$0} END{print"\n}"}' | jq -c
+          EOF
+          sudo chmod +x /usr/local/bin/toon
