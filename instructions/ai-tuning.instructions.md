@@ -1,6 +1,6 @@
 ---
-applyTo: "**/CLAUDE.md,**/copilot-instructions.md,**/.vscode/mcp.json"
-description: "Standards for optimizing AI assistant configurations (CLAUDE.md, copilot-instructions.md, MCP)"
+applyTo: "**/CLAUDE.md,**/copilot-instructions.md,**/.vscode/mcp.json,**/AGENTS.md"
+description: "Standards for optimizing AI assistant configurations (CLAUDE.md, copilot-instructions.md, MCP, AGENTS.md)"
 ---
 
 # AI Tuning Instructions
@@ -111,6 +111,99 @@ description: "Standards for optimizing AI assistant configurations (CLAUDE.md, c
 
 ## Important Patterns
 [Code examples of common patterns]
+```
+
+## AGENTS.md Structure
+
+AGENTS.md is the "README for agents" - provides AI coding agents with context and instructions to work effectively on the project. It complements README.md with detailed technical context.
+
+### Purpose
+
+- Agent-focused technical instructions
+- Standardized location (repo root or subproject roots)
+- Standard Markdown, flexible structure
+- Compatible with 20+ AI coding tools
+
+### Essential Sections
+
+```markdown
+# AGENTS.md
+
+## Project Overview
+[Brief description, purpose]
+[Architecture overview]
+[Key technologies/frameworks]
+
+## Setup Commands
+- Install: `[command]`
+- Environment: `[setup steps]`
+- Database: `[if applicable]`
+
+## Development Workflow
+- Start dev: `[command]`
+- Build: `[command]`
+- Watch/hot-reload: `[command]`
+- Package manager specifics
+
+## Testing Instructions
+- Run all: `[command]`
+- Unit: `[command]`
+- Integration: `[command]`
+- E2E: `[command]`
+- Coverage: `[command]`
+- Test file locations: `[pattern]`
+
+## Code Style
+- Language conventions
+- Linting: `[command]`
+- Formatting: `[command]`
+- File organization
+- Naming conventions
+- Import order
+
+## Build and Deployment
+- Build: `[command]`
+- Output: `[location]`
+- Environment configs
+- Deployment steps
+- CI/CD info
+
+## PR Guidelines
+- Title: [component] Brief description
+- Required checks: lint, test
+- Commit conventions
+
+## Notes
+- Project-specific gotchas
+- Performance considerations
+- Common issues and solutions
+```
+
+### Key Principles
+
+1. **Actionable Commands**: Provide exact commands agents can execute
+2. **Test All Commands**: Ensure every command actually works
+3. **Stay Current**: Update as project evolves
+4. **Include Context**: Explain why steps are needed
+5. **Focus on Agent Needs**: What agents need, not general info
+
+### Example
+
+```markdown
+## Dev environment
+- `pnpm dlx turbo run where <project_name>` to jump to package
+- `pnpm install --filter <project_name>` to add to workspace
+- `pnpm create vite@latest <project_name> -- --template react-ts`
+
+## Testing
+- CI plan in `.github/workflows`
+- `pnpm turbo run test --filter <project_name>`
+- Focus: `pnpm vitest run -t "<test name>"`
+- Run `pnpm lint --filter <project_name>` after moving files
+
+## PR
+- Title: [<project_name>] <Title>
+- Run `pnpm lint` and `pnpm test` before commit
 ```
 
 ## MCP Configuration
@@ -292,6 +385,14 @@ except SpecificError as e:
 
 ```bash
 echo "=== AI Configuration Audit ==="
+
+# Check AGENTS.md sections
+if [ -f "AGENTS.md" ]; then
+  echo "AGENTS.md sections:"
+  grep "^## " AGENTS.md | head -10
+else
+  echo "MISSING: AGENTS.md"
+fi
 
 # Check CLAUDE.md sections
 if [ -f "CLAUDE.md" ]; then
