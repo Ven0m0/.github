@@ -11,6 +11,15 @@ on:
     paths:
       - .github/workflows/copilot-setup-steps.yml
 
+env:
+  PYTHONOPTIMIZE: "1"
+  LC_ALL: "C.UTF-8"
+  DEBIAN_FRONTEND: "noninteractive"
+  UV_NO_PROGRESS: "1"
+  UV_FORK_STRATEGY: "requires-python"
+  UV_RESOLUTION: "highest"
+  UV_PRERELEASE: "if-necessary-or-explicit"
+
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
@@ -25,17 +34,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "npm"      
-      - name: Install JavaScript dependencies
-        run: npm ci
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
-      - name: setup python
-        uses: actions/setup-python@v6
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          python-version: '3.13'
-          cache: 'pip'
+          bun-version: latest
+
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.13"
+          activate-environment: "true"
+          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          cache-python: "true"
+          resolution-strategy: "highest"
