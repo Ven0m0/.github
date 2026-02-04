@@ -91,28 +91,48 @@ jobs:
           set -euo pipefail
           shopt -s nullglob globstar
 
-          # Remove original files for given basename
-          remove_originals() {
-            local basename=$1
-            rm -vf "$basename".{png,jpg,jpeg,gif}
-          }
-
           count=0
+
+          process_removals() {
+            local ext="$1"
+            local files=()
+
+            # Find all files with the given extension safely
+            mapfile -d '' -t files < <(find . -name "*.$ext" -type f -print0)
+
+            local batch=()
+            local batch_count=0
+            local chunk_size=100
+
+            for f in "${files[@]}"; do
+              local base="${f%.$ext}"
+              # Add potential originals to batch
+              batch+=("$base.png" "$base.jpg" "$base.jpeg" "$base.gif")
+              ((count++)) || true
+              ((batch_count++)) || true
+
+              # Execute batch if size limit reached
+              if [[ $batch_count -ge $chunk_size ]]; then
+                rm -vf "${batch[@]}" 2>/dev/null || true
+                batch=()
+                batch_count=0
+              fi
+            done
+
+            # Clean up remaining
+            if [[ ${#batch[@]} -gt 0 ]]; then
+              rm -vf "${batch[@]}" 2>/dev/null || true
+            fi
+          }
 
           # Remove originals for AVIF exports
           if [[ "${{ inputs.export_avif }}" == "true" ]]; then
-            while IFS= read -r -d '' avif_file; do
-              remove_originals "${avif_file%.avif}"
-              ((count++)) || true
-            done < <(find . -name "*.avif" -type f -print0)
+            process_removals "avif"
           fi
 
           # Remove originals for WebP exports
           if [[ "${{ inputs.export_webp }}" == "true" ]]; then
-            while IFS= read -r -d '' webp_file; do
-              remove_originals "${webp_file%.webp}"
-              ((count++)) || true
-            done < <(find . -name "*.webp" -type f -print0)
+            process_removals "webp"
           fi
 
           echo "## 🗑️ Removed $count original images" >> "$GITHUB_STEP_SUMMARY"
