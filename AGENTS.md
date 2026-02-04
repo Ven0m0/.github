@@ -23,9 +23,9 @@ This repository provides:
  hooks/               # Pre-commit and custom hooks
  prompts/             # Reusable prompt templates
  .gemini/             # Google Gemini-specific configuration
-‚    styleguide.md    # Gemini coding style guide
-‚    commands/        # Gemini commands
-‚    skills/          # Gemini-specific skills
+â€š    styleguide.md    # Gemini coding style guide
+â€š    commands/        # Gemini commands
+â€š    skills/          # Gemini-specific skills
  .github/workflows/   # Reusable GitHub Actions workflows
  AGENTS.md            # This file - comprehensive guide
  CLAUDE.md            # Claude AI instructions (symlinked to AGENTS.md)
@@ -242,7 +242,7 @@ Extract repeated logic into reusable components. Avoid duplication.
 - Use environment variables for credentials
 
 #### Imports
-Order: stdlib † third-party † local (alphabetical within each group)
+Order: stdlib â€  third-party â€  local (alphabetical within each group)
 
 #### Comments
 Explain the "why", not the "what". Code should be self-documenting.
@@ -306,7 +306,7 @@ fcat(){ printf '%s\n' "$(<${1})"; }  # Fast file concatenation
 
 ### Python Standards
 
-- **PEP 8/257** compliance with 2-space indent (not 4)
+- **PEP 8/257** compliance with 4-space indent
 - **Type annotations** on all functions (typed returns)
 - **Dataclasses** with `slots=True` for performance
 - **Performance**: O(1) dict/set lookups, precompile regex, use `sys.stdin.read()`
