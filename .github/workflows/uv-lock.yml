@@ -49,23 +49,29 @@ jobs:
           resolution-strategy: "highest"
 
       - name: Install Dependencies
+        if: hashFiles('requirements.txt') != ''
         run: |
           uv pip install pip
           uv pip install -r requirements.txt
 
       - name: Update Lock File
+        if: hashFiles('pyproject.toml') != ''
         run: uv lock -U --fork-strategy requires-python --index-strategy unsafe-best-match --resolution highest
 
       - name: Lint with Ruff
+        if: hashFiles('pyproject.toml') != '' || hashFiles('requirements.txt') != ''
         uses: astral-sh/ruff-action@v3
 
       - name: Fix Lint Issues
+        if: hashFiles('pyproject.toml') != '' || hashFiles('requirements.txt') != ''
         run: ruff check --fix-only
 
       - name: Format Code
+        if: hashFiles('pyproject.toml') != '' || hashFiles('requirements.txt') != ''
         run: ruff format
 
       - name: Run Autofix
+        if: hashFiles('pyproject.toml') != '' || hashFiles('requirements.txt') != ''
         uses: autofix-ci/action@v1.3.2
         with:
           github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
