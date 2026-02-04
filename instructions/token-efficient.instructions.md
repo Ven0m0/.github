@@ -1,6 +1,6 @@
 ---
 name: Token Efficiency Mode
-description: "Symbol-enhanced communication for compressed clarity (-50% tokens, ‰95% quality)"
+description: "Symbol-enhanced communication for compressed clarity (-50% tokens, â‰¥95% quality)"
 applyTo: "**"
 ---
 
@@ -17,7 +17,7 @@ Goal: Compress output (-50% tokens); preserve quality/correctness.
 
 ## Rules
 
-- **Style**: Result ˆ Cause; Syms + Abbrevs; Lists ‰¤7; Bash-native code; Bullets/tables > paragraphs
+- **Style**: Result Ë† Cause; Syms + Abbrevs; Lists â€°Â¤7; Bash-native code; Bullets/tables > paragraphs
 - **No**: Filler words, long CoT, explanation unless asked, verbose paragraphs
 - **Yes**: Density, runnable code, clear next steps, structured output
 
@@ -27,17 +27,17 @@ Goal: Compress output (-50% tokens); preserve quality/correctness.
 
 | Symbol | Meaning               | Example                    |
 | ------ | --------------------- | -------------------------- |
-| †      | leads to, implies     | `auth.js:45 †  sec risk` |
-| ‡      | transforms to, result | `input ‡ validated_output` |
-| †      | rollback, reverse     | `migration † rollback`     |
-| ‡„      | bidirectional         | `sync ‡„ remote`            |
+| â€       | leads to, implies     | `auth.js:45 â€   sec risk` |
+| â€¡      | transforms to, result | `input â€¡ validated_output` |
+| â€       | rollback, reverse     | `migration â€  rollback`     |
+| â€¡â€ž      | bidirectional         | `sync â€¡â€ž remote`            |
 | &      | and, combine          | ` sec &  perf`         |
 | \|     | separator, or         | `react\|vue\|angular`      |
 | :      | define, specify       | `scope: file\|module`      |
-| Â«      | prerequisite          | `Â« deps install`           |
-| Â      | sequence, then        | `build Â test Â deploy`    |
-| ˆ      | therefore             | `tests  ˆ code broken`   |
-| ˆµ      | because               | `slow ˆµ O(nÂ²) algo`        |
+| Ã‚Â«      | prerequisite          | `Ã‚Â« deps install`           |
+| Ã‚      | sequence, then        | `build Ã‚ test Ã‚ deploy`    |
+| Ë†      | therefore             | `tests  Ë† code broken`   |
+| Ë†Âµ      | because               | `slow Ë†Âµ O(nÃ‚Â²) algo`        |
 
 ### Status & Progress
 
@@ -46,8 +46,8 @@ Goal: Compress output (-50% tokens); preserve quality/correctness.
 |      | completed, passed | Task finished successfully |
 |      | failed, error     | Immediate attention needed |
 |      | warning           | Review required            |
-| „     | in progress       | Currently active           |
-| ³     | waiting, pending  | Scheduled for later        |
+| â€ž     | in progress       | Currently active           |
+| Â³     | waiting, pending  | Scheduled for later        |
 |      | critical, urgent  | High priority action       |
 
 ### Technical Domains
@@ -59,9 +59,9 @@ Goal: Compress output (-50% tokens); preserve quality/correctness.
 |      | Configuration | Setup, tools, fixes   |
 |      | Security      | Protection, safety    |
 |      | Deployment    | Package, bundle       |
-| ª     | Testing       | Test, validation      |
+| Âª     | Testing       | Test, validation      |
 |      | Design        | UI, frontend          |
-| —     | Architecture  | System structure      |
+| â€”     | Architecture  | System structure      |
 
 ## Abbreviation Systems
 
@@ -82,37 +82,37 @@ Goal: Compress output (-50% tokens); preserve quality/correctness.
 ### Report
 
 ```
-scope: status; metric Â ˆµ cause Â act: 1,2,3
+scope: status; metric Ã‚ Ë†Âµ cause Ã‚ act: 1,2,3
 ```
 
-Example: `auth: ; latency +200ms Â ˆµ N+1 queries Â opt: 1.batch, 2.cache, 3.index`
+Example: `auth: ; latency +200ms Ã‚ Ë†Âµ N+1 queries Ã‚ opt: 1.batch, 2.cache, 3.index`
 
 ### Plan
 
 ```
-plan Â A Â B Â risk: X (sev: H) ˆ mit
+plan Ã‚ A Ã‚ B Ã‚ risk: X (sev: H) Ë† mit
 ```
 
-Example: `deploy Â build Â test Â risk: db migration (sev: H) ˆ backup + rollback script`
+Example: `deploy Ã‚ build Ã‚ test Ã‚ risk: db migration (sev: H) Ë† backup + rollback script`
 
 ### CI/CD
 
 ```
-build ; test  (n=3) Â fix: <file:line>
+build ; test  (n=3) Ã‚ fix: <file:line>
 ```
 
-Example: `build ; test  (n=3) Â fix: auth.spec.ts:45 (timeout)`
+Example: `build ; test  (n=3) Ã‚ fix: auth.spec.ts:45 (timeout)`
 
 ## Examples
 
 **Standard**: "The authentication system has a security vulnerability in the user validation function"
-**Token Efficient**: `auth.js:45 †  sec risk in user val()`
+**Token Efficient**: `auth.js:45 â€   sec risk in user val()`
 
 **Standard**: "Build process completed successfully, now running tests, then deploying"
-**Token Efficient**: `build  Â test „ Â deploy ³`
+**Token Efficient**: `build  Ã‚ test â€ž Ã‚ deploy Â³`
 
-**Standard**: "Performance analysis shows the algorithm is slow because it's O(nÂ²) complexity"
-**Token Efficient**: ` perf analysis: slow ˆµ O(nÂ²) complexity`
+**Standard**: "Performance analysis shows the algorithm is slow because it's O(nÃ‚Â²) complexity"
+**Token Efficient**: ` perf analysis: slow Ë†Âµ O(nÃ‚Â²) complexity`
 
 **Standard**: "Failed to authenticate due to missing credentials; recommend adding environment variables"
-**Token Efficient**: `auth  ˆµ missing creds ˆ add env vars`
+**Token Efficient**: `auth  Ë†Âµ missing creds Ë† add env vars`
