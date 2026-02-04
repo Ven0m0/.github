@@ -90,7 +90,7 @@ def process(items: list[str], limit: int = 10) -> dict[str, int]:
 ### Code Style
 
 - **PEP 8 + 257**: 80-character line limit (pragmatic exceptions for strings/URLs)
-- **2-space indent** (not 4): Compact, modern Python style
+- **4-space indent**: Consistent with PEP 8 and repository standards
 - **Google-style docstrings**:
 
 ```python
