@@ -39,6 +39,7 @@ jobs:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
       - name: Setup UV
+        if: hashFiles('pyproject.toml') != '' || hashFiles('requirements.txt') != ''
         uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.13"
