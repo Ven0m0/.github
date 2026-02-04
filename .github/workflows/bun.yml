@@ -74,16 +74,17 @@ jobs:
             ${{ runner.os }}-bun-
 
       - name: Install Dependencies
+        if: hashFiles('package.json') != ''
         run: bun install --frozen-lockfile
 
       - name: Run Type Checking
-        if: inputs.run-typecheck
+        if: inputs.run-typecheck && hashFiles('package.json') != ''
         run: ${{ inputs.typecheck-command }}
 
       - name: Run Linting
-        if: inputs.run-lint
+        if: inputs.run-lint && hashFiles('package.json') != ''
         run: ${{ inputs.lint-command }}
 
       - name: Run Tests
-        if: inputs.run-tests
+        if: inputs.run-tests && hashFiles('package.json') != ''
         run: ${{ inputs.test-command }}
