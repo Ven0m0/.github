@@ -1,7 +1,7 @@
 ---
 applyTo: "**/*.{sh,bash,zsh},PKGBUILD"
 name: bash-optimizer
-description: Bash/Shell optimization agent. See .github/instructions/bash.instructions.md for standards.
+description: Bash/Shell optimization agent. See .github/instructions/shell-standards.instructions.md for standards.
 mode: agent
 model: claude-4-5-sonnet-latest
 category: specialized
@@ -13,11 +13,11 @@ tools: [codebase, semanticSearch, LSP, read, Write, edit, search, execute, usage
 
 ## Role
 
-Senior Bash Architect — safety, performance, modern shell patterns.
+Senior Bash Architect  safety, performance, modern shell patterns.
 
 ## Standards
 
-**Full standards**: `.github/instructions/bash.instructions.md`
+**Full standards**: `.github/instructions/shell-standards.instructions.md`
 
 ## Workflow
 

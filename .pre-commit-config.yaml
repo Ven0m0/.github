@@ -3,22 +3,22 @@ fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: check-added-large-files
-      - id: check-merge-conflict
-      - id: check-yaml
-      - id: detect-private-key
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
+  rev: v4.6.0
+  hooks:
+    - id: check-added-large-files
+    - id: check-merge-conflict
+    - id: check-yaml
+    - id: detect-private-key
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.4
-    hooks:
-      - id: gitleaks
+  rev: v8.18.4
+  hooks:
+    - id: gitleaks
 
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v3.4.0
-    hooks:
-      - id: conventional-pre-commit
-        stages: [commit-msg]
+  rev: v3.4.0
+  hooks:
+    - id: conventional-pre-commit
+      stages: [commit-msg]

@@ -102,21 +102,21 @@ Skills can include additional files that Copilot accesses on-demand:
 
 ```
 .github/skills/my-skill/
-├── SKILL.md              # Required: Main instructions
-├── LICENSE.txt           # Recommended: License terms (Apache 2.0 typical)
-├── scripts/              # Optional: Executable automation
-│   ├── helper.py         # Python script
-│   └── helper.ps1        # PowerShell script
-├── references/           # Optional: Documentation loaded into context
-│   ├── api_reference.md
-│   ├── workflow-setup.md     # Detailed workflow (>5 steps)
-│   └── workflow-deployment.md
-├── assets/               # Optional: Static files used AS-IS in output
-│   ├── baseline.png      # Reference image for comparison
-│   └── report-template.html
-└── templates/            # Optional: Starter code the AI agent modifies
-    ├── scaffold.py       # Code scaffold the AI agent customizes
-    └── config.template   # Config template the AI agent fills in
+ SKILL.md              # Required: Main instructions
+ LICENSE.txt           # Recommended: License terms (Apache 2.0 typical)
+ scripts/              # Optional: Executable automation
+�    helper.py         # Python script
+�    helper.ps1        # PowerShell script
+ references/           # Optional: Documentation loaded into context
+�    api_reference.md
+�    workflow-setup.md     # Detailed workflow (>5 steps)
+�    workflow-deployment.md
+ assets/               # Optional: Static files used AS-IS in output
+�    baseline.png      # Reference image for comparison
+�    report-template.html
+ templates/            # Optional: Starter code the AI agent modifies
+     scaffold.py       # Code scaffold the AI agent customizes
+     config.template   # Config template the AI agent fills in
 ```
 
 > **LICENSE.txt**: When creating a skill, download the Apache 2.0 license text from https://www.apache.org/licenses/LICENSE-2.0.txt and save as `LICENSE.txt`. Update the copyright year and owner in the appendix section.
@@ -133,7 +133,7 @@ Skills can include additional files that Copilot accesses on-demand:
 - A `config.template` where the AI agent fills in values based on user requirements
 - A `hello-world/` project directory that the AI agent extends with new features
 
-**Rule of thumb**: If the AI agent reads and builds upon the file content → `templates/`. If the file is used as-is in output → `assets/`.
+**Rule of thumb**: If the AI agent reads and builds upon the file content � `templates/`. If the file is used as-is in output � `assets/`.
 
 ### Referencing Resources in SKILL.md
 
@@ -198,7 +198,7 @@ Include scripts in your skill when:
 - Deterministic reliability is critical (e.g., file manipulation, API calls)
 - Complex logic benefits from being pre-tested rather than generated each time
 - The operation has a self-contained purpose that can evolve independently
-- Testability matters — scripts can be unit tested and validated
+- Testability matters  scripts can be unit tested and validated
 - Predictable behavior is preferred over dynamic generation
 
 Scripts enable evolution: even simple operations benefit from being implemented as scripts when they may grow in complexity, need consistent behavior across invocations, or require future extensibility.
@@ -229,7 +229,7 @@ Document parameters clearly:
 Before publishing a skill:
 
 - [ ] `SKILL.md` has valid frontmatter with `name` and `description`
-- [ ] `name` is lowercase with hyphens, ≤64 characters
+- [ ] `name` is lowercase with hyphens, ��64 characters
 - [ ] `description` clearly states **WHAT** it does, **WHEN** to use it, and relevant **KEYWORDS**
 - [ ] Body includes when to use, prerequisites, and step-by-step workflows
 - [ ] SKILL.md body kept under 500 lines (split large content into `references/` folder)

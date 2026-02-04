@@ -31,7 +31,7 @@ config-variables:
 # are ignored. This is similar to the "-ignore" command line option.
 paths:
   .github/workflows/**/*.yml:
-    ignore:
-      - ".+SC1090.+"
-      # Ignore intentional if: false for disabled jobs
-      - 'constant expression "false" in condition'
+  ignore:
+    - ".+SC1090.+"
+    # Ignore intentional if: false for disabled jobs
+    - 'constant expression "false" in condition'

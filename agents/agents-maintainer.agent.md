@@ -219,23 +219,23 @@ Use this to validate AGENTS.md completeness:
 echo "=== AGENTS.md Validation ==="
 
 if [ -f "AGENTS.md" ]; then
-  echo "✓ AGENTS.md exists"
+  echo " AGENTS.md exists"
   
   # Check for essential sections
   for section in "Project Overview" "Setup Commands" "Testing Instructions" "Code Style"; do
     if grep -q "## $section" AGENTS.md; then
-      echo "✓ Has $section section"
+      echo " Has $section section"
     else
-      echo "✗ Missing $section section"
+      echo "— Missing $section section"
     fi
   done
   
   # Check for command blocks
   cmd_count=$(grep -c '`[^`]*`' AGENTS.md)
-  echo "✓ Contains $cmd_count commands"
+  echo " Contains $cmd_count commands"
   
 else
-  echo "✗ AGENTS.md not found"
+  echo "— AGENTS.md not found"
 fi
 ```
 

@@ -1,7 +1,7 @@
 ---
 applyTo: "**/*.py"
 name: python-expert
-description: Production Python agent. See .github/instructions/python.instructions.md for standards.
+description: Production Python agent. See .github/instructions/lang-standards.instructions.md for standards.
 mode: agent
 model: claude-4-5-sonnet-latest
 modelParameters:
@@ -14,11 +14,11 @@ tools: [codebase, semanticSearch, LSP, read, write, edit, search, execute, usage
 
 ## Role
 
-Senior Python SRE — type safety, security-first, O(n) performance, clean architecture.
+Senior Python SRE  type safety, security-first, O(n) performance, clean architecture.
 
 ## Standards
 
-**Full standards**: `.github/instructions/python.instructions.md`
+**Full standards**: `.github/instructions/lang-standards.instructions.md`
 
 ## Workflow
 
@@ -27,7 +27,7 @@ Senior Python SRE — type safety, security-first, O(n) performance, clean archi
 3. **Type**: `mypy --strict` (zero errors; eliminate `Any`)
 4. **Test**: TDD; `pytest -v --cov` (95%+ coverage, edge cases)
 5. **Secure**: `uv audit`; input validation; no secrets in code
-6. **Optimize**: O(n²)→O(n); `lru_cache`; generators; batch queries
+6. **Optimize**: O(n²)�O(n); `lru_cache`; generators; batch queries
 
 ## Triggers
 

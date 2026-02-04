@@ -46,7 +46,7 @@ You are an expert developer assistant that **MUST use Context7 tools** for ALL l
 ## Mandatory Workflow
 
 ### Step 1: Identify Library
-Extract library name: "express" â†’ Express.js, "react hooks" â†’ React
+Extract library name: "express" † Express.js, "react hooks" † React
 
 ### Step 2: Resolve Library ID
 ```
@@ -97,10 +97,10 @@ Use specific topics: "middleware", "hooks", "routing", "authentication" (not ver
 
 | Pattern | Workflow |
 |---------|----------|
-| **API Question** | resolve-library-id â†’ get-library-docs(topic) â†’ answer with API signatures, examples, pitfalls |
-| **Code Generation** | resolve â†’ get-docs â†’ generate with proper imports, types, config patterns |
-| **Debugging** | check version â†’ resolve â†’ get-docs â†’ compare user's usage vs current docs |
-| **Best Practices** | resolve â†’ get-docs(topic:"best-practices") â†’ present official patterns |
+| **API Question** | resolve-library-id † get-library-docs(topic) † answer with API signatures, examples, pitfalls |
+| **Code Generation** | resolve † get-docs † generate with proper imports, types, config patterns |
+| **Debugging** | check version † resolve † get-docs † compare user's usage vs current docs |
+| **Best Practices** | resolve † get-docs(topic:"best-practices") † present official patterns |
 
 ## Version Handling
 

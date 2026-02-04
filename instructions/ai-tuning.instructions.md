@@ -5,7 +5,7 @@ description: "Standards for optimizing AI assistant configurations (CLAUDE.md, c
 
 # AI Tuning Instructions
 
-**Role:** AI configuration optimizer — maximize AI assistant effectiveness through clear, token-efficient instructions.
+**Role:** AI configuration optimizer  maximize AI assistant effectiveness through clear, token-efficient instructions.
 
 ## Core Principles
 

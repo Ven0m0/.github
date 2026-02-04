@@ -5,111 +5,111 @@ name: Release
 
 on:
   workflow_call:
-    inputs:
-      version:
-        description: "Version to release (e.g., v1.0.0)"
-        required: false
-        type: string
-      prerelease:
-        description: "Mark as prerelease"
-        required: false
-        type: boolean
-        default: false
-      draft:
-        description: "Create as draft"
-        required: false
-        type: boolean
-        default: false
-      generate_notes:
-        description: "Auto-generate release notes"
-        required: false
-        type: boolean
-        default: true
-    outputs:
-      release_url:
-        description: "URL of the created release"
-        value: ${{ jobs.release.outputs.url }}
-      version:
-        description: "Released version"
-        value: ${{ jobs.release.outputs.version }}
+  inputs:
+    version:
+      description: "Version to release (e.g., v1.0.0)"
+      required: false
+      type: string
+    prerelease:
+      description: "Mark as prerelease"
+      required: false
+      type: boolean
+      default: false
+    draft:
+      description: "Create as draft"
+      required: false
+      type: boolean
+      default: false
+    generate_notes:
+      description: "Auto-generate release notes"
+      required: false
+      type: boolean
+      default: true
+  outputs:
+    release_url:
+      description: "URL of the created release"
+      value: ${{ jobs.release.outputs.url }}
+    version:
+      description: "Released version"
+      value: ${{ jobs.release.outputs.version }}
 
 permissions:
   contents: write
 
 jobs:
   release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    outputs:
-      url: ${{ steps.create_release.outputs.html_url }}
-      version: ${{ steps.version.outputs.version }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+  name: Create Release
+  runs-on: ubuntu-latest
+  outputs:
+    url: ${{ steps.create_release.outputs.html_url }}
+    version: ${{ steps.version.outputs.version }}
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
-      - name: Determine version
-        id: version
-        run: |
-          if [[ -n "${{ inputs.version }}" ]]; then
-            VERSION="${{ inputs.version }}"
-          else
-            # Get latest tag and increment patch
-            LATEST=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-            VERSION=$(echo "$LATEST" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          fi
-          # Ensure version starts with v
-          [[ "$VERSION" != v* ]] && VERSION="v$VERSION"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "## Version: $VERSION" >> "$GITHUB_STEP_SUMMARY"
+    - name: Determine version
+      id: version
+      run: |
+        if [[ -n "${{ inputs.version }}" ]]; then
+          VERSION="${{ inputs.version }}"
+        else
+          # Get latest tag and increment patch
+          LATEST=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          VERSION=$(echo "$LATEST" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+        fi
+        # Ensure version starts with v
+        [[ "$VERSION" != v* ]] && VERSION="v$VERSION"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "## Version: $VERSION" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Generate changelog
-        id: changelog
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)
+    - name: Generate changelog
+      id: changelog
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)
 
-          {
-            echo "changelog<<EOF"
-            echo "## What's Changed"
+        {
+          echo "changelog<<EOF"
+          echo "## What's Changed"
+          echo ""
+
+          # Features
+          FEATURES=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --grep="^feat" 2>/dev/null || true)
+          if [[ -n "$FEATURES" ]]; then
+            echo "### Features"
+            echo "$FEATURES"
             echo ""
+          fi
 
-            # Features
-            FEATURES=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --grep="^feat" 2>/dev/null || true)
-            if [[ -n "$FEATURES" ]]; then
-              echo "### Features"
-              echo "$FEATURES"
-              echo ""
-            fi
+          # Bug Fixes
+          FIXES=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --grep="^fix" 2>/dev/null || true)
+          if [[ -n "$FIXES" ]]; then
+            echo "### Bug Fixes"
+            echo "$FIXES"
+            echo ""
+          fi
 
-            # Bug Fixes
-            FIXES=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --grep="^fix" 2>/dev/null || true)
-            if [[ -n "$FIXES" ]]; then
-              echo "### Bug Fixes"
-              echo "$FIXES"
-              echo ""
-            fi
+          # Other changes
+          OTHER=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --invert-grep --grep="^feat" --grep="^fix" 2>/dev/null | head -20 || true)
+          if [[ -n "$OTHER" ]]; then
+            echo "### Other Changes"
+            echo "$OTHER"
+            echo ""
+          fi
 
-            # Other changes
-            OTHER=$(git log "$PREV_TAG"..HEAD --pretty=format:"- %s" --invert-grep --grep="^feat" --grep="^fix" 2>/dev/null | head -20 || true)
-            if [[ -n "$OTHER" ]]; then
-              echo "### Other Changes"
-              echo "$OTHER"
-              echo ""
-            fi
+          echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREV_TAG...$VERSION"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
 
-            echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREV_TAG...$VERSION"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          name: Release ${{ steps.version.outputs.version }}
-          body: ${{ steps.changelog.outputs.changelog }}
-          draft: ${{ inputs.draft }}
-          prerelease: ${{ inputs.prerelease }}
-          generate_release_notes: ${{ inputs.generate_notes }}
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Release ${{ steps.version.outputs.version }}
+        body: ${{ steps.changelog.outputs.changelog }}
+        draft: ${{ inputs.draft }}
+        prerelease: ${{ inputs.prerelease }}
+        generate_release_notes: ${{ inputs.generate_notes }}

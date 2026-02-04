@@ -52,10 +52,10 @@ Group files by type/category with separate sections or sub-tables.
 
 ## Update Strategy
 
-- ðŸ”„ **Update existing**: If table/index section exists, replace content while preserving structure
-- âž• **Add new**: If no existing section, create new section using best-fit format
-- ðŸ“‹ **Preserve**: Maintain existing markdown formatting, heading levels, and document flow
-- ðŸ”— **Links**: Use relative paths for file links within the repository
+- „ **Update existing**: If table/index section exists, replace content while preserving structure
+- ž• **Add new**: If no existing section, create new section using best-fit format
+-  **Preserve**: Maintain existing markdown formatting, heading levels, and document flow
+- — **Links**: Use relative paths for file links within the repository
 
 ## Section Identification
 
