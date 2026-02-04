@@ -115,7 +115,7 @@ npm run build
 - [ ] All commands are exact and executable
 - [ ] Project structure is accurate
 - [ ] Technology stack is current
-- [ ] No vague descriptions ("do X" † exact command)
+- [ ] No vague descriptions ("do X" â†’ exact command)
 - [ ] File locations are specified
 - [ ] Common issues documented
 
@@ -226,7 +226,7 @@ if [ -f "AGENTS.md" ]; then
     if grep -q "## $section" AGENTS.md; then
       echo " Has $section section"
     else
-      echo "— Missing $section section"
+      echo "â€” Missing $section section"
     fi
   done
   
@@ -235,7 +235,7 @@ if [ -f "AGENTS.md" ]; then
   echo " Contains $cmd_count commands"
   
 else
-  echo "— AGENTS.md not found"
+  echo "â€” AGENTS.md not found"
 fi
 ```
 
