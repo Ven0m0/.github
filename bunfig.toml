@@ -1,11 +1,22 @@
+smol = false
 telemetry = false
 logLevel = "error"
+trimWildcards = true
 
 [install]
+linker = "hoisted"
 preferOffline = true
+preferLatest = true
+production = true
+optional = false
+peer = false
+dev = false
+cacheHardLinks = true
 
 [run]
 silent = true
+bun = true
 
 [test]
 coverageSkipTestFiles = true
+smol = true
