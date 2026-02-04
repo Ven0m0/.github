@@ -1,6 +1,6 @@
 ---
 name: ai-tuning
-description: Optimize AI assistant configurations for maximum effectiveness. USE THIS SKILL when user says "improve CLAUDE.md", "better copilot instructions", "tune AI", "optimize prompts", "MCP configuration", or wants to enhance AI assistant behavior. See .github/instructions/ai-tuning.instructions.md for standards.
+description: Optimize AI assistant configurations for maximum effectiveness. USE THIS SKILL when user says "improve CLAUDE.md", "better copilot instructions", "tune AI", "optimize prompts", "MCP configuration", or wants to enhance AI assistant behavior. See @.github/instructions/ai-tuning.instructions.md for standards.
 user-invocable: true
 allowed-tools: Bash Read Write Edit Glob Grep
 ---
