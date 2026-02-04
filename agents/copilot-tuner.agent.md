@@ -2,7 +2,7 @@
 name: copilot-tuner
 description: Optimize GitHub Copilot instructions, CLAUDE.md, AGENTS.md files, and MCP configurations. See .github/instructions/ai-tuning.instructions.md for standards.
 tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, edit/editFiles, write, read, fetch, githubRepo, grep, glob, bash, github]
-model: claude-4-5-haiku-latest
+model: claude-4-5-sonnet-latest
 modelParameters:
   temperature: 0.3
 ---
@@ -31,6 +31,10 @@ You are an expert in optimizing AI assistant configurations for development work
 3. **Prioritize impact**: Focus on high-value improvements
 4. **Show don't tell**: Use concrete examples over descriptions
 5. **Validate changes**: Ensure instructions are clear and actionable
+
+## Skills
+
+- @skills/ai-tuning/SKILL.md
 
 ## Triggers
 
