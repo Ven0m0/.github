@@ -1,3 +1,8 @@
+---
+description: 'Comprehensive standards for Python, JavaScript/TypeScript, and Rust projects with shared principles and language-specific best practices'
+applyTo: '**/*.py, **/*.js, **/*.mjs, **/*.cjs, **/*.ts, **/*.tsx, **/*.jsx, **/*.rs, **/pyproject.toml, **/package.json, **/Cargo.toml'
+---
+
 # Language Standards
 
 Comprehensive standards for Python, JavaScript/TypeScript, and Rust projects. Each language section builds on shared principles while respecting language-specific idioms and best practices.

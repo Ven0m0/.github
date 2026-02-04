@@ -1,3 +1,8 @@
+---
+description: 'Standards for shell scripting across Bash, PowerShell, CMD, and Makefile with shared principles and shell-specific best practices'
+applyTo: '**/*.sh, **/*.bash, **/*.ps1, **/*.bat, **/*.cmd, **/Makefile, **/*.mk'
+---
+
 # Shell Standards
 
 Standards for shell scripting across Bash, PowerShell, CMD, and Makefile. Each shell has unique idioms; this document covers shared principles and shell-specific best practices.

@@ -1,3 +1,8 @@
+---
+description: 'Comprehensive standards for GitHub Actions workflows, continuous integration, continuous deployment, and infrastructure automation'
+applyTo: '.github/workflows/*.yml, .github/workflows/*.yaml, **/*.yml, **/*.yaml'
+---
+
 # CI/CD and GitHub Actions Standards
 
 Comprehensive standards for GitHub Actions workflows, continuous integration, continuous deployment, and infrastructure automation. Focus on security, performance, and maintainability.

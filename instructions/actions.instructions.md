@@ -1,1 +1,0 @@
-cicd-standards.instructions.md

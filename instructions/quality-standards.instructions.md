@@ -1,3 +1,8 @@
+---
+description: 'Standards for code review methodology, quality assessment, and performance optimization across all projects'
+applyTo: '**/*'
+---
+
 # Code Quality and Performance Standards
 
 Standards for code review methodology, quality assessment, and performance optimization across all projects.
