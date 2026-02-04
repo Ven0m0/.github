@@ -25,4 +25,4 @@ Optimize AI assistant configurations for maximum effectiveness, including CLAUDE
 
 ## Usage
 
-Provide your existing AI configuration files or describe your project, and this skill will generate optimized CLAUDE.md, copilot-instructions.md, and MCP configurations following best practices defined in the instructions file.
+Provide your existing AI configuration files or describe your project, and this skill will generate optimized @CLAUDE.md, @copilot-instructions.md, and MCP configurations following best practices defined in the instructions file.
