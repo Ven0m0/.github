@@ -12,17 +12,17 @@ Reduce tokens via dedup/pruning; maintain info density.
 ## Strategy (Priority Order)
 
 1. **Prune (Highest):** Delete obsolete/tmp files. Clean refs.
-1. **Consolidate (High):** Merge overlapping (Sec, Perf, Arch) â†’ `*-comprehensive.md`.
+1. **Consolidate (High):** Merge overlapping (Sec, Perf, Arch) † `*-comprehensive.md`.
 
 - _Reqs:_ Keep impl details, snippets, troubleshooting.
 
 1. **Streamline (Med):** Summarize `CLAUDE.md`. Remove verbose arch/setup.
-1. **Archive (Med):** Move resolved/historic â†’ `archive/`. Index in `archive/README.md`.
+1. **Archive (Med):** Move resolved/historic † `archive/`. Index in `archive/README.md`.
 
 ## Standards
 
 - **File Fmt:** `[topic]-comprehensive.md`
-- **Struct:** Status/Cov â†’ Exec Summary â†’ Sections â†’ Cross-cutting.
+- **Struct:** Status/Cov † Exec Summary † Sections † Cross-cutting.
 - **QA:** Validate savings; ensure no tech data loss.
 
 ## Maintenance

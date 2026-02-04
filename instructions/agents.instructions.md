@@ -89,10 +89,10 @@ Handoffs enable you to create guided sequential workflows that transition seamle
 
 ### Common Handoff Patterns
 
-- **Planning → Implementation**: Generate a plan in a planning agent, then hand off to an implementation agent to start coding
-- **Implementation → Review**: Complete implementation, then switch to a code review agent to check for quality and security issues
-- **Write Failing Tests → Write Passing Tests**: Generate failing tests, then hand off to implement the code that makes those tests pass
-- **Research → Documentation**: Research a topic, then transition to a documentation agent to write guides
+- **Planning � Implementation**: Generate a plan in a planning agent, then hand off to an implementation agent to start coding
+- **Implementation � Review**: Complete implementation, then switch to a code review agent to check for quality and security issues
+- **Write Failing Tests � Write Passing Tests**: Generate failing tests, then hand off to implement the code that makes those tests pass
+- **Research � Documentation**: Research a topic, then transition to a documentation agent to write guides
 
 ### Handoff Frontmatter Structure
 
@@ -145,12 +145,12 @@ Each handoff in the list must include the following properties:
 #### Best Practices
 
 - **Clear Labels**: Use action-oriented labels that clearly indicate the next step
-  - ✅ Good: "Start Implementation", "Review for Security", "Write Tests"
-  - ❌ Avoid: "Next", "Go to agent", "Do something"
+  -  Good: "Start Implementation", "Review for Security", "Write Tests"
+  -  Avoid: "Next", "Go to agent", "Do something"
 
 - **Relevant Prompts**: Provide context-aware prompts that reference the completed work
-  - ✅ Good: `'Now implement the plan outlined above.'`
-  - ❌ Avoid: Generic prompts without context
+  -  Good: `'Now implement the plan outlined above.'`
+  -  Avoid: Generic prompts without context
 
 - **Selective Use**: Don't create handoffs to every possible agent; focus on logical workflow transitions
   - Limit to 2-3 most relevant next steps per agent
@@ -334,7 +334,7 @@ tools: ['read', 'edit', 'search', 'agent']
 
 ### Prompt Pattern (Recommended)
 
-Use a consistent “wrapper prompt” for every step so sub-agents behave predictably:
+Use a consistent wrapper prompt for every step so sub-agents behave predictably:
 
 ```text
 This phase must be performed as the agent "<AGENT_NAME>" defined in "<AGENT_SPEC_PATH>".
@@ -363,11 +363,11 @@ For maintainable orchestrators, document these structural elements:
 
 - **Dynamic parameters**: what values are extracted from the user (e.g., `projectName`, `fileName`, `basePath`).
 - **Sub-agent registry**: a list/table mapping each step to `agentName` + `agentSpecPath`.
-- **Step ordering**: explicit sequence (Step 1 → Step N).
+- **Step ordering**: explicit sequence (Step 1 � Step N).
 - **Trigger conditions** (optional but recommended): define when a step runs vs is skipped.
 - **Logging strategy** (optional but recommended): a single log/report file updated after each step.
 
-Avoid embedding orchestration “code” (JavaScript, Python, etc.) inside the orchestrator prompt; prefer deterministic, tool-driven coordination.
+Avoid embedding orchestration code (JavaScript, Python, etc.) inside the orchestrator prompt; prefer deterministic, tool-driven coordination.
 
 ### Basic Pattern
 
@@ -407,7 +407,7 @@ Expected: write ${basePath}/analysis/report.md
 - **Sequential execution**: Run steps in order when dependencies exist between outputs/inputs
 - **Error handling**: Check results before proceeding to dependent steps
 
-### ⚠️ Tool Availability Requirement
+###  Tool Availability Requirement
 
 **Critical**: If a sub-agent requires specific tools (e.g., `edit`, `execute`, `search`), the orchestrator must include those tools in its own `tools` list. Sub-agents cannot access tools that aren't available to their parent orchestrator.
 
@@ -419,7 +419,7 @@ tools: ['read', 'edit', 'search', 'execute', 'agent']
 
 The orchestrator's tool permissions act as a ceiling for all invoked sub-agents. Plan your tool list carefully to ensure all sub-agents have the tools they need.
 
-### ⚠️ Important Limitation
+###  Important Limitation
 
 **Sub-agent orchestration is NOT suitable for large-scale data processing.** Avoid using multi-step sub-agent pipelines when:
 - Processing hundreds or thousands of files
@@ -644,7 +644,7 @@ This example shows a more complete orchestration with **pre-flight checks**, **c
 **Execution flow (natural language):**
 1. Initialize `basePath` and create/update `logFile`.
 2. Run pre-flight checks and record them.
-3. Execute Step 1 → N sequentially.
+3. Execute Step 1 � N sequentially.
 4. For each step:
   - If trigger condition is false: mark as **SKIPPED** and continue.
   - Otherwise: invoke the sub-agent using the wrapper prompt and capture its summary.
@@ -672,7 +672,7 @@ Task:
 
 ```markdown
 ## Step 2: Dependency Audit
-**Status:** ✅ SUCCESS / ⚠️ SKIPPED / ❌ FAILED
+**Status:**  SUCCESS /  SKIPPED /  FAILED
 **Trigger:** package.json present
 **Started:** 2026-01-16T10:30:15Z
 **Completed:** 2026-01-16T10:31:05Z
@@ -907,30 +907,30 @@ Each level can override settings from previous levels.
 ## Common Mistakes to Avoid
 
 ### Frontmatter Errors
-- ❌ Missing `description` field
-- ❌ Description not wrapped in quotes
-- ❌ Invalid tool names without checking documentation
-- ❌ Incorrect YAML syntax (indentation, quotes)
+-  Missing `description` field
+-  Description not wrapped in quotes
+-  Invalid tool names without checking documentation
+-  Incorrect YAML syntax (indentation, quotes)
 
 ### Tool Configuration Issues
-- ❌ Granting excessive tool access unnecessarily
-- ❌ Missing required tools for agent's purpose
-- ❌ Not using tool aliases consistently
-- ❌ Forgetting MCP server namespace (`server-name/tool`)
+-  Granting excessive tool access unnecessarily
+-  Missing required tools for agent's purpose
+-  Not using tool aliases consistently
+-  Forgetting MCP server namespace (`server-name/tool`)
 
 ### Prompt Content Problems
-- ❌ Vague, ambiguous instructions
-- ❌ Conflicting or contradictory guidelines
-- ❌ Lack of clear scope definition
-- ❌ Missing output expectations
-- ❌ Overly verbose instructions (exceeding character limits)
-- ❌ No examples or context for complex tasks
+-  Vague, ambiguous instructions
+-  Conflicting or contradictory guidelines
+-  Lack of clear scope definition
+-  Missing output expectations
+-  Overly verbose instructions (exceeding character limits)
+-  No examples or context for complex tasks
 
 ### Organizational Issues
-- ❌ Filename doesn't reflect agent purpose
-- ❌ Wrong directory (confusing repo vs org level)
-- ❌ Using spaces or special characters in filename
-- ❌ Duplicate agent names causing conflicts
+-  Filename doesn't reflect agent purpose
+-  Wrong directory (confusing repo vs org level)
+-  Using spaces or special characters in filename
+-  Duplicate agent names causing conflicts
 
 ## Testing and Validation
 
@@ -976,16 +976,16 @@ Each level can override settings from previous levels.
 ## Version Compatibility Notes
 
 ### GitHub.com (Coding Agent)
-- ✅ Fully supports all standard frontmatter properties
-- ✅ Repository and org/enterprise level agents
-- ✅ MCP server configuration (org/enterprise)
-- ❌ Does not support `model`, `argument-hint`, `handoffs` properties
+-  Fully supports all standard frontmatter properties
+-  Repository and org/enterprise level agents
+-  MCP server configuration (org/enterprise)
+-  Does not support `model`, `argument-hint`, `handoffs` properties
 
 ### VS Code / JetBrains / Eclipse / Xcode
-- ✅ Supports `model` property for AI model selection
-- ✅ Supports `argument-hint` and `handoffs` properties
-- ✅ User profile and workspace-level agents
-- ❌ Cannot configure MCP servers at repository level
-- ⚠️ Some properties may behave differently
+-  Supports `model` property for AI model selection
+-  Supports `argument-hint` and `handoffs` properties
+-  User profile and workspace-level agents
+-  Cannot configure MCP servers at repository level
+-  Some properties may behave differently
 
 When creating agents for multiple environments, focus on common properties and test in all target environments. Use `target` property to create environment-specific agents when necessary.

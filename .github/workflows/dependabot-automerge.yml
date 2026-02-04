@@ -3,27 +3,27 @@ name: Dependabot Auto-Merge (Reusable)
 
 on:
   workflow_call:
-    inputs:
-      merge_method:
-        type: string
-        default: squash
-        description: 'Merge method to use (squash, merge, rebase)'
-      auto_approve:
-        type: boolean
-        default: true
-        description: 'Automatically approve eligible PRs'
-      auto_merge:
-        type: boolean
-        default: true
-        description: 'Enable auto-merge for eligible PRs'
-      update_types:
-        type: string
-        default: patch,minor
-        description: 'Comma-separated list of allowed update types'
-      exclude_packages:
-        type: string
-        default: ""
-        description: 'Comma-separated list of packages to exclude from auto-merge'
+  inputs:
+    merge_method:
+      type: string
+      default: squash
+      description: 'Merge method to use (squash, merge, rebase)'
+    auto_approve:
+      type: boolean
+      default: true
+      description: 'Automatically approve eligible PRs'
+    auto_merge:
+      type: boolean
+      default: true
+      description: 'Enable auto-merge for eligible PRs'
+    update_types:
+      type: string
+      default: patch,minor
+      description: 'Comma-separated list of allowed update types'
+    exclude_packages:
+      type: string
+      default: ""
+      description: 'Comma-separated list of packages to exclude from auto-merge'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
@@ -34,72 +34,72 @@ permissions:
   pull-requests: write
 jobs:
   dependabot:
-    name: Dependabot Auto-Merge
-    runs-on: ubuntu-slim
-    timeout-minutes: 10
-    if: github.actor == 'dependabot[bot]'
-    steps:
-      - name: Fetch Dependabot Metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v2
-        with:
-          github-token: ${{ secrets.PAT || github.token }}
+  name: Dependabot Auto-Merge
+  runs-on: ubuntu-slim
+  timeout-minutes: 10
+  if: github.actor == 'dependabot[bot]'
+  steps:
+    - name: Fetch Dependabot Metadata
+      id: metadata
+      uses: dependabot/fetch-metadata@v2
+      with:
+        github-token: ${{ secrets.PAT || github.token }}
 
-      - name: Check Eligibility for Auto-Merge
-        id: check
-        shell: bash
-        run: |
-          set -euo pipefail
+    - name: Check Eligibility for Auto-Merge
+      id: check
+      shell: bash
+      run: |
+        set -euo pipefail
 
-          # Get metadata
-          update_type="${{ steps.metadata.outputs.update-type }}"
-          allowed_types="${{ inputs.update_types }}"
-          package_name="${{ steps.metadata.outputs.dependency-names }}"
-          excluded_packages="${{ inputs.exclude_packages }}"
+        # Get metadata
+        update_type="${{ steps.metadata.outputs.update-type }}"
+        allowed_types="${{ inputs.update_types }}"
+        package_name="${{ steps.metadata.outputs.dependency-names }}"
+        excluded_packages="${{ inputs.exclude_packages }}"
 
-          # Determine eligibility
-          skip=false
-          status="Eligible for auto-merge"
+        # Determine eligibility
+        skip=false
+        status="Eligible for auto-merge"
 
-          if [[ -n "$excluded_packages" ]] && grep -qF "$package_name" <<< "$excluded_packages"; then
-            skip=true
-            status="Excluded package"
-          elif ! grep -qF "$update_type" <<< "$allowed_types"; then
-            skip=true
-            status="Update type not allowed"
-          fi
+        if [[ -n "$excluded_packages" ]] && grep -qF "$package_name" <<< "$excluded_packages"; then
+          skip=true
+          status="Excluded package"
+        elif ! grep -qF "$update_type" <<< "$allowed_types"; then
+          skip=true
+          status="Update type not allowed"
+        fi
 
-          # Write summary
-          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          ## Dependabot Update
-          - **Package**: $package_name
-          - **Type**: $update_type
-          - **Status**: $status
-          EOF
+        # Write summary
+        cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+        ## Dependabot Update
+        - **Package**: $package_name
+        - **Type**: $update_type
+        - **Status**: $status
+        EOF
 
-          echo "skip=$skip" >> "$GITHUB_OUTPUT"
-      - name: Auto-Approve Pull Request
-        if: inputs.auto_approve && steps.check.outputs.skip == 'false'
-        uses: hmarr/auto-approve-action@v4
-        with:
-          github-token: ${{ secrets.PAT || github.token }}
+        echo "skip=$skip" >> "$GITHUB_OUTPUT"
+    - name: Auto-Approve Pull Request
+      if: inputs.auto_approve && steps.check.outputs.skip == 'false'
+      uses: hmarr/auto-approve-action@v4
+      with:
+        github-token: ${{ secrets.PAT || github.token }}
 
-      - name: Enable Auto-Merge
-        if: inputs.auto_merge && steps.check.outputs.skip == 'false'
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.PAT || github.token }}
-          pull-request-number: ${{ github.event.pull_request.number }}
-          merge-method: ${{ inputs.merge_method }}
+    - name: Enable Auto-Merge
+      if: inputs.auto_merge && steps.check.outputs.skip == 'false'
+      uses: peter-evans/enable-pull-request-automerge@v3
+      with:
+        token: ${{ secrets.PAT || github.token }}
+        pull-request-number: ${{ github.event.pull_request.number }}
+        merge-method: ${{ inputs.merge_method }}
 
-      - name: Comment on Skipped PR
-        if: steps.check.outputs.skip == 'true'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '## Dependabot Auto-Merge\n\nNot auto-merged. Please review manually.'
-            });
+    - name: Comment on Skipped PR
+      if: steps.check.outputs.skip == 'true'
+      uses: actions/github-script@v8
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '## Dependabot Auto-Merge\n\nNot auto-merged. Please review manually.'
+          });

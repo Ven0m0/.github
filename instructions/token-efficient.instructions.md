@@ -1,6 +1,6 @@
 ---
 name: Token Efficiency Mode
-description: "Symbol-enhanced communication for compressed clarity (-50% tokens, â‰¥95% quality)"
+description: "Symbol-enhanced communication for compressed clarity (-50% tokens, ‰95% quality)"
 applyTo: "**"
 ---
 
@@ -17,7 +17,7 @@ Goal: Compress output (-50% tokens); preserve quality/correctness.
 
 ## Rules
 
-- **Style**: Result âˆ´ Cause; Syms + Abbrevs; Lists â‰¤7; Bash-native code; Bullets/tables > paragraphs
+- **Style**: Result ˆ Cause; Syms + Abbrevs; Lists ‰¤7; Bash-native code; Bullets/tables > paragraphs
 - **No**: Filler words, long CoT, explanation unless asked, verbose paragraphs
 - **Yes**: Density, runnable code, clear next steps, structured output
 
@@ -27,92 +27,92 @@ Goal: Compress output (-50% tokens); preserve quality/correctness.
 
 | Symbol | Meaning               | Example                    |
 | ------ | --------------------- | -------------------------- |
-| â†’      | leads to, implies     | `auth.js:45 â†’ ğŸ›¡ï¸ sec risk` |
-| â‡’      | transforms to, result | `input â‡’ validated_output` |
-| â†      | rollback, reverse     | `migration â† rollback`     |
-| â‡„      | bidirectional         | `sync â‡„ remote`            |
-| &      | and, combine          | `ğŸ›¡ï¸ sec & âš¡ perf`         |
+| †      | leads to, implies     | `auth.js:45 †  sec risk` |
+| ‡      | transforms to, result | `input ‡ validated_output` |
+| †      | rollback, reverse     | `migration † rollback`     |
+| ‡„      | bidirectional         | `sync ‡„ remote`            |
+| &      | and, combine          | ` sec &  perf`         |
 | \|     | separator, or         | `react\|vue\|angular`      |
 | :      | define, specify       | `scope: file\|module`      |
 | Â«      | prerequisite          | `Â« deps install`           |
-| Â»      | sequence, then        | `build Â» test Â» deploy`    |
-| âˆ´      | therefore             | `tests âŒ âˆ´ code broken`   |
-| âˆµ      | because               | `slow âˆµ O(nÂ²) algo`        |
+| Â      | sequence, then        | `build Â test Â deploy`    |
+| ˆ      | therefore             | `tests  ˆ code broken`   |
+| ˆµ      | because               | `slow ˆµ O(nÂ²) algo`        |
 
 ### Status & Progress
 
 | Symbol | Meaning           | Usage                      |
 | ------ | ----------------- | -------------------------- |
-| âœ…     | completed, passed | Task finished successfully |
-| âŒ     | failed, error     | Immediate attention needed |
-| âš ï¸     | warning           | Review required            |
-| ğŸ”„     | in progress       | Currently active           |
-| â³     | waiting, pending  | Scheduled for later        |
-| ğŸš¨     | critical, urgent  | High priority action       |
+|      | completed, passed | Task finished successfully |
+|      | failed, error     | Immediate attention needed |
+|      | warning           | Review required            |
+| „     | in progress       | Currently active           |
+| ³     | waiting, pending  | Scheduled for later        |
+|      | critical, urgent  | High priority action       |
 
 ### Technical Domains
 
 | Symbol | Domain        | Usage                 |
 | ------ | ------------- | --------------------- |
-| âš¡     | Performance   | Speed, optimization   |
-| ğŸ”     | Analysis      | Search, investigation |
-| ğŸ”§     | Configuration | Setup, tools, fixes   |
-| ğŸ›¡ï¸     | Security      | Protection, safety    |
-| ğŸ“¦     | Deployment    | Package, bundle       |
-| ğŸ§ª     | Testing       | Test, validation      |
-| ğŸ¨     | Design        | UI, frontend          |
-| ğŸ—ï¸     | Architecture  | System structure      |
+|      | Performance   | Speed, optimization   |
+|      | Analysis      | Search, investigation |
+|      | Configuration | Setup, tools, fixes   |
+|      | Security      | Protection, safety    |
+|      | Deployment    | Package, bundle       |
+| ª     | Testing       | Test, validation      |
+|      | Design        | UI, frontend          |
+| —     | Architecture  | System structure      |
 
 ## Abbreviation Systems
 
 ### System & Architecture
 
-`cfg` config â€¢ `impl` implementation â€¢ `arch` architecture â€¢ `perf` performance â€¢ `ops` operations â€¢ `env` environment
+`cfg` config  `impl` implementation  `arch` architecture  `perf` performance  `ops` operations  `env` environment
 
 ### Development Process
 
-`req` requirements â€¢ `deps` dependencies â€¢ `val` validation â€¢ `test` testing â€¢ `docs` documentation â€¢ `std` standards â€¢ `fn` function â€¢ `mod` module
+`req` requirements  `deps` dependencies  `val` validation  `test` testing  `docs` documentation  `std` standards  `fn` function  `mod` module
 
 ### Quality & Analysis
 
-`qual` quality â€¢ `sec` security â€¢ `err` error â€¢ `rec` recovery â€¢ `sev` severity â€¢ `opt` optimization â€¢ `auth` authentication
+`qual` quality  `sec` security  `err` error  `rec` recovery  `sev` severity  `opt` optimization  `auth` authentication
 
 ## Response Templates
 
 ### Report
 
 ```
-scope: status; metric Â» âˆµ cause Â» act: 1,2,3
+scope: status; metric Â ˆµ cause Â act: 1,2,3
 ```
 
-Example: `auth: âŒ; latency +200ms Â» âˆµ N+1 queries Â» opt: 1.batch, 2.cache, 3.index`
+Example: `auth: ; latency +200ms Â ˆµ N+1 queries Â opt: 1.batch, 2.cache, 3.index`
 
 ### Plan
 
 ```
-plan Â» A Â» B Â» risk: X (sev: H) âˆ´ mit
+plan Â A Â B Â risk: X (sev: H) ˆ mit
 ```
 
-Example: `deploy Â» build Â» test Â» risk: db migration (sev: H) âˆ´ backup + rollback script`
+Example: `deploy Â build Â test Â risk: db migration (sev: H) ˆ backup + rollback script`
 
 ### CI/CD
 
 ```
-build âœ…; test âŒ (n=3) Â» fix: <file:line>
+build ; test  (n=3) Â fix: <file:line>
 ```
 
-Example: `build âœ…; test âŒ (n=3) Â» fix: auth.spec.ts:45 (timeout)`
+Example: `build ; test  (n=3) Â fix: auth.spec.ts:45 (timeout)`
 
 ## Examples
 
 **Standard**: "The authentication system has a security vulnerability in the user validation function"
-**Token Efficient**: `auth.js:45 â†’ ğŸ›¡ï¸ sec risk in user val()`
+**Token Efficient**: `auth.js:45 †  sec risk in user val()`
 
 **Standard**: "Build process completed successfully, now running tests, then deploying"
-**Token Efficient**: `build âœ… Â» test ğŸ”„ Â» deploy â³`
+**Token Efficient**: `build  Â test „ Â deploy ³`
 
 **Standard**: "Performance analysis shows the algorithm is slow because it's O(nÂ²) complexity"
-**Token Efficient**: `âš¡ perf analysis: slow âˆµ O(nÂ²) complexity`
+**Token Efficient**: ` perf analysis: slow ˆµ O(nÂ²) complexity`
 
 **Standard**: "Failed to authenticate due to missing credentials; recommend adding environment variables"
-**Token Efficient**: `auth âŒ âˆµ missing creds âˆ´ add env vars`
+**Token Efficient**: `auth  ˆµ missing creds ˆ add env vars`

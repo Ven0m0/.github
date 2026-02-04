@@ -3,9 +3,9 @@ name: Copilot Setup Steps
 on:
   workflow_dispatch:
   push:
-    paths: [.github/workflows/copilot-setup-steps.yml]
+  paths: [.github/workflows/copilot-setup-steps.yml]
   pull_request:
-    paths: [.github/workflows/copilot-setup-steps.yml]
+  paths: [.github/workflows/copilot-setup-steps.yml]
 
 env:
   PYTHONOPTIMIZE: "1"
@@ -18,34 +18,34 @@ env:
 
 jobs:
   copilot-setup-steps:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.PAT || github.token }}
+  runs-on: ubuntu-latest
+  permissions:
+    contents: read
+  steps:
+    - uses: actions/checkout@v6
+      with:
+        token: ${{ secrets.PAT || github.token }}
 
-      - name: Install system tools
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ripgrep fd-find jq tree-sitter-cli
+    - name: Install system tools
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends ripgrep fd-find jq tree-sitter-cli
 
-      - uses: oven-sh/setup-bun@v2
+    - uses: oven-sh/setup-bun@v2
 
-      - uses: astral-sh/setup-uv@v7
-        with:
-          python-version: "3.13"
-          enable-cache: true
-          github-token: ${{ secrets.PAT || github.token }}
+    - uses: astral-sh/setup-uv@v7
+      with:
+        python-version: "3.13"
+        enable-cache: true
+        github-token: ${{ secrets.PAT || github.token }}
 
-      - name: Install code analysis tools
-        run: bunx repomix --version
+    - name: Install code analysis tools
+      run: bunx repomix --version
 
-      - name: Install TOON formatter
-        run: |
-          sudo tee /usr/local/bin/toon >/dev/null <<'EOF'
-          #!/bin/bash
-          awk 'BEGIN{print "{"} /^[A-Z_]+:/{if(NR>1)print",";split($0,a,":");gsub(/^ +| +$/,"",a[2]);printf"  \"%s\":\"%s\"",a[1],a[2]} /^\t/{gsub(/^\t/,"");printf",\"%s\"",$0} END{print"\n}"}' | jq -c
-          EOF
-          sudo chmod +x /usr/local/bin/toon
+    - name: Install TOON formatter
+      run: |
+        sudo tee /usr/local/bin/toon >/dev/null <<'EOF'
+        #!/bin/bash
+        awk 'BEGIN{print "{"} /^[A-Z_]+:/{if(NR>1)print",";split($0,a,":");gsub(/^ +| +$/,"",a[2]);printf"  \"%s\":\"%s\"",a[1],a[2]} /^\t/{gsub(/^\t/,"");printf",\"%s\"",$0} END{print"\n}"}' | jq -c
+        EOF
+        sudo chmod +x /usr/local/bin/toon

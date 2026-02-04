@@ -17,24 +17,24 @@ This repository provides:
 
 ```
 .github/
-├── agents/              # 21 specialized AI agents
-├── skills/              # 6 reusable skill modules
-├── instructions/        # 21 Copilot instruction files
-├── hooks/               # Pre-commit and custom hooks
-├── prompts/             # Reusable prompt templates
-├── .gemini/             # Google Gemini-specific configuration
-│   ├── styleguide.md    # Gemini coding style guide
-│   ├── commands/        # Gemini commands
-│   └── skills/          # Gemini-specific skills
-├── .github/workflows/   # Reusable GitHub Actions workflows
-├── AGENTS.md            # This file - comprehensive guide
-├── CLAUDE.md            # Claude AI instructions (symlinked to AGENTS.md)
-├── copilot-instructions.md  # Organization-wide Copilot guidance
-├── CODE_OF_CONDUCT.md   # Community standards
-├── CONTRIBUTING.md      # Contribution guidelines
-├── SECURITY.md          # Security policy
-├── SUPPORT.md           # Support channels
-└── README.md            # Quick reference
+ agents/              # 21 specialized AI agents
+ skills/              # 6 reusable skill modules
+ instructions/        # 21 Copilot instruction files
+ hooks/               # Pre-commit and custom hooks
+ prompts/             # Reusable prompt templates
+ .gemini/             # Google Gemini-specific configuration
+�    styleguide.md    # Gemini coding style guide
+�    commands/        # Gemini commands
+�    skills/          # Gemini-specific skills
+ .github/workflows/   # Reusable GitHub Actions workflows
+ AGENTS.md            # This file - comprehensive guide
+ CLAUDE.md            # Claude AI instructions (symlinked to AGENTS.md)
+ copilot-instructions.md  # Organization-wide Copilot guidance
+ CODE_OF_CONDUCT.md   # Community standards
+ CONTRIBUTING.md      # Contribution guidelines
+ SECURITY.md          # Security policy
+ SUPPORT.md           # Support channels
+ README.md            # Quick reference
 ```
 
 ## Agents Ecosystem
@@ -242,7 +242,7 @@ Extract repeated logic into reusable components. Avoid duplication.
 - Use environment variables for credentials
 
 #### Imports
-Order: stdlib → third-party → local (alphabetical within each group)
+Order: stdlib � third-party � local (alphabetical within each group)
 
 #### Comments
 Explain the "why", not the "what". Code should be self-documenting.

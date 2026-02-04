@@ -35,7 +35,7 @@ high-quality outcomes across any repository.
 - Start with an `#` level heading that matches the prompt intent so it surfaces well in Quick Pick search.
 - Organize content with predictable sections. Recommended baseline: `Mission` or `Primary Directive`,
   `Scope & Preconditions`, `Inputs`, `Workflow` (step-by-step), `Output Expectations`, and `Quality Assurance`.
-- Adjust section names to fit the domain, but retain the logical flow: why → context → inputs → actions → outputs →
+- Adjust section names to fit the domain, but retain the logical flow: why � context � inputs � actions � outputs �
   validation.
 - Reference related prompts or instruction files using relative links to aid discoverability.
 
@@ -45,8 +45,8 @@ high-quality outcomes across any repository.
   defaults or alternatives where possible.
 - Call out contextual variables such as `${selection}`, `${file}`, `${workspaceFolder}` only when they are essential,
   and describe how Copilot should interpret them.
-- Document how to proceed when mandatory context is missing (for example, “Request the file path and stop if it remains
-  undefined”).
+- Document how to proceed when mandatory context is missing (for example, Request the file path and stop if it remains
+  undefined).
 
 ## Tool and Permission Guidance
 
@@ -59,17 +59,17 @@ high-quality outcomes across any repository.
 
 ## Instruction Tone and Style
 
-- Write in direct, imperative sentences targeted at Copilot (for example, “Analyze”, “Generate”, “Summarize”).
+- Write in direct, imperative sentences targeted at Copilot (for example, Analyze, Generate, Summarize).
 - Keep sentences short and unambiguous, following Google Developer Documentation translation best practices to support
   localization.
 - Avoid idioms, humor, or culturally specific references; favor neutral, inclusive language.
 
 ## Output Definition
 
-- Specify the format, structure, and location of expected results (for example, “Create `docs/adr/adr-XXXX.md` using the
-  template below”).
+- Specify the format, structure, and location of expected results (for example, Create `docs/adr/adr-XXXX.md` using the
+  template below).
 - Include success criteria and failure triggers so Copilot knows when to halt or retry.
-- Provide validation steps—manual checks, automated commands, or acceptance criteria lists—that reviewers can execute
+- Provide validation stepsmanual checks, automated commands, or acceptance criteria liststhat reviewers can execute
   after running the prompt.
 
 ## Examples and Reusable Assets

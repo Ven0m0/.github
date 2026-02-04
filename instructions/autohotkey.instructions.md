@@ -68,7 +68,7 @@ Repository-wide instructions for writing **performant, maintainable AutoHotkey v
 
 ## Examples
 
-### Good – v2 fullscreen toggle using shared library
+### Good  v2 fullscreen toggle using shared library
 ```ahk
 #Requires AutoHotkey v2.0
 #SingleInstance Force
@@ -89,7 +89,7 @@ ToggleFullscreen() {
 F11::ToggleFullscreen()
 ```
 
-### Bad – v1 syntax and unbounded waits
+### Bad  v1 syntax and unbounded waits
 ```ahk
 ; v1 command syntax + no timeout
 F11::

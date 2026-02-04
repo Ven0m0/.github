@@ -43,17 +43,17 @@ Use this agent when:
 ## Workflow
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  1. COLLECT     │────▶│  2. SCORE       │────▶│  3. GENERATE    │
-│  GitHub Data    │     │  Repositories   │     │  Markdown       │
-│  (gh api)       │     │  (algorithm)    │     │  (sections)     │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-                                                        │
-┌─────────────────┐     ┌─────────────────┐            │
-│  5. COMMIT      │◀────│  4. VALIDATE    │◀───────────┘
-│  Changes        │     │  Content        │
-│  (optional)     │     │  (verify URLs)  │
-└─────────────────┘     └─────────────────┘
+          
+�  1. COLLECT     ���  2. SCORE       ���  3. GENERATE    �
+�  GitHub Data    �     �  Repositories   �     �  Markdown       �
+�  (gh api)       �     �  (algorithm)    �     �  (sections)     �
+�     �     �
+                                                        �
+                 �
+�  5. COMMIT      ���  4. VALIDATE    ���
+�  Changes        �     �  Content        �
+�  (optional)     �     �  (verify URLs)  �
+�     �
 ```
 
 ### 1. Data Collection
@@ -93,7 +93,7 @@ Generate two sections:
 <!-- ACTIVE_REPOS_START -->
 | Repository | Description | Tech | Activity |
 |------------|-------------|------|----------|
-| [name](url) | Description... | Lang | 🔥 |
+| [name](url) | Description... | Lang |  |
 <!-- ACTIVE_REPOS_END -->
 ```
 
@@ -116,10 +116,10 @@ Before updating:
 
 | Score Range | Emoji | Label |
 |-------------|-------|-------|
-| >= 0.7 | 🔥 | Very Active |
-| >= 0.4 | ✨ | Active |
-| >= 0.2 | 📈 | Growing |
-| < 0.2 | 💤 | Stable |
+| >= 0.7 |  | Very Active |
+| >= 0.4 |  | Active |
+| >= 0.2 | � | Growing |
+| < 0.2 | � | Stable |
 
 ## Output Format
 
