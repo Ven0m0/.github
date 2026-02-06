@@ -1,7 +1,7 @@
 ---
 name: copilot-tuner
 description: Optimize GitHub Copilot instructions, CLAUDE.md, AGENTS.md files, and MCP configurations. See .github/instructions/ai-tuning.instructions.md for standards.
-tools: [codebase, semanticSearch, LSP, search, usages, problems, changes, edit/editFiles, write, read, fetch, githubRepo, grep, glob, bash, github]
+tools: ["read", "search", "edit", "web", "agent", "execute", "todo", "github"]
 model: claude-4-5-sonnet-latest
 modelParameters:
   temperature: 0.3
