@@ -9,11 +9,13 @@ description: "Standards for optimizing AI assistant configurations (CLAUDE.md, c
 
 ## Core Principles
 
+<Goals>
 1. **Be Specific**: Vague instructions produce vague results
 2. **Show Examples**: Concrete code examples are more effective than descriptions
 3. **State Constraints**: Explicitly list what NOT to do
 4. **Organize Hierarchically**: Structure from general to specific
 5. **Include Commands**: List build/test/lint commands for quick reference
+<Goals>
 
 ## copilot-instructions.md Structure
 
