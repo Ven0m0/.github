@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
-      url: ${{ steps.create_release.outputs.html_url }}
+      url: ${{ steps.create_release.outputs.url }}
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
