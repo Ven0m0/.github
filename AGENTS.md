@@ -6,7 +6,7 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ```
 .github/
-  agents/            # 22 specialized AI agents
+  agents/            # 23 specialized AI agents
   skills/            # 8 reusable skill modules
   instructions/      # 21 Copilot instruction files
   hooks/             # Pre-commit hooks
@@ -20,7 +20,13 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ## Agents
 
-The `agents/` directory contains 22 specialized autonomous agents:
+The `agents/` directory contains 23 specialized autonomous agents:
+
+### Workflow Orchestration
+
+| Agent | Purpose |
+|-------|---------|
+| `multi-agent-workflow.agent.md` | Comprehensive multi-agent workflow orchestrating planning, execution, refactoring, cleanup, and review phases |
 
 ### Planning & Architecture
 
