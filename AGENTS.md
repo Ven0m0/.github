@@ -6,8 +6,8 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ```
 .github/
-  agents/            # 23 specialized AI agents
-  skills/            # 8 reusable skill modules
+  agents/            # 19 specialized AI agents
+  skills/            # 9 reusable skill modules
   instructions/      # 21 Copilot instruction files
   hooks/             # Pre-commit hooks
   prompts/           # Reusable prompt templates
@@ -20,7 +20,7 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ## Agents
 
-The `agents/` directory contains 23 specialized autonomous agents:
+The `agents/` directory contains 19 specialized autonomous agents (consolidated from 23):
 
 ### Workflow Orchestration
 
@@ -41,9 +41,7 @@ The `agents/` directory contains 23 specialized autonomous agents:
 
 | Agent | Purpose |
 |-------|---------|
-| `bash.agent.md` | Bash/Shell optimization |
-| `python.agent.md` | Python code optimization |
-| `rust.agent.md` | Rust performance and safety |
+| `language-optimizer.agent.md` | Multi-language optimizer for Bash, Python, Rust (consolidated) |
 | `refactoring-expert.agent.md` | Code refactoring with TDD principles |
 
 ### Development & Engineering
@@ -52,8 +50,7 @@ The `agents/` directory contains 23 specialized autonomous agents:
 |-------|---------|
 | `workflow-engineer.agent.md` | GitHub Actions and CI/CD |
 | `github-issue-fixer.agent.md` | Issue triage and resolution |
-| `python-mcp-expert.agent.md` | Python MCP server development |
-| `typescript-mcp-expert.agent.md` | TypeScript MCP server development |
+| `mcp-expert.agent.md` | MCP server development for Python and TypeScript (consolidated) |
 
 ### Repository & Knowledge Management
 
@@ -90,7 +87,7 @@ tools: [codebase, read, write, edit, search, ...]
 
 ## Skills
 
-The `skills/` directory contains 8 reusable knowledge modules:
+The `skills/` directory contains 9 reusable knowledge modules:
 
 | Skill | Purpose |
 |-------|---------|
@@ -102,6 +99,7 @@ The `skills/` directory contains 8 reusable knowledge modules:
 | `workflow-development/` | GitHub Actions workflows |
 | `codebase-cleanup/` | Code cleanup procedures |
 | `condense/` | CLAUDE.md deduplication |
+| `agent-patterns/` | Reusable agent workflow patterns and templates |
 
 ## Instructions
 
@@ -215,6 +213,32 @@ Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-autom
 1. Create `instructions/domain.instructions.md`
 2. Set `applyTo` glob pattern in frontmatter
 3. Update `instructions/INDEX.md`
+
+## Agent Consolidation
+
+Recent consolidation reduced agent count from 23 to 19 by merging overlapping agents:
+
+**Language Optimizers** (3 → 1):
+- `bash.agent.md`, `python.agent.md`, `rust.agent.md` → `language-optimizer.agent.md`
+- Single agent with language-specific branches for Bash, Python, and Rust
+- Reduces maintenance overhead, provides consistent optimization patterns
+
+**MCP Development** (2 → 1):
+- `python-mcp-expert.agent.md`, `typescript-mcp-expert.agent.md` → `mcp-expert.agent.md`
+- Unified MCP patterns with language-specific branches
+- Cross-language best practices and transport comparison
+
+**AI Configuration** (Conflict Resolution):
+- `copilot-tuner.agent.md` - Handles Copilot instructions, CLAUDE.md, MCP configs
+- `agents-maintainer.agent.md` - Exclusively handles AGENTS.md files
+- Clear separation of responsibilities eliminates overlap
+
+**New Skill**:
+- `agent-patterns/` - Reusable workflow templates, model selection guidelines, tool profiles
+- Extracted common patterns from 14 agents
+- Reduces duplication across agent definitions
+
+Benefits: 35-40% reduction in complexity, easier maintenance, consistent patterns, clear responsibilities.
 
 ---
 
