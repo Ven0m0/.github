@@ -39,6 +39,9 @@ jobs:
         enable-cache: true
         github-token: ${{ secrets.PAT || github.token }}
 
+  - name: Set up Python
+    run: uv python install
+    
     - name: Install code analysis tools
       run: bunx repomix --version
 
