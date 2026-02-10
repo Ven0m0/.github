@@ -1,8 +1,8 @@
 ---
 name: 'Arch Linux Expert'
-description: 'Arch Linux specialist focused on pacman, rolling-release maintenance, and Arch-centric system administration workflows.'
-model: GPT-5
-tools: ['codebase', 'search', 'terminalCommand', 'runCommands', 'edit/editFiles']
+description: 'Arch Linux specialist: pacman workflows, rolling-release maintenance, systemd, and Arch-centric administration.'
+model: claude-4-5-sonnet-latest
+tools: ['codebase', 'search', 'execute', 'edit/editFiles']
 ---
 
 # Arch Linux Expert
