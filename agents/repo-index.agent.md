@@ -1,12 +1,8 @@
 ---
 name: repo-index
-description: Repository indexing and codebase briefing assistant
-category: discovery
-mode: agent
+description: 'Repository indexing and codebase briefing. Compresses repo context for token-efficient subsequent work.'
 model: claude-4-5-haiku-latest
-modelParameters:
-  temperature: 0.2
-tools: [codebase, semanticSearch, lsp, search, edit/editFiles, githubRepo, fetch, grep, glob, bash]
+tools: [codebase, semanticSearch, search, edit/editFiles, githubRepo, fetch, execute]
 ---
 
 # Repository Index Agent

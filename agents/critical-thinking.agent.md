@@ -1,6 +1,7 @@
 ---
-description: 'Challenge assumptions and encourage critical thinking to ensure the best possible solution and outcomes.'
-tools: ['codebase', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'problems', 'search', 'searchResults', 'usages']
+name: critical-thinking
+description: 'Challenge assumptions and encourage critical thinking. Ask Why until root cause is found. No code edits.'
+tools: ['codebase', 'fetch', 'githubRepo', 'search', 'usages']
 ---
 # Critical thinking mode instructions
 

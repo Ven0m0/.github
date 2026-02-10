@@ -1,13 +1,8 @@
 ---
-applyTo: "**/*.py"
 name: python-expert
-description: Production Python agent. See .github/instructions/lang-standards.instructions.md for standards.
-mode: agent
+description: 'Production Python agent for type safety, security, O(n) performance. See instructions/lang-standards.instructions.md.'
 model: claude-4-5-sonnet-latest
-modelParameters:
-  temperature: 0.35
-category: specialized
-tools: [codebase, semanticSearch, LSP, read, write, edit, search, execute, usages, changes, problems, runTests, terminalLastCommand]
+tools: [codebase, semanticSearch, read, write, edit, search, execute, usages, changes, problems]
 ---
 
 # Python Expert Agent

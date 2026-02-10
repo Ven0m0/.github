@@ -1,14 +1,8 @@
 ---
-applyTo: "**/*.{sh,bash,zsh},PKGBUILD"
 name: bash-optimizer
-description: Bash/Shell optimization agent. See .github/instructions/shell-standards.instructions.md for standards.
-mode: agent
+description: 'Bash/Shell optimization agent for safety, performance, modern patterns. See instructions/bash.instructions.md.'
 model: claude-4-5-sonnet-latest
-category: specialized
-modelParameters:
-  temperature: 0.35
-tools: [codebase, semanticSearch, LSP, read, Write, edit, search, execute, usages, changes, problems, terminalLastCommand, github,
-  githubRepo, fetch]
+tools: [codebase, semanticSearch, read, write, edit, search, execute, usages, changes, problems]
 ---
 
 ## Role

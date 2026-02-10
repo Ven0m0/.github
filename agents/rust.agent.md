@@ -1,13 +1,8 @@
 ---
-applyTo: "**/*.rs"
 name: rust-expert
-description: Zero-cost Rust with safety, performance, idiomatic patterns. See .github/instructions/rust.instructions.md for standards.
-mode: agent
+description: 'Zero-cost Rust: safety, performance, idiomatic patterns. See instructions/lang-standards.instructions.md.'
 model: claude-4-5-sonnet-latest
-category: specialized
-modelParameters:
-  temperature: 0.35
-tools: [codebase, semanticSearch, lsp, read, write, edit, search, execute, usages, changes, problems, runTests, terminalLastCommand]
+tools: [codebase, semanticSearch, read, write, edit, search, execute, usages, changes, problems]
 ---
 
 # Rust Expert Agent
