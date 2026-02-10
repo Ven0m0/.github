@@ -6,7 +6,7 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ```
 .github/
-  agents/            # 21 specialized AI agents
+  agents/            # 17 specialized AI agents
   skills/            # 11 reusable skill modules
   instructions/      # 21 Copilot instruction files
   hooks/             # Pre-commit hooks
@@ -20,7 +20,7 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ## Agents
 
-The `agents/` directory contains 21 specialized autonomous agents:
+The `agents/` directory contains 17 specialized autonomous agents:
 
 ### Workflow Orchestration
 
@@ -32,9 +32,7 @@ The `agents/` directory contains 21 specialized autonomous agents:
 
 | Agent | Purpose |
 |-------|---------|
-| `plan.agent.md` | Strategic planning and architecture (opus) |
-| `implementation-plan.agent.md` | Structured implementation plans from research |
-| `prd.agent.md` | Product Requirements Document generator |
+| `strategic-planner.agent.md` | Comprehensive planning from PRDs to implementation plans (opus, consolidated) |
 | `task-researcher.agent.md` | Deep research for task planning |
 
 ### Code Optimization & Refactoring
@@ -59,7 +57,6 @@ The `agents/` directory contains 21 specialized autonomous agents:
 
 | Agent | Purpose |
 |-------|---------|
-| `agents-maintainer.agent.md` | Agent ecosystem maintenance |
 | `repo-index.agent.md` | Repository indexing and search |
 | `profile-maintainer.agent.md` | GitHub profile README management |
 | `janitor.agent.md` | Codebase cleanup and maintenance |
@@ -70,8 +67,7 @@ The `agents/` directory contains 21 specialized autonomous agents:
 |-------|---------|
 | `critical-thinking.agent.md` | Deep analysis and questioning |
 | `context7.agent.md` | Documentation-powered assistant |
-| `copilot-tuner.agent.md` | Copilot instruction optimization |
-| `prompt-engineer.agent.md` | Prompt analysis and optimization |
+| `ai-config-expert.agent.md` | AI configuration: Copilot, CLAUDE.md, AGENTS.md, prompts (consolidated) |
 | `arch-linux-expert.agent.md` | Arch Linux specialist |
 
 ### Agent Metadata
@@ -219,26 +215,33 @@ Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-autom
 2. Set `applyTo` glob pattern in frontmatter
 3. Update `instructions/INDEX.md`
 
-## Agent Modularity
+## Agent Modularity & Consolidation
 
-Agents are designed for **minimal context bloat** - each agent loads only what it needs:
+Agents are designed for **minimal context bloat** while maximizing capability through strategic consolidation:
 
-**Modular Language Agents**:
+**Modular Language Agents** (Separate by Language):
 - `bash.agent.md`, `python.agent.md`, `rust.agent.md` - Separate, focused agents
 - Each references `skills/language-optimization/` for common patterns
 - No context bloat: Load Bash agent without loading Python/Rust content
 - Maintains DRY: Common patterns extracted to shared skill
 
-**Modular MCP Agents**:
+**Modular MCP Agents** (Separate by Language):
 - `python-mcp-expert.agent.md`, `typescript-mcp-expert.agent.md` - Separate, focused agents
 - Each references `skills/mcp-development/` for common MCP patterns
 - No context bloat: Load Python MCP agent without loading TypeScript content
 - Maintains DRY: Common MCP principles extracted to shared skill
 
-**AI Configuration** (Clear Separation):
-- `copilot-tuner.agent.md` - Handles Copilot instructions, CLAUDE.md, MCP configs
-- `agents-maintainer.agent.md` - Exclusively handles AGENTS.md files
-- No overlap or conflict
+**Consolidated Planning Agent** (Single Agent, Multiple Levels):
+- `strategic-planner.agent.md` - Comprehensive planning agent
+- Handles PRDs, strategic plans, and implementation plans
+- Single methodology from vision to execution
+- Consolidates: `plan.agent.md`, `prd.agent.md`, `implementation-plan.agent.md`
+
+**Consolidated AI Configuration Agent** (Single Domain):
+- `ai-config-expert.agent.md` - All AI configuration in one place
+- Handles Copilot instructions, CLAUDE.md, AGENTS.md, prompt engineering
+- Single source of truth for AI optimization
+- Consolidates: `copilot-tuner.agent.md`, `agents-maintainer.agent.md`, `prompt-engineer.agent.md`
 
 **Shared Skills**:
 - `agent-patterns/` - Reusable workflow templates, model selection guidelines, tool profiles
@@ -246,10 +249,11 @@ Agents are designed for **minimal context bloat** - each agent loads only what i
 - `mcp-development/` - Common MCP server development patterns
 
 **Benefits**:
-- **No context bloat**: Load only the agent you need
+- **No context bloat**: Language agents separate by language (one instructions file each)
+- **Strategic consolidation**: Related capabilities merged where it makes sense (planning, AI config)
 - **DRY maintained**: Common patterns in skills, not duplicated in agents
-- **Modular**: Each agent is lean and focused
-- **Scalable**: Easy to add new language agents referencing existing skills
+- **Clear boundaries**: Each agent has well-defined scope
+- **Reduced complexity**: 21 → 17 agents without losing functionality
 
 ---
 
