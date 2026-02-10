@@ -9,6 +9,8 @@ Standards for Bash scripting with focus on safety, reliability, and performance.
 
 ## Shared Shell Principles
 
+<Goals>
+  
 ### Safety and Reliability
 
 1. **Fail Fast**: Detect errors immediately and exit
@@ -30,6 +32,7 @@ Standards for Bash scripting with focus on safety, reliability, and performance.
    - Descriptive variable and function names
    - Comments explaining non-obvious logic
    - Consistent style and formatting
+<Goals>
 
 ### Tooling Preferences
 
