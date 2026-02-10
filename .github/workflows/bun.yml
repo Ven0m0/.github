@@ -3,40 +3,40 @@ name: Bun Setup (Reusable)
 
 on:
   workflow_call:
-    inputs:
-      bun-version:
-        type: string
-        default: latest
-        description: 'Bun version to use'
-      run-tests:
-        type: boolean
-        default: true
-        description: 'Run test suite'
-      run-lint:
-        type: boolean
-        default: true
-        description: 'Run linting'
-      run-typecheck:
-        type: boolean
-        default: true
-        description: 'Run type checking'
-      test-command:
-        type: string
-        default: bun test
-        description: 'Command to run tests'
-      lint-command:
-        type: string
-        default: bun run lint
-        description: 'Command to run linting'
-      typecheck-command:
-        type: string
-        default: bun run typecheck
-        description: 'Command to run type checking'
+  inputs:
+    bun-version:
+      type: string
+      default: latest
+      description: 'Bun version to use'
+    run-tests:
+      type: boolean
+      default: true
+      description: 'Run test suite'
+    run-lint:
+      type: boolean
+      default: true
+      description: 'Run linting'
+    run-typecheck:
+      type: boolean
+      default: true
+      description: 'Run type checking'
+    test-command:
+      type: string
+      default: bun test
+      description: 'Command to run tests'
+    lint-command:
+      type: string
+      default: bun run lint
+      description: 'Command to run linting'
+    typecheck-command:
+      type: string
+      default: bun run typecheck
+      description: 'Command to run type checking'
   workflow_dispatch:
   pull_request:
-    branches: [main, master]
+  branches: [main, master]
   push:
-    branches: [main, master]
+  branches: [main, master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -51,39 +51,54 @@ env:
 
 jobs:
   setup:
-    name: Bun Setup & CI
-    runs-on: ubuntu-slim
-    timeout-minutes: 10
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
+  name: Bun Setup & CI
+  runs-on: ubuntu-slim
+  timeout-minutes: 10
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 1
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: ${{ inputs.bun-version || 'latest' }}
+    - name: Check for Bun Dependencies
+      id: check_files
+      run: |
+        if [[ -f "package.json" || -f "bun.lockb" ]]; then
+          echo "has_files=true" >> "$GITHUB_OUTPUT"
+          echo "Bun dependency files found."
+        else
+          echo "has_files=false" >> "$GITHUB_OUTPUT"
+          echo "No Bun dependency files found."
+        fi
+      shell: bash
 
-      - name: Cache Dependencies
-        uses: actions/cache@v5
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
+    - name: Setup Bun
+      if: steps.check_files.outputs.has_files == 'true'
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version || 'latest' }}
 
-      - name: Install Dependencies
-        run: bun install --frozen-lockfile
+    - name: Cache Dependencies
+      if: steps.check_files.outputs.has_files == 'true'
+      uses: actions/cache@v5
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
 
-      - name: Run Type Checking
-        if: inputs.run-typecheck
-        run: ${{ inputs.typecheck-command }}
+    - name: Install Dependencies
+      if: steps.check_files.outputs.has_files == 'true'
+      run: bun install --frozen-lockfile
 
-      - name: Run Linting
-        if: inputs.run-lint
-        run: ${{ inputs.lint-command }}
+    - name: Run Type Checking
+      if: inputs.run-typecheck && steps.check_files.outputs.has_files == 'true'
+      run: ${{ inputs.typecheck-command }}
 
-      - name: Run Tests
-        if: inputs.run-tests
-        run: ${{ inputs.test-command }}
+    - name: Run Linting
+      if: inputs.run-lint && steps.check_files.outputs.has_files == 'true'
+      run: ${{ inputs.lint-command }}
+
+    - name: Run Tests
+      if: inputs.run-tests && steps.check_files.outputs.has_files == 'true'
+      run: ${{ inputs.test-command }}

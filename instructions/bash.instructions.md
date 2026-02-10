@@ -1,96 +1,113 @@
 ---
-applyTo: "**/*.{sh,bash,zsh}"
-description: "Optimized bash/shell standards for performance and safety"
+description: 'Bash/Shell scripting standards: safety, performance, modern idioms'
+applyTo: '**/*.sh,**/*.bash'
 ---
 
-# Bash/Shell Standards
+# Bash/Shell Scripting Standards
 
-**Role:** Shell script optimizer — safe codemods, performance, correctness.
-**Scope:** `*.sh`, `*.bash`, `*.zsh`, PKGBUILD, shell configs. Exclude: `.git`, `node_modules`, vendor.
+<Goals>
 
-## Core Rules
+- Fail fast: `set -euo pipefail`, strict error handling
+- Performance: minimize forks, use builtins, batch operations
+- Portability: POSIX where possible, document OS requirements
+- Clarity: descriptive names, explain non-obvious logic
 
-- **Format:** `shfmt -i 2 -bn -ci -ln bash`; max 1 empty line
-- **Lint:** `shellcheck --severity=error`; `shellharden --replace` when safe
-- **Safety:** `set -euo pipefail`; quote all vars `"${var}"`; no `eval`, `ls` parsing, backticks
-- **Perf:** Bash builtins > subshells; arrays/mapfile > loops; native expansion
-- **Directives:** User>Rules. Edit>Create. Minimal diff.
+</Goals>
 
-## Script Template
+## Tooling
+
+| Task | Preferred | Fallback |
+|------|-----------|----------|
+| Search | `rg` | `grep` |
+| Find files | `fd` | `find` |
+| JSON/YAML | `jq`/`yq` | - |
+| Edit | `sd` | `sed` |
+| List | `eza` | `ls` |
+| View | `bat` | `cat` |
+| Download | `aria2c` | `curl` |
+
+## Template
 
 ```bash
 #!/usr/bin/env bash
 # shellcheck enable=all shell=bash source-path=SCRIPTDIR
-set -euo pipefail
-shopt -s nullglob globstar
-export LC_ALL=C
-IFS=$'\n\t'
-s=${BASH_SOURCE[0]}
-[[ $s != /* ]] && s=$PWD/$s
-cd -P -- "${s%/*}"
-has() { command -v -- "$1" &>/dev/null; }
+set -euo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t' LC_ALL=C
 
-# Cleanup handler
-cleanup() {
-  [[ -n "${TEMP_DIR:-}" && -d "$TEMP_DIR" ]] && rm -rf "$TEMP_DIR"
-}
+has(){ command -v -- "$1" &>/dev/null; }
+msg(){ printf '%s\n' "$@"; }
+log(){ printf '%s\n' "$@" >&2; }
+die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
+fcat(){ printf '%s\n' "$(<${1})"; }
+
+cleanup(){ [[ -n "${TEMP_DIR:-}" && -d "$TEMP_DIR" ]] && rm -rf "$TEMP_DIR"; }
 trap cleanup EXIT
 
-# Vars
-readonly SCRIPT_NAME="$(basename "$0")"
-TEMP_DIR=""
-
-# Functions
-main() {
-  TEMP_DIR="$(mktemp -d)"
-  # Main logic
+main(){
+    # Main logic here
+    :
 }
-
 main "$@"
 ```
 
-## Performance Optimizations
+<Standards>
+
+**Conditionals**: Always `[[ ]]`, regex with `=~`
+**Arrays**: `mapfile -t`, `declare -A` for associative
+**Strings**: `${v//p/r}` substitute, `${v%%p*}` trim - no sed for simple edits
+**I/O**: `<<<"$v"` here-string, `< <(cmd)` process substitution (preserves scope)
+**Variables**: Always quote (`"$var"`), `${var:-default}` for defaults, `readonly` for constants
+**Functions**: `local` for variables, validate inputs, return codes
+**Data**: Use `jq`/`yq` for structured data, quote filters, fail fast on parser errors
+
+</Standards>
+
+## Key Patterns
 
 ```bash
-# Date (no fork)
-date() { local x="${1:-%d/%m/%y-%R}"; printf "%($x)T\n" '-1'; }
+# Process substitution preserves variable scope
+while IFS= read -r line; do
+    count=$((count + 1))
+done < <(command | filter)
 
-# Read file (no cat)
-fcat() { printf '%s\n' "$(<${1})"; }
+# Array from file
+mapfile -t lines < "$file"
 
-# Sleep without fork (when safe)
-sleepy() { read -rt "${1:-1}" -- <> <(:) &>/dev/null || :; }
+# Precompile patterns
+pattern="^[0-9]{3}-[0-9]{4}$"
+for item in "${items[@]}"; do
+    [[ "$item" =~ $pattern ]] && echo "Valid"
+done
+
+# Temp files with cleanup
+TEMP_DIR="$(mktemp -d)"
 ```
 
-## Transformations
+## Linting
 
-1. **Compact syntax:** `() {` → `(){`; `> file` → `>file`; `2>&1 >/dev/null` → `&>/dev/null`
-1. **Modernize:** `[ ... ]` → `[[ ... ]]` (when safe)
-1. **Inline:** Functions ≤6 lines, ≤2 call sites, no complex flow
-1. **Dedupe:** Extract repeated blocks >3 lines into functions
-1. **JSON/YAML:** Use `jq`/`yq` parsers, not grep/awk/sed
+```bash
+shellcheck script.sh
+shellharden script.sh --replace
+shfmt -i 2 -bn -ci -s -w script.sh
+```
 
-## Forbidden Patterns
+<Limitations>
 
-- `eval` or runtime piping into shell
-- Unquoted expansions: `$var` → `"${var}"`
-- Parsing `ls` output
-- Unnecessary subshells: `$(cat file)` → `"$(<file)"`
-- Runtime sourcing external files (prefer standalone)
+- No `eval` (code injection risk)
+- No backticks (use `$()`)
+- No `ls` parsing (use globbing)
+- No unquoted variables
+- No `expr` (use `$(())`)
+- No sourcing remote files
 
-## Error Handling
+</Limitations>
 
-- Validate params before execution
-- Use `mktemp` for temp files/dirs
-- Trap cleanup on EXIT
-- Clear error messages with context
-- `readonly` for immutable values
+<Security>
 
-## Deliverables
+- No hardcoded credentials
+- Input validation before use
+- Error messages must not leak paths or sensitive data
+- No dynamic code execution from untrusted sources
+- Temporary files via `mktemp`, cleaned up in trap
 
-- Unified diff
-- Final standalone script(s)
-- One-line risk note
-- Lint clean (shellcheck + shfmt)
-
-**Pipeline:** Transform → shfmt → shellcheck → shellharden → re-check → PR
+</Security>

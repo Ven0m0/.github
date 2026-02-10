@@ -5,9 +5,9 @@ on:
   workflow_call:
   workflow_dispatch:
   pull_request:
-    branches: [main, master]
+  branches: [main, master]
   push:
-    branches: [main, master]
+  branches: [main, master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -29,43 +29,63 @@ env:
 
 jobs:
   autofix:
-    name: Python UV Autofix
-    runs-on: ubuntu-slim
-    timeout-minutes: 15
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+  name: Python UV Autofix
+  runs-on: ubuntu-slim
+  timeout-minutes: 15
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v6
+      with:
+        token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
-      - name: Setup UV
-        uses: astral-sh/setup-uv@v7
-        with:
-          python-version: "3.13"
-          activate-environment: "true"
-          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-          cache-python: "true"
-          resolution-strategy: "highest"
+    - name: Check for Python Dependencies
+      id: check_files
+      run: |
+        if [[ -f "requirements.txt" || -f "pyproject.toml" || -f "uv.lock" ]]; then
+          echo "has_files=true" >> "$GITHUB_OUTPUT"
+          echo "Python dependency files found."
+        else
+          echo "has_files=false" >> "$GITHUB_OUTPUT"
+          echo "No Python dependency files found."
+        fi
+      shell: bash
 
-      - name: Install Dependencies
-        run: |
-          uv pip install pip
+    - name: Setup UV
+      if: steps.check_files.outputs.has_files == 'true'
+      uses: astral-sh/setup-uv@v7
+      with:
+        python-version: "3.13"
+        activate-environment: "true"
+        github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+        cache-python: "true"
+        resolution-strategy: "highest"
+
+    - name: Install Dependencies
+      if: steps.check_files.outputs.has_files == 'true'
+      run: |
+        uv pip install pip
+        if [[ -f "requirements.txt" ]]; then
           uv pip install -r requirements.txt
+        fi
 
-      - name: Update Lock File
-        run: uv lock -U --fork-strategy requires-python --index-strategy unsafe-best-match --resolution highest
+    - name: Update Lock File
+      if: steps.check_files.outputs.has_files == 'true'
+      run: uv lock -U --fork-strategy requires-python --index-strategy unsafe-best-match --resolution highest
 
-      - name: Lint with Ruff
-        uses: astral-sh/ruff-action@v3
+    - name: Lint with Ruff
+      if: steps.check_files.outputs.has_files == 'true'
+      uses: astral-sh/ruff-action@v3
 
-      - name: Fix Lint Issues
-        run: ruff check --fix-only
+    - name: Fix Lint Issues
+      if: steps.check_files.outputs.has_files == 'true'
+      run: ruff check --fix-only
 
-      - name: Format Code
-        run: ruff format
+    - name: Format Code
+      if: steps.check_files.outputs.has_files == 'true'
+      run: ruff format
 
-      - name: Run Autofix
-        uses: autofix-ci/action@v1.3.2
-        with:
-          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+    - name: Run Autofix
+      if: steps.check_files.outputs.has_files == 'true'
+      uses: autofix-ci/action@v1.3.2
+      with:
+        github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}

@@ -2,315 +2,143 @@
 
 > Organization-wide instructions for GitHub Copilot across all Ven0m0 repositories
 
-## Organization Context
+<HighLevelDetails>
 
-**Ven0m0** is a personal GitHub account focused on building practical open source tools that improve developer workflows and platform engineering practices. Projects emphasize automation, developer experience, and AI-assisted development.
+**Ven0m0** builds practical open source tools for developer workflows, platform engineering, automation, and AI-assisted development.
 
-## General Coding Principles
+</HighLevelDetails>
 
-### Code Quality Standards
+<Goals>
 
-1. **Readability First**: Write code that is self-documenting and easy to understand
-2. **Explicit Over Implicit**: Prefer explicit type annotations and clear variable names
-3. **Fail Fast**: Validate inputs early and provide clear error messages
-4. **Test Coverage**: Aim for 80%+ test coverage on all projects
-5. **Security by Default**: Never commit secrets, use environment variables
+- Readable, self-documenting code with explicit types and clear names
+- Fail fast with specific error messages; no silent failures
+- 80%+ test coverage; 95% for critical paths
+- Security by default: no secrets in code, environment variables for credentials
+- Conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`
 
-### Documentation Requirements
+</Goals>
 
-- All public APIs must have documentation
-- READMEs should include quick start, installation, and usage examples
-- Complex logic should have inline comments explaining the "why"
-- Architectural decisions should be documented in ADRs when applicable
+<Limitations>
 
-### Git Practices
+- No hardcoded secrets, API keys, or credentials
+- No generic error handling (catch specific exceptions)
+- No `any` types without justification
+- No code generation without matching tests
+- No undocumented public APIs
 
-- Use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`
-- Keep commits atomic and focused on a single change
-- Write descriptive commit messages explaining the change
-- Reference issues in commit messages when applicable
+</Limitations>
 
-## Language-Specific Guidelines
+## Language Standards
 
-### Python Projects
+### Python
+
+Tech: Python 3.12+ | `uv` (packages) | `ruff` (lint+format) | `pyright` (types) | `pytest`
 
 ```python
-# Always include type annotations
 def process_data(items: list[str], limit: int = 10) -> dict[str, int]:
-    """Process items and return counts.
-
-    Args:
-        items: List of items to process.
-        limit: Maximum items to process.
-
-    Returns:
-        Dictionary mapping items to their counts.
-    """
+    """Process items and return counts."""
     ...
 ```
 
-**Standards:**
-- Python 3.12+ with modern syntax
-- Use `uv` for package management
-- Format with `ruff`, type check with `pyright`
-- Google-style docstrings
-- Prefer `dataclasses` or `pydantic` for data structures
+- Google-style docstrings, type annotations mandatory
+- `dataclasses` or `pydantic` for data structures
+- Layout: `src/package_name/`, `tests/{unit,integration}/`, `pyproject.toml`
 
-### TypeScript/JavaScript Projects
+### TypeScript/JavaScript
+
+Tech: Node.js 22+ ESM | `bun` (if `bun.lockb`/`bunfig.toml`) else `pnpm` | `biome` | `vitest`
 
 ```typescript
-// Use explicit types, avoid any
 interface UserConfig {
   name: string;
   timeout?: number;
 }
-
-export function createClient(config: UserConfig): Client {
-  // Implementation
-}
+export function createClient(config: UserConfig): Client { ... }
 ```
 
-**Standards:**
-- Node.js 22+ with ESM modules
-- Use `bun` when `bun.lockb` or `bunfig.toml` is present; otherwise use `pnpm`
-- ESLint 9+ flat config with strict rules
-- Prefer `interface` over `type` for object shapes
-- Use `vitest` for testing
+- Strict mode, `interface` over `type` for objects, no `enum` (use `as const`)
+- Layout: `src/`, `tests/`, `package.json`, `tsconfig.json`
 
-### Go Projects
+### Go
+
+Tech: Go 1.23+ | `golangci-lint` | table-driven tests
 
 ```go
-// Package users provides user management functionality.
-package users
-
-// User represents a user in the system.
-type User struct {
-    ID    string
-    Name  string
-    Email string
-}
-
-// GetByID retrieves a user by their ID.
 func (s *Service) GetByID(ctx context.Context, id string) (*User, error) {
-    if id == "" {
-        return nil, fmt.Errorf("id cannot be empty")
-    }
-    // Implementation
+    if id == "" { return nil, fmt.Errorf("id cannot be empty") }
+    ...
 }
 ```
 
-**Standards:**
-- Go 1.23+ with modules
-- Use `golangci-lint` for linting
-- Standard project layout: cmd/, internal/, pkg/
-- Table-driven tests with subtests
-- Context propagation for cancellation
+- Standard layout: `cmd/`, `internal/`, `pkg/`, `go.mod`
+- Context propagation, wrap errors: `fmt.Errorf("failed: %w", err)`
 
-### Rust Projects
+### Rust
+
+Tech: Latest stable | `clippy` pedantic | `cargo-deny` | `thiserror`
 
 ```rust
-/// Processes the input data and returns results.
-///
-/// # Arguments
-///
-/// * `input` - The data to process
-///
-/// # Returns
-///
-/// A Result containing the processed data or an error.
-///
-/// # Examples
-///
-/// ```
-/// let result = process("input")?;
-/// ```
-pub fn process(input: &str) -> Result<Output, Error> {
-    // Implementation
-}
+pub fn process(input: &str) -> Result<Output, Error> { ... }
 ```
 
-**Standards:**
-- Latest stable Rust
-- Use `clippy` with pedantic lints
-- Use `cargo-deny` for dependency auditing
-- Prefer `thiserror` for error types
 - Document all public items with examples
+- No `.unwrap()` in production
 
-### Java Projects
+### Java
 
-```java
-/**
- * Service for managing resources.
- *
- * <p>Handles business logic for resource operations including
- * creation, retrieval, and updates.
- */
-@Service
-@Transactional(readOnly = true)
-public class ResourceService {
+Tech: Java 21 LTS | Spring Boot 3.3+ | Gradle Kotlin DSL | Checkstyle Google
 
-    private final ResourceRepository repository;
+- Constructor injection, Records for DTOs
 
-    public ResourceService(ResourceRepository repository) {
-        this.repository = repository;
-    }
+## Cross-Language Patterns
 
-    /**
-     * Finds a resource by its unique identifier.
-     *
-     * @param id the resource identifier
-     * @return the resource if found
-     * @throws ResourceNotFoundException if not found
-     */
-    public Resource findById(Long id) {
-        return repository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(id));
-    }
-}
-```
+<Standards>
 
-**Standards:**
-- Java 21 LTS with Spring Boot 3.3+
-- Gradle with Kotlin DSL
-- Constructor injection (no field injection)
-- Use Java Records for DTOs
-- Checkstyle with Google style (modified)
-
-## Project Structure Patterns
-
-### Standard Layouts
-
-**Python:**
-```
-src/package_name/
-tests/
-  unit/
-  integration/
-pyproject.toml
-```
-
-**TypeScript:**
-```
-src/
-tests/
-package.json
-tsconfig.json
-```
-
-**Go:**
-```
-cmd/app/
-internal/
-pkg/
-go.mod
-```
-
-## AI Assistant Integration
-
-### CLAUDE.md Files
-
-Each repository should have a `CLAUDE.md` file at the root containing:
-- Project overview and structure
-- Build and test commands
-- Code style requirements
-- Architecture guidelines
-- Common patterns and examples
-
-### MCP Server Configuration
-
-Projects using VS Code should include `.vscode/mcp.json` with:
-- context7 for documentation lookup
-- filesystem for project navigation
-- memory for session persistence (when applicable)
-
-## Security Practices
-
-1. **No Hardcoded Secrets**: Use environment variables or secret managers
-2. **Dependency Scanning**: Enable Dependabot and review CVEs
-3. **SHA-Pinned Actions**: Prefer commit SHA pinning; at minimum pin to a major version tag
-4. **Minimal Permissions**: GITHUB_TOKEN with least privilege
-5. **Secret Scanning**: Pre-commit hooks with gitleaks
-
-## CI/CD Standards
-
-All projects should include:
-
-```yaml
-# Minimum CI workflow structure
-name: CI
-on: [push, pull_request]
-
-jobs:
-  lint:
-    # Linting and formatting checks
-  test:
-    # Unit and integration tests
-  build:
-    # Build verification
-```
-
-For reusable workflows, prefer the templates in `.github/workflows/`:
-- `comprehensive-lint.yml`
-- `bun.yml`
-- `uv-lock.yml`
-- `dependabot-automerge.yml`
-- `git-maintenance.yml`
-- `img-opt.yml`
-
-## Common Patterns
-
-### Error Handling
+**Error Handling**: Specific error types, context when wrapping, explicit messages
 
 ```python
-# Python - explicit error messages
 msg = f"Failed to process {item}: {reason}"
 raise ValueError(msg)
 ```
 
-```typescript
-// TypeScript - Result pattern or explicit throws
-function process(input: string): Result<Output, ProcessError> {
-  if (!input) {
-    return err(new ProcessError("Input required"));
-  }
-  return ok(doProcess(input));
-}
-```
-
 ```go
-// Go - wrap errors with context
-if err != nil {
-    return fmt.Errorf("failed to fetch user %s: %w", id, err)
-}
+return fmt.Errorf("failed to fetch user %s: %w", id, err)
 ```
 
-### Testing Patterns
+**Testing**: Table-driven tests, mock externals, test edge cases and error paths
 
-- Use table-driven tests for multiple cases
-- Mock external dependencies
-- Test edge cases and error paths
-- Include integration tests for API boundaries
+**Config**: Environment variables for runtime, YAML/TOML for complex settings, validate at startup
 
-### Configuration
+**Imports**: stdlib > third-party > local (alphabetical within groups)
 
-- Use environment variables for runtime config
-- Use structured config files (YAML/TOML) for complex settings
-- Validate configuration at startup
-- Provide sensible defaults
+</Standards>
 
-## Content and Documentation
+<Security>
 
-For content repositories and documentation:
+1. Environment variables or secret managers for credentials
+2. Dependabot enabled, review CVEs
+3. SHA-pinned Actions (commit SHA; minimum: major version tag)
+4. GITHUB_TOKEN with least privilege
+5. Pre-commit hooks with gitleaks
 
-- Use Markdown with consistent formatting
-- Include frontmatter with required metadata
-- Validate links and spelling in CI
-- Follow SEO best practices for public content
+</Security>
 
-## When Generating Code
+## CI/CD
 
-1. **Match existing style**: Look at surrounding code for patterns
-2. **Include tests**: Generate tests alongside implementation
-3. **Add documentation**: Include docstrings/comments for complex logic
-4. **Handle errors**: Include proper error handling
-5. **Consider edge cases**: Account for null, empty, and boundary conditions
+Reusable workflows in `.github/workflows/`: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-automerge.yml`, `git-maintenance.yml`, `img-opt.yml`
+
+<WhatToAdd>
+
+When generating code:
+1. Match existing style in surrounding code
+2. Include tests alongside implementation
+3. Add docstrings/comments for complex logic
+4. Include proper error handling
+5. Account for null, empty, and boundary conditions
+
+</WhatToAdd>
+
+## AI Assistant Integration
+
+- Each repo should have `CLAUDE.md` with: overview, structure, build/test commands, style requirements
+- `.vscode/mcp.json` with context7, filesystem, memory (when applicable)

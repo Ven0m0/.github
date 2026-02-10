@@ -20,16 +20,26 @@ GitHub automatically uses these files when a repository doesn't define its own:
 
 Organization-wide: `.github/copilot-instructions.md`
 
-Scoped by file type in `.github/instructions/`:
+Scoped by file type in `instructions/`:
 
 | File | Applies To |
 |------|------------|
-| `actions.instructions.md` | `.github/workflows/*.yml` |
 | `bash.instructions.md` | `*.sh`, `*.bash` |
-| `javascript.instructions.md` | `*.js`, `*.ts`, `*.jsx`, `*.tsx` |
 | `python.instructions.md` | `*.py` |
+| `javascript.instructions.md` | `*.js`, `*.ts`, `*.jsx`, `*.tsx` |
 | `rust.instructions.md` | `*.rs` |
+| `cicd-standards.instructions.md` | `.github/workflows/*.yml` |
 | `markdown.instructions.md` | `*.md` |
+
+See `instructions/INDEX.md` for the full list.
+
+## AI Agents
+
+22 specialized agents in `agents/` for planning, code optimization, CI/CD, and more. See `AGENTS.md` for details.
+
+## Skills
+
+8 reusable knowledge modules in `skills/`: gh-cli, refactoring, PRD, AI tuning, workflow development, codebase cleanup, evaluation patterns, CLAUDE.md condensation.
 
 ## Reusable Workflows
 
@@ -41,7 +51,7 @@ jobs:
     uses: Ven0m0/.github/.github/workflows/comprehensive-lint.yml@main
 ```
 
-Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-automerge.yml`, `img-opt.yml`, `git-maintenance.yml`, `release.yml`, `security.yml`, `docker-build.yml`, `rust.yml`, `go.yml`
+Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-automerge.yml`, `img-opt.yml`, `git-maintenance.yml`, `release.yml`, `security.yml`
 
 ## Overriding
 
