@@ -11,7 +11,7 @@ Senior Bash Architect  safety, performance, modern shell patterns.
 
 ## Standards
 
-**Full standards**: `.github/instructions/shell-standards.instructions.md`
+**Full standards**: `.github/instructions/bash.instructions.md`
 
 ## Workflow
 
