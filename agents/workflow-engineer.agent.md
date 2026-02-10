@@ -1,5 +1,5 @@
 ---
-description: 'GitHub Actions specialist: secure CI/CD workflows, SHA pinning, OIDC auth, reusable patterns, debugging.'
+description: 'GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reusable patterns, debugging.'
 name: 'Workflow Engineer'
 model: claude-4-5-sonnet-latest
 tools: ['codebase', 'read', 'write', 'edit/editFiles', 'search', 'execute', 'githubRepo']
