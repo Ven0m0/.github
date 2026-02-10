@@ -1,52 +1,38 @@
-The following instructions are only to be applied when performing a code review.
+The following instructions apply when performing a code review.
 
-## Prompt file guide
+## Prompt File Guide
 
-**Only apply to files that end in `.prompt.md`**
+**Apply to files ending in `.prompt.md`**
 
-- [ ] The prompt has markdown front matter.
-- [ ] The prompt has a `agent` field specified of either `agent`, `ask`, or `Plan`.
-- [ ] The prompt has a `description` field.
-- [ ] The `description` field is not empty.
-- [ ] The file name is lower case, with words separated by hyphens.
-- [ ] Encourage the use of `tools`, but it's not required.
-- [ ] Strongly encourage the use of `model` to specify the model that the prompt is optimised for.
-- [ ] Strongly encourage the use of `name` to set the name for the prompt.
+- [ ] Has markdown frontmatter with `mode` (`agent`, `ask`, or `edit`) and `description`
+- [ ] `description` is not empty
+- [ ] Filename is lowercase with hyphens
+- [ ] Encourage `tools` and strongly encourage `model` and `name`
 
-## Instruction file guide
+## Instruction File Guide
 
-**Only apply to files that end in `.instructions.md`**
+**Apply to files ending in `.instructions.md`**
 
-- [ ] The instruction has markdown front matter.
-- [ ] The instruction has a `description` field.
-- [ ] The `description` field is not empty.
-- [ ] The file name is lower case, with words separated by hyphens.
-- [ ] The instruction has an `applyTo` field that specifies the file or files to which the instructions apply. If they wish to specify multiple file paths they should formatted like `'**.js, **.ts'`.
+- [ ] Has markdown frontmatter with `description` and `applyTo`
+- [ ] `description` is not empty
+- [ ] `applyTo` specifies target file patterns (e.g., `'**/*.js,**/*.ts'`)
+- [ ] Filename is lowercase with hyphens
+- [ ] Uses XML tags (`<Goals>`, `<Standards>`, `<Limitations>`, `<Security>`, `<WhatToAdd>`, `<HighLevelDetails>`) for semantic structure
 
-## Agent file guide
+## Agent File Guide
 
-**Only apply to files that end in `.agent.md`**
+**Apply to files ending in `.agent.md`**
 
-- [ ] The agent has markdown front matter.
-- [ ] The agent has a `description` field.
-- [ ] The `description` field is not empty.
-- [ ] The file name is lower case, with words separated by hyphens.
-- [ ] Encourage the use of `tools`, but it's not required.
-- [ ] Strongly encourage the use of `model` to specify the model that the agent is optimised for.
-- [ ] Strongly encourage the use of `name` to set the name for the agent.
+- [ ] Has markdown frontmatter with `description`
+- [ ] `description` is not empty
+- [ ] Filename is lowercase with hyphens
+- [ ] Encourage `tools`, strongly encourage `model` and `name`
 
-## Agent Skills guide
+## Agent Skills Guide
 
-**Only apply to folders in the `skills/` directory**
+**Apply to folders in `skills/` directory**
 
-- [ ] The skill folder contains a `SKILL.md` file.
-- [ ] The SKILL.md has markdown front matter.
-- [ ] The SKILL.md has a `name` field.
-- [ ] The `name` field value is lowercase with words separated by hyphens.
-- [ ] The `name` field matches the folder name.
-- [ ] The SKILL.md has a `description` field.
-- [ ] The `description` field is not empty, at least 10 characters, and maximum 1024 characters.
-- [ ] The `description` field value is wrapped in single quotes.
-- [ ] The folder name is lower case, with words separated by hyphens.
-- [ ] Any bundled assets (scripts, templates, data files) are referenced in the SKILL.md instructions.
-- [ ] Bundled assets are reasonably sized (under 5MB per file).
+- [ ] Contains `SKILL.md` with frontmatter (`name`, `description`)
+- [ ] `name` is lowercase with hyphens, matches folder name
+- [ ] `description` is 10-1024 chars, single-quoted, states WHAT/WHEN/KEYWORDS
+- [ ] Bundled assets referenced in SKILL.md, under 5MB each
