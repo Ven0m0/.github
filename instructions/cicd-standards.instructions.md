@@ -158,6 +158,24 @@ deploy:
   needs: [build, test]
 ```
 
+## Testing Strategy
+
+| Level | When | Focus |
+|-------|------|-------|
+| Unit | Every push/PR | Individual components, fast feedback, high coverage |
+| Integration | PR merge | Component interactions, real services via `services` |
+| E2E | Pre-deploy | Full user flows, staging environment |
+| Performance | Nightly/weekly | Load testing, threshold enforcement |
+
+## Deployment Strategies
+
+| Strategy | When | Benefit |
+|----------|------|---------|
+| Rolling | Default for stateless apps | Gradual replacement |
+| Blue/Green | Zero-downtime critical apps | Instant rollback |
+| Canary | Controlled blast radius | Early issue detection |
+| Feature Flags | Decoupling deploy from release | A/B testing, staged rollout |
+
 ## Debugging
 
 | Error | Cause | Fix |
@@ -166,6 +184,8 @@ deploy:
 | Cache never hits | Wrong key format | Check `hashFiles()` paths |
 | Secrets undefined | Wrong context | Use `secrets: inherit` |
 | Workflow not triggered | Event config wrong | Verify `on:` block |
+| Timeout | Inefficient steps | Profile, add matrix, optimize caching |
+| Flaky tests | Race conditions | Explicit waits, standardize env |
 
 ```yaml
 # Debug context

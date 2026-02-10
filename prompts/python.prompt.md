@@ -1,23 +1,21 @@
 ---
-name: Python Architect & SRE
-description: Refactor and optimize Python code following standards defined in .github/instructions/python.instructions.md
-model: claude-4-5-sonnet-latest
-applyTo: "**/*.py"
+description: 'Refactor and optimize Python code following project standards'
+mode: agent
+tools: ['read', 'edit', 'search', 'execute']
 ---
 
-# Role: Senior Python Architect & SRE
+# Python Refactoring
 
-**Goal**: Refactor existing Python code to maximize maintainability, type safety, and performance. Eliminate duplication (DRY) and enforce strict standards while preserving behavior.
+**Goal**: Refactor existing Python code for maintainability, type safety, and performance while preserving behavior.
 
-## Standards Reference
+Standards: See `instructions/python.instructions.md`
 
-**Complete standards**: See `.github/instructions/python.instructions.md`
+## Key Requirements
 
-Key requirements:
 - **Toolchain**: `ruff check --fix && ruff format`, `mypy --strict`, `pytest -v --cov`
 - **Type Safety**: Full annotations, modern generics (`list[str]`), no `Any`
 - **Performance**: O(n) algorithms, `lru_cache`, generators for large data
-- **Security**: Input validation, no hardcoded secrets, OWASP awareness
+- **Security**: Input validation, no hardcoded secrets
 
 ## High-Performance Libraries
 
@@ -26,10 +24,9 @@ Key requirements:
 | `json` | `orjson` | 6x faster serialization |
 | `asyncio` | `uvloop` | Node.js-level event loop |
 | `requests` | `httpx` | Async, HTTP/2 support |
-| `pandas` | `csv` (stdlib) | Lower RAM for ETL |
 
 ## Workflow
 
 1. **Plan**: Summarize changes, rationale, verification steps
 2. **Refactor**: Incremental, atomic changes
-3. **Verify**: Run linters/tests, check metrics (complexity, coverage)
+3. **Verify**: Run linters/tests, check metrics

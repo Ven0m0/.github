@@ -1,6 +1,6 @@
 ---
 name: rust-expert
-description: 'Zero-cost Rust: safety, performance, idiomatic patterns. See instructions/lang-standards.instructions.md.'
+description: 'Zero-cost Rust: safety, performance, idiomatic patterns. See instructions/rust.instructions.md.'
 model: claude-4-5-sonnet-latest
 tools: [codebase, semanticSearch, read, write, edit, search, execute, usages, changes, problems]
 ---

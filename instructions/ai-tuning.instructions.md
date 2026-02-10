@@ -97,11 +97,24 @@ def process(items: list[str], limit: int = 10) -> dict[str, int]: ...
 }
 ```
 
+## Copilot Guard Rails
+
+1. **User directives have highest priority** - execute without deviation
+2. **Factual verification over internal knowledge** - use tools for version-dependent info
+3. **Code on request only** - default to natural language explanations
+4. **Explain the "why"** - reasoning over the solution
+
+**Code Generation**: Simplest solution possible. Standard library first. No premature optimization.
+**Code Modification**: Preserve existing structure. Minimal changes. No unsolicited refactoring.
+
 <Limitations>
 
 - No verbose prose when tables or lists suffice
 - No duplicating info available in other instruction files
 - No outdated tool versions or commands
 - No vague guidance ("should", "might", "possibly")
+- No code blocks unless explicitly asked (tool usage exempt)
+- No extra features beyond the request
+- No unsolicited cleanup of unrelated code
 
 </Limitations>

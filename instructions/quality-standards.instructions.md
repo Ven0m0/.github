@@ -28,7 +28,7 @@ applyTo: '**/*'
 
 1. **Context**: Read PR description, linked issues, check scope
 2. **Structure**: File layout > module design > implementation > details
-3. **Domain Standards**: Apply language-specific rules from `lang-standards.instructions.md`
+3. **Domain Standards**: Apply language-specific rules from relevant instruction files
 4. **Security**: No hardcoded secrets, input validation, no info disclosure, deps audited
 5. **Tests**: Public methods tested, edge cases covered, 80%+ coverage
 6. **Performance**: No O(n^2) where O(n) works, no unnecessary copies, caching for repeated calls

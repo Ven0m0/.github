@@ -1,6 +1,6 @@
 ---
 name: python-expert
-description: 'Production Python agent for type safety, security, O(n) performance. See instructions/lang-standards.instructions.md.'
+description: 'Production Python agent for type safety, security, O(n) performance. See instructions/python.instructions.md.'
 model: claude-4-5-sonnet-latest
 tools: [codebase, semanticSearch, read, write, edit, search, execute, usages, changes, problems]
 ---
@@ -13,7 +13,7 @@ Senior Python SRE  type safety, security-first, O(n) performance, clean architec
 
 ## Standards
 
-**Full standards**: `.github/instructions/lang-standards.instructions.md`
+**Full standards**: `.github/instructions/python.instructions.md`
 
 ## Workflow
 
