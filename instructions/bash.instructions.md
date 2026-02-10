@@ -1,9 +1,9 @@
 ---
-description: 'Bash scripting standards: safety, performance, and modern idioms'
+description: 'Bash/Shell scripting standards: safety, performance, modern idioms'
 applyTo: '**/*.sh,**/*.bash'
 ---
 
-# Bash Scripting Standards
+# Bash/Shell Scripting Standards
 
 <Goals>
 
@@ -14,13 +14,13 @@ applyTo: '**/*.sh,**/*.bash'
 
 </Goals>
 
-## Tooling Preferences
+## Tooling
 
 | Task | Preferred | Fallback |
 |------|-----------|----------|
 | Search | `rg` | `grep` |
 | Find files | `fd` | `find` |
-| JSON | `jq` | - |
+| JSON/YAML | `jq`/`yq` | - |
 | Edit | `sd` | `sed` |
 | List | `eza` | `ls` |
 | View | `bat` | `cat` |
@@ -39,6 +39,15 @@ msg(){ printf '%s\n' "$@"; }
 log(){ printf '%s\n' "$@" >&2; }
 die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
 fcat(){ printf '%s\n' "$(<${1})"; }
+
+cleanup(){ [[ -n "${TEMP_DIR:-}" && -d "$TEMP_DIR" ]] && rm -rf "$TEMP_DIR"; }
+trap cleanup EXIT
+
+main(){
+    # Main logic here
+    :
+}
+main "$@"
 ```
 
 <Standards>
@@ -47,8 +56,9 @@ fcat(){ printf '%s\n' "$(<${1})"; }
 **Arrays**: `mapfile -t`, `declare -A` for associative
 **Strings**: `${v//p/r}` substitute, `${v%%p*}` trim - no sed for simple edits
 **I/O**: `<<<"$v"` here-string, `< <(cmd)` process substitution (preserves scope)
-**Variables**: Always quote (`"$var"`), `${var:-default}` for defaults
+**Variables**: Always quote (`"$var"`), `${var:-default}` for defaults, `readonly` for constants
 **Functions**: `local` for variables, validate inputs, return codes
+**Data**: Use `jq`/`yq` for structured data, quote filters, fail fast on parser errors
 
 </Standards>
 
@@ -68,6 +78,9 @@ pattern="^[0-9]{3}-[0-9]{4}$"
 for item in "${items[@]}"; do
     [[ "$item" =~ $pattern ]] && echo "Valid"
 done
+
+# Temp files with cleanup
+TEMP_DIR="$(mktemp -d)"
 ```
 
 ## Linting
