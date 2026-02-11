@@ -6,7 +6,7 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ```
 .github/
-  agents/            # 17 specialized AI agents
+  agents/            # 18 specialized AI agents
   skills/            # 11 reusable skill modules
   instructions/      # 21 Copilot instruction files
   hooks/             # Pre-commit hooks
@@ -20,7 +20,7 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ## Agents
 
-The `agents/` directory contains 17 specialized autonomous agents:
+The `agents/` directory contains 18 specialized autonomous agents:
 
 ### Workflow Orchestration
 
@@ -48,6 +48,7 @@ The `agents/` directory contains 17 specialized autonomous agents:
 
 | Agent | Purpose |
 |-------|---------|
+| `git.agent.md` | Git & GitHub CLI workflows, best practices, advanced operations |
 | `workflow-engineer.agent.md` | GitHub Actions and CI/CD |
 | `github-issue-fixer.agent.md` | Issue triage and resolution |
 | `python-mcp-expert.agent.md` | Python MCP server development (modular, references mcp-development skill) |
@@ -253,7 +254,7 @@ Agents are designed for **minimal context bloat** while maximizing capability th
 - **Strategic consolidation**: Related capabilities merged where it makes sense (planning, AI config)
 - **DRY maintained**: Common patterns in skills, not duplicated in agents
 - **Clear boundaries**: Each agent has well-defined scope
-- **Reduced complexity**: 21 → 17 agents without losing functionality
+- **Reduced complexity**: 21 → 18 agents without losing functionality
 
 ---
 
