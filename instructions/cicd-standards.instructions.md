@@ -51,11 +51,14 @@ permissions:
 
 ### Action Pinning
 ```yaml
-# CORRECT: SHA-pinned with version comment
+# CORRECT: Version tag
+- uses: actions/checkout@v4
+
+# WRONG: SHA pinning (harder to maintain, less readable)
 - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-# WRONG: tag or branch (vulnerable to compromise)
-- uses: actions/checkout@v4
+# WRONG: branch reference (vulnerable to compromise)
+- uses: actions/checkout@main
 ```
 
 ### Permissions (Least Privilege)
