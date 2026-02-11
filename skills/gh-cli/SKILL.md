@@ -140,10 +140,15 @@ gh pr create --title "Fix #123" --body "Closes #123"
 
 # Bulk close stale issues (Optimized: 1 API call via GraphQL)
 gh issue list --search "label:stale" --json id --jq '
-  "mutation { " + (to_entries | map("
+  if length == 0 then
+    "query { __typename }" # A no-op query to prevent errors when no issues are found
+  else
+    "mutation { " + (to_entries | map("
     c\(.key): addComment(input:{subjectId:\"\(.value.id)\",body:\"Closing as stale\"}){clientMutationId}
     s\(.key): closeIssue(input:{issueId:\"\(.value.id)\"}){clientMutationId}
-  ") | join("")) + " }"' | gh api graphql -f query=-
+  ") | join("")) + " }"
+  end
+' | gh api graphql -f query=-
 gh workflow run ci.yml --ref main
 gh run list --workflow ci.yml --limit 1 --json databaseId --jq '.[0].databaseId' | \
   xargs gh run watch
