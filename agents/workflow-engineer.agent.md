@@ -13,7 +13,7 @@ Standards: See `instructions/cicd-standards.instructions.md`
 
 ## Security (Non-Negotiable)
 
-1. **SHA Pinning**: Never pin to full commit SHA
+1. **Action Pinning**: Use version tags (e.g., @v4), not SHA pins or branch names
 2. **Permissions**: Explicit `permissions:` block, `contents: read` default
 3. **Secrets**: Via `${{ secrets.NAME }}` only, environment-specific for deploys
 4. **OIDC**: Short-lived credentials for cloud providers over static secrets
@@ -31,7 +31,7 @@ Standards: See `instructions/cicd-standards.instructions.md`
 
 1. Understand the goal
 2. Check existing workflows for reuse
-3. Security first: SHA-pin, minimal permissions
+3. Security first: version-tagged actions, minimal permissions
 4. Path filtering to skip irrelevant runs, concurrency control
 5. Suggest `act` for local testing
 6. Document inputs/outputs, add `timeout-minutes` on all jobs
