@@ -138,11 +138,17 @@ gh issue develop 123 --branch feature/issue-123
 git add . && git commit -m "Fix #123" && git push
 gh pr create --title "Fix #123" --body "Closes #123"
 
-# Bulk close stale issues
-gh issue list --search "label:stale" --json number --jq '.[].number' | \
-  xargs -I {} gh issue close {} --comment "Closing as stale"
-
-# Run workflow and watch
+# Bulk close stale issues (Optimized: 1 API call via GraphQL)
+gh issue list --search "label:stale" --json id --jq '
+  if length == 0 then
+    "query { __typename }" # A no-op query to prevent errors when no issues are found
+  else
+    "mutation { " + (to_entries | map("
+    c\(.key): addComment(input:{subjectId:\"\(.value.id)\",body:\"Closing as stale\"}){clientMutationId}
+    s\(.key): closeIssue(input:{issueId:\"\(.value.id)\"}){clientMutationId}
+  ") | join("")) + " }"
+  end
+' | gh api graphql -f query=-
 gh workflow run ci.yml --ref main
 gh run list --workflow ci.yml --limit 1 --json databaseId --jq '.[0].databaseId' | \
   xargs gh run watch
