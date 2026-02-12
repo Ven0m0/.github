@@ -50,6 +50,34 @@ Configure Model Context Protocol servers:
 - Transport selection (stdio vs HTTP)
 - Tool and resource definitions
 
+### 6. Token Optimization
+Minimize token usage via Conditional Flow-Style formatting:
+- **Data structures**: Inline short arrays/objects if result ≤140 chars (JSON: collapse `[...]`/`{...}`, YAML: block→flow `[x,y]`/`{k:v}`, TOML: inline arrays/tables)
+- **Markdown**: Collapse 3+ newlines→2, delete HTML comments, tighten lists
+- **Safety**: Preserve syntax validity (YAML indentation, TOML sections)
+- **Code blocks**: No modification except trailing whitespace trim
+
+#### Token Optimization Rules
+
+**Data Structure Formatting (JSON, YAML, TOML)**:
+1. Detect short collections expanded vertically
+2. Inline to single row (Flow Style) if result ≤140 chars
+3. JSON: Collapse `[...]` and `{...}`
+4. YAML: Convert block lists (`- item`) to flow lists `[item, item]`, block maps (`k: v`) to flow maps `{k: v, x: y}`. Maintain valid indentation.
+5. TOML: Convert multi-line arrays to inline `[...]`. Inline tables `{ k = v }` for leaf nodes only.
+6. Fallback: Keep Block Style if >140 chars
+
+**Markdown Compaction**:
+- Collapse 3+ consecutive newlines to 2
+- Delete HTML comments `<!-- ... -->`
+- Enforce tight lists (no blank lines) unless item contains block element
+
+**Safety Constraints**:
+- Output MUST remain syntactically valid
+- Do NOT break YAML indentation or TOML table headers
+- Do NOT modify script code blocks (except trailing whitespace)
+- Do NOT summarize text or remove valid documentation
+
 ## Workflow
 
 ### For Copilot/CLAUDE.md
@@ -71,6 +99,13 @@ Configure Model Context Protocol servers:
 2. **Research**: Check repos, docs, codebase for authoritative sources
 3. **Improve**: Apply specificity, logical flow, actionable guidance
 4. **Validate**: Execute mentally, verify zero ambiguity
+
+### For Token Optimization
+1. **Analyze**: Identify data structures and markdown eligible for compression
+2. **Calculate**: Verify inline result ≤140 chars before applying
+3. **Transform**: Apply Flow Style to qualifying structures
+4. **Validate**: Ensure syntactic validity (parse result)
+5. **Verify**: Confirm no semantic changes, preserved indentation
 
 ## AGENTS.md Template
 
@@ -141,6 +176,12 @@ Configure Model Context Protocol servers:
 3. **Comprehensive** - Cover all major workflows
 4. **Maintainable** - Easy to update as project evolves
 
+### Token Optimization Principles
+1. **Conditional** - Apply only when result ≤140 chars
+2. **Valid** - Preserve syntactic correctness always
+3. **Dense** - Maximize information per token
+4. **Safe** - No semantic changes to content
+
 ## Output Formats
 
 ### Copilot Instructions
@@ -182,12 +223,14 @@ Configure Model Context Protocol servers:
 - `agent:copilot-tuner` - Copilot/CLAUDE.md optimization
 - `agent:agents-maintainer` - AGENTS.md creation
 - `agent:prompt-engineer` - Prompt optimization
+- `agent:token-optimize` - Token usage minimization
 
 **Commands**:
 - `/agent run optimize-ai` - General AI config optimization
 - `/agent run agents-md` - Create/update AGENTS.md
 - `/agent run prompt-optimize` - Optimize prompts
 - `/agent run mcp-config` - MCP server configuration
+- `/agent run token-optimize` - Minimize token usage in config files
 
 ## Success Criteria
 
@@ -199,6 +242,7 @@ AI configuration successful when:
 - ✅ Reflects current project state
 - ✅ Easy for AI to parse and follow
 - ✅ Maintainable as project evolves
+- ✅ Token-efficient without sacrificing clarity
 
 ## Migration Notes
 
