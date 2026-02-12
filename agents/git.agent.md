@@ -84,19 +84,40 @@ git rebase -i --autosquash HEAD~5
 - Use `git merge` for shared branches
 - Coordinate with team before force push
 
+### Performance Optimization
+
+**Standard flags for all network operations:**
+```bash
+# Performance flags (set once)
+git config --global protocol.version 2
+git config --global http.version HTTP/2
+git config --global status.short true
+
+# Or per-command
+GIT_FLAGS="-c protocol.version=2 -c http.version=HTTP/2"
+git $GIT_FLAGS clone <url>
+git $GIT_FLAGS fetch origin
+git $GIT_FLAGS pull --rebase
+```
+
+**Benefits:**
+- Protocol v2: Reduced network traffic, faster fetches (30-50% improvement)
+- HTTP/2: Multiplexed connections, parallel transfers
+- Short status: Concise output for automation
+
 ## Git Command Patterns
 
 ### Repository Initialization
 
 ```bash
 # Initialize with default branch
-git init -b main
+git -c protocol.version=2 init -b main
 
 # Clone with shallow history (faster)
-git clone --depth 1 <url>
+git -c protocol.version=2 -c http.version=HTTP/2 clone --depth 1 <url>
 
 # Clone specific branch
-git clone -b <branch> --single-branch <url>
+git -c protocol.version=2 -c http.version=HTTP/2 clone -b <branch> --single-branch <url>
 ```
 
 ### Branch Management
@@ -143,23 +164,25 @@ git commit -S -m "feat: secure feature"
 ### Remote Operations
 
 ```bash
+GIT_FLAGS="-c protocol.version=2 -c http.version=HTTP/2"
+
 # Add remote
 git remote add origin <url>
 
 # Fetch specific branch
-git fetch origin feature/branch
+git $GIT_FLAGS fetch origin feature/branch
 
 # Fetch all remotes
-git fetch --all
+git $GIT_FLAGS fetch --all
 
 # Pull with rebase (cleaner history)
-git pull --rebase origin main
+git $GIT_FLAGS pull --rebase origin main
 
 # Push with tracking
-git push -u origin feature/branch
+git $GIT_FLAGS push -u origin feature/branch
 
 # Safe force push
-git push --force-with-lease origin feature/branch
+git $GIT_FLAGS push --force-with-lease origin feature/branch
 ```
 
 ### Stashing Changes
@@ -367,16 +390,17 @@ combine_prs_advanced() {
 ```bash
 # Update all your open PRs with latest from base
 update_my_prs() {
+  local git_flags="-c protocol.version=2 -c http.version=HTTP/2"
   gh pr list --author @me --state open --json number -q '.[].number' | while read -r pr; do
     log "Updating PR #$pr"
     gh pr checkout "$pr"
-    git fetch origin
+    git $git_flags fetch origin
     git merge origin/main || {
       warn "Conflict in PR #$pr - manual resolution needed"
       git merge --abort
       continue
     }
-    git push
+    git $git_flags push
   done
 }
 ```
@@ -491,11 +515,12 @@ gh run download 123456
 ```bash
 repo_maintenance() {
   local mode="${1:-both}"  # clean, update, both
+  local git_flags="-c protocol.version=2 -c http.version=HTTP/2"
 
   case "$mode" in
     clean|both)
       log "Cleaning merged branches..."
-      git fetch --prune
+      git $git_flags fetch --prune
       git branch --merged | grep -v "\*\|main\|master\|develop" | xargs -n 1 git branch -d
       ;;
   esac
@@ -503,7 +528,7 @@ repo_maintenance() {
   case "$mode" in
     update|both)
       log "Updating remotes..."
-      git remote update --prune
+      git $git_flags remote update --prune
       ;;
   esac
 }
@@ -565,9 +590,11 @@ download_files_parallel() {
 ### Feature Branch Workflow
 
 ```bash
+GIT_FLAGS="-c protocol.version=2 -c http.version=HTTP/2"
+
 # Start feature
 git checkout main
-git pull origin main
+git $GIT_FLAGS pull origin main
 git checkout -b feature/user-profile
 
 # Develop with commits
@@ -575,20 +602,22 @@ git add src/profile.js
 git commit -m "feat(profile): add user profile component"
 
 # Keep branch updated
-git fetch origin main
+git $GIT_FLAGS fetch origin main
 git rebase origin/main
 
 # Push and create PR
-git push -u origin feature/user-profile
+git $GIT_FLAGS push -u origin feature/user-profile
 gh pr create --title "Add user profile" --base main
 ```
 
 ### Hotfix Workflow
 
 ```bash
+GIT_FLAGS="-c protocol.version=2 -c http.version=HTTP/2"
+
 # Create hotfix from production
 git checkout main
-git pull origin main
+git $GIT_FLAGS pull origin main
 git checkout -b hotfix/critical-bug
 
 # Fix and test
@@ -599,12 +628,12 @@ git commit -m "fix: resolve critical security issue"
 git checkout main
 git merge --no-ff hotfix/critical-bug
 git tag -a v1.0.1 -m "Hotfix: critical security issue"
-git push origin main --tags
+git $GIT_FLAGS push origin main --tags
 
 # Backport to develop
 git checkout develop
 git merge --no-ff hotfix/critical-bug
-git push origin develop
+git $GIT_FLAGS push origin develop
 ```
 
 ### Submodule Management
@@ -658,6 +687,7 @@ git worktree prune
 ```bash
 safe_force_push() {
   local branch="$1"
+  local git_flags="-c protocol.version=2 -c http.version=HTTP/2"
 
   # Check if branch exists remotely
   if ! git ls-remote --heads origin "$branch" | grep -q "$branch"; then
@@ -674,7 +704,7 @@ safe_force_push() {
   read -rp "Continue? (yes/no): " confirm
 
   if [[ $confirm == "yes" ]]; then
-    git push --force-with-lease origin "$branch"
+    git $git_flags push --force-with-lease origin "$branch"
   else
     log "Force push cancelled"
   fi
@@ -687,12 +717,13 @@ safe_force_push() {
 # Retry git push with exponential backoff
 retry_push() {
   local branch="$1"
+  local git_flags="-c protocol.version=2 -c http.version=HTTP/2"
   local max_attempts=4
   local attempt=1
   local delay=2
 
   while (( attempt <= max_attempts )); do
-    if git push -u origin "$branch"; then
+    if git $git_flags push -u origin "$branch"; then
       success "Push successful"
       return 0
     fi
@@ -737,6 +768,7 @@ git log --diff-filter=D --summary -- path/to/file
 | Restore files | `git restore` | Modern alternative to `git checkout --` |
 | Parallel downloads | `curl --parallel` | Faster than sequential |
 | GitHub operations | `gh` CLI | Preferred over web UI or raw API |
+| Network operations | Protocol v2 + HTTP/2 | 30-50% faster fetches |
 
 ## Best Practices
 
@@ -751,6 +783,7 @@ git log --diff-filter=D --summary -- path/to/file
 - ✅ Keep commits atomic and reversible
 - ✅ Use `gh` CLI for GitHub operations
 - ✅ Add retry logic for network operations
+- ✅ Use protocol v2 and HTTP/2 for all network operations
 
 ### DON'T:
 - ❌ Force push to main/master branches
@@ -820,3 +853,4 @@ Operations successful when:
 - ✅ Branches properly tracked and up-to-date
 - ✅ No uncommitted or stashed work left behind
 - ✅ Remote operations completed successfully with retries if needed
+- ✅ Performance flags applied to all network operations
