@@ -1,43 +1,50 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"automerge": true,
-	"separateMajorMinor": false,
-	"lockFileMaintenance": {
-		"enabled": true,
-		"automerge": true,
-		"automergeType": "pr",
-		"commitMessageAction": "Update"
-	},
-	"packageRules": [
-		{
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest", "major"],
-			"matchCurrentVersion": "!/^0/",
-			"automerge": true,
-			"automergeType": "branch",
-			"dependencyDashboardApproval": true,
-			"extends": ["packages:linters"]
-		}
-	],
-	"digest": {
-		"automerge": true
-	},
 	"extends": [
-		"config:recommended",
-		":configMigration",
-		"abandonments:recommended",
+		"config:best-practices",
 		":maintainLockFilesWeekly",
-		":dependencyDashboard",
 		":semanticPrefixFixDepsChoreOthers",
 		":preserveSemverRanges",
-		":ignoreModulesAndTests",
 		"group:all",
-		"mergeConfidence:age-confidence-badges",
 		"replacements:all",
 		"workarounds:all",
-		"helpers:githubDigestChangelogs",
-		"helpers:goXPackagesChangelogLink",
-		"helpers:goXPackagesNameLink",
-		"schedule:weekly",
-		"packages:eslint"
+		"schedule:weekly"
+	],
+	"automerge": true,
+	"automergeType": "branch",
+	"platformAutomerge": true,
+	"prConcurrentLimit": 10,
+	"packageRules": [
+		{
+			"description": "Automerge non-major stable deps via branch push",
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"matchCurrentVersion": "!/^0/",
+			"automerge": true,
+			"automergeType": "branch"
+		},
+		{
+			"description": "Major updates and 0.x require PR review",
+			"matchUpdateTypes": ["major"],
+			"automerge": false,
+			"dependencyDashboardApproval": true
+		},
+		{
+			"description": "0.x deps require PR review for all update types",
+			"matchCurrentVersion": "/^0/",
+			"automerge": false,
+			"dependencyDashboardApproval": true
+		},
+		{
+			"description": "Automerge linter updates including major",
+			"matchCategories": ["linters"],
+			"automerge": true,
+			"automergeType": "branch"
+		},
+		{
+			"description": "Lock file maintenance",
+			"matchUpdateTypes": ["lockFileMaintenance"],
+			"automerge": true,
+			"automergeType": "branch"
+		}
 	]
 }
