@@ -27,8 +27,8 @@ license: Complete terms in LICENSE.txt
 
 | Field | Required | Constraints |
 |-------|----------|-------------|
-| `name` | Yes | Lowercase, hyphens, max 64 chars |
-| `description` | Yes | Max 1024 chars, must state WHAT/WHEN/KEYWORDS |
+| `name` | Yes | Kebab-case, max 64 chars, must not contain `claude` or `anthropic` |
+| `description` | Yes | Max 1024 chars, must state WHAT/WHEN/KEYWORDS and explicit trigger scenarios |
 | `license` | No | Reference to LICENSE.txt or SPDX identifier |
 
 <Goals>
@@ -36,6 +36,7 @@ license: Complete terms in LICENSE.txt
 The `description` is the PRIMARY mechanism for skill discovery. Copilot reads ONLY `name` and `description` to decide whether to load a skill.
 
 Include:
+
 1. **WHAT** the skill does (capabilities)
 2. **WHEN** to use it (triggers, scenarios, file types)
 3. **Keywords** users might mention in prompts
@@ -50,6 +51,9 @@ Include:
 | `## When to Use` | Scenarios (reinforces description) |
 | `## Prerequisites` | Required tools, dependencies |
 | `## Step-by-Step Workflows` | Numbered task steps |
+| `## Details` | Cross-reference heavy modules (for lazy loading) |
+| `## Examples` | Working examples linked by anchor |
+| `## External` | External references and API docs |
 | `## Troubleshooting` | Common issues table |
 | `## References` | Links to bundled docs |
 
@@ -64,13 +68,21 @@ Include:
 
 **Rule**: Agent reads and builds on content = `templates/`. File used as-is in output = `assets/`.
 
-## Progressive Loading
+## Async Lazy Loading (Progressive Disclosure)
 
 | Level | Loads | When |
 |-------|-------|------|
 | Discovery | `name` + `description` | Always (lightweight) |
-| Instructions | Full SKILL.md body | When request matches |
-| Resources | Scripts, docs, templates | When explicitly needed |
+| Instructions | Minimal SKILL.md body | When request matches |
+| Details | `modules/*.md` | When user asks for implementation depth |
+| Examples | `examples.md#anchor` | When user asks for runnable/working patterns |
+| External | `reference.md#anchor` | When external API/spec context is required |
+
+Cross-reference syntax:
+
+- `Details in modules/patterns.md`
+- `Examples in examples.md#auth`
+- `External in reference.md#api`
 
 <Standards>
 
@@ -78,7 +90,10 @@ Include:
 - Include exact commands with parameters
 - Scripts: include `--help`, handle errors, no stored credentials
 - Keep SKILL.md under 500 lines; split into `references/` for large content
+- Keep SKILL.md lightweight - move deep implementation details to `modules/` and load on demand
 - Relative paths for all resource references
+- Apply least-privilege `allowed-tools` in frontmatter
+- Include working examples for each documented pattern (directly or via `Examples in examples.md#...`)
 
 </Standards>
 
