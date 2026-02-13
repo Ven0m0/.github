@@ -49,6 +49,7 @@ jobs:
       - name: Setup tools via uv
         run:
           uv tool install ruff@latest
+          uv pip install basedpyright
       - name: Setup tools via bun
         run:
           bun a -g --trust @biomejs/biome repomix
