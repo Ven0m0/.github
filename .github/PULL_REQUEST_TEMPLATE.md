@@ -3,10 +3,6 @@
 ## Changes
 - 
 
-## Testing
-- [ ] Not run (explain)
-- [ ] Tests run: 
-
 ## Checklist
 - [ ] Scope is focused and related issues are linked
 - [ ] Documentation updated if needed
