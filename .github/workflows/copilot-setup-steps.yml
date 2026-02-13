@@ -15,6 +15,7 @@ env:
   UV_FORK_STRATEGY: requires-python
   UV_RESOLUTION: highest
   UV_PRERELEASE: if-necessary-or-explicit
+  GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
 jobs:
   copilot-setup-steps:
