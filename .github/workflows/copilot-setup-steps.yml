@@ -46,5 +46,9 @@ jobs:
       - name: Set up Python
         run: uv python install
 
-      - name: Install code analysis tools
-        run: bunx repomix --version
+      - name: Setup tools via uv
+        run:
+          uv tool install ruff@latest
+      - name: Setup tools via bun
+        run:
+          bun a -g --trust @biomejs/biome repomix
