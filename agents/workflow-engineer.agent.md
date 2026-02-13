@@ -3,6 +3,9 @@ description: 'GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reus
 name: 'Workflow Engineer'
 model: claude-4-5-sonnet-latest
 tools: ['codebase', 'read', 'write', 'edit/editFiles', 'search', 'execute', 'githubRepo']
+mcp-servers:
+  github-mcp-server:
+    tools: ["actions_list", "actions_get", "actions_run_trigger", "get_job_logs", "get_file_contents", "search_code"]
 ---
 
 # Workflow Engineer
@@ -37,6 +40,11 @@ Standards: See `instructions/cicd-standards.instructions.md`
 6. Document inputs/outputs, add `timeout-minutes` on all jobs
 
 ## Debugging
+
+Use `get_job_logs` and `actions_list` MCP tools to retrieve workflow run logs and status:
+- Examine job logs for failure patterns
+- Check action versions and compatibility
+- Verify permissions and secrets configuration
 
 | Symptom | Fix |
 |---------|-----|

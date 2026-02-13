@@ -20,7 +20,7 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ## Agents
 
-The `agents/` directory contains 18 specialized autonomous agents:
+The `agents/` directory contains 17 specialized autonomous agents:
 
 ### Workflow Orchestration
 
@@ -51,8 +51,6 @@ The `agents/` directory contains 18 specialized autonomous agents:
 | `git.agent.md` | Git & GitHub CLI workflows, best practices, advanced operations |
 | `workflow-engineer.agent.md` | GitHub Actions and CI/CD |
 | `github-issue-fixer.agent.md` | Issue triage and resolution |
-| `python-mcp-expert.agent.md` | Python MCP server development (modular, references mcp-development skill) |
-| `typescript-mcp-expert.agent.md` | TypeScript MCP server development (modular, references mcp-development skill) |
 
 ### Repository & Knowledge Management
 
@@ -218,7 +216,7 @@ Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-autom
 
 ## Agent Modularity & Consolidation
 
-Agents are designed for **minimal context bloat** while maximizing capability through strategic consolidation:
+Agents are designed for **minimal context bloat** while maximizing capability through strategic consolidation and MCP server integration:
 
 **Modular Language Agents** (Separate by Language):
 - `bash.agent.md`, `python.agent.md`, `rust.agent.md` - Separate, focused agents
@@ -226,23 +224,25 @@ Agents are designed for **minimal context bloat** while maximizing capability th
 - No context bloat: Load Bash agent without loading Python/Rust content
 - Maintains DRY: Common patterns extracted to shared skill
 
-**Modular MCP Agents** (Separate by Language):
-- `python-mcp-expert.agent.md`, `typescript-mcp-expert.agent.md` - Separate, focused agents
-- Each references `skills/mcp-development/` for common MCP patterns
-- No context bloat: Load Python MCP agent without loading TypeScript content
-- Maintains DRY: Common MCP principles extracted to shared skill
-
 **Consolidated Planning Agent** (Single Agent, Multiple Levels):
-- `strategic-planner.agent.md` - Comprehensive planning agent
+- `strategic-planner.agent.md` - Comprehensive planning agent with GitHub MCP and Exa integration
 - Handles PRDs, strategic plans, and implementation plans
 - Single methodology from vision to execution
 - Consolidates: `plan.agent.md`, `prd.agent.md`, `implementation-plan.agent.md`
 
 **Consolidated AI Configuration Agent** (Single Domain):
-- `ai-config-expert.agent.md` - All AI configuration in one place
+- `ai-config-expert.agent.md` - All AI configuration in one place, enhanced with Exa and read-website MCP
 - Handles Copilot instructions, CLAUDE.md, AGENTS.md, prompt engineering
 - Single source of truth for AI optimization
 - Consolidates: `copilot-tuner.agent.md`, `agents-maintainer.agent.md`, `prompt-engineer.agent.md`
+
+**MCP Server Integration**:
+All agents now leverage available MCP servers for enhanced capabilities:
+- **GitHub MCP**: Issue management, PR operations, code search, workflow debugging
+- **Exa**: Web search, deep research, code documentation context
+- **read-website**: Clean website content extraction for documentation
+- **Playwright**: Browser automation for testing and validation
+- **fast-filesystem-mcp**: High-performance file operations
 
 **Shared Skills**:
 - `agent-patterns/` - Reusable workflow templates, model selection guidelines, tool profiles
@@ -254,7 +254,8 @@ Agents are designed for **minimal context bloat** while maximizing capability th
 - **Strategic consolidation**: Related capabilities merged where it makes sense (planning, AI config)
 - **DRY maintained**: Common patterns in skills, not duplicated in agents
 - **Clear boundaries**: Each agent has well-defined scope
-- **Reduced complexity**: 21 → 18 agents without losing functionality
+- **MCP enhancement**: 17 agents with 5+ MCP servers providing 100+ additional tools
+- **Reduced complexity**: 21 → 17 agents without losing functionality
 
 ---
 
