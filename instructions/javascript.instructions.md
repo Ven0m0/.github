@@ -1,6 +1,6 @@
 ---
 description: 'JavaScript/TypeScript coding standards: strict types, modern patterns, accessibility'
-applyTo: '**/*.js,**/*.mjs,**/*.cjs,**/*.ts,**/*.tsx,**/*.jsx'
+applyTo: '**/*.{js,jsx,ts,tsx,mjs}'
 ---
 
 # JavaScript/TypeScript Standards
