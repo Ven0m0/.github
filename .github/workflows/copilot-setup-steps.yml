@@ -31,6 +31,7 @@ jobs:
 
       - name: Check for Bun Dependencies
         id: check_files
+        shell: bash
         run: |
           if [[ -f "package.json" || -f "bun.lockb" ]]; then
             echo "has_files=true" >> "$GITHUB_OUTPUT"
@@ -39,7 +40,6 @@ jobs:
             echo "has_files=false" >> "$GITHUB_OUTPUT"
             echo "No Bun dependency files found."
           fi
-       shell: bash
 
       - name: Install system tools
         shell: bash
@@ -63,24 +63,28 @@ jobs:
             ${{ runner.os }}-bun-
       - name: Install Dependencies
         if: steps.check_files.outputs.has_files == 'true'
+        shell: bash
         run: bun add --frozen-lockfile
 
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.14"
           enable-cache: true
-          github-token: ${{ secrets.PAT || github.token }}
+          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
       - name: Setup python via uv
         shell: bash
         run:
           uv python install
+          uv venv
           uv tool install ruff@latest
           uv pip install basedpyright zon-format mdminify mcp claudelint
       - name: Setup tools via bun
+        shell: bash
         run:
           bun add -g --trust @biomejs/biome repomix pm2 @toon-format/cli @toon-format/toon zon-format @th0rgal/ralph-wiggum /
             @mixedbread/mgrep
 
       - name: Install zagi
+        shell: bash
         run:
-          curl -fsSL zagi.sh/install | sh
+          curl -fsSL zagi.sh/install | bash
