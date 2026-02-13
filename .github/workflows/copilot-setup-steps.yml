@@ -34,24 +34,20 @@ jobs:
       - name: Check for Bun dependencies
         id: check_files
         run: |
-          if [[ -f package.json || -f bun.lockb ]]; then
-            echo "has_files=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_files=false" >> "$GITHUB_OUTPUT"
-          fi
+          [[ -f package.json || -f bun.lockb ]] \
+            && echo "has_files=true" >> "$GITHUB_OUTPUT" \
+            || echo "has_files=false" >> "$GITHUB_OUTPUT"
 
-      - name: Install system tools
+      - name: Install system packages
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            ripgrep fd-find jq tmux
+            ripgrep fd-find jq tmux rust-analyzer
 
       - uses: actions/setup-node@v4
         with:
           node-version: "25"
-
       - uses: oven-sh/setup-bun@v2
-
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.14"
@@ -72,25 +68,62 @@ jobs:
         if: steps.check_files.outputs.has_files == 'true'
         run: bun install --frozen-lockfile
 
-      - name: Setup Python toolchain
+      - name: Setup toolchains (parallel)
         run: |
-          uv python install
-          uv venv
-          uv tool install ruff@latest
+          uv python install && uv venv
+          uv tool install ruff@latest &
           uv pip install \
             basedpyright \
             zon-format \
-            claudelint
-
-      - name: Setup Node toolchain
-        run: |
+            mcp \
+            claudelint \
+            files-to-prompt &
           bun add -g --trust \
             @biomejs/biome \
             repomix \
             @toon-format/cli \
             @toon-format/toon \
             zon-format \
-            @mixedbread/mgrep
+            @mixedbread/mgrep \
+            @ast-grep/cli \
+            bash-language-server \
+            typescript \
+            @vtsls/language-server \
+            vscode-langservers-extracted \
+            yaml-language-server &
 
+          # marksman (Markdown LSP) — no apt package
+          (
+            curl -fsSL -o /tmp/marksman \
+              https://github.com/artempyanykh/marksman/releases/latest/download/marksman-linux-x64 \
+              && sudo install -m755 /tmp/marksman /usr/local/bin/
+          ) &
+          wait
+
+      - name: Verify tools
+        run: |
+          fail=0
+          for cmd in \
+            bash-language-server \
+            vtsls \
+            vscode-html-language-server \
+            vscode-json-language-server \
+            yaml-language-server \
+            rust-analyzer \
+            marksman \
+            basedpyright \
+            ast-grep \
+            ruff \
+            biome \
+            repomix \
+            files-to-prompt; do
+            if command -v "$cmd" >/dev/null 2>&1; then
+              echo "ok $cmd"
+            else
+              echo "FAIL $cmd" >&2
+              fail=1
+            fi
+          done
+          exit "$fail"
       - name: Install zagi
         run: curl -fsSL zagi.sh/install | bash
