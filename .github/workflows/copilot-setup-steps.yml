@@ -40,6 +40,7 @@ jobs:
        shell: bash
 
       - name: Install system tools
+        shell: bash
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends ripgrep fd-find jq tmux gitoxide
@@ -58,22 +59,25 @@ jobs:
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
             ${{ runner.os }}-bun-
+      - name: Install Dependencies
+        if: steps.check_files.outputs.has_files == 'true'
+        run: bun add --frozen-lockfile
 
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.14"
           enable-cache: true
           github-token: ${{ secrets.PAT || github.token }}
-      - name: Set up Python
-        run: uv python install
-
-      - name: Setup tools via uv
+      - name: Setup python via uv
+        shell: bash
         run:
+          uv python install
           uv tool install ruff@latest
           uv pip install basedpyright zon-format mdminify mcp claudelint
       - name: Setup tools via bun
         run:
-          bun a -g --trust @biomejs/biome repomix pm2 @toon-format/cli @toon-format/toon zon-format @th0rgal/ralph-wiggum
+          bun add -g --trust @biomejs/biome repomix pm2 @toon-format/cli @toon-format/toon zon-format @th0rgal/ralph-wiggum /
+            @mixedbread/mgrep
 
       - name: Install zagi
         run:
