@@ -42,7 +42,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            ripgrep fd-find jq tmux rust-analyzer
+            ripgrep fd-find jq tmux rust-analyzer uv
 
       - uses: actions/setup-node@v4
         with:
@@ -71,28 +71,27 @@ jobs:
       - name: Setup toolchains (parallel)
         run: |
           uv python install && uv venv
-          uv tool install ruff@latest &
+          uv tool install ruff@latest beads-mcp
           uv pip install \
             basedpyright \
             zon-format \
             mcp \
             claudelint \
-            files-to-prompt &
-          bun add -g --trust \
+            files-to-prompt \
+            toon-llm
+          npm install -g \
             @biomejs/biome \
             repomix \
             @toon-format/cli \
             @toon-format/toon \
             claude-praetorian-mcp \
             zon-format \
-            @mixedbread/mgrep \
             @ast-grep/cli \
             bash-language-server \
             typescript \
             @vtsls/language-server \
             vscode-langservers-extracted \
-            yaml-language-server &
-
+            yaml-language-server
           # marksman (Markdown LSP) — no apt package
           (
             curl -fsSL -o /tmp/marksman \
