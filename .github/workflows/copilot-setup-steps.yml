@@ -17,10 +17,12 @@ env:
   UV_PRERELEASE: if-necessary-or-explicit
   GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
   NODE_ENV: production
+  BUN_INSTALL_CACHE_DIR: ~/.bun/install/cache
 
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write
@@ -29,62 +31,66 @@ jobs:
         with:
           token: ${{ secrets.PAT || github.token }}
 
-      - name: Check for Bun Dependencies
+      - name: Check for Bun dependencies
         id: check_files
-        shell: bash
         run: |
-          if [[ -f "package.json" || -f "bun.lockb" ]]; then
+          if [[ -f package.json || -f bun.lockb ]]; then
             echo "has_files=true" >> "$GITHUB_OUTPUT"
-            echo "Bun dependency files found."
           else
             echo "has_files=false" >> "$GITHUB_OUTPUT"
-            echo "No Bun dependency files found."
           fi
 
       - name: Install system tools
-        shell: bash
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ripgrep fd-find jq tmux gitoxide
+          sudo apt-get install -y --no-install-recommends \
+            ripgrep fd-find jq tmux
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "25"
-      - uses: oven-sh/setup-bun@v2
 
-      - name: Cache Dependencies
-        if: steps.check_files.outputs.has_files == 'true'
-        uses: actions/cache@v5
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-      - name: Install Dependencies
-        if: steps.check_files.outputs.has_files == 'true'
-        shell: bash
-        run: bun add --frozen-lockfile
+      - uses: oven-sh/setup-bun@v2
 
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.14"
           enable-cache: true
           github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - name: Setup python via uv
-        shell: bash
-        run:
+
+      - name: Cache Bun dependencies
+        if: steps.check_files.outputs.has_files == 'true'
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: ${{ runner.os }}-bun-
+
+      - name: Install project dependencies
+        if: steps.check_files.outputs.has_files == 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Setup Python toolchain
+        run: |
           uv python install
           uv venv
           uv tool install ruff@latest
-          uv pip install basedpyright zon-format mdminify mcp claudelint
-      - name: Setup tools via bun
-        shell: bash
-        run:
-          bun add -g --trust @biomejs/biome repomix pm2 @toon-format/cli @toon-format/toon zon-format @th0rgal/ralph-wiggum /
+          uv pip install \
+            basedpyright \
+            zon-format \
+            claudelint
+
+      - name: Setup Node toolchain
+        run: |
+          bun add -g --trust \
+            @biomejs/biome \
+            repomix \
+            @toon-format/cli \
+            @toon-format/toon \
+            zon-format \
             @mixedbread/mgrep
 
       - name: Install zagi
-        shell: bash
-        run:
-          curl -fsSL zagi.sh/install | bash
+        run: curl -fsSL zagi.sh/install | bash
