@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.py"
+applyTo: "**/*.{py,pyi}"
 description: "Production Python: strict typing, security, performance"
 ---
 
