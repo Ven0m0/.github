@@ -52,7 +52,7 @@ jobs:
           uv pip install basedpyright zon-format mdminify mcp claudelint
       - name: Setup tools via bun
         run:
-          bun a -g --trust @biomejs/biome repomix pm2 @toon-format/cli zon-format @th0rgal/ralph-wiggum
+          bun a -g --trust @biomejs/biome repomix pm2 @toon-format/cli @toon-format/toon zon-format @th0rgal/ralph-wiggum
 
       - name: Install zagi
         run:
