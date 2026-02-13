@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.{py,pyi}"
+applyTo: "**/*.{py,pyi},**/pyproject.toml"
 description: "Production Python: strict typing, security, performance"
 ---
 
