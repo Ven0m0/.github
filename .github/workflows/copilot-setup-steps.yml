@@ -83,6 +83,7 @@ jobs:
             repomix \
             @toon-format/cli \
             @toon-format/toon \
+            claude-praetorian-mcp \
             zon-format \
             @mixedbread/mgrep \
             @ast-grep/cli \
