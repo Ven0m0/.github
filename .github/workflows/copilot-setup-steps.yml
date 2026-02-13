@@ -30,7 +30,7 @@ jobs:
       - name: Install system tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ripgrep fd-find jq pm2 tmux
+          sudo apt-get install -y --no-install-recommends ripgrep fd-find jq tmux gitoxide
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -49,7 +49,7 @@ jobs:
       - name: Setup tools via uv
         run:
           uv tool install ruff@latest
-          uv pip install basedpyright
+          uv pip install basedpyright zon-format mdminify mcp claudelint
       - name: Setup tools via bun
         run:
-          bun a -g --trust @biomejs/biome repomix
+          bun a -g --trust @biomejs/biome repomix pm2 @toon-format/cli zon-format @th0rgal/ralph-wiggum
