@@ -1,8 +1,0 @@
-blank_issues_enabled: true
-contact_links:
-  - name: Security policy
-  url: https://github.com/Ven0m0/.github/security/policy
-  about: Report security vulnerabilities.
-  - name: Support
-  url: https://github.com/Ven0m0/.github/blob/main/SUPPORT.md
-  about: Support channels and guidance.
