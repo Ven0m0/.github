@@ -1,6 +1,6 @@
 ---
 description: 'Guidelines for creating Agent Skills for GitHub Copilot'
-applyTo: '**/.github/skills/**/SKILL.md,**/.claude/skills/**/SKILL.md'
+applyTo: '**/SKILL.md,**/prompt.md,**/instructions.md,**/agent.md,**/*.md'
 ---
 
 # Agent Skills Guidelines
