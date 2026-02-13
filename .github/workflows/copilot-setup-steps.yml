@@ -16,6 +16,7 @@ env:
   UV_RESOLUTION: highest
   UV_PRERELEASE: if-necessary-or-explicit
   GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+  NODE_ENV: production
 
 jobs:
   copilot-setup-steps:
