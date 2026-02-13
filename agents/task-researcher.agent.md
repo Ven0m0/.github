@@ -3,6 +3,11 @@ description: 'Deep research specialist for task planning. Analyzes codebases, ex
 name: 'Task Researcher'
 model: claude-4-5-opus-latest
 tools: [codebase, semanticSearch, search, usages, problems, changes, fetch, githubRepo, edit/editFiles]
+mcp-servers:
+  exa:
+    tools: ["web_search_exa", "web_search_advanced_exa", "crawling_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
+  read-website:
+    tools: ["read_website"]
 ---
 
 # Task Researcher
@@ -27,9 +32,13 @@ Research-only specialist. Perform deep analysis for task planning. Write ONLY to
 
 ## Research Tools
 
-**Internal**: `codebase` (structure), `search` (patterns), `usages` (how patterns apply), read ops (file analysis), `.github/instructions/` (standards)
+**Internal**: `codebase` (structure), `search` (patterns), `usages` (how patterns apply), read ops (file analysis), `instructions/` (standards)
 
-**External**: `fetch` (official docs), `githubRepo` (implementation patterns from authoritative repos)
+**External**:
+- `fetch` (official docs)
+- `githubRepo` (implementation patterns from authoritative repos)
+- **MCP Exa**: `web_search_exa` (current information), `deep_researcher_start` (AI-powered research), `get_code_context_exa` (code documentation)
+- **MCP read-website**: `read_website` (extract documentation content)
 
 ## File Naming
 

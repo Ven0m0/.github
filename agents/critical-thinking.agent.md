@@ -2,6 +2,13 @@
 name: critical-thinking
 description: 'Challenge assumptions and encourage critical thinking. Ask Why until root cause is found. No code edits.'
 tools: ['codebase', 'fetch', 'githubRepo', 'search', 'usages']
+mcp-servers:
+  exa:
+    tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check"]
+  read-website:
+    tools: ["read_website"]
+  playwright:
+    tools: ["browser_navigate", "browser_snapshot", "browser_take_screenshot", "browser_click"]
 ---
 
 # Critical Thinking Mode

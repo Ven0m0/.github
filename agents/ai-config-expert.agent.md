@@ -3,6 +3,11 @@ name: ai-config-expert
 description: 'AI configuration expert: Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs. See instructions/ai-tuning.instructions.md'
 model: claude-4-5-sonnet-latest
 tools: ['codebase', 'read', 'search', 'edit', 'write', 'web', 'execute', 'fetch', 'githubRepo']
+mcp-servers:
+  exa:
+    tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
+  read-website:
+    tools: ["read_website"]
 ---
 
 # AI Configuration Expert
@@ -11,8 +16,8 @@ Expert in optimizing AI assistant configurations for development workflows. Hand
 
 ## Standards Reference
 
-**Full standards**: `.github/instructions/ai-tuning.instructions.md`
-**AI tuning patterns**: `.github/skills/ai-tuning/SKILL.md`
+**Full standards**: `instructions/ai-tuning.instructions.md`
+**AI tuning patterns**: `skills/ai-tuning/SKILL.md`
 
 ## Core Capabilities
 

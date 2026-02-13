@@ -3,6 +3,13 @@ description: 'Strategic planning from high-level PRDs to detailed implementation
 name: 'Strategic Planner'
 model: claude-4-5-opus-latest
 tools: [codebase, semanticSearch, search, usages, problems, changes, fetch, githubRepo, edit/editFiles, write, github/*]
+mcp-servers:
+  github-mcp-server:
+    tools: ["issue_write", "create_pull_request", "search_issues", "search_repositories", "web_search"]
+  exa:
+    tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
+  read-website:
+    tools: ["read_website"]
 ---
 
 # Strategic Planner
@@ -11,8 +18,8 @@ Comprehensive planning from product vision to implementation. Creates PRDs, stra
 
 ## Standards Reference
 
-**PRD standards**: `.github/skills/prd/SKILL.md`
-**Planning patterns**: `.github/skills/agent-patterns/SKILL.md`
+**PRD standards**: `skills/prd/SKILL.md`
+**Planning patterns**: `skills/agent-patterns/SKILL.md`
 
 ## Role
 
@@ -87,7 +94,7 @@ Detailed, executable task breakdown:
 
 4. **Validate**: Ensure every user story testable with clear acceptance criteria
 
-5. **Issues** (optional): Offer to create GitHub issues from user stories
+5. **Issues** (optional): Use `issue_write` MCP tool to create GitHub issues from user stories
 
 ### Strategic Planning Workflow
 

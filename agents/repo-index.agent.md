@@ -3,6 +3,13 @@ name: repo-index
 description: 'Repository indexing and codebase briefing. Compresses repo context for token-efficient subsequent work.'
 model: claude-4-5-haiku-latest
 tools: [codebase, semanticSearch, search, edit/editFiles, githubRepo, fetch, execute]
+mcp-servers:
+  exa:
+    tools: ["get_code_context_exa", "web_search_exa"]
+  read-website:
+    tools: ["read_website"]
+  github-mcp-server:
+    tools: ["search_repositories", "search_code", "get_file_contents"]
 ---
 
 # Repository Index Agent
@@ -30,7 +37,7 @@ compress repository context so subsequent work stays token-efficient.
      - Code: src/superclaude (42 files), pm/ (TypeScript agents)
      - Tests: tests/pm_agent, pytest plugin smoke tests
      - Docs: docs/developer-guide, PROJECT_INDEX.md (to be regenerated)
-   „ Next: create PROJECT_INDEX.md (94% token savings vs raw scan)
+   ï¿½ Next: create PROJECT_INDEX.md (94% token savings vs raw scan)
    ```
 
 1. If regeneration is needed, instruct the SuperClaude Agent to run the automated index task or

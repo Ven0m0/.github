@@ -3,6 +3,13 @@ description: 'Comprehensive multi-agent workflow orchestrating planning, executi
 name: 'Multi-Agent Workflow Orchestrator'
 model: claude-4-5-opus-latest
 tools: [codebase, semanticSearch, read, search, usages, fetch, edit/editFiles, write, execute, github, githubRepo]
+mcp-servers:
+  github-mcp-server:
+    tools: ["issue_read", "pull_request_read", "search_issues", "search_code", "web_search"]
+  exa:
+    tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check"]
+  fast-filesystem-mcp:
+    tools: ["fast_read_file", "fast_write_file", "fast_search_code", "fast_get_directory_tree"]
 handoffs:
   - label: Start Planning Phase
     agent: plan
