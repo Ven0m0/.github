@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for creating Agent Skills for GitHub Copilot'
 applyTo: '**/SKILL.md,**/prompt.md,**/instructions.md,**/agent.md,**/*.md'
+excludeAgent: "code-review"
 ---
 
 # Agent Skills Guidelines
