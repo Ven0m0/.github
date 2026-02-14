@@ -8,18 +8,16 @@ on:
     paths: [.github/workflows/copilot-setup-steps.yml]
 
 env:
-  PYTHONOPTIMIZE: "1"
+  PYTHONOPTIMIZE: 1
   LC_ALL: C.UTF-8
   DEBIAN_FRONTEND: noninteractive
-  UV_NO_PROGRESS: "1"
-  UV_FORK_STRATEGY: requires-python
-  UV_RESOLUTION: highest
-  UV_PRERELEASE: if-necessary-or-explicit
+  UV_SYSTEM_PYTHON: 1
+  UV_NO_PROGRESS: 1
   GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
   NODE_ENV: production
   DO_NOT_TRACK: 1
   NO_COLOR: 1
-  BUN_OPTIONS: "--bun --silent --prefer-offline"
+  BUN_OPTIONS: --bun --silent --prefer-offline
   BUN_INSTALL_CACHE_DIR: ~/.bun/install/cache
 
 jobs:
@@ -53,7 +51,6 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.14"
           enable-cache: true
           github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
@@ -147,3 +144,6 @@ jobs:
           exit "$fail"
       - name: Install zagi
         run: curl -fsSL zagi.sh/install | bash
+
+      - name: Minimize uv cache
+      
