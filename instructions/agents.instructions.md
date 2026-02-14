@@ -1,6 +1,7 @@
 ---
 description: 'Guidelines for creating custom agent files for GitHub Copilot'
 applyTo: '**/*.agent.md'
+excludeAgent: "code-review"
 ---
 
 # Custom Agent File Guidelines
