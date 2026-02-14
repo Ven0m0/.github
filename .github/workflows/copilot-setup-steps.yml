@@ -17,6 +17,9 @@ env:
   UV_PRERELEASE: if-necessary-or-explicit
   GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
   NODE_ENV: production
+  DO_NOT_TRACK: 1
+  NO_COLOR: 1
+  BUN_OPTIONS: "--bun --silent --prefer-offline"
   BUN_INSTALL_CACHE_DIR: ~/.bun/install/cache
 
 jobs:
@@ -71,7 +74,7 @@ jobs:
       - name: Setup toolchains (parallel)
         run: |
           uv python install && uv venv
-          uv tool install ruff@latest beads-mcp
+          uv tool install ruff@latest
           uv pip install \
             basedpyright \
             zon-format \
@@ -79,9 +82,12 @@ jobs:
             claudelint \
             files-to-prompt \
             toon-llm
-          npm install -g \
+          if ! command -v bun >/dev/null 2>&1; then
+            curl -fsSL https://bun.sh/install | bash || npm install -g bun
+          fi
+          if command -v bun >/dev/null 2>&1; then
+            bun install -g \
             @biomejs/biome \
-            repomix \
             @toon-format/cli \
             @toon-format/toon \
             claude-praetorian-mcp \
@@ -92,6 +98,20 @@ jobs:
             @vtsls/language-server \
             vscode-langservers-extracted \
             yaml-language-server
+          else
+            npm install -g \
+            @biomejs/biome \
+            @toon-format/cli \
+            @toon-format/toon \
+            claude-praetorian-mcp \
+            zon-format \
+            @ast-grep/cli \
+            bash-language-server \
+            typescript \
+            @vtsls/language-server \
+            vscode-langservers-extracted \
+            yaml-language-server
+          fi
           # marksman (Markdown LSP) — no apt package
           (
             curl -fsSL -o /tmp/marksman \
