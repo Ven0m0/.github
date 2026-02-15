@@ -5,11 +5,17 @@ model: claude-4-5-opus-latest
 tools: [codebase, semanticSearch, search, usages, problems, changes, fetch, githubRepo, edit/editFiles, write, github/*]
 mcp-servers:
   github-mcp-server:
+    type: stdio
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-github"]
+    env: {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"}
     tools: ["issue_write", "create_pull_request", "search_issues", "search_repositories", "web_search"]
   exa:
+    type: stdio
+    command: "npx"
+    args: ["-y", "exa-mcp-server"]
+    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
     tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
-  read-website:
-    tools: ["read_website"]
 ---
 
 # Strategic Planner

@@ -5,11 +5,17 @@ model: claude-4-5-opus-latest
 tools: [codebase, semanticSearch, read, search, usages, fetch, edit/editFiles, write, execute, github, githubRepo]
 mcp-servers:
   github-mcp-server:
+    type: stdio
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-github"]
+    env: {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"}
     tools: ["issue_read", "pull_request_read", "search_issues", "search_code", "web_search"]
   exa:
+    type: stdio
+    command: "npx"
+    args: ["-y", "exa-mcp-server"]
+    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
     tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check"]
-  fast-filesystem-mcp:
-    tools: ["fast_read_file", "fast_write_file", "fast_search_code", "fast_get_directory_tree"]
 handoffs:
   - label: Start Planning Phase
     agent: plan

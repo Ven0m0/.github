@@ -231,7 +231,7 @@ Agents are designed for **minimal context bloat** while maximizing capability th
 - Consolidates: `plan.agent.md`, `prd.agent.md`, `implementation-plan.agent.md`
 
 **Consolidated AI Configuration Agent** (Single Domain):
-- `ai-config-expert.agent.md` - All AI configuration in one place, enhanced with Exa and read-website MCP
+- `ai-config-expert.agent.md` - All AI configuration in one place, enhanced with Exa MCP
 - Handles Copilot instructions, CLAUDE.md, AGENTS.md, prompt engineering
 - Single source of truth for AI optimization
 - Consolidates: `copilot-tuner.agent.md`, `agents-maintainer.agent.md`, `prompt-engineer.agent.md`
@@ -240,9 +240,7 @@ Agents are designed for **minimal context bloat** while maximizing capability th
 All agents now leverage available MCP servers for enhanced capabilities:
 - **GitHub MCP**: Issue management, PR operations, code search, workflow debugging
 - **Exa**: Web search, deep research, code documentation context
-- **read-website**: Clean website content extraction for documentation
 - **Playwright**: Browser automation for testing and validation
-- **fast-filesystem-mcp**: High-performance file operations
 
 **Shared Skills**:
 - `agent-patterns/` - Reusable workflow templates, model selection guidelines, tool profiles
@@ -254,7 +252,7 @@ All agents now leverage available MCP servers for enhanced capabilities:
 - **Strategic consolidation**: Related capabilities merged where it makes sense (planning, AI config)
 - **DRY maintained**: Common patterns in skills, not duplicated in agents
 - **Clear boundaries**: Each agent has well-defined scope
-- **MCP enhancement**: 17 agents with 5+ MCP servers providing 100+ additional tools
+- **MCP enhancement**: 17 agents with 4 MCP servers (GitHub, Exa, Playwright, Context7)
 - **Reduced complexity**: 21 → 17 agents without losing functionality
 
 ---
