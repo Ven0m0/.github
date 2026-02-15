@@ -57,6 +57,8 @@ Configure Model Context Protocol servers:
 - Transport selection (stdio vs HTTP)
 - Tool and resource definitions
 
+<important>
+
 ### 6. Token Optimization
 Minimize token usage via Conditional Flow-Style formatting:
 - **Data structures**: Inline short arrays/objects if result ≤140 chars (JSON: collapse `[...]`/`{...}`, YAML: block→flow `[x,y]`/`{k:v}`, TOML: inline arrays/tables)
@@ -84,6 +86,8 @@ Minimize token usage via Conditional Flow-Style formatting:
 - Do NOT break YAML indentation or TOML table headers
 - Do NOT modify script code blocks (except trailing whitespace)
 - Do NOT summarize text or remove valid documentation
+
+</important>
 
 ## Workflow
 

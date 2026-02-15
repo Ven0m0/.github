@@ -36,6 +36,8 @@ Senior product manager and architect who:
 - Generates detailed, executable implementation plans
 - Analyzes codebases for architecture and patterns
 
+<instructions>
+
 ## Planning Levels
 
 ### Level 1: Product Requirements (PRD)
@@ -265,6 +267,8 @@ tags: [feature, upgrade, etc.]
 - Need machine-parseable plan for agents
 - Tracking progress with completion criteria
 - Coordinating multi-phase implementation
+
+</instructions>
 
 ## Triggers
 
