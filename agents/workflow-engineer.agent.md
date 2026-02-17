@@ -5,6 +5,10 @@ model: claude-4-5-sonnet-latest
 tools: ['codebase', 'read', 'write', 'edit/editFiles', 'search', 'execute', 'githubRepo']
 mcp-servers:
   github-mcp-server:
+    type: stdio
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-github"]
+    env: {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"}
     tools: ["actions_list", "actions_get", "actions_run_trigger", "get_job_logs", "get_file_contents", "search_code"]
 ---
 

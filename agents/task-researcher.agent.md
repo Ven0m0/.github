@@ -5,9 +5,11 @@ model: claude-4-5-opus-latest
 tools: [codebase, semanticSearch, search, usages, problems, changes, fetch, githubRepo, edit/editFiles]
 mcp-servers:
   exa:
+    type: stdio
+    command: "npx"
+    args: ["-y", "exa-mcp-server"]
+    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
     tools: ["web_search_exa", "web_search_advanced_exa", "crawling_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
-  read-website:
-    tools: ["read_website"]
 ---
 
 # Task Researcher
@@ -38,7 +40,7 @@ Research-only specialist. Perform deep analysis for task planning. Write ONLY to
 - `fetch` (official docs)
 - `githubRepo` (implementation patterns from authoritative repos)
 - **MCP Exa**: `web_search_exa` (current information), `deep_researcher_start` (AI-powered research), `get_code_context_exa` (code documentation)
-- **MCP read-website**: `read_website` (extract documentation content)
+- **MCP Exa**: Also provides `crawling_exa` for website content extraction
 
 ## File Naming
 
