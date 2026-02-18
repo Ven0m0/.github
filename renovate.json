@@ -30,7 +30,9 @@
 		{
 			"description": "actionlint version in workflows",
 			"customType": "regex",
-			"fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
+			"managerFilePatterns": [
+				"/^\\.github/workflows/[^/]+\\.ya?ml$/"
+			],
 			"matchStrings": [
 				"actionlint@(?<currentValue>[^\\s\"']+)"
 			],
@@ -41,19 +43,27 @@
 	"packageRules": [
 		{
 			"description": "Forbid digest/SHA pinning",
-			"matchUpdateTypes": ["digest"],
+			"matchUpdateTypes": [
+				"digest"
+			],
 			"enabled": false
 		},
 		{
 			"description": "Automerge non-major stable deps via branch push",
-			"matchUpdateTypes": ["minor", "patch", "pin"],
+			"matchUpdateTypes": [
+				"minor",
+				"patch",
+				"pin"
+			],
 			"matchCurrentVersion": "!/^0/",
 			"automerge": true,
 			"automergeType": "branch"
 		},
 		{
 			"description": "Major updates and 0.x require PR review",
-			"matchUpdateTypes": ["major"],
+			"matchUpdateTypes": [
+				"major"
+			],
 			"automerge": false,
 			"dependencyDashboardApproval": true
 		},
@@ -65,20 +75,26 @@
 		},
 		{
 			"description": "Automerge linter updates including major",
-			"matchCategories": ["linters"],
+			"matchCategories": [
+				"linters"
+			],
 			"automerge": true,
 			"automergeType": "branch"
 		},
 		{
 			"description": "Treat Biome as a linter — automerge all",
-			"matchPackageNames": ["@biomejs/biome"],
+			"matchPackageNames": [
+				"@biomejs/biome"
+			],
 			"automerge": true,
 			"automergeType": "branch",
 			"dependencyDashboardApproval": false
 		},
 		{
 			"description": "Lock file maintenance",
-			"matchUpdateTypes": ["lockFileMaintenance"],
+			"matchUpdateTypes": [
+				"lockFileMaintenance"
+			],
 			"automerge": true,
 			"automergeType": "branch"
 		}
