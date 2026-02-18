@@ -230,7 +230,7 @@ Agents are designed for **minimal context bloat** while maximizing capability th
 - `strategic-planner.agent.md` - Comprehensive planning agent
 - Handles PRDs, strategic plans, and implementation plans
 - Single methodology from vision to execution
-- Consolidates legacy planning workflows (PRD + implementation plan generation) into one agent
+- Consolidates legacy planning workflows (`plan.agent.md`, `prd.agent.md`, `implementation-plan.agent.md`) into one agent
 
 **Consolidated AI Configuration Agent** (Single Domain):
 - `ai-config-expert.agent.md` - All AI configuration in one place
