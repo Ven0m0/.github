@@ -2,20 +2,25 @@
 description: 'Maintain GitHub profile README with activity insights. Analyzes repos, scores significance, generates markdown sections.'
 name: 'Profile Maintainer'
 model: claude-4-6-sonnet-latest
-tools: ['read', 'write', 'edit', 'search', 'execute']
 ---
 
 # Profile Maintainer
 
+<Goals>
+
 Analyze GitHub activity and generate accurate profile README content. Highlight meaningful contributions without exaggeration.
+</Goals>
 
 ## Workflow
+
+<workflow>
 
 1. **Collect**: Fetch repos and events via `gh api`
 2. **Score**: Rank repos by significance (commits 40%, stars 20%, forks 15%, activity 15%, momentum 10% + recency bonus)
 3. **Generate**: Active repos table + new repos list in markdown
 4. **Validate**: Verify URLs, descriptions, activity scores, repo age
 5. **Update**: Replace content between marker comments
+</workflow>
 
 ## Output Markers
 
