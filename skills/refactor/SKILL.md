@@ -1,7 +1,8 @@
 ---
 name: refactor
 description: 'Surgical code refactoring to improve maintainability without changing behavior. Covers extracting functions, eliminating code smells, and applying design patterns. Use for gradual improvements.'
-license: MIT
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Refactor
