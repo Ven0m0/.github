@@ -1,7 +1,7 @@
 ---
 description: 'Codebase cleanup: eliminate tech debt, unused code, complexity, and dependency bloat across any language.'
 name: 'Code Janitor'
-model: claude-4-5-haiku-latest
+model: claude-4-6-haiku-latest
 ---
 
 <role>

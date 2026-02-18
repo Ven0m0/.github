@@ -23,7 +23,7 @@ excludeAgent: "code-review"
 description: 'Brief description of agent purpose and capabilities'
 name: 'Agent Display Name'
 tools: ['read', 'edit', 'search']
-model: 'Claude Sonnet 4.5'
+model: 'Claude Sonnet 4.6'
 ---
 ```
 
@@ -32,10 +32,10 @@ model: 'Claude Sonnet 4.5'
 | `description` | Yes | Single-quoted, 50-150 chars, actionable |
 | `name` | No | Defaults to filename without extension |
 | `tools` | No | Omit = all tools. `[]` = none |
-| `model` | Optional | Useful in VS Code. Ignored on GitHub.com coding agent. |
+| `model` | Optional | VS Code: claude-4-6-sonnet/opus/haiku-latest. Ignored on GitHub.com. |
 | `target` | No | `vscode` or `github-copilot` |
 | `infer` | No | `false` = require manual selection |
-| `handoffs` | No | VS Code only. Ignored on GitHub.com coding agent. |
+| `handoffs` | No | VS Code only. Ignored on GitHub.com. |
 
 ## Tool Configuration
 

@@ -1,7 +1,7 @@
 ---
 name: rust-optimizer
 description: 'Rust optimization: zero-cost abstractions, memory safety, idiomatic patterns. See instructions/rust.instructions.md'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems]
 ---
 

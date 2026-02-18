@@ -1,7 +1,7 @@
 ---
 name: repo-index
 description: 'Repository indexing and codebase briefing. Compresses repo context for token-efficient subsequent work.'
-model: claude-4-5-haiku-latest
+model: claude-4-6-haiku-latest
 tools: [codebase, search, edit, githubRepo, fetch, execute]
 ---
 

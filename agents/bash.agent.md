@@ -1,7 +1,7 @@
 ---
 name: bash-optimizer
 description: 'Bash/Shell optimization: safety, modern patterns, performance. See instructions/bash.instructions.md'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems]
 ---
 

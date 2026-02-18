@@ -1,7 +1,7 @@
 ---
 description: 'Maintain GitHub profile README with activity insights. Analyzes repos, scores significance, generates markdown sections.'
 name: 'Profile Maintainer'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: ['read', 'write', 'edit', 'search', 'execute']
 ---
 

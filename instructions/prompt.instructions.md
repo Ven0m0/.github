@@ -19,7 +19,7 @@ applyTo: '**/*.prompt.md'
 description: "Actionable outcome in one sentence"
 mode: agent  # ask | edit | agent
 tools: ['read', 'edit', 'search']
-model: 'Claude Sonnet 4.5'  # Optional: inherit active model if omitted
+model: 'Claude Sonnet 4.6'  # Optional: inherit active model if omitted
 ---
 ```
 

@@ -75,7 +75,7 @@ The `agents/` directory contains 17 specialized autonomous agents:
 ---
 name: agent-name
 description: Brief description
-model: claude-4-5-[sonnet|opus]-latest
+model: claude-4-6-[sonnet|opus|haiku]-latest
 tools: [codebase, read, write, edit, search, ...]
 ---
 ```

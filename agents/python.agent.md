@@ -1,7 +1,7 @@
 ---
 name: python-optimizer
 description: 'Python optimization: type safety, security-first, performance. See instructions/python.instructions.md'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems]
 ---
 
