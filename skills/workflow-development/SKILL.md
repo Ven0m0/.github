@@ -13,7 +13,7 @@ Standards: See `instructions/cicd-standards.instructions.md`
 ## Security (Non-Negotiable)
 
 ```yaml
-# SHA-pinned actions (preferred)
+# Example: SHA-pinned actions (see instructions/cicd-standards.instructions.md for org guidance)
 - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
 # Minimal permissions
