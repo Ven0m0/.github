@@ -1,7 +1,8 @@
 ---
 name: prd
 description: 'Generate Product Requirements Documents (PRDs) with executive summaries, user stories, technical specs, and risk analysis. Use when asked to "write a PRD", "document requirements", or "plan a feature".'
-license: MIT
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Product Requirements Document (PRD)
