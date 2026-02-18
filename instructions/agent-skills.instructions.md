@@ -36,13 +36,15 @@ license: Complete terms in LICENSE.txt
 
 The `description` is the PRIMARY mechanism for skill discovery. Copilot reads ONLY `name` and `description` to decide whether to load a skill.
 
-Include:
-
-1. **WHAT** the skill does (capabilities)
-2. **WHEN** to use it (triggers, scenarios, file types)
-3. **Keywords** users might mention in prompts
-
 </Goals>
+
+## Description Format (Required)
+
+| Element | Include | Example |
+|---------|---------|---------|
+| WHAT | Capabilities in 5-10 words | "Toolkit for testing local web apps" |
+| WHEN | Explicit trigger scenarios | "Use when asked to verify frontend, debug UI" |
+| Keywords | Terms users might mention | "Playwright, screenshots, visual regressions" |
 
 ## Body Sections
 

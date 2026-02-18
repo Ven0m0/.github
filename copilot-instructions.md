@@ -140,5 +140,7 @@ When generating code:
 
 ## AI Assistant Integration
 
-- Each repo should have `CLAUDE.md` with: overview, structure, build/test commands, style requirements
-- `.vscode/mcp.json` with context7, filesystem, memory (when applicable)
+| File | Contents |
+|------|----------|
+| `CLAUDE.md` | Overview, structure, build/test commands, style requirements |
+| `.vscode/mcp.json` | context7, filesystem, memory (when applicable) |
