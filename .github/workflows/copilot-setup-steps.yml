@@ -28,7 +28,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.PAT || github.token }}
 
@@ -45,21 +45,21 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             ripgrep fd-find jq tmux rust-analyzer uv
 
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
+      - uses: actions/setup-node@v6
         with:
           node-version: "25"
-      - uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
           token: ${{ secrets.PAT || github.token }}
-      - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
       - name: Cache Bun dependencies
         if: steps.check_files.outputs.has_files == 'true'
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
+        uses: actions/cache@v5
         with:
           path: |
             ~/.bun/install/cache

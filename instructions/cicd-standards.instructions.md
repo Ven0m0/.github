@@ -55,7 +55,7 @@ permissions:
 - uses: actions/checkout@v4
 
 # WRONG: SHA pinning (harder to maintain, less readable)
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
 # WRONG: branch reference (vulnerable to compromise)
 - uses: actions/checkout@main
@@ -87,7 +87,7 @@ permissions:
 
 ### Caching
 ```yaml
-- uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f
+- uses: actions/cache@v4
   with:
     path: ~/.npm
     key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
@@ -106,7 +106,7 @@ strategy:
 
 ### Fast Checkout
 ```yaml
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+- uses: actions/checkout@v4
   with:
     fetch-depth: 1    # Shallow clone unless full history needed
 ```
