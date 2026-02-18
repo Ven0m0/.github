@@ -1,7 +1,7 @@
 ---
 name: ai-config-expert
 description: 'AI configuration expert: Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs. See instructions/ai-tuning.instructions.md'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: ['codebase', 'read', 'search', 'edit', 'write', 'web', 'execute', 'fetch', 'githubRepo']
 ---
 
