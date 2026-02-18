@@ -1,8 +1,9 @@
 ---
 name: mcp-development
 description: Common patterns and best practices for Model Context Protocol (MCP) server development. Use when creating MCP tools/resources/prompts, choosing stdio vs HTTP transport, or debugging MCP server behavior.
-version: 1.0.0
 allowed-tools: [Read, Glob, Grep]
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # MCP Development Skill
