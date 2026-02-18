@@ -1,6 +1,8 @@
 ---
 name: condense
 description: Deduplicate and consolidate CLAUDE.md memory files. Use when asked to "condense CLAUDE.md", "deduplicate memory files", or "consolidate instructions". Removes redundancy within files and across the hierarchy.
+user-invocable: true
+disable-model-invocation: true
 ---
 
 # CLAUDE.md Condensation
