@@ -1,8 +1,9 @@
 ---
 name: language-optimization
 description: Common patterns and principles for code optimization across languages. Use when asked to improve readability, performance, maintainability, or security in Bash, Python, or Rust code.
-version: 1.0.0
 allowed-tools: [Read, Glob, Grep]
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Language Optimization Skill
