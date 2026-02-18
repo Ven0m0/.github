@@ -3,6 +3,7 @@
 	"extends": [
     "schedule:automergeDaily", 
     ":dependencyDashboard",
+    "config:base",
 		"config:best-practices",
 		":maintainLockFilesWeekly",
 		":semanticPrefixFixDepsChoreOthers",
@@ -12,6 +13,7 @@
 		"workarounds:all",
 		"schedule:weekly"
 	],
+  "pinDigests": false,
 	"automerge": true,
 	"automergeType": "branch",
 	"platformAutomerge": true,
