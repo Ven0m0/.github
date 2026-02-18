@@ -1,6 +1,8 @@
 ---
 name: codebase-cleanup
 description: Use when preparing codebase for production, removing dead code, cleaning debug artifacts, or performing pre-merge cleanup passes.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Codebase Cleanup
