@@ -93,7 +93,7 @@ Standard agent file structure:
 ```yaml
 ---
 name: agent-name
-description: 'Brief description. See instructions/[file].instructions.md.'
+description: 'Brief description. See instructions/meta-authoring.instructions.md.'
 model: claude-4-6-[sonnet|opus|haiku]-latest
 tools: [list, of, tools]
 ---
@@ -143,7 +143,7 @@ Choose the appropriate Claude model based on agent purpose:
 **Characteristics**:
 - Temperature: 0.3-0.4 (focused, consistent)
 - Best for: Code generation, bug fixes, safe refactoring
-- Examples: language-optimizer.agent.md, github-issue-fixer.agent.md, refactoring-expert.agent.md
+- Examples: language-optimizer.agent.md, github-issue-fixer.agent.md
 
 ### Haiku (claude-4-6-haiku-latest)
 **Use for**: Fast, lightweight operations
@@ -151,7 +151,7 @@ Choose the appropriate Claude model based on agent purpose:
 **Characteristics**:
 - Temperature: 0.3-0.4 (focused, efficient)
 - Best for: Cleanup, indexing, simple transformations
-- Examples: janitor.agent.md, repo-index.agent.md
+- Examples: codebase-maintainer.agent.md
 
 ## Tool Profile Templates
 

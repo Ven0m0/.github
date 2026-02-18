@@ -111,6 +111,19 @@ def process(items: list[str], limit: int = 10) -> dict[str, int]: ...
 | Code gen | Simplest solution; stdlib first; no premature optimization |
 | Code mod | Preserve structure; minimal changes; no unsolicited refactor |
 
+## Output Compression (Token Efficiency)
+
+**Activate when**: context >75%, resource constraints, user requests brevity, large-scale ops
+
+| Principle | Apply |
+|----------|-------|
+| Density | Result before cause; bullets/tables over paragraphs |
+| Symbols | `->` leads to, `=>` transforms, `>>` sequence, `.:` therefore, `b/c` because |
+| Status | `[x]` done, `[!]` error, `[~]` in progress, `[?]` review |
+| Abbrev | cfg, impl, perf, deps, fn, mod, sec, err, opt |
+
+**Report template**: `scope: status; metric >> b/c cause >> act: 1,2,3`
+
 <Limitations>
 
 - No verbose prose when tables or lists suffice

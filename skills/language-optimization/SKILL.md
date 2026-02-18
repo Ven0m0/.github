@@ -240,5 +240,4 @@ Optimization is successful when:
 ## References
 
 - Language-specific standards in `instructions/`
-- Refactoring patterns in `skills/refactor/`
-- Code cleanup procedures in `skills/codebase-cleanup/`
+- Refactoring and cleanup in `skills/code-maintenance/`

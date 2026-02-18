@@ -14,15 +14,15 @@ Comprehensive development workflow that coordinates planning, execution, refacto
 Orchestrate complex development tasks through a structured multi-phase workflow:
 1. **Planning Phase** - Strategic analysis and architecture (strategic-planner.agent.md)
 2. **Execution Phase** - Implementation and integration (github-issue-fixer.agent.md)
-3. **Refactoring Phase** - Code quality and optimization (refactoring-expert.agent.md)
-4. **Cleanup Phase** - Technical debt elimination (janitor.agent.md)
+3. **Refactoring Phase** - Code quality and optimization (language-optimizer.agent.md)
+4. **Cleanup Phase** - Technical debt elimination (codebase-maintainer.agent.md)
 5. **Review Phase** - Critical analysis and validation (critical-thinking.agent.md)
 
 ## Standards
 
 All phases must adhere to:
 - `instructions/quality-standards.instructions.md` - Quality baseline
-- `instructions/token-efficient.instructions.md` - Efficiency standards
+- `instructions/ai-tuning.instructions.md` - Output compression (token efficiency)
 - Language-specific instructions as applicable
 - Security and performance best practices
 
@@ -86,11 +86,11 @@ All phases must adhere to:
 
 **Output**: Implemented code with tests and documentation
 
-**Handoff**: Pass implementation to refactoring-expert for optimization
+**Handoff**: Pass implementation to language-optimizer for optimization
 
 ---
 
-### Phase 3: Refactoring (refactoring-expert.agent.md - Sonnet)
+### Phase 3: Refactoring (language-optimizer.agent.md - Sonnet)
 
 **Objective**: Optimize code quality and maintainability
 
@@ -117,11 +117,11 @@ All phases must adhere to:
 
 **Output**: Refactored code with improved quality metrics
 
-**Handoff**: Pass refactored code to janitor for cleanup
+**Handoff**: Pass refactored code to codebase-maintainer for cleanup
 
 ---
 
-### Phase 4: Cleanup (janitor.agent.md - Haiku)
+### Phase 4: Cleanup (codebase-maintainer.agent.md - Haiku)
 
 **Objective**: Eliminate technical debt and optimize codebase
 

@@ -6,9 +6,9 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ```
 .github/
-  agents/            # 17 specialized AI agents
-  skills/            # 13 reusable skill modules
-  instructions/      # 21 Copilot instruction files
+  agents/            # 12 specialized AI agents
+  skills/            # 10 reusable skill modules
+  instructions/      # 17 Copilot instruction files
   hooks/             # Pre-commit hooks
   prompts/           # Reusable prompt templates
   .gemini/           # Google Gemini configuration
@@ -20,35 +20,32 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ## Agents
 
-The `agents/` directory contains 17 specialized autonomous agents:
+The `agents/` directory contains 12 specialized autonomous agents:
 
 ### Workflow Orchestration
 
 | Agent | Purpose |
 |-------|---------|
-| `multi-agent-workflow.agent.md` | Comprehensive multi-agent workflow orchestrating planning, execution, refactoring, cleanup, and review phases |
+| `multi-agent-workflow.agent.md` | Multi-agent workflow: planning, execution, refactoring, cleanup, review |
 
 ### Planning & Architecture
 
 | Agent | Purpose |
 |-------|---------|
-| `strategic-planner.agent.md` | Comprehensive planning from PRDs to implementation plans (opus, consolidated) |
+| `strategic-planner.agent.md` | PRDs to implementation plans (opus) |
 | `task-researcher.agent.md` | Deep research for task planning |
 
-### Code Optimization & Refactoring
+### Code Optimization
 
 | Agent | Purpose |
 |-------|---------|
-| `bash.agent.md` | Bash/Shell optimization (modular, references language-optimization skill) |
-| `python.agent.md` | Python optimization (modular, references language-optimization skill) |
-| `rust.agent.md` | Rust optimization (modular, references language-optimization skill) |
-| `refactoring-expert.agent.md` | Code refactoring with TDD principles |
+| `language-optimizer.agent.md` | Bash, Python, Rust optimization and refactoring (language-branching) |
 
 ### Development & Engineering
 
 | Agent | Purpose |
 |-------|---------|
-| `git.agent.md` | Git & GitHub CLI workflows, best practices, advanced operations |
+| `git.agent.md` | Git & GitHub CLI workflows |
 | `workflow-engineer.agent.md` | GitHub Actions and CI/CD |
 | `github-issue-fixer.agent.md` | Issue triage and resolution |
 
@@ -56,17 +53,16 @@ The `agents/` directory contains 17 specialized autonomous agents:
 
 | Agent | Purpose |
 |-------|---------|
-| `repo-index.agent.md` | Repository indexing and search |
+| `codebase-maintainer.agent.md` | Cleanup and indexing (janitor + repo-index consolidated) |
 | `profile-maintainer.agent.md` | GitHub profile README management |
-| `janitor.agent.md` | Codebase cleanup and maintenance |
 
 ### Quality & Analysis
 
 | Agent | Purpose |
 |-------|---------|
 | `critical-thinking.agent.md` | Deep analysis and questioning |
-| `context7.agent.md` | Documentation-powered assistant |
-| `ai-config-expert.agent.md` | AI configuration: Copilot, CLAUDE.md, AGENTS.md, prompts (consolidated) |
+| `context7.agent.md` | Documentation-powered assistant (Context7) |
+| `ai-config-expert.agent.md` | AI config: Copilot, CLAUDE.md, AGENTS.md, prompts |
 | `arch-linux-expert.agent.md` | Arch Linux specialist |
 
 ### Agent Metadata
@@ -85,23 +81,20 @@ tools: [codebase, read, write, edit, search, ...]
 
 ## Skills
 
-The `skills/` directory contains 13 reusable knowledge modules:
+The `skills/` directory contains 10 reusable knowledge modules:
 
 | Skill | Purpose |
 |-------|---------|
 | `gh-cli/` | GitHub CLI reference |
-| `agentic-eval/` | Agent output evaluation patterns |
 | `prd/` | PRD best practices |
-| `ai-tuning/` | AI instruction optimization |
-| `refactor/` | Refactoring strategies |
+| `ai-tuning/` | AI config optimization + CLAUDE.md condensation |
+| `code-maintenance/` | Refactoring and cleanup (refactor + codebase-cleanup consolidated) |
 | `workflow-development/` | GitHub Actions workflows |
-| `codebase-cleanup/` | Code cleanup procedures |
-| `condense/` | CLAUDE.md deduplication |
-| `agent-patterns/` | Reusable agent workflow patterns and templates |
-| `language-optimization/` | Common language optimization patterns (Bash, Python, Rust) |
-| `mcp-development/` | Common MCP server development patterns (Python, TypeScript) |
+| `agent-patterns/` | Agent workflow patterns and templates |
+| `language-optimization/` | Common optimization patterns (Bash, Python, Rust) |
+| `mcp-development/` | MCP server development (Python, TypeScript) |
 | `code-review/` | Structured review rubric for diffs/PRs |
-| `vibe-coding/` | Fast local web app prototyping workflows |
+| `vibe-coding/` | Fast local web app prototyping |
 
 ## Instructions
 
@@ -131,12 +124,8 @@ Organized in `instructions/` - scoped by file type and domain. See `instructions
 
 | File | Applies To |
 |------|------------|
-| `agents.instructions.md` | `*.agent.md` |
-| `agent-skills.instructions.md` | `SKILL.md` |
-| `ai-tuning.instructions.md` | `CLAUDE.md`, `copilot-instructions.md` |
-| `instructions.instructions.md` | `*.instructions.md` |
-| `prompt.instructions.md` | `*.prompt.md` |
-| `token-efficient.instructions.md` | All files |
+| `meta-authoring.instructions.md` | Agents, skills, instructions, prompts |
+| `ai-tuning.instructions.md` | CLAUDE.md, copilot-instructions.md, output compression |
 
 ## Development Workflows
 
@@ -216,44 +205,20 @@ Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-autom
 2. Set `applyTo` glob pattern in frontmatter
 3. Update `instructions/INDEX.md`
 
-## Agent Modularity & Consolidation
+## Agent Consolidation
 
-Agents are designed for **minimal context bloat** while maximizing capability through strategic consolidation:
+**Language Optimizer** (bash + python + rust + refactoring-expert):
+- Single agent with language-branching; auto-detects from file type
+- References `skills/language-optimization/`, `skills/code-maintenance/`
 
-**Modular Language Agents** (Separate by Language):
-- `bash.agent.md`, `python.agent.md`, `rust.agent.md` - Separate, focused agents
-- Each references `skills/language-optimization/` for common patterns
-- No context bloat: Load Bash agent without loading Python/Rust content
-- Maintains DRY: Common patterns extracted to shared skill
+**Codebase Maintainer** (janitor + repo-index):
+- Cleanup mode: remove dead code, simplify, dependency hygiene
+- Index mode: PROJECT_INDEX.md, token-efficient context
 
-**Consolidated Planning Agent** (Single Agent, Multiple Levels):
-- `strategic-planner.agent.md` - Comprehensive planning agent
-- Handles PRDs, strategic plans, and implementation plans
-- Single methodology from vision to execution
-- Consolidates legacy planning workflows (`plan.agent.md`, `prd.agent.md`, `implementation-plan.agent.md`) into one agent
+**Skills consolidated**: refactor + codebase-cleanup → code-maintenance; condense → ai-tuning
+**Instructions consolidated**: agents + agent-skills + instructions + prompt → meta-authoring; token-efficient → ai-tuning
 
-**Consolidated AI Configuration Agent** (Single Domain):
-- `ai-config-expert.agent.md` - All AI configuration in one place
-- Handles Copilot instructions, CLAUDE.md, AGENTS.md, prompt engineering
-- Single source of truth for AI optimization
-- Consolidates: `copilot-tuner.agent.md`, `agents-maintainer.agent.md`, `prompt-engineer.agent.md`
-
-**MCP Integration Policy**:
-- Repository-level agents remain compatible with GitHub.com coding agents
-- MCP server definitions should be configured at org/enterprise level per GitHub docs
-- Agent prompts may reference MCP-backed tools where available in the runtime
-
-**Shared Skills**:
-- `agent-patterns/` - Reusable workflow templates, model selection guidelines, tool profiles
-- `language-optimization/` - Common optimization patterns across Bash, Python, Rust
-- `mcp-development/` - Common MCP server development patterns
-
-**Benefits**:
-- **No context bloat**: Language agents separate by language (one instructions file each)
-- **Strategic consolidation**: Related capabilities merged where it makes sense (planning, AI config)
-- **DRY maintained**: Common patterns in skills, not duplicated in agents
-- **Clear boundaries**: Each agent has well-defined scope
-- **Reduced complexity**: 21 → 17 agents without losing functionality
+**MCP Integration**: Repository agents compatible with GitHub.com; MCP at org/enterprise level
 
 ---
 
