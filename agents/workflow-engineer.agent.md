@@ -1,7 +1,7 @@
 ---
 description: 'GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reusable patterns, debugging.'
 name: 'Workflow Engineer'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: ['codebase', 'read', 'write', 'edit', 'search', 'execute', 'githubRepo']
 ---
 
