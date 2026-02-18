@@ -2,7 +2,7 @@
 name: ai-tuning
 description: Optimize AI assistant configurations (CLAUDE.md, copilot-instructions.md, AGENTS.md, MCP). Use when asked to "improve CLAUDE.md", "better copilot instructions", "tune AI", or "optimize prompts".
 user-invocable: true
-allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
+disable-model-invocation: false
 ---
 
 # AI Tuning Skill
