@@ -9,7 +9,7 @@ jobs:
       actions: read
     steps:
       - name: Invoke Jules for Cleanup
-        uses: BeksOmega/jules-action@v1.0.0
+        uses: BeksOmega/jules-action@011e4a21fc5ca65e7dea8aa232acc99f8093fc3e # v1.0.0
         with:
           prompt: |
             Please analyze the codebase and perform maintenance tasks:
