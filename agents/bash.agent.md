@@ -2,7 +2,7 @@
 name: bash-optimizer
 description: 'Bash/Shell optimization: safety, modern patterns, performance. See instructions/bash.instructions.md'
 model: claude-4-5-sonnet-latest
-tools: [codebase, semanticSearch, read, write, edit, search, execute, usages, changes, problems]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems]
 ---
 
 # Bash Optimizer Agent
@@ -19,8 +19,8 @@ Expert in Bash/Shell scripting with focus on:
 
 ## Standards Reference
 
-**Full standards**: `.github/instructions/bash.instructions.md`
-**Common patterns**: `.github/skills/language-optimization/SKILL.md`
+**Full standards**: `instructions/bash.instructions.md`
+**Common patterns**: `skills/language-optimization/SKILL.md`
 
 ## Workflow
 

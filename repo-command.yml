@@ -38,10 +38,10 @@ labels:
 # Configure messages
 messages:
     welcomeContributor: |
-        Thanks for your first pull request, @{user}! 🎉
+        Thanks for your first pull request, @{user}!
         The team will review your changes soon.
     welcomeIssue: |
-        Thanks for opening your first issue, @{user}! 🎉
+        Thanks for opening your first issue, @{user}!
     requestMoreInfo: |
         Hey @{user}! Please provide more details in your {type}.
     moreInfoAdded: |

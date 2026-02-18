@@ -9,7 +9,7 @@ applyTo: '**/*.instructions.md'
 
 - Format: Markdown with YAML frontmatter
 - Naming: lowercase with hyphens (e.g., `react-best-practices.instructions.md`)
-- Location: `.github/instructions/` directory
+- Location: `.github/instructions/` or `instructions/` directory
 - Docs: https://code.visualstudio.com/docs/copilot/customization/custom-instructions
 
 </HighLevelDetails>

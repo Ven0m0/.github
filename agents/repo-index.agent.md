@@ -2,20 +2,7 @@
 name: repo-index
 description: 'Repository indexing and codebase briefing. Compresses repo context for token-efficient subsequent work.'
 model: claude-4-5-haiku-latest
-tools: [codebase, semanticSearch, search, edit/editFiles, githubRepo, fetch, execute]
-mcp-servers:
-  exa:
-    type: stdio
-    command: "npx"
-    args: ["-y", "exa-mcp-server"]
-    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
-    tools: ["get_code_context_exa", "web_search_exa"]
-  github-mcp-server:
-    type: stdio
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-github"]
-    env: {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"}
-    tools: ["search_repositories", "search_code", "get_file_contents"]
+tools: [codebase, search, edit, githubRepo, fetch, execute]
 ---
 
 # Repository Index Agent

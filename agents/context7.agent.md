@@ -2,18 +2,7 @@
 description: 'Documentation-powered assistant using Context7 for up-to-date library docs, best practices, and correct syntax. Always fetches docs before answering.'
 name: 'Context7 Expert'
 model: claude-4-5-sonnet-latest
-tools: [codebase, semanticSearch, read, search, usages, fetch, edit/editFiles, context7/*]
-mcp-servers:
-  context7:
-    type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 }}"}
-    tools: ["get-library-docs", "resolve-library-id"]
-handoffs:
-  - label: Implement with Context7
-    agent: agent
-    prompt: Implement the solution using the Context7 best practices and documentation outlined above.
-    send: false
+tools: [codebase, read, search, usages, fetch, edit, context7/*]
 ---
 
 # Context7 Documentation Expert

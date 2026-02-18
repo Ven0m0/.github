@@ -2,14 +2,7 @@
 description: 'GitHub issue resolution specialist. Analyzes, plans, and implements fixes with testing and PR creation.'
 name: 'Issue Fixer'
 model: claude-4-5-sonnet-latest
-tools: [codebase, semanticSearch, read, write, edit/editFiles, search, usages, problems, changes, github, githubRepo, execute]
-mcp-servers:
-  github-mcp-server:
-    type: stdio
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-github"]
-    env: {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"}
-    tools: ["issue_read", "add_issue_comment", "pull_request_read", "pull_request_review_write", "search_issues", "search_code", "get_file_contents"]
+tools: [codebase, read, write, edit, search, usages, problems, changes, github, githubRepo, execute]
 ---
 
 # GitHub Issue Fixer

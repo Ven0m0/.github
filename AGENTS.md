@@ -6,8 +6,8 @@ Organization-wide default community health files, Copilot instructions, AI agent
 
 ```
 .github/
-  agents/            # 18 specialized AI agents
-  skills/            # 11 reusable skill modules
+  agents/            # 17 specialized AI agents
+  skills/            # 13 reusable skill modules
   instructions/      # 21 Copilot instruction files
   hooks/             # Pre-commit hooks
   prompts/           # Reusable prompt templates
@@ -85,7 +85,7 @@ tools: [codebase, read, write, edit, search, ...]
 
 ## Skills
 
-The `skills/` directory contains 11 reusable knowledge modules:
+The `skills/` directory contains 13 reusable knowledge modules:
 
 | Skill | Purpose |
 |-------|---------|
@@ -100,6 +100,8 @@ The `skills/` directory contains 11 reusable knowledge modules:
 | `agent-patterns/` | Reusable agent workflow patterns and templates |
 | `language-optimization/` | Common language optimization patterns (Bash, Python, Rust) |
 | `mcp-development/` | Common MCP server development patterns (Python, TypeScript) |
+| `code-review/` | Structured review rubric for diffs/PRs |
+| `vibe-coding/` | Fast local web app prototyping workflows |
 
 ## Instructions
 
@@ -216,7 +218,7 @@ Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-autom
 
 ## Agent Modularity & Consolidation
 
-Agents are designed for **minimal context bloat** while maximizing capability through strategic consolidation and MCP server integration:
+Agents are designed for **minimal context bloat** while maximizing capability through strategic consolidation:
 
 **Modular Language Agents** (Separate by Language):
 - `bash.agent.md`, `python.agent.md`, `rust.agent.md` - Separate, focused agents
@@ -225,22 +227,21 @@ Agents are designed for **minimal context bloat** while maximizing capability th
 - Maintains DRY: Common patterns extracted to shared skill
 
 **Consolidated Planning Agent** (Single Agent, Multiple Levels):
-- `strategic-planner.agent.md` - Comprehensive planning agent with GitHub MCP and Exa integration
+- `strategic-planner.agent.md` - Comprehensive planning agent
 - Handles PRDs, strategic plans, and implementation plans
 - Single methodology from vision to execution
-- Consolidates: `plan.agent.md`, `prd.agent.md`, `implementation-plan.agent.md`
+- Consolidates legacy planning workflows (`plan.agent.md`, `prd.agent.md`, `implementation-plan.agent.md`) into one agent
 
 **Consolidated AI Configuration Agent** (Single Domain):
-- `ai-config-expert.agent.md` - All AI configuration in one place, enhanced with Exa MCP
+- `ai-config-expert.agent.md` - All AI configuration in one place
 - Handles Copilot instructions, CLAUDE.md, AGENTS.md, prompt engineering
 - Single source of truth for AI optimization
 - Consolidates: `copilot-tuner.agent.md`, `agents-maintainer.agent.md`, `prompt-engineer.agent.md`
 
-**MCP Server Integration**:
-All agents now leverage available MCP servers for enhanced capabilities:
-- **GitHub MCP**: Issue management, PR operations, code search, workflow debugging
-- **Exa**: Web search, deep research, code documentation context
-- **Playwright**: Browser automation for testing and validation
+**MCP Integration Policy**:
+- Repository-level agents remain compatible with GitHub.com coding agents
+- MCP server definitions should be configured at org/enterprise level per GitHub docs
+- Agent prompts may reference MCP-backed tools where available in the runtime
 
 **Shared Skills**:
 - `agent-patterns/` - Reusable workflow templates, model selection guidelines, tool profiles
@@ -252,7 +253,6 @@ All agents now leverage available MCP servers for enhanced capabilities:
 - **Strategic consolidation**: Related capabilities merged where it makes sense (planning, AI config)
 - **DRY maintained**: Common patterns in skills, not duplicated in agents
 - **Clear boundaries**: Each agent has well-defined scope
-- **MCP enhancement**: 17 agents with 4 MCP servers (GitHub, Exa, Playwright, Context7)
 - **Reduced complexity**: 21 → 17 agents without losing functionality
 
 ---

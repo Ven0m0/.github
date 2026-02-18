@@ -12,6 +12,7 @@ excludeAgent: "code-review"
 - Naming: lowercase with hyphens (e.g., `test-specialist.agent.md`)
 - Location: `.github/agents/` (repo) or `agents/` (org/enterprise)
 - Docs: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-custom-agents
+- GitHub.com coding agent: `model` and `handoffs` are ignored, and `mcp-servers` are supported only for org/enterprise-level custom agents
 
 </HighLevelDetails>
 
@@ -31,10 +32,10 @@ model: 'Claude Sonnet 4.5'
 | `description` | Yes | Single-quoted, 50-150 chars, actionable |
 | `name` | No | Defaults to filename without extension |
 | `tools` | No | Omit = all tools. `[]` = none |
-| `model` | Recommended | `Claude Sonnet 4.5`, `gpt-4o`, etc. |
+| `model` | Optional | Useful in VS Code. Ignored on GitHub.com coding agent. |
 | `target` | No | `vscode` or `github-copilot` |
 | `infer` | No | `false` = require manual selection |
-| `handoffs` | No | VS Code 1.106+ only |
+| `handoffs` | No | VS Code only. Ignored on GitHub.com coding agent. |
 
 ## Tool Configuration
 
@@ -54,6 +55,8 @@ model: 'Claude Sonnet 4.5'
 tools: ['github/*']           # All GitHub tools
 tools: ['playwright/navigate'] # Specific Playwright tool
 ```
+
+`mcp-servers` frontmatter is only available for org/enterprise-level custom agents. Do not add `mcp-servers` in repository-level `.github/agents/*.agent.md`.
 
 <Standards>
 

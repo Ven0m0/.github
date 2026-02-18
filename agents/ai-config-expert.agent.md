@@ -3,13 +3,6 @@ name: ai-config-expert
 description: 'AI configuration expert: Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs. See instructions/ai-tuning.instructions.md'
 model: claude-4-5-sonnet-latest
 tools: ['codebase', 'read', 'search', 'edit', 'write', 'web', 'execute', 'fetch', 'githubRepo']
-mcp-servers:
-  exa:
-    type: stdio
-    command: "npx"
-    args: ["-y", "exa-mcp-server"]
-    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
-    tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
 ---
 
 # AI Configuration Expert

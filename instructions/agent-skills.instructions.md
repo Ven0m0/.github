@@ -12,7 +12,7 @@ Skills are self-contained folders with instructions and bundled resources that t
 
 - Portable across VS Code, Copilot CLI, and Copilot coding agent
 - Progressive loading: only loaded when relevant to user's request
-- Location: `.github/skills/<name>/` (project) or `~/.github/skills/<name>/` (personal)
+- Location: `.github/skills/<name>/` or `skills/<name>/` (project), or `~/.github/skills/<name>/` (personal)
 
 </HighLevelDetails>
 
