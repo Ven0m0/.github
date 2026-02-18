@@ -107,7 +107,7 @@ Primary responsibilities and expertise.
 
 ## Standards Reference
 
-**Full standards**: `.github/instructions/[domain].instructions.md`
+**Full standards**: `instructions/[domain].instructions.md`
 
 ## Workflow
 
@@ -134,7 +134,7 @@ Choose the appropriate Claude model based on agent purpose:
 **Characteristics**:
 - Temperature: 0.6-0.7 (creative, exploratory)
 - Best for: Architecture decisions, trade-off analysis, deep research
-- Examples: plan.agent.md, critical-thinking.agent.md, task-researcher.agent.md
+- Examples: strategic-planner.agent.md, critical-thinking.agent.md, task-researcher.agent.md
 
 ### Sonnet (claude-4-5-sonnet-latest)
 **Use for**: Code implementation, optimization, refactoring
@@ -220,7 +220,7 @@ All agents should reference appropriate instruction files:
 ```markdown
 ## Standards Reference
 
-**Full standards**: `.github/instructions/[domain].instructions.md`
+**Full standards**: `instructions/[domain].instructions.md`
 ```
 
 Common instruction files:

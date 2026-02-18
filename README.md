@@ -35,11 +35,11 @@ See `instructions/INDEX.md` for the full list.
 
 ## AI Agents
 
-22 specialized agents in `agents/` for planning, code optimization, CI/CD, and more. See `AGENTS.md` for details.
+17 specialized agents in `agents/` for planning, code optimization, CI/CD, and more. See `AGENTS.md` for details.
 
 ## Skills
 
-8 reusable knowledge modules in `skills/`: gh-cli, refactoring, PRD, AI tuning, workflow development, codebase cleanup, evaluation patterns, CLAUDE.md condensation.
+13 reusable knowledge modules in `skills/`, including gh-cli, refactoring, PRD, AI tuning, workflow development, codebase cleanup, code-review, and vibe-coding.
 
 ## Reusable Workflows
 

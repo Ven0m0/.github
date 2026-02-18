@@ -6,7 +6,7 @@ user-invocable: true
 
 # GitHub CLI (gh)
 
-Reference for GitHub CLI. Version 2.85.0+.
+Reference for GitHub CLI. Current stable version (check with `gh --version`).
 
 ## Quick Reference
 

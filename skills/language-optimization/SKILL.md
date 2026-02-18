@@ -200,19 +200,19 @@ Each language has specific implementations of these patterns:
 - Focus on quoting, error handling (set -euo pipefail)
 - Prefer modern tools (fd, rg over find, grep)
 - Use shellcheck, shellharden
-- See: `.github/instructions/bash.instructions.md`
+- See: `instructions/bash.instructions.md`
 
 ### Python
 - Focus on type hints, async patterns
 - Use ruff for linting, mypy for types
 - Prefer generators over lists
-- See: `.github/instructions/python.instructions.md`
+- See: `instructions/python.instructions.md`
 
 ### Rust
 - Focus on ownership, borrowing, lifetimes
 - Use clippy for lints, rustfmt for formatting
 - Prefer iterators over loops
-- See: `.github/instructions/rust.instructions.md`
+- See: `instructions/rust.instructions.md`
 
 ## Success Criteria
 
@@ -238,6 +238,6 @@ Optimization is successful when:
 
 ## References
 
-- Language-specific standards in `.github/instructions/`
+- Language-specific standards in `instructions/`
 - Refactoring patterns in `skills/refactor/`
 - Code cleanup procedures in `skills/codebase-cleanup/`

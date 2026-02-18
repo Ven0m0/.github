@@ -2,14 +2,7 @@
 name: git-expert
 description: 'Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control'
 model: claude-4-5-sonnet-latest
-tools: [codebase, semanticSearch, read, write, edit, search, execute, usages]
-mcp-servers:
-  github-mcp-server:
-    type: stdio
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-github"]
-    env: {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"}
-    tools: ["create_pull_request", "pull_request_read", "pull_request_review_write", "merge_pull_request", "create_branch", "list_branches", "search_pull_requests", "get_commit", "list_commits"]
+tools: [codebase, read, write, edit, search, execute, usages]
 ---
 
 # Git & GitHub CLI Expert Agent

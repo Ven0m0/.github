@@ -2,7 +2,7 @@
 name: python-optimizer
 description: 'Python optimization: type safety, security-first, performance. See instructions/python.instructions.md'
 model: claude-4-5-sonnet-latest
-tools: [codebase, semanticSearch, read, write, edit, search, execute, usages, changes, problems]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems]
 ---
 
 # Python Optimizer Agent
@@ -19,8 +19,8 @@ Expert in Python with focus on:
 
 ## Standards Reference
 
-**Full standards**: `.github/instructions/python.instructions.md`
-**Common patterns**: `.github/skills/language-optimization/SKILL.md`
+**Full standards**: `instructions/python.instructions.md`
+**Common patterns**: `skills/language-optimization/SKILL.md`
 
 ## Workflow
 

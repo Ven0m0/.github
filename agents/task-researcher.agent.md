@@ -2,14 +2,7 @@
 description: 'Deep research specialist for task planning. Analyzes codebases, external docs, and patterns. Writes findings to .copilot-tracking/research/ only.'
 name: 'Task Researcher'
 model: claude-4-5-opus-latest
-tools: [codebase, semanticSearch, search, usages, problems, changes, fetch, githubRepo, edit/editFiles]
-mcp-servers:
-  exa:
-    type: stdio
-    command: "npx"
-    args: ["-y", "exa-mcp-server"]
-    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
-    tools: ["web_search_exa", "web_search_advanced_exa", "crawling_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
+tools: [codebase, search, usages, problems, changes, fetch, githubRepo, edit]
 ---
 
 # Task Researcher

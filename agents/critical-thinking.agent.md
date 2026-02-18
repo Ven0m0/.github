@@ -2,18 +2,6 @@
 name: critical-thinking
 description: 'Challenge assumptions and encourage critical thinking. Ask Why until root cause is found. No code edits.'
 tools: ['codebase', 'fetch', 'githubRepo', 'search', 'usages']
-mcp-servers:
-  exa:
-    type: stdio
-    command: "npx"
-    args: ["-y", "exa-mcp-server"]
-    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
-    tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check"]
-  playwright:
-    type: stdio
-    command: "npx"
-    args: ["-y", "@playwright/mcp"]
-    tools: ["browser_navigate", "browser_snapshot", "browser_take_screenshot", "browser_click"]
 ---
 
 # Critical Thinking Mode

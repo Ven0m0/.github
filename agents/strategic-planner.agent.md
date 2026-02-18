@@ -2,20 +2,7 @@
 description: 'Strategic planning from high-level PRDs to detailed implementation plans. Architecture, requirements, and actionable task breakdown.'
 name: 'Strategic Planner'
 model: claude-4-5-opus-latest
-tools: [codebase, semanticSearch, search, usages, problems, changes, fetch, githubRepo, edit/editFiles, write, github/*]
-mcp-servers:
-  github-mcp-server:
-    type: stdio
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-github"]
-    env: {"GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.GITHUB_TOKEN }}"}
-    tools: ["issue_write", "create_pull_request", "search_issues", "search_repositories", "web_search"]
-  exa:
-    type: stdio
-    command: "npx"
-    args: ["-y", "exa-mcp-server"]
-    env: {"EXA_API_KEY": "${{ secrets.EXA_API_KEY }}"}
-    tools: ["web_search_exa", "deep_researcher_start", "deep_researcher_check", "get_code_context_exa"]
+tools: [codebase, search, usages, problems, changes, fetch, githubRepo, edit, write, github/*]
 ---
 
 # Strategic Planner
@@ -296,8 +283,6 @@ Planning successful when:
 ## Migration Notes
 
 This agent consolidates:
-- `plan.agent.md` - Strategic planning and architecture
-- `prd.agent.md` - Product requirements documents
-- `implementation-plan.agent.md` - Detailed implementation plans
+- `strategic-planner.agent.md` - Strategic planning, PRD generation, and implementation planning
 
 Benefits: Single agent for all planning levels, consistent methodology from vision to execution, eliminates handoffs between planning agents.
