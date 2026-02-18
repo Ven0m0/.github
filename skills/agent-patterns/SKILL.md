@@ -93,8 +93,8 @@ Standard agent file structure:
 ```yaml
 ---
 name: agent-name
-description: 'Brief description. See instructions/[file].instructions.md.'
-model: claude-4-5-[sonnet|opus|haiku]-latest
+description: 'Brief description. See instructions/meta-authoring.instructions.md.'
+model: claude-4-6-[sonnet|opus|haiku]-latest
 tools: [list, of, tools]
 ---
 
@@ -129,7 +129,7 @@ Primary responsibilities and expertise.
 
 Choose the appropriate Claude model based on agent purpose:
 
-### Opus (claude-4-5-opus-latest)
+### Opus (claude-4-6-opus-latest)
 **Use for**: Strategic planning, complex analysis, critical thinking
 
 **Characteristics**:
@@ -137,21 +137,21 @@ Choose the appropriate Claude model based on agent purpose:
 - Best for: Architecture decisions, trade-off analysis, deep research
 - Examples: strategic-planner.agent.md, critical-thinking.agent.md, task-researcher.agent.md
 
-### Sonnet (claude-4-5-sonnet-latest)
+### Sonnet (claude-4-6-sonnet-latest)
 **Use for**: Code implementation, optimization, refactoring
 
 **Characteristics**:
 - Temperature: 0.3-0.4 (focused, consistent)
 - Best for: Code generation, bug fixes, safe refactoring
-- Examples: language-optimizer.agent.md, github-issue-fixer.agent.md, refactoring-expert.agent.md
+- Examples: language-optimizer.agent.md, github-issue-fixer.agent.md
 
-### Haiku (claude-4-5-haiku-latest)
+### Haiku (claude-4-6-haiku-latest)
 **Use for**: Fast, lightweight operations
 
 **Characteristics**:
 - Temperature: 0.3-0.4 (focused, efficient)
 - Best for: Cleanup, indexing, simple transformations
-- Examples: janitor.agent.md, repo-index.agent.md
+- Examples: codebase-maintainer.agent.md
 
 ## Tool Profile Templates
 

@@ -1,6 +1,7 @@
 ---
 name: critical-thinking
 description: 'Challenge assumptions and encourage critical thinking. Ask Why until root cause is found. No code edits.'
+model: claude-4-6-opus-latest
 tools: ['codebase', 'fetch', 'githubRepo', 'search', 'usages']
 ---
 

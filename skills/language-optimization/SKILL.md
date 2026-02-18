@@ -46,14 +46,14 @@ Common patterns, principles, and workflows for optimizing code across different 
 
 ## Common Workflow Pattern
 
-All language optimizers follow this pattern:
-
-1. **Analyze**: Examine code for issues, performance bottlenecks, security vulnerabilities
-2. **Lint/Format**: Apply language-specific linters and formatters
-3. **Type Check**: Enforce type safety (where applicable)
-4. **Test**: Ensure comprehensive test coverage
-5. **Optimize**: Apply performance improvements based on profiling
-6. **Verify**: Run all tests and checks to ensure correctness
+| Step | Action |
+|------|--------|
+| 1. Analyze | Issues, perf bottlenecks, security |
+| 2. Lint/Format | Language-specific linters |
+| 3. Type Check | Enforce type safety (where applicable) |
+| 4. Test | Coverage, edge cases |
+| 5. Optimize | Profile first, then improve |
+| 6. Verify | All tests and checks pass |
 
 ## Tool Selection Strategy
 
@@ -240,5 +240,4 @@ Optimization is successful when:
 ## References
 
 - Language-specific standards in `instructions/`
-- Refactoring patterns in `skills/refactor/`
-- Code cleanup procedures in `skills/codebase-cleanup/`
+- Refactoring and cleanup in `skills/code-maintenance/`

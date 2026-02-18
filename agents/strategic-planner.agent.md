@@ -1,7 +1,7 @@
 ---
 description: 'Strategic planning from high-level PRDs to detailed implementation plans. Architecture, requirements, and actionable task breakdown.'
 name: 'Strategic Planner'
-model: claude-4-5-opus-latest
+model: claude-4-6-opus-latest
 tools: [codebase, search, usages, problems, changes, fetch, githubRepo, edit, write, github/*]
 ---
 

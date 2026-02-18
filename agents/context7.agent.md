@@ -1,7 +1,7 @@
 ---
 description: 'Documentation-powered assistant using Context7 for up-to-date library docs, best practices, and correct syntax. Always fetches docs before answering.'
 name: 'Context7 Expert'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: [codebase, read, search, usages, fetch, edit, context7/*]
 ---
 

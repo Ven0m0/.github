@@ -99,13 +99,30 @@ def process(items: list[str], limit: int = 10) -> dict[str, int]: ...
 
 ## Copilot Guard Rails
 
-1. **User directives have highest priority** - execute without deviation
-2. **Factual verification over internal knowledge** - use tools for version-dependent info
-3. **Code on request only** - default to natural language explanations
-4. **Explain the "why"** - reasoning over the solution
+| Priority | Rule |
+|----------|------|
+| 1 | User directives > all instructions |
+| 2 | Verify facts via tools (versions, APIs) |
+| 3 | Code on request only; default to explanations |
+| 4 | Explain reasoning |
 
-**Code Generation**: Simplest solution possible. Standard library first. No premature optimization.
-**Code Modification**: Preserve existing structure. Minimal changes. No unsolicited refactoring.
+| Context | Constraint |
+|---------|------------|
+| Code gen | Simplest solution; stdlib first; no premature optimization |
+| Code mod | Preserve structure; minimal changes; no unsolicited refactor |
+
+## Output Compression (Token Efficiency)
+
+**Activate when**: context >75%, resource constraints, user requests brevity, large-scale ops
+
+| Principle | Apply |
+|----------|-------|
+| Density | Result before cause; bullets/tables over paragraphs |
+| Symbols | `->` leads to, `=>` transforms, `>>` sequence, `.:` therefore, `b/c` because |
+| Status | `[x]` done, `[!]` error, `[~]` in progress, `[?]` review |
+| Abbrev | cfg, impl, perf, deps, fn, mod, sec, err, opt |
+
+**Report template**: `scope: status; metric >> b/c cause >> act: 1,2,3`
 
 <Limitations>
 

@@ -32,12 +32,8 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 
 | Module | Scope |
 |--------|-------|
-| **agents** | Creating custom agent files |
-| **agent-skills** | Creating Agent Skills |
-| **ai-tuning** | Optimizing AI assistant configs + guard rails |
-| **instructions** | Creating instruction files |
-| **prompt** | Creating prompt files |
-| **token-efficient** | Compressed output mode |
+| **meta-authoring** | Agents, skills, instructions, prompts |
+| **ai-tuning** | AI assistant configs, guard rails, output compression |
 
 ## Documentation & Process
 
@@ -66,8 +62,7 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 | Makefiles | `makefile` | - |
 | GitHub Actions | `cicd-standards` | - |
 | Code review | `quality-standards` | Language-specific module |
-| Agent development | `agents` | `agent-skills` |
-| Instruction authoring | `instructions` | `ai-tuning` |
+| Agent/skill/instruction authoring | `meta-authoring` | `ai-tuning` |
 
 ## XML Tag Convention
 
