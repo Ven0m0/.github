@@ -1,7 +1,7 @@
 ---
 description: 'Systematic refactoring with clean code and TDD principles. Reduces complexity, eliminates duplication, applies SOLID. All tests must stay green.'
 name: 'Refactoring Expert'
-model: claude-4-5-sonnet-latest
+model: claude-4-6-sonnet-latest
 tools: [codebase, edit, search, usages, problems, changes, execute, github]
 ---
 
