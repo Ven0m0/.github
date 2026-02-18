@@ -13,7 +13,7 @@ Standards: See `instructions/cicd-standards.instructions.md`
 
 ## Security (Non-Negotiable)
 
-1. **Action Pinning**: Pin third-party actions to a full commit SHA (allowlist official actions with major tags only if policy permits)
+1. **Action Pinning**: Follow the action pinning rules in `instructions/cicd-standards.instructions.md` (e.g., whether to use version tags or SHAs for third-party actions)
 2. **Permissions**: Explicit `permissions:` block, `contents: read` default
 3. **Secrets**: Via `${{ secrets.NAME }}` only, environment-specific for deploys
 4. **OIDC**: Short-lived credentials for cloud providers over static secrets
