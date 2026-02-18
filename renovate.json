@@ -1,9 +1,9 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
-    "schedule:automergeDaily", 
-    ":dependencyDashboard",
-    "config:base",
+		"schedule:automergeDaily",
+		":dependencyDashboard",
+		"config:recommended",
 		"config:best-practices",
 		":maintainLockFilesWeekly",
 		":semanticPrefixFixDepsChoreOthers",
@@ -13,7 +13,7 @@
 		"workarounds:all",
 		"schedule:weekly"
 	],
-  "pinDigests": false,
+	"pinDigests": false,
 	"automerge": true,
 	"automergeType": "branch",
 	"platformAutomerge": true,
@@ -21,14 +21,21 @@
 	"packageRules": [
 		{
 			"description": "Automerge non-major stable deps via branch push",
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"matchUpdateTypes": [
+				"minor",
+				"patch",
+				"pin",
+				"digest"
+			],
 			"matchCurrentVersion": "!/^0/",
 			"automerge": true,
 			"automergeType": "branch"
 		},
 		{
 			"description": "Major updates and 0.x require PR review",
-			"matchUpdateTypes": ["major"],
+			"matchUpdateTypes": [
+				"major"
+			],
 			"automerge": false,
 			"dependencyDashboardApproval": true
 		},
@@ -40,13 +47,17 @@
 		},
 		{
 			"description": "Automerge linter updates including major",
-			"matchCategories": ["linters"],
+			"matchCategories": [
+				"linters"
+			],
 			"automerge": true,
 			"automergeType": "branch"
 		},
 		{
 			"description": "Lock file maintenance",
-			"matchUpdateTypes": ["lockFileMaintenance"],
+			"matchUpdateTypes": [
+				"lockFileMaintenance"
+			],
 			"automerge": true,
 			"automergeType": "branch"
 		}
