@@ -35,14 +35,14 @@ jobs:
   timeout-minutes: 15
   steps:
     - name: Checkout Repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       with:
         fetch-depth: 1
         ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
         token: ${{ secrets.PAT || github.token }}
 
     - name: Cache Image Tools
-      uses: actions/cache@v5
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
       with:
         path: ~/.cache/image-tools
         key: ${{ runner.os }}-image-tools-v1
@@ -64,7 +64,7 @@ jobs:
         echo "count=$count" >> "$GITHUB_OUTPUT"
 
         if [[ $count -gt 0 ]]; then
-          echo "## ¼ Found $count images" >> "$GITHUB_STEP_SUMMARY"
+          echo "## ï¿½ Found $count images" >> "$GITHUB_STEP_SUMMARY"
         else
           echo "No images found" >> "$GITHUB_STEP_SUMMARY"
         fi
@@ -135,7 +135,7 @@ jobs:
           process_removals "webp"
         fi
 
-        echo "## — Removed $count original images" >> "$GITHUB_STEP_SUMMARY"
+        echo "## ï¿½ Removed $count original images" >> "$GITHUB_STEP_SUMMARY"
     - name: Calculate Optimization Stats
       if: steps.compress.outputs.changes_detected == 'true'
       id: stats
@@ -155,7 +155,7 @@ jobs:
         fi
     - name: Commit Image Optimizations
       if: steps.compress.outputs.changes_detected == 'true' && github.event.pull_request.head.repo.full_name == github.repository
-      uses: stefanzweifel/git-auto-commit-action@v7
+      uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7
       with:
         commit_message: "chore(img): optimize images [skip ci]"
         branch: ${{ github.head_ref || github.ref_name }}
@@ -165,12 +165,12 @@ jobs:
 
     - name: Comment on Pull Request
       if: steps.compress.outputs.changes_detected == 'true' && github.event_name == 'pull_request' && steps.stats.outputs.pct != ''
-      uses: actions/github-script@v8
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
       with:
         script: |
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `## ¼ Images optimized (~${{ steps.stats.outputs.pct }}% saved)`
+            body: `## ï¿½ Images optimized (~${{ steps.stats.outputs.pct }}% saved)`
           });

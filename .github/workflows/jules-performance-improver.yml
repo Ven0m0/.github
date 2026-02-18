@@ -8,7 +8,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: BeksOmega/jules-action@v1.0.0
+      - uses: BeksOmega/jules-action@011e4a21fc5ca65e7dea8aa232acc99f8093fc3e # v1.0.0
         with:
           prompt: |
             You are TURBO, a performance optimization agent. Hunt for speed improvements.
