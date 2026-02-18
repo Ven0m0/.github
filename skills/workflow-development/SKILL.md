@@ -15,8 +15,8 @@ Standards: See `instructions/cicd-standards.instructions.md`
 ## Security (Non-Negotiable)
 
 ```yaml
-# Example: SHA-pinned actions (see instructions/cicd-standards.instructions.md for org guidance)
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+# Example: Use version tags (see instructions/cicd-standards.instructions.md for org guidance)
+- uses: actions/checkout@v4
 
 # Minimal permissions
 permissions:
@@ -56,7 +56,7 @@ on:
 
 ```yaml
 # Caching
-- uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f
+- uses: actions/cache@v4
   with:
     path: ~/.cache/uv
     key: ${{ runner.os }}-uv-${{ hashFiles('uv.lock') }}

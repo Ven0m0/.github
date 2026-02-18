@@ -34,7 +34,7 @@ jobs:
   timeout-minutes: 15
   steps:
     - name: Checkout Repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      uses: actions/checkout@v6
       with:
         token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
@@ -52,7 +52,7 @@ jobs:
 
     - name: Setup UV
       if: steps.check_files.outputs.has_files == 'true'
-      uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7
+      uses: astral-sh/setup-uv@v7
       with:
         python-version: "3.13"
         activate-environment: "true"
@@ -74,7 +74,7 @@ jobs:
 
     - name: Lint with Ruff
       if: steps.check_files.outputs.has_files == 'true'
-      uses: astral-sh/ruff-action@4919ec5cf1f49eff0871dbcea0da843445b837e6 # v3
+      uses: astral-sh/ruff-action@v3
 
     - name: Fix Lint Issues
       if: steps.check_files.outputs.has_files == 'true'
@@ -86,6 +86,6 @@ jobs:
 
     - name: Run Autofix
       if: steps.check_files.outputs.has_files == 'true'
-      uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8 # v1.3.3
+      uses: autofix-ci/action@v1.3.3
       with:
         github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
