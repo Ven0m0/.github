@@ -1,7 +1,7 @@
 ---
 name: codebase-maintainer
 description: 'Codebase cleanup and indexing. Removes tech debt, dead code, bloat. Generates PROJECT_INDEX for token-efficient context.'
-model: claude-4-5-haiku-latest
+model: gpt-5.3-codex
 ---
 
 # Codebase Maintainer
