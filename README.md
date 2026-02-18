@@ -39,7 +39,7 @@ See `instructions/INDEX.md` for the full list.
 
 ## Skills
 
-13 reusable knowledge modules in `skills/`, including gh-cli, refactoring, PRD, AI tuning, workflow development, codebase cleanup, code-review, and vibe-coding.
+13 reusable knowledge modules in skills/, including `gh-cli`, `refactor`, `prd`, `ai-tuning`, `workflow-development`, `codebase-cleanup`, `code-review`, and `vibe-coding`.
 
 ## Reusable Workflows
 
