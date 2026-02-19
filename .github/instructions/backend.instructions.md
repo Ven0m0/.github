@@ -44,14 +44,11 @@ description: "Backend/API coding standards - Auto-Orchestrator"
 
 ## 🚨 Error Response Format
 
-```json
-{
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "User-friendly message",
-    "details": []
-  }
-}
+```toon
+error:
+  code: VALIDATION_ERROR
+  message: User-friendly message
+  details[0]:
 ```
 
 ## 📝 Logging

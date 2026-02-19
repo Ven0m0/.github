@@ -88,13 +88,14 @@ def process(items: list[str], limit: int = 10) -> dict[str, int]: ...
 
 ## MCP Configuration
 
-```json
-{
-  "mcpServers": {
-    "context7": { "command": "npx", "args": ["-y", "@context7/mcp-server"] },
-    "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"] }
-  }
-}
+```toon
+mcpServers:
+  context7:
+    command: npx
+    args[2]: "-y",@context7/mcp-server
+  filesystem:
+    command: npx
+    args[3]: "-y",@modelcontextprotocol/server-filesystem,"${workspaceFolder}"
 ```
 
 ## Copilot Guard Rails

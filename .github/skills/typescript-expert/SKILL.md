@@ -214,20 +214,15 @@ command -v typesync >/dev/null 2>&1 && npx typesync  # Install missing @types pa
 - Performance: Nx often performs better on large monorepos (>50 packages)
 
 **TypeScript Monorepo Configuration**
-```json
-// Root tsconfig.json
-{
-  "references": [
-    { "path": "./packages/core" },
-    { "path": "./packages/ui" },
-    { "path": "./apps/web" }
-  ],
-  "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true
-  }
-}
+```toon
+references[3]{path}:
+  ./packages/core
+  ./packages/ui
+  ./apps/web
+compilerOptions:
+  composite: true
+  declaration: true
+  declarationMap: true
 ```
 
 ## Modern Tooling Expertise
@@ -306,16 +301,13 @@ class DomainError extends Error {
 ## Current Best Practices
 
 ### Strict by Default
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true
-  }
-}
+```toon
+compilerOptions:
+  strict: true
+  noUncheckedIndexedAccess: true
+  noImplicitOverride: true
+  exactOptionalPropertyTypes: true
+  noPropertyAccessFromIndexSignature: true
 ```
 
 ### ESM-First Approach
