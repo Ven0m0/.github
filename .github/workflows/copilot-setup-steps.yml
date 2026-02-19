@@ -64,8 +64,5 @@ jobs:
               zon-format \
               @ast-grep/cli \
           fi
-      - name: Minimize uv cache
-        run: uv cache prune --ci
-      - name: Clean checkout workspace
-        run: rm -rf /home/runner/work/Ven0m0/Ven0m0
-      
+          uv cache prune --ci
+          rm -rf /home/runner/work/Ven0m0/*
