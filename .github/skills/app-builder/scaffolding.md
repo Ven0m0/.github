@@ -90,17 +90,13 @@ project-name/
 
 ## Path Aliases (tsconfig.json)
 
-```json
-{
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"],
-      "@/features/*": ["./src/features/*"],
-      "@/shared/*": ["./src/shared/*"],
-      "@/server/*": ["./src/server/*"]
-    }
-  }
-}
+```toon
+compilerOptions:
+  paths:
+    @/*[1]: ./src/*
+    @/features/*[1]: ./src/features/*
+    @/shared/*[1]: ./src/shared/*
+    @/server/*[1]: ./src/server/*
 ```
 
 ---

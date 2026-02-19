@@ -319,34 +319,21 @@ declare global {
 
 ## TSConfig Essentials
 
-```json
-{
-  "compilerOptions": {
-    // Strictness
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-
-    // Modules
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-
-    // Output
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
-
-    // Performance
-    "skipLibCheck": true,
-    "incremental": true,
-
-    // Paths
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
-}
+```toon
+compilerOptions:
+  strict: true
+  noUncheckedIndexedAccess: true
+  noImplicitOverride: true
+  module: ESNext
+  moduleResolution: bundler
+  esModuleInterop: true
+  target: ES2022
+  lib[2]: ES2022,DOM
+  skipLibCheck: true
+  incremental: true
+  baseUrl: .
+  paths:
+    @/*[1]: ./src/*
 ```
 
 ## Best Practices
