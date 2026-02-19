@@ -50,7 +50,7 @@ def detect_project_type(project_path: Path) -> dict:
             if "typescript" in deps or (project_path / "tsconfig.json").exists():
                 result["linters"].append({"name": "tsc", "cmd": ["npx", "tsc", "--noEmit"]})
 
-        except:
+        except (IOError, json.JSONDecodeError):
             pass
 
     # Python project
