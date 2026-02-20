@@ -1,345 +1,187 @@
 ---
 name: mcp-development
-description: Common patterns and best practices for Model Context Protocol (MCP) server development. Use when creating MCP tools/resources/prompts, choosing stdio vs HTTP transport, or debugging MCP server behavior.
-allowed-tools: [Read, Glob, Grep]
+description: Build Model Context Protocol (MCP) servers with tools, resources, and prompts. Use when creating MCP servers, choosing stdio vs HTTP transport, debugging MCP behavior, or implementing MCP patterns in Python or TypeScript.
 user-invocable: true
 disable-model-invocation: false
+allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
 ---
 
-# MCP Development Skill
+# MCP Development
 
-Common patterns, principles, and best practices for building Model Context Protocol (MCP) servers across Python and TypeScript.
+Build and debug Model Context Protocol (MCP) servers in Python and TypeScript.
 
-## Core MCP Concepts
+<instructions>
 
-### Tools
-Functions the LLM can call with validated inputs:
-- Define input schema for validation
-- Return structured output
-- Include clear descriptions for LLM
+## Workflow
 
-### Resources
-Data sources the LLM can read:
-- **Static**: Fixed URI, pre-defined content
-- **Dynamic**: URI templates with parameters
-- Include metadata (MIME type, description)
+Think through MCP server design step-by-step:
 
-### Prompts
-Reusable prompt templates with arguments:
-- Parameterized prompts for common tasks
-- Clear descriptions of parameters
-- Return formatted prompt text
+1. **Define scope**: What tools/resources/prompts does the server need?
+2. **Choose transport**: stdio (local, single-user) or HTTP (web, multi-user)?
+3. **Design schemas**: Input/output schemas for each tool, URI templates for resources
+4. **Implement**: Tool logic with validation, error handling, structured output
+5. **Test**: MCP Inspector for interactive testing, unit tests for logic
+6. **Deploy**: Configure for target environment (Claude Desktop, web app, CLI)
 
-### Context
-Shared state and operations:
-- Logging (stderr, not stdout)
-- Progress reporting
-- Sampling (ask LLM for content)
-- Elicitation (ask user for input)
+## Transport Decision
 
-### Transports
-Communication channels:
-- **stdio**: Standard input/output, local integration
-- **HTTP**: Web-based, scaling, stateless servers
-
-## Universal Principles
-
-### Type Safety First
-- Schema-first development
-- Runtime validation at boundaries
-- Type hints/annotations drive schema generation
-- Clear error messages for validation failures
-
-### LLM-Friendly Descriptions
-- Clear, concise tool descriptions
-- Explain what the tool does and when to use it
-- Document all parameters
-- Provide examples in descriptions
-
-### Structured Output
-- Return both human-readable and machine-readable formats
-- Use consistent data structures
-- Include metadata when helpful
-
-### Error Handling
-- Catch and handle errors gracefully
-- Return error objects with clear messages
-- Don't crash the server on tool errors
-- Log errors for debugging
-
-### Async for I/O
-- All I/O operations should be async
-- Don't block event loop
-- Use connection pooling for databases
-- Handle timeouts appropriately
-
-### Logging Best Practices
-- Log to stderr (stdout interferes with stdio transport)
-- Include context (tool name, parameters)
-- Different log levels (debug, info, error)
-- Structured logging for production
-
-## Transport Decision Matrix
-
-| Use Case | Transport | Reason |
-|----------|-----------|--------|
-| Claude Desktop integration | stdio | Native support, simple setup |
-| Web application | HTTP | Browser-compatible, REST-like |
-| High-scale deployment | HTTP (stateless) | Load balancing, horizontal scaling |
+| Use Case | Transport | Why |
+|----------|-----------|-----|
+| Claude Desktop | stdio | Native support, simple setup |
+| Web application | HTTP | Browser-compatible |
+| High-scale deployment | HTTP (stateless) | Horizontal scaling |
 | Local CLI tool | stdio | Pipes, process communication |
 | Multi-user service | HTTP | Session management, CORS |
-| Development/testing | stdio | Easier debugging, inspector tools |
+| Development/testing | stdio | Easier debugging |
 
-### stdio Transport
+</instructions>
 
-**Characteristics**:
-- Single process, single user
-- Stateful connection
-- Simple deployment
-- Native Claude Desktop support
+<core_concepts>
 
-**Best for**:
-- Local development tools
-- Personal automation
-- CLI integration
-- Quick prototypes
+## Tools
+Functions the LLM can call. Define: input schema, validation, structured output, clear description.
 
-**Considerations**:
-- Don't log to stdout (use stderr)
-- Process lifecycle = session lifecycle
-- No CORS or HTTP concerns
+## Resources
+Data the LLM can read. Types: static (fixed URI) or dynamic (URI template with parameters). Include MIME type.
 
-### HTTP Transport
+## Prompts
+Reusable templates with arguments. Return formatted prompt text.
 
-**Characteristics**:
-- Multi-process, multi-user
-- Can be stateless or stateful
-- Web integration
-- Requires CORS configuration
+## Context
+Shared capabilities: logging (stderr only), progress reporting, sampling (LLM generation), elicitation (user input).
 
-**Best for**:
-- Production deployments
-- Scaling horizontally
-- Browser-based clients
-- Multi-user services
+</core_concepts>
 
-**Considerations**:
-- Session management required
-- DNS rebinding protection for local servers
-- CORS headers for browser clients
-- Transport cleanup on connection close
+<patterns>
 
-## Common Patterns
+## Tool Definition Pattern
+1. Define input schema with validation rules
+2. Write a clear description (what it does AND when to use it)
+3. Implement logic with error handling
+4. Return structured output (human-readable + machine-readable)
+5. Never leak internal errors to the LLM
 
-### Tool Definition Pattern
-
-**Schema-first approach**:
-1. Define input schema with validation
-2. Document what the tool does
-3. Implement tool logic
-4. Return structured output
-5. Handle errors gracefully
-
-**Best practices**:
-- Validate all inputs
-- Use descriptive parameter names
-- Include parameter descriptions
-- Return consistent output format
-- Don't leak internal errors to LLM
-
-### Dynamic Resource Pattern
-
-**Template-based resources**:
-1. Define URI template with parameters
-2. Parse URI to extract parameters
-3. Fetch/compute resource content
+## Dynamic Resource Pattern
+1. Define URI template: `resource://type/{id}`
+2. Parse and validate URI parameters
+3. Fetch/compute content
 4. Return with appropriate MIME type
-5. Handle missing/invalid resources
+5. Handle missing resources gracefully (don't crash)
 
-**Best practices**:
-- Validate URI parameters
-- Cache expensive resources
-- Include metadata
-- Handle 404/errors gracefully
+## Error Handling
+- Catch errors in tools; return error objects, don't crash the server
+- Provide clear error messages with context
+- Log errors to stderr with tool name and parameters
+- Use structured logging in production
 
-### Progress Reporting Pattern
+</patterns>
 
-For long-running operations:
-1. Report initial progress (0%)
-2. Update progress periodically
-3. Include status messages
-4. Report completion (100%)
-5. Handle cancellation
+<language_specific>
 
-### Sampling Pattern
+## Python (FastMCP)
+```python
+from mcp.server.fastmcp import FastMCP
 
-When you need LLM to generate content:
-1. Prepare messages for LLM
-2. Request sampling with parameters
-3. Extract generated content
-4. Validate/process response
-5. Use in tool execution
+mcp = FastMCP("my-server")
 
-### Elicitation Pattern
+@mcp.tool()
+async def search_docs(query: str, limit: int = 10) -> list[dict]:
+    """Search documentation by keyword. Use when the user asks about API usage."""
+    results = await doc_index.search(query, limit=limit)
+    return [{"title": r.title, "url": r.url, "snippet": r.snippet} for r in results]
 
-When you need user input:
-1. Prepare prompt for user
-2. Request elicitation
-3. Receive user response
-4. Validate input
-5. Continue execution
+@mcp.resource("docs://{topic}")
+async def get_doc(topic: str) -> str:
+    """Get documentation for a specific topic."""
+    return await doc_index.get(topic)
+```
 
-## Testing Strategies
+- Use Pydantic for schema validation
+- All I/O must be async
+- Log to stderr (stdout is the protocol channel)
 
-### Local Testing
-- Manual stdio testing with echo/pipes
-- MCP Inspector for interactive testing
-- Unit tests for tool/resource logic
-- Integration tests for full workflows
+## TypeScript
+```typescript
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
 
-### Test Cases
-- Happy path: Normal inputs, expected outputs
-- Edge cases: Boundary values, empty inputs
-- Error cases: Invalid inputs, failures
-- Performance: Large inputs, timeouts
+const server = new McpServer({ name: "my-server", version: "1.0.0" });
 
-### Inspector Usage
-- Test all tools interactively
-- Verify schemas correct
-- Check error handling
-- Validate output format
+server.tool("search_docs",
+  { query: z.string(), limit: z.number().default(10) },
+  async ({ query, limit }) => {
+    const results = await docIndex.search(query, limit);
+    return { content: [{ type: "text", text: JSON.stringify(results) }] };
+  }
+);
+```
 
-## Security Considerations
-
-### Input Validation
-- Validate all tool inputs
-- Sanitize file paths (prevent directory traversal)
-- Limit resource access
-- Rate limiting for expensive operations
-
-### Authentication/Authorization
-- Don't trust all requests
-- Implement auth for production
-- Scope permissions appropriately
-- Audit access logs
-
-### Secret Management
-- Never hardcode secrets
-- Use environment variables
-- Rotate credentials
-- Don't expose secrets in errors
-
-### Safe File Operations
-- Validate paths before access
-- Restrict to allowed directories
-- Check file sizes before reading
-- Handle symlinks carefully
-
-## Performance Optimization
-
-### Caching
-- Cache expensive computations
-- Cache external API calls
-- Use TTL for cache invalidation
-- Share cache across tools
-
-### Connection Pooling
-- Reuse database connections
-- Pool HTTP client connections
-- Limit concurrent connections
-- Handle connection failures
-
-### Batching
-- Batch database queries
-- Group API calls
-- Reduce round trips
-- Parallelize independent operations
-
-### Resource Cleanup
-- Close connections properly
-- Release resources on errors
-- Use context managers/cleanup handlers
-- Handle shutdown gracefully
-
-## Common Pitfalls
-
-### General
-- Forgetting async for I/O operations
-- Blocking the event loop
-- Not handling errors in tools
-- Poor error messages
-- Missing input validation
-
-### stdio Transport
-- Logging to stdout (interferes with protocol)
-- Not closing connections properly
-- Synchronous I/O blocking server
-
-### HTTP Transport
-- Forgetting DNS rebinding protection
-- Missing CORS headers
-- Not cleaning up transport on disconnect
-- Shared state across requests in stateless mode
-
-## Debugging Tips
-
-### Common Issues
-- **Schema validation fails**: Check type mismatches, required fields
-- **Transport errors**: Verify JSON-RPC format, check logs
-- **Tools not appearing**: Check registration, schema correctness
-- **Async errors**: Ensure all I/O is async, check event loop
-
-### Debugging Tools
-- MCP Inspector for interactive testing
-- Structured logging for production
-- Unit tests for tool logic
-- Network debugging for HTTP transport
-
-### Log Analysis
-- Check stderr for server logs
-- Verify JSON-RPC messages
-- Inspect tool input/output
-- Track error patterns
-
-## Development Workflow
-
-1. **Design**: Plan tools/resources/prompts
-2. **Schema**: Define input/output schemas
-3. **Implement**: Write tool logic with tests
-4. **Test locally**: Use inspector/manual tests
-5. **Deploy**: Choose transport and deploy
-6. **Monitor**: Track usage and errors
-7. **Iterate**: Improve based on feedback
-
-## Language-Specific Implementations
-
-Each language has specific SDK patterns:
-
-### Python
-- FastMCP for high-level API (decorators)
-- Low-level Server for fine control
-- Pydantic for schemas
-- See: Python MCP agent for details
-
-### TypeScript
-- @modelcontextprotocol/sdk
-- Zod for runtime validation
+- Use Zod for runtime validation
 - ES modules required
-- See: TypeScript MCP agent for details
+- Handle transport cleanup on disconnect
+
+</language_specific>
+
+<debugging>
+
+| Problem | Likely Cause | Fix |
+|---------|-------------|-----|
+| Schema validation fails | Type mismatch, missing required field | Check Pydantic/Zod schema vs input |
+| Tools not appearing | Registration error | Verify decorator/method call, check logs |
+| Transport errors | Malformed JSON-RPC | Validate message format, check stderr logs |
+| Async errors | Blocking I/O | Ensure all I/O uses async/await |
+| stdout corruption (stdio) | Logging to stdout | Redirect all logs to stderr |
+
+</debugging>
+
+<security>
+- Validate all tool inputs (sanitize file paths, prevent directory traversal)
+- Never hardcode secrets; use environment variables
+- Implement auth for production HTTP servers
+- Rate-limit expensive operations
+- Restrict file access to allowed directories
+- Check file sizes before reading
+</security>
+
+<examples>
+
+### Complete Python MCP server
+```python
+from mcp.server.fastmcp import FastMCP
+import httpx
+
+mcp = FastMCP("weather")
+
+@mcp.tool()
+async def get_weather(city: str) -> dict:
+    """Get current weather for a city. Use when the user asks about weather conditions."""
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(f"https://api.weather.example/v1/{city}")
+        resp.raise_for_status()
+        data = resp.json()
+    return {"city": city, "temp_f": data["temp"], "condition": data["condition"]}
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
+```
+
+### Testing with MCP Inspector
+```bash
+# Interactive testing
+npx @modelcontextprotocol/inspector python -m my_server
+
+# Manual stdio test
+echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python -m my_server
+```
+
+</examples>
 
 ## Success Criteria
 
-MCP server is successful when:
-- ✅ All tools/resources work correctly
-- ✅ Schema validation prevents bad inputs
-- ✅ Error handling graceful
-- ✅ Tests pass (unit + integration)
-- ✅ LLM can discover and use features
-- ✅ Performance acceptable
-- ✅ Logging sufficient for debugging
-
-## References
-
-- Language-specific MCP agents for implementation details
-- Python/TypeScript instruction files for language standards
-- MCP specification for protocol details
+MCP server is complete when:
+- All tools/resources return correct results for valid inputs
+- Schema validation rejects invalid inputs with clear messages
+- Errors are handled gracefully (server never crashes on bad input)
+- Tests pass (unit for logic, integration for full workflow)
+- LLM can discover and correctly use all tools
+- Logging is sufficient to debug issues in production

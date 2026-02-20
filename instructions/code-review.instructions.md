@@ -38,13 +38,14 @@ When performing a code review, prioritize issues in the following order:
 
 When performing a code review, follow these principles:
 
-1. **Be specific**: Reference exact lines, files, and provide concrete examples
-2. **Provide context**: Explain WHY something is an issue and the potential impact
-3. **Suggest solutions**: Show corrected code when applicable, not just what's wrong
-4. **Be constructive**: Focus on improving the code, not criticizing the author
-5. **Recognize good practices**: Acknowledge well-written code and smart solutions
-6. **Be pragmatic**: Not every suggestion needs immediate implementation
-7. **Group related comments**: Avoid multiple comments about the same topic
+1. **Always use `suggestion` blocks**: Every comment that proposes a code change must include a ` ```suggestion ` fenced code block so the author can apply it directly from the PR via the "Commit suggestion" button. This is the single most important formatting rule.
+2. **Be specific**: Reference exact lines, files, and provide concrete examples
+3. **Provide context**: Explain WHY something is an issue and the potential impact
+4. **Suggest solutions**: Show corrected code inside a `suggestion` block, not just what's wrong
+5. **Be constructive**: Focus on improving the code, not criticizing the author
+6. **Recognize good practices**: Acknowledge well-written code and smart solutions
+7. **Be pragmatic**: Not every suggestion needs immediate implementation
+8. **Group related comments**: Avoid multiple comments about the same topic
 
 ## Code Quality Standards
 <formatting>
@@ -215,20 +216,29 @@ When performing a code review, check documentation:
 
 ## Comment Format Template
 
-When performing a code review, use this format for comments:
+When performing a code review, **every comment that suggests a code change MUST include a GitHub suggestion block** so the author can apply the fix directly from the PR using the "Commit suggestion" button. This is non-negotiable.
+
+A GitHub suggestion block uses the special `suggestion` language tag inside a fenced code block. GitHub renders this as a one-click "Commit suggestion" button on the PR. The content inside the block **replaces** the lines the comment is attached to.
+
+### Rules for suggestion blocks
+
+1. **Always use ` ```suggestion ` blocks** for any comment that proposes a code change, no matter how small (renames, formatting, logic changes, security fixes, etc.)
+2. **One suggestion block per comment** - if you need to change multiple locations, leave separate review comments on each location
+3. The suggestion block must contain the **complete replacement code** for the lines the comment targets - not a diff, not a before/after comparison, just the corrected code
+4. **Do not include unchanged surrounding code** unless it is part of the lines the comment is attached to
+5. If a comment is purely observational and does not propose a code change (e.g., asking a question, requesting clarification), a suggestion block is not needed
+6. **Multi-line suggestions**: When the fix spans multiple lines, attach the review comment to the full line range and put all corrected lines in a single suggestion block
+
+### Comment structure
 
 ```markdown
 **[PRIORITY] Category: Brief title**
 
-Detailed description of the issue or suggestion.
+Why this matters: [1-2 sentence explanation of the impact]
 
-**Why this matters:**
-Explanation of the impact or reason for the suggestion.
-
-**Suggested fix:**
-[code example if applicable]
-
-**Reference:** [link to relevant documentation or standard]
+```suggestion
+corrected code here
+```
 ```
 
 ### Example Comments
@@ -237,78 +247,65 @@ Explanation of the impact or reason for the suggestion.
 ```markdown
 **🔴 CRITICAL - Security: SQL Injection Vulnerability**
 
-The query on line 45 concatenates user input directly into the SQL string,
-creating a SQL injection vulnerability.
+The query concatenates user input directly into SQL, allowing an attacker to execute
+arbitrary commands and expose or delete database data.
 
-**Why this matters:**
-An attacker could manipulate the email parameter to execute arbitrary SQL commands,
-potentially exposing or deleting all database data.
-
-**Suggested fix:**
-```sql
--- Instead of:
-query = "SELECT * FROM users WHERE email = '" + email + "'"
-
--- Use:
+```suggestion
 PreparedStatement stmt = conn.prepareStatement(
     "SELECT * FROM users WHERE email = ?"
 );
 stmt.setString(1, email);
 ```
-
-**Reference:** OWASP SQL Injection Prevention Cheat Sheet
 ```
 
 #### Important Issue
 ```markdown
-**🟡 IMPORTANT - Testing: Missing test coverage for critical path**
+**🟡 IMPORTANT - Correctness: Unhandled null from findUser()**
 
-The `processPayment()` function handles financial transactions but has no tests
-for the refund scenario.
+`findUser()` can return null but the result is used without a check, which will
+throw a TypeError at runtime.
 
-**Why this matters:**
-Refunds involve money movement and should be thoroughly tested to prevent
-financial errors or data inconsistencies.
-
-**Suggested fix:**
-Add test case:
-```javascript
-test('should process full refund when order is cancelled', () => {
-    const order = createOrder({ total: 100, status: 'cancelled' });
-
-    const result = processPayment(order, { type: 'refund' });
-
-    expect(result.refundAmount).toBe(100);
-    expect(result.status).toBe('refunded');
-});
+```suggestion
+const user = await findUser(id);
+if (!user) {
+    throw new NotFoundError(`User ${id} not found`);
+}
+return user.name;
 ```
 ```
 
 #### Suggestion
 ```markdown
-**🟢 SUGGESTION - Readability: Simplify nested conditionals**
+**🟢 SUGGESTION - Readability: Simplify nested conditionals with guard clause**
 
-The nested if statements on lines 30-40 make the logic hard to follow.
+Deeply nested ifs are harder to maintain and test. A guard clause makes the
+happy path clearer.
 
-**Why this matters:**
-Simpler code is easier to maintain, debug, and test.
-
-**Suggested fix:**
-```javascript
-// Instead of nested ifs:
-if (user) {
-    if (user.isActive) {
-        if (user.hasPermission('write')) {
-            // do something
-        }
-    }
-}
-
-// Consider guard clauses:
+```suggestion
 if (!user || !user.isActive || !user.hasPermission('write')) {
     return;
 }
 // do something
+```
+```
+
+#### Multi-line rename/refactor
+```markdown
+**🟢 SUGGESTION - Readability: Use descriptive names and named constants**
+
+Magic numbers and single-letter variable names make business logic opaque.
+
+```suggestion
+const PREMIUM_THRESHOLD = 100;
+const PREMIUM_DISCOUNT_RATE = 0.15;
+const STANDARD_DISCOUNT_RATE = 0.10;
+
+function calculateDiscount(orderTotal, itemPrice) {
+    const discountRate = orderTotal > PREMIUM_THRESHOLD
+        ? PREMIUM_DISCOUNT_RATE
+        : STANDARD_DISCOUNT_RATE;
+    return itemPrice * discountRate;
+}
 ```
 ```
 

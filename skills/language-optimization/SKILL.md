@@ -1,243 +1,156 @@
 ---
 name: language-optimization
-description: Common patterns and principles for code optimization across languages. Use when asked to improve readability, performance, maintainability, or security in Bash, Python, or Rust code.
-allowed-tools: [Read, Glob, Grep]
+description: Optimize code for readability, performance, maintainability, and security across Bash, Python, and Rust. Use when asked to improve code quality, optimize performance, add type safety, or refactor for idioms.
 user-invocable: true
 disable-model-invocation: false
+allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
 ---
 
-# Language Optimization Skill
+# Language Optimization
 
-Common patterns, principles, and workflows for optimizing code across different programming languages.
+Optimize code across languages following universal principles and language-specific idioms.
 
-## Universal Optimization Principles
+<instructions>
 
-### KISS (Keep It Simple, Stupid)
-- Simple over clever
-- Readability first
-- Clear variable names
-- Self-documenting code
-- Avoid unnecessary complexity
+## Workflow
 
-### YAGNI (You Aren't Gonna Need It)
-- Don't build before needed
-- No premature optimization
-- Profile before optimizing
-- Solve current problems, not hypothetical ones
+Think through optimization systematically:
 
-### DRY (Don't Repeat Yourself)
-- Extract repeated logic
-- Create reusable functions/modules
-- Single source of truth
-- Consolidate duplicate code
+1. **Analyze**: Identify issues - lint errors, type errors, performance bottlenecks, security gaps
+2. **Profile first**: Measure before optimizing performance (never optimize without data)
+3. **Apply fixes**: Follow language-specific standards from `instructions/`
+4. **Verify**: All tests pass, metrics improved, no regressions
 
-### Fail Fast
-- Validate early in execution
-- Specific error messages
-- Comprehensive error handling
-- Clear failure modes
+## Universal Principles
 
-### Security First
-- No secrets in code
-- Validate at boundaries (user input, external APIs)
-- Principle of least privilege
-- Regular security audits
-- Input sanitization
+<principles>
 
-## Common Workflow Pattern
+| Principle | Rule |
+|-----------|------|
+| KISS | Simple over clever; readability first |
+| YAGNI | Don't build before needed; no premature optimization |
+| DRY | Extract repeated logic; single source of truth |
+| Fail Fast | Validate early; specific error messages |
+| Security | No secrets in code; validate at boundaries |
 
-| Step | Action |
-|------|--------|
-| 1. Analyze | Issues, perf bottlenecks, security |
-| 2. Lint/Format | Language-specific linters |
-| 3. Type Check | Enforce type safety (where applicable) |
-| 4. Test | Coverage, edge cases |
-| 5. Optimize | Profile first, then improve |
-| 6. Verify | All tests and checks pass |
+</principles>
 
-## Tool Selection Strategy
+## Optimization Targets (Priority Order)
 
-### Analysis Tools
-- Static analysis for code quality
-- Profilers for performance bottlenecks
-- Security scanners for vulnerabilities
-- Type checkers for type safety
+1. **Correctness**: Fix bugs, handle edge cases
+2. **Type safety**: Add/improve type annotations
+3. **Readability**: Clear names, reduce nesting, simplify logic
+4. **Performance**: Only after profiling identifies bottlenecks
+5. **Security**: Input validation, secret management, dependency audit
 
-### Linters
-- Language-specific linters for code quality
-- Auto-fix where possible
-- Enforce consistent style
+</instructions>
 
-### Formatters
-- Automated code formatting
-- Consistent indentation and spacing
-- Remove formatting debates
+<language_specific>
 
-### Testing
-- Unit tests for individual functions
-- Integration tests for components
-- Coverage reports for completeness
-- Test-driven development (TDD)
+## Bash/Shell
+- Standards: `instructions/bash.instructions.md`
+- Always: `set -euo pipefail`, quote variables, use `[[ ]]` not `[ ]`
+- Tools: `shellcheck`, `shellharden`
+- Prefer: `fd` over `find`, `rg` over `grep`, `sd` over `sed`
 
-## Performance Optimization Patterns
+## Python
+- Standards: `instructions/python.instructions.md`
+- Always: type hints on public functions, `T | None` not `Optional[T]`
+- Tools: `ruff` (lint+format), `mypy` (types), `pytest` (tests)
+- Prefer: generators over lists, `pathlib` over `os.path`, f-strings over `.format()`
 
-### Before Optimizing
-1. **Profile first**: Measure before optimizing
-2. **Identify bottlenecks**: Focus on slowest parts
-3. **Set benchmarks**: Establish baseline performance
+## Rust
+- Standards: `instructions/rust.instructions.md`
+- Always: handle all `Result`/`Option`, use `clippy` lints
+- Tools: `clippy` (lints), `rustfmt` (format), `cargo test`
+- Prefer: iterators over loops, `&str` over `String` in params, `thiserror` for errors
 
-### Common Optimizations
-- **Algorithm complexity**: O(n²) → O(n) or O(log n)
-- **Caching**: Memoize expensive computations
-- **Lazy evaluation**: Compute only when needed
-- **Batching**: Group operations to reduce overhead
-- **Prefer built-ins**: Use optimized standard library functions
+</language_specific>
 
-### After Optimizing
-1. **Verify correctness**: All tests still pass
-2. **Measure improvement**: Compare to baseline
-3. **Document trade-offs**: Note any complexity added
+<performance_patterns>
 
-## Security Patterns
+## Common Optimizations
 
-### Input Validation
-- Validate all user input
-- Sanitize before use
-- Use allowlists, not blocklists
-- Validate type, format, range
+| Pattern | Before | After |
+|---------|--------|-------|
+| Algorithm | O(n^2) nested loops | O(n) hash map lookup |
+| Caching | Recompute every call | Memoize/cache result |
+| Lazy eval | Build full list | Generator/iterator |
+| Batching | N individual calls | Single batch operation |
+| Built-ins | Custom implementation | Standard library function |
 
-### Secret Management
-- Never commit secrets to code
-- Use environment variables
-- Use secret management systems
-- Rotate credentials regularly
+## Performance Workflow
+1. Set baseline benchmark
+2. Profile to find bottleneck (not guess)
+3. Apply targeted optimization
+4. Measure improvement against baseline
+5. Document trade-off if complexity increased
 
-### Dependency Security
-- Regular security audits
-- Keep dependencies updated
-- Use vulnerability scanners
-- Pin versions for reproducibility
+</performance_patterns>
 
-## Code Quality Metrics
+<examples>
 
-### Maintainability
-- Cyclomatic complexity: Lower is better
-- Function length: Shorter is better
-- Nesting depth: Shallower is better
-- Code duplication: Less is better
+### Python: Add type safety
+```python
+# Before
+def get_user(id, include_posts=False):
+    user = db.find(id)
+    if include_posts:
+        user['posts'] = db.posts(id)
+    return user
 
-### Test Coverage
-- Aim for 90%+ line coverage
-- 100% critical path coverage
-- Test edge cases
-- Test error handling
+# After
+def get_user(user_id: int, *, include_posts: bool = False) -> User | None:
+    user = db.find(user_id)
+    if user is None:
+        return None
+    if include_posts:
+        user.posts = db.posts(user_id)
+    return user
+```
 
-### Type Safety
-- Strong typing where available
-- Explicit type annotations
-- No implicit any/dynamic types
-- Type-driven development
+### Bash: Modern idioms
+```bash
+# Before
+files=$(find . -name "*.py")
+for f in $files; do
+    if [ -f "$f" ]; then
+        grep -l "TODO" "$f"
+    fi
+done
 
-## Error Handling Patterns
+# After
+fd -e py --type f -x rg -l "TODO" {}
+```
 
-### Best Practices
-- Use language-specific error types (Result, Either, exceptions)
-- Catch specific exceptions, not generic
-- Provide context in error messages
-- Log errors with sufficient detail
-- Never silently fail
+### Rust: Idiomatic error handling
+```rust
+// Before
+fn read_config(path: &str) -> String {
+    let contents = std::fs::read_to_string(path).unwrap();
+    contents
+}
 
-### Error Messages
-- Clear description of what failed
-- Context about where it failed
-- Guidance on how to fix
-- Include relevant values
+// After
+fn read_config(path: &Path) -> Result<Config, ConfigError> {
+    let contents = std::fs::read_to_string(path)
+        .map_err(|e| ConfigError::ReadFailed { path: path.into(), source: e })?;
+    toml::from_str(&contents)
+        .map_err(|e| ConfigError::ParseFailed { source: e })
+}
+```
 
-## Testing Patterns
-
-### Test-Driven Development (TDD)
-1. Write failing test
-2. Write minimal code to pass
-3. Refactor while keeping tests green
-
-### Test Organization
-- Arrange-Act-Assert pattern
-- One assertion per test (where possible)
-- Clear test names describing behavior
-- Test both happy path and edge cases
-
-### Test Types
-- **Unit tests**: Individual functions/methods
-- **Integration tests**: Component interactions
-- **Property-based tests**: Generate test cases
-- **Regression tests**: Prevent known bugs
-
-## Refactoring Patterns
-
-### When to Refactor
-- Code smells identified
-- Before adding new features
-- After fixing bugs
-- During code review
-
-### Common Refactorings
-- **Extract function**: Pull out repeated code
-- **Rename**: Clarify intent
-- **Simplify conditionals**: Reduce nesting
-- **Remove dead code**: Delete unused code
-- **Introduce types**: Add type safety
-
-### Refactoring Safety
-- Always have tests first
-- Small, incremental changes
-- Run tests after each step
-- Use automated refactoring tools
-
-## Language-Specific Adaptations
-
-Each language has specific implementations of these patterns:
-
-### Bash/Shell
-- Focus on quoting, error handling (set -euo pipefail)
-- Prefer modern tools (fd, rg over find, grep)
-- Use shellcheck, shellharden
-- See: `instructions/bash.instructions.md`
-
-### Python
-- Focus on type hints, async patterns
-- Use ruff for linting, mypy for types
-- Prefer generators over lists
-- See: `instructions/python.instructions.md`
-
-### Rust
-- Focus on ownership, borrowing, lifetimes
-- Use clippy for lints, rustfmt for formatting
-- Prefer iterators over loops
-- See: `instructions/rust.instructions.md`
+</examples>
 
 ## Success Criteria
 
-Optimization is successful when:
-- ✅ All tests pass
-- ✅ Code quality metrics improved
-- ✅ Performance improved (measured)
-- ✅ Security vulnerabilities addressed
-- ✅ Type safety enforced
-- ✅ Code follows language idioms
-- ✅ Maintainability improved
-
-## Anti-Patterns to Avoid
-
-- Premature optimization without profiling
-- Sacrificing readability for minor performance gains
-- Over-engineering simple solutions
-- Ignoring test failures
-- Skipping type safety for convenience
-- Committing secrets or sensitive data
-- Copy-pasting code instead of extracting functions
-- Optimizing for hypothetical future requirements
+Optimization is complete when:
+- All linter/type checks pass with zero warnings
+- Test suite passes with no regressions
+- Performance improved (if that was the goal, with measurements)
+- Code follows language-specific idioms from `instructions/`
 
 ## References
 
-- Language-specific standards in `instructions/`
-- Refactoring and cleanup in `skills/code-maintenance/`
+- Language standards: `instructions/bash.instructions.md`, `instructions/python.instructions.md`, `instructions/rust.instructions.md`
+- Refactoring patterns: `skills/code-maintenance/`
