@@ -1,6 +1,7 @@
 ---
 description: 'Refactor and optimize Python code following project standards'
 mode: agent
+applyTo: "**/*.py"
 tools: ['read', 'edit', 'search', 'execute']
 ---
 
