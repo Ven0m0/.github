@@ -52,7 +52,6 @@ runs:
       with:
         enable-cache: true
         cache-dependency-glob: "${{ inputs.working-directory }}/uv.lock"
-
     - name: Set up Python
       id: python
       shell: bash
@@ -60,11 +59,10 @@ runs:
       env:
         PYTHON_VERSION: ${{ inputs.python-version }}
       run: |
-        uv python install "$PYTHON_VERSION"
+        uv python install "${PYTHON_VERSION:=3.13}"
         INSTALLED_VERSION=$(uv python find "$PYTHON_VERSION" | xargs -I{} {} --version | cut -d' ' -f2)
         echo "version=$INSTALLED_VERSION" >> "$GITHUB_OUTPUT"
         echo "Installed Python $INSTALLED_VERSION"
-
     - name: Get uv version
       shell: bash
       run: |
@@ -80,7 +78,7 @@ runs:
         EXTRAS: ${{ inputs.extras }}
       run: |
         if [[ -n "$EXTRAS" ]]; then
-          uv sync --all-extras
+          uv sync --frozen --all-extras
         else
-          uv sync
+          uv sync --frozen
         fi
