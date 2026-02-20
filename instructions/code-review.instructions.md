@@ -10,9 +10,7 @@ Comprehensive code review guidelines for GitHub Copilot that can be adapted to a
 
 ## Review Language
 
-When performing a code review, respond in **English** (or specify your preferred language).
-
-> **Customization Tip**: Change to your preferred language by replacing "English" with "Portuguese (Brazilian)", "Spanish", "French", etc.
+When performing a code review, respond in **English**
 
 ## Review Priorities
 
@@ -49,6 +47,7 @@ When performing a code review, follow these principles:
 7. **Group related comments**: Avoid multiple comments about the same topic
 
 ## Code Quality Standards
+<formatting>
 
 When performing a code review, check for:
 
@@ -60,20 +59,19 @@ When performing a code review, check for:
 - Avoid deeply nested code (max 3-4 levels)
 - Avoid magic numbers and strings (use constants)
 - Code should be self-documenting; comments only when necessary
+</formatting>
 
 ### Examples
 ```javascript
-// ❌ BAD: Poor naming and magic numbers
+// BAD: Poor naming and magic numbers
 function calc(x, y) {
     if (x > 100) return y * 0.15;
     return y * 0.10;
 }
-
-// ✅ GOOD: Clear naming and constants
+// GOOD: Clear naming and constants
 const PREMIUM_THRESHOLD = 100;
 const PREMIUM_DISCOUNT_RATE = 0.15;
 const STANDARD_DISCOUNT_RATE = 0.10;
-
 function calculateDiscount(orderTotal, itemPrice) {
     const isPremiumOrder = orderTotal > PREMIUM_THRESHOLD;
     const discountRate = isPremiumOrder ? PREMIUM_DISCOUNT_RATE : STANDARD_DISCOUNT_RATE;
@@ -90,26 +88,23 @@ function calculateDiscount(orderTotal, itemPrice) {
 
 ### Examples
 ```python
-# ❌ BAD: Silent failure and generic error
+# BAD: Silent failure and generic error
 def process_user(user_id):
     try:
         user = db.get(user_id)
         user.process()
     except:
         pass
-
-# ✅ GOOD: Explicit error handling
+# GOOD: Explicit error handling
 def process_user(user_id):
     if not user_id or user_id <= 0:
         raise ValueError(f"Invalid user_id: {user_id}")
-
     try:
         user = db.get(user_id)
     except UserNotFoundError:
         raise UserNotFoundError(f"User {user_id} not found in database")
     except DatabaseError as e:
         raise ProcessingError(f"Failed to retrieve user {user_id}: {e}")
-
     return user.process()
 ```
 
@@ -126,24 +121,15 @@ When performing a code review, check for security issues:
 - **Dependency Security**: Check for known vulnerabilities in dependencies
 
 ### Examples
-```java
-// ❌ BAD: SQL injection vulnerability
-String query = "SELECT * FROM users WHERE email = '" + email + "'";
-
-// ✅ GOOD: Parameterized query
-PreparedStatement stmt = conn.prepareStatement(
-    "SELECT * FROM users WHERE email = ?"
-);
-stmt.setString(1, email);
-```
+<examples>
 
 ```javascript
 // ❌ BAD: Exposed secret in code
 const API_KEY = "sk_live_abc123xyz789";
-
 // ✅ GOOD: Use environment variables
 const API_KEY = process.env.API_KEY;
 ```
+</examples>
 
 ## Testing Standards
 
@@ -158,6 +144,8 @@ When performing a code review, verify test quality:
 - **Mock Appropriately**: Mock external dependencies, not domain logic
 
 ### Examples
+<examples>
+  
 ```typescript
 // ❌ BAD: Vague name and assertion
 test('test1', () => {
@@ -175,6 +163,7 @@ test('should calculate 10% discount for orders under $100', () => {
     expect(discount).toBe(2.00);
 });
 ```
+</examples>
 
 ## Performance Considerations
 
@@ -188,6 +177,8 @@ When performing a code review, check for performance issues:
 - **Lazy Loading**: Load data only when needed
 
 ### Examples
+<examples>
+  
 ```python
 # ❌ BAD: N+1 query problem
 users = User.query.all()
@@ -199,6 +190,7 @@ users = User.query.options(joinedload(User.orders)).all()
 for user in users:
     orders = user.orders
 ```
+</examples>
 
 ## Architecture and Design
 
