@@ -1,8 +1,8 @@
 ---
 description: 'GitHub issue resolution specialist. Analyzes, plans, and implements fixes with testing and PR creation.'
 name: 'Issue Fixer'
-model: claude-4-6-sonnet-latest
-tools: [codebase, read, write, edit, search, usages, problems, changes, github, githubRepo, execute]
+model: sonnet
+tools: [codebase, read, write, edit, search, usages, problems, changes, github, githubRepo, execute, bash, bash(gh:*), bash(git:*)]
 ---
 
 # GitHub Issue Fixer
