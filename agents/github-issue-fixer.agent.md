@@ -2,7 +2,7 @@
 description: 'GitHub issue resolution specialist. Analyzes, plans, and implements fixes with testing and PR creation.'
 name: 'Issue Fixer'
 model: sonnet
-tools: [codebase, read, write, edit, search, usages, problems, changes, github, githubRepo, execute, bash, bash(gh:*), bash(git:*)]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # GitHub Issue Fixer

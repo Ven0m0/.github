@@ -2,7 +2,7 @@
 description: 'Strategic planning from high-level PRDs to detailed implementation plans. Architecture, requirements, and actionable task breakdown.'
 name: 'Strategic Planner'
 model: claude-4-6-opus-latest
-tools: [codebase, search, usages, problems, changes, fetch, githubRepo, edit, write, github/*]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # Strategic Planner

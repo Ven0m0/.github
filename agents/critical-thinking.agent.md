@@ -2,7 +2,7 @@
 name: critical-thinking
 description: 'Challenge assumptions and encourage critical thinking. Ask Why until root cause is found. No code edits.'
 model: claude-4-6-opus-latest
-tools: ['codebase', 'fetch', 'githubRepo', 'search', 'usages']
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # Critical Thinking Mode
