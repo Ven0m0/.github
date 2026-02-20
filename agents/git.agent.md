@@ -2,7 +2,7 @@
 name: git-expert
 description: 'Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control'
 model: sonnet
-tools: [codebase, read, write, edit, search, execute, usages, bash, bash(gh:*), bash(git:*)]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # Git & GitHub CLI Expert Agent

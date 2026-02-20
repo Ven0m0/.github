@@ -2,7 +2,7 @@
 description: 'Comprehensive multi-agent workflow orchestrating planning, execution, refactoring, cleanup, and review for complex development tasks'
 name: 'Multi-Agent Workflow Orchestrator'
 model: claude-4-6-opus-latest
-tools: [codebase, read, search, usages, fetch, edit, write, execute, github, githubRepo]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # Multi-Agent Workflow Orchestrator

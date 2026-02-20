@@ -2,7 +2,7 @@
 name: 'Arch Linux Expert'
 description: 'Arch Linux specialist: pacman workflows, rolling-release maintenance, systemd administration.'
 model: claude-4-6-sonnet-latest
-tools: ['codebase', 'search', 'execute', 'edit']
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # Arch Linux Expert

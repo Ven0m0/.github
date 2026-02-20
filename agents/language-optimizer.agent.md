@@ -2,7 +2,7 @@
 name: language-optimizer
 description: 'Code optimization across Bash, Python, Rust. Safety, performance, refactoring. Auto-detects language from file type.'
 model: claude-4-6-sonnet-latest
-tools: [codebase, read, write, edit, search, execute, usages, changes, problems]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # Language Optimizer
