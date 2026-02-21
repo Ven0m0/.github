@@ -3,40 +3,40 @@ name: Bun Setup (Reusable)
 
 on:
   workflow_call:
-  inputs:
-    bun-version:
-      type: string
-      default: latest
-      description: 'Bun version to use'
-    run-tests:
-      type: boolean
-      default: true
-      description: 'Run test suite'
-    run-lint:
-      type: boolean
-      default: true
-      description: 'Run linting'
-    run-typecheck:
-      type: boolean
-      default: true
-      description: 'Run type checking'
-    test-command:
-      type: string
-      default: bun test
-      description: 'Command to run tests'
-    lint-command:
-      type: string
-      default: bun run lint
-      description: 'Command to run linting'
-    typecheck-command:
-      type: string
-      default: bun run typecheck
-      description: 'Command to run type checking'
+    inputs:
+      bun-version:
+        type: string
+        default: latest
+        description: 'Bun version to use'
+      run-tests:
+        type: boolean
+        default: true
+        description: 'Run test suite'
+      run-lint:
+        type: boolean
+        default: true
+        description: 'Run linting'
+      run-typecheck:
+        type: boolean
+        default: true
+        description: 'Run type checking'
+      test-command:
+        type: string
+        default: bun test
+        description: 'Command to run tests'
+      lint-command:
+        type: string
+        default: bun run lint
+        description: 'Command to run linting'
+      typecheck-command:
+        type: string
+        default: bun run typecheck
+        description: 'Command to run type checking'
   workflow_dispatch:
   pull_request:
-  branches: [main, master]
+    branches: [main, master]
   push:
-  branches: [main, master]
+    branches: [main, master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -51,14 +51,12 @@ env:
 
 jobs:
   setup:
-  name: Bun Setup & CI
-  runs-on: ubuntu-slim
-  timeout-minutes: 10
-  steps:
+    name: Bun Setup & CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
     - name: Checkout Repository
       uses: actions/checkout@v6
-      with:
-        fetch-depth: 1
 
     - name: Check for Bun Dependencies
       id: check_files
