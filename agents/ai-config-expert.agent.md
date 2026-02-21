@@ -3,6 +3,8 @@ name: ai-config-expert
 description: 'AI configuration expert: Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs. See instructions/ai-tuning.instructions.md'
 model: claude-4-6-sonnet-latest
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
+disable-model-invocation: false
+user-invocable: true
 ---
 
 # AI Configuration Expert
