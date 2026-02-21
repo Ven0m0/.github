@@ -2,7 +2,7 @@
 name: codebase-maintainer
 description: 'Codebase cleanup and indexing. Removes tech debt, dead code, bloat. Generates PROJECT_INDEX for token-efficient context.'
 model: gpt-5.3-codex
-tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
+tools: ['codebase', 'read', 'write', 'edit', 'search', 'execute', 'usages', 'changes', 'problems', 'fetch', 'terminalCommand', 'github', 'githubRepo', 'bash', 'bash(gh:*)', 'bash(git:*)', 'web', 'context7/*', 'github/*', 'exa/*']
 ---
 
 # Codebase Maintainer
