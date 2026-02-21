@@ -12,9 +12,7 @@
 #         python-version: '3.12'
 #         coverage-threshold: 90
 #       secrets: inherit
-
 name: Python CI
-
 on:
   workflow_call:
     inputs:
@@ -65,6 +63,10 @@ on:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    shell: 'bash'
 
 jobs:
   # ===========================================================================
