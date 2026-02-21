@@ -1,10 +1,42 @@
 ## Summary
 
-## Changes
-- 
+<!-- Concisely describe what this PR changes and why. Focus on impact and
+urgency. -->
 
-## Checklist
-- [ ] Scope is focused and related issues are linked
-- [ ] Documentation updated if needed
-- [ ] Tests added or updated where applicable
-- [ ] No secrets or sensitive data included
+## Details
+
+<!-- Add any extra context and design decisions. Keep it brief but complete. -->
+
+## Related Issues
+
+<!-- Use keywords to auto-close issues (Closes #123, Fixes #456). If this PR is
+only related to an issue or is a partial fix, simply reference the issue number
+without a keyword (Related to #123). -->
+
+## How to Validate
+
+<!-- List exact steps for reviewers to validate the change. Include commands,
+expected results, and edge cases. -->
+
+## Pre-Merge Checklist
+
+<!-- Check all that apply before requesting review or merging. -->
+
+- [ ] Updated relevant documentation and README (if needed)
+- [ ] Added/updated tests (if needed)
+- [ ] Noted breaking changes (if any)
+- [ ] Validated on required platforms/methods:
+  - [ ] Windows
+    - [ ] bunx run
+    - [ ] bunx
+    - [ ] uv run
+    - [ ] uvx
+    - [ ] Docker
+    - [ ] Podman
+  - [ ] Linux
+    - [ ] bun run
+    - [ ] bunx
+    - [ ] uv run
+    - [ ] uvx
+    - [ ] Docker
+    - [ ] Podman
