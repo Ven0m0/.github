@@ -27,14 +27,14 @@ Loading 30+ reference files wastes context and causes you to ignore the actual c
 | If Task Is About... | Use `read_file` to Read These Paths |
 |---------------------|-------------------------------------|
 | UI/React/CSS | `.github/skills/frontend-design/SKILL.md`, `.github/skills/react-patterns/SKILL.md` |
-| API/Server | `.github/skills/api-patterns/SKILL.md`, `.github/skills/nodejs-best-practices/SKILL.md` |
+| API/Server | `.github/skills/api-patterns/SKILL.md`, `skills/nodejs-best-practices/SKILL.md` |
 | Database/Schema | `.github/skills/database-design/SKILL.md`, `.github/skills/prisma-expert/SKILL.md` |
 | Bugs/Errors | `.github/prompts/debug.prompt.md` — then apply methodology |
 | Tests | `.github/skills/testing-patterns/SKILL.md`, `.github/skills/tdd-workflow/SKILL.md` |
 | Security | `.github/skills/vulnerability-scanner/SKILL.md` |
-| Deploy/Docker | `.github/skills/docker-expert/SKILL.md`, `.github/skills/deployment-procedures/SKILL.md` |
+| Deploy/Docker | `skills/docker-expert/SKILL.md`, `.github/skills/deployment-procedures/SKILL.md` |
 | Mobile | `.github/skills/mobile-design/SKILL.md` |
-| Architecture | `.github/skills/architecture/SKILL.md`, `.github/skills/app-builder/SKILL.md` |
+| Architecture | `.github/skills/architecture/SKILL.md`, `skills/app-builder/SKILL.md` |
 
 ### 🔧 HOW TO READ SKILLS (Use read_file tool)
 

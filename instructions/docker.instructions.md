@@ -7,7 +7,7 @@ description: "Docker standards - Auto-Orchestrator"
 
 ## 🎯 Before Any Docker Work
 
-**READ**: `.github/skills/docker-expert/SKILL.md`
+**READ**: `skills/docker-expert/SKILL.md`
 
 ## 📋 Dockerfile Best Practices
 
