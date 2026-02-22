@@ -1,10 +1,8 @@
 ---
 name: codebase-maintainer
 description: 'Codebase cleanup and indexing. Removes tech debt, dead code, bloat. Generates PROJECT_INDEX for token-efficient context.'
-model: gpt-5.3-codex
+model: claude-4-6-sonnet-latest
 tools: ['codebase', 'read', 'write', 'edit', 'search', 'execute', 'usages', 'changes', 'problems', 'fetch', 'terminalCommand', 'github', 'githubRepo', 'bash', 'bash(gh:*)', 'bash(git:*)', 'web', 'context7/*', 'github/*', 'exa/*']
-disable-model-invocation: false
-user-invocable: true
 ---
 
 # Codebase Maintainer
