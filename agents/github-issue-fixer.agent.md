@@ -2,8 +2,7 @@
 description: 'GitHub issue resolution specialist. Analyzes, plans, and implements fixes with testing and PR creation.'
 name: 'Issue Fixer'
 model: claude-4-6-sonnet-latest
-tools: Write, Read, LS, Glob, Grep, Bash(gh:*), Bash(git:*)
-tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
+tools: [codebase, read, write, edit, search, execute, LS, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
 # GitHub Issue Fixer
