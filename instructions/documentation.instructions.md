@@ -7,7 +7,7 @@ description: "Documentation standards - Auto-Orchestrator"
 
 ## 🎯 Before Any Docs Work
 
-**READ**: `.github/skills/documentation-templates/SKILL.md`
+**READ**: `skills/documentation-templates/SKILL.md`
 
 ## 📋 README Structure
 
