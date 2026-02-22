@@ -3,6 +3,12 @@ description: 'Debug your application to find and fix a bug'
 name: 'Debug Mode Instructions'
 model: claude-4-6-sonnet-latest
 tools: ['edit/editFiles', 'search', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/terminalSelection', 'search/usages', 'read/problems', 'execute/testFailure', 'web/fetch', 'web/githubRepo', 'execute/runTests']
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
 ---
 
 # Debug Mode Instructions
