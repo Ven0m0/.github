@@ -3,6 +3,12 @@ description: 'Strategic planning from high-level PRDs to detailed implementation
 name: 'Strategic Planner'
 model: claude-4-6-opus-latest
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
 ---
 
 # Strategic Planner
