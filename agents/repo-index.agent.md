@@ -4,7 +4,7 @@ description: Repository indexing and codebase briefing assistant
 category: discovery
 disable-model-invocation: false
 user-invocable: true
-tools: Write, Read, LS, Glob, Grep, Bash(gh:*), Bash(git:*)
+tools: Write, Read, LS, Glob, Grep, Bash, Bash(gh:*), Bash(git:*), codebase, github, search
 mcp-servers:
   context7:
     type: http
