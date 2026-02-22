@@ -1,9 +1,13 @@
 ---
-applyTo: "**/*.{py,pyi},**/pyproject.toml"
+applyTo: "**/*.py,**/pyproject.toml"
 description: "Production Python: strict typing, security, performance"
 ---
 
 # Python Standards
+
+## Before Any Python Work
+
+**READ**: `.github/skills/python-patterns/SKILL.md`
 
 ## Toolchain
 
@@ -49,6 +53,13 @@ def stream_file(path: str) -> Iterator[str]:
       yield line.strip()
 ```
 
+## 🔐 Security Rules
+
+- Never use `eval()` or `exec()` with user input
+- Use parameterized queries for SQL
+- Validate all external inputs
+- Use `secrets` module for tokens, not `random`
+
 ## Forbidden
 
 - Bare `except:` → catch specific exceptions
@@ -56,3 +67,16 @@ def stream_file(path: str) -> Iterator[str]:
 - Hardcoded secrets → use env vars
 - O(n²) loops → use sets/dicts for lookups
 - Global mutable state → use DI/parameters
+
+## 📦 Import Order
+
+1. Standard library (`os`, `sys`, `typing`)
+2. Third-party (`fastapi`, `pydantic`)
+3. Local application imports
+
+## ⚡ Best Practices
+
+- Use context managers (`with` statements)
+- Prefer list comprehensions over loops
+- Use `pathlib` for file paths
+- Use `dataclasses` or Pydantic for data structures
