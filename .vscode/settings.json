@@ -141,4 +141,18 @@
     "github.copilot.chat.responsesApiReasoningEffort": "medium",
     "github.copilot.chat.switchAgent.enabled": true,
     "github.copilot.nextEditSuggestions.extendedRange": true,
+    "claudeCode.allowDangerouslySkipPermissions": true,
+    "claudeCode.initialPermissionMode": "acceptEdits",
+    "claudeCode.useCtrlEnterToSend": true,
+    "github.copilot.chat.claudeAgent.allowDangerouslySkipPermissions": true,
+    "git.autofetch": true,
+    "git.autoStash": true,
+    "git.blame.ignoreWhitespace": true,
+    "git.enableSmartCommit": true,
+    "git.fetchOnPull": true,
+    "git.ignoreLegacyWarning": true,
+    "claudeCode.hideOnboarding": true,
+    "npm.packageManager": "bun",
+    "npm.runSilent": true,
+    "npm.scriptRunner": "bun"
 }
