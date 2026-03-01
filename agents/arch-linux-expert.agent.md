@@ -4,7 +4,7 @@ description: 'Arch Linux specialist: pacman workflows, rolling-release maintenan
 model: claude-4-6-sonnet-latest
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 disable-model-invocation: false
-user-invocable: false
+user-invocable: true
 ---
 
 # Arch Linux Expert
