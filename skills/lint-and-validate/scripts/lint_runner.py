@@ -12,6 +12,7 @@ Supports:
 """
 
 import subprocess
+import concurrent.futures
 import sys
 import json
 from pathlib import Path
@@ -129,22 +130,41 @@ def main():
         print(json.dumps(output, indent=2))
         sys.exit(0)
 
-    # Run each linter
+    # Run each linter in parallel
     results = []
     all_passed = True
 
-    for linter in project_info["linters"]:
-        print(f"\nRunning: {linter['name']}...")
-        result = run_linter(linter, project_path)
-        results.append(result)
+    print("\nRunning linters in parallel...")
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_linter = {
+            executor.submit(run_linter, linter, project_path): linter
+            for linter in project_info["linters"]
+        }
 
-        if result["passed"]:
-            print(f"  [PASS] {linter['name']}")
-        else:
-            print(f"  [FAIL] {linter['name']}")
-            if result["error"]:
-                print(f"  Error: {result['error'][:200]}")
-            all_passed = False
+        for future in concurrent.futures.as_completed(future_to_linter):
+            linter = future_to_linter[future]
+            try:
+                result = future.result()
+                results.append(result)
+
+                print(f"\nFinished: {linter['name']}")
+                if result["passed"]:
+                    print(f"  [PASS] {linter['name']}")
+                else:
+                    print(f"  [FAIL] {linter['name']}")
+                    if result["error"]:
+                        print(f"  Error: {result['error'][:200]}")
+                    all_passed = False
+            except Exception as exc:
+                print(f"\nFinished: {linter['name']}")
+                print(f"  [FAIL] {linter['name']} generated an exception: {exc}")
+                results.append({
+                    "name": linter["name"],
+                    "passed": False,
+                    "output": "",
+                    "error": str(exc)
+                })
+                all_passed = False
 
     # Summary
     print("\n" + "=" * 60)
