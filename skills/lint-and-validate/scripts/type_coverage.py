@@ -6,14 +6,21 @@ Identifies untyped functions, any usage, and type safety issues.
 
 import sys
 import re
+import argparse
 from pathlib import Path
-from utils import fix_windows_console_encoding
+from typing import Optional
 
 # Fix Windows console encoding for Unicode output
-fix_windows_console_encoding()
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except AttributeError:
+    pass  # Python < 3.7
 
 
-def check_typescript_coverage(project_path: Path) -> dict:
+def check_typescript_coverage(
+    project_path: Path, max_files: Optional[int] = 30
+) -> dict:
     """Check TypeScript type coverage."""
     issues = []
     passed = []
@@ -33,7 +40,7 @@ def check_typescript_coverage(project_path: Path) -> dict:
             "stats": stats,
         }
 
-    for file_path in ts_files[:30]:  # Limit
+    for file_path in ts_files[:max_files] if max_files is not None else ts_files:
         try:
             content = file_path.read_text(encoding="utf-8", errors="ignore")
 
@@ -88,7 +95,7 @@ def check_typescript_coverage(project_path: Path) -> dict:
     }
 
 
-def check_python_coverage(project_path: Path) -> dict:
+def check_python_coverage(project_path: Path, max_files: Optional[int] = 30) -> dict:
     """Check Python type hints coverage."""
     issues = []
     passed = []
@@ -110,7 +117,7 @@ def check_python_coverage(project_path: Path) -> dict:
             "stats": stats,
         }
 
-    for file_path in py_files[:30]:  # Limit
+    for file_path in py_files[:max_files] if max_files is not None else py_files:
         try:
             content = file_path.read_text(encoding="utf-8", errors="ignore")
 
@@ -162,8 +169,21 @@ def check_python_coverage(project_path: Path) -> dict:
 
 
 def main():
-    target = sys.argv[1] if len(sys.argv) > 1 else "."
-    project_path = Path(target)
+    parser = argparse.ArgumentParser(description="Type Coverage Checker")
+    parser.add_argument(
+        "target", nargs="?", default=".", help="Target directory to check"
+    )
+    parser.add_argument(
+        "--max-files",
+        type=int,
+        default=30,
+        help="Maximum number of files to check per language (default: 30, set to 0 for unlimited)",
+    )
+
+    args = parser.parse_args()
+
+    project_path = Path(args.target)
+    max_files = None if args.max_files == 0 else args.max_files
 
     print("\n" + "=" * 60)
     print("  TYPE COVERAGE CHECKER")
@@ -172,12 +192,12 @@ def main():
     results = []
 
     # Check TypeScript
-    ts_result = check_typescript_coverage(project_path)
+    ts_result = check_typescript_coverage(project_path, max_files)
     if ts_result["files"] > 0:
         results.append(ts_result)
 
     # Check Python
-    py_result = check_python_coverage(project_path)
+    py_result = check_python_coverage(project_path, max_files)
     if py_result["files"] > 0:
         results.append(py_result)
 
