@@ -19,15 +19,15 @@ from pathlib import Path
 from datetime import datetime
 from utils import fix_windows_console_encoding
 
-# Fix Windows console encoding for Unicode output
-fix_windows_console_encoding()
+# Fix Windows console encoding
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 
-def detect_project_type(project_path: Path) -> dict:
-    """Detect project type and available linters."""
-    result = {"type": "unknown", "linters": []}
-
-    # Node.js project
+def detect_node_project(project_path: Path, result: dict) -> None:
+    """Detect Node.js project and available linters."""
     package_json = project_path / "package.json"
     if package_json.exists():
         result["type"] = "node"
@@ -55,7 +55,9 @@ def detect_project_type(project_path: Path) -> dict:
         except (IOError, json.JSONDecodeError):
             pass
 
-    # Python project
+
+def detect_python_project(project_path: Path, result: dict) -> None:
+    """Detect Python project and available linters."""
     if (project_path / "pyproject.toml").exists() or (
         project_path / "requirements.txt"
     ).exists():
@@ -69,6 +71,15 @@ def detect_project_type(project_path: Path) -> dict:
             project_path / "pyproject.toml"
         ).exists():
             result["linters"].append({"name": "mypy", "cmd": ["mypy", "."]})
+
+
+def detect_project_type(project_path: Path) -> dict:
+    """Detect project type and available linters."""
+    result = {"type": "unknown", "linters": []}
+
+    detect_node_project(project_path, result)
+
+    detect_python_project(project_path, result)
 
     return result
 
