@@ -30,7 +30,7 @@ jobs:
           permission-pull-requests: 'write'
 
       - name: 'Run Gemini PR size and complexity labeller'
-        uses: 'google-github-actions/run-gemini-cli@7811a6d56150bae41e0ffd67b238d4c5df04911b' # Use the specific commit SHA
+        uses: 'google-github-actions/run-gemini-cli@9dbec29a20fab3f35017a40ad0eb798a257d4d51' # Use the specific commit SHA
         env:
           GH_TOKEN: '${{ steps.generate_token.outputs.token }}'
           PR_NUMBER: '${{ github.event.pull_request.number }}'
