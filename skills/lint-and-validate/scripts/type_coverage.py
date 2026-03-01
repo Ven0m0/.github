@@ -3,7 +3,7 @@
 Type Coverage Checker - Measures TypeScript/Python type coverage.
 Identifies untyped functions, any usage, and type safety issues.
 """
-
+import os
 import sys
 import re
 import argparse
@@ -26,10 +26,13 @@ def check_typescript_coverage(
     passed = []
     stats = {"any_count": 0, "untyped_functions": 0, "total_functions": 0}
 
-    ts_files = list(project_path.rglob("*.ts")) + list(project_path.rglob("*.tsx"))
-    ts_files = [
-        f for f in ts_files if "node_modules" not in str(f) and ".d.ts" not in str(f)
-    ]
+    exclude_dirs = {'node_modules'}
+    ts_files = []
+    for root, dirs, files in os.walk(project_path):
+        dirs[:] = [d for d in dirs if d not in exclude_dirs]
+        for file in files:
+            if (file.endswith('.ts') or file.endswith('.tsx')) and not file.endswith('.d.ts'):
+                ts_files.append(Path(root) / file)
 
     if not ts_files:
         return {
@@ -101,12 +104,13 @@ def check_python_coverage(project_path: Path, max_files: Optional[int] = 30) -> 
     passed = []
     stats = {"untyped_functions": 0, "typed_functions": 0, "any_count": 0}
 
-    py_files = list(project_path.rglob("*.py"))
-    py_files = [
-        f
-        for f in py_files
-        if not any(x in str(f) for x in ["venv", "__pycache__", ".git", "node_modules"])
-    ]
+    exclude_dirs = {'venv', '__pycache__', '.git', 'node_modules'}
+    py_files = []
+    for root, dirs, files in os.walk(project_path):
+        dirs[:] = [d for d in dirs if d not in exclude_dirs]
+        for file in files:
+            if file.endswith('.py'):
+                py_files.append(Path(root) / file)
 
     if not py_files:
         return {
