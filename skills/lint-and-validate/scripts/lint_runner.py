@@ -12,69 +12,81 @@ Supports:
 """
 
 import subprocess
+import concurrent.futures
 import sys
 import json
 from pathlib import Path
 from datetime import datetime
+from utils import fix_windows_console_encoding
 
 # Fix Windows console encoding
 try:
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-except:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
     pass
 
 
-def detect_project_type(project_path: Path) -> dict:
-    """Detect project type and available linters."""
-    result = {
-        "type": "unknown",
-        "linters": []
-    }
-
-    # Node.js project
+def detect_node_project(project_path: Path, result: dict) -> None:
+    """Detect Node.js project and available linters."""
     package_json = project_path / "package.json"
     if package_json.exists():
         result["type"] = "node"
         try:
-            pkg = json.loads(package_json.read_text(encoding='utf-8'))
+            pkg = json.loads(package_json.read_text(encoding="utf-8"))
             scripts = pkg.get("scripts", {})
             deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
 
             # Check for lint script
             if "lint" in scripts:
-                result["linters"].append({"name": "npm lint", "cmd": ["npm", "run", "lint"]})
+                result["linters"].append(
+                    {"name": "npm lint", "cmd": ["npm", "run", "lint"]}
+                )
             elif "eslint" in deps:
-                result["linters"].append({"name": "eslint", "cmd": ["npx", "eslint", "."]})
+                result["linters"].append(
+                    {"name": "eslint", "cmd": ["npx", "eslint", "."]}
+                )
 
             # Check for TypeScript
             if "typescript" in deps or (project_path / "tsconfig.json").exists():
-                result["linters"].append({"name": "tsc", "cmd": ["npx", "tsc", "--noEmit"]})
+                result["linters"].append(
+                    {"name": "tsc", "cmd": ["npx", "tsc", "--noEmit"]}
+                )
 
         except (IOError, json.JSONDecodeError):
             pass
 
-    # Python project
-    if (project_path / "pyproject.toml").exists() or (project_path / "requirements.txt").exists():
+
+def detect_python_project(project_path: Path, result: dict) -> None:
+    """Detect Python project and available linters."""
+    if (project_path / "pyproject.toml").exists() or (
+        project_path / "requirements.txt"
+    ).exists():
         result["type"] = "python"
 
         # Check for ruff
         result["linters"].append({"name": "ruff", "cmd": ["ruff", "check", "."]})
 
         # Check for mypy
-        if (project_path / "mypy.ini").exists() or (project_path / "pyproject.toml").exists():
+        if (project_path / "mypy.ini").exists() or (
+            project_path / "pyproject.toml"
+        ).exists():
             result["linters"].append({"name": "mypy", "cmd": ["mypy", "."]})
+
+
+def detect_project_type(project_path: Path) -> dict:
+    """Detect project type and available linters."""
+    result = {"type": "unknown", "linters": []}
+
+    detect_node_project(project_path, result)
+
+    detect_python_project(project_path, result)
 
     return result
 
 
 def run_linter(linter: dict, cwd: Path) -> dict:
     """Run a single linter and return results."""
-    result = {
-        "name": linter["name"],
-        "passed": False,
-        "output": "",
-        "error": ""
-    }
+    result = {"name": linter["name"], "passed": False, "output": "", "error": ""}
 
     try:
         proc = subprocess.run(
@@ -82,9 +94,9 @@ def run_linter(linter: dict, cwd: Path) -> dict:
             cwd=str(cwd),
             capture_output=True,
             text=True,
-            encoding='utf-8',
-            errors='replace',
-            timeout=120
+            encoding="utf-8",
+            errors="replace",
+            timeout=120,
         )
 
         result["output"] = proc.stdout[:2000] if proc.stdout else ""
@@ -104,9 +116,9 @@ def run_linter(linter: dict, cwd: Path) -> dict:
 def main():
     project_path = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
 
-    print(f"\n{'='*60}")
-    print(f"[LINT RUNNER] Unified Linting")
-    print(f"{'='*60}")
+    print(f"\n{'=' * 60}")
+    print("[LINT RUNNER] Unified Linting")
+    print(f"{'=' * 60}")
     print(f"Project: {project_path}")
     print(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
@@ -114,7 +126,7 @@ def main():
     project_info = detect_project_type(project_path)
     print(f"Type: {project_info['type']}")
     print(f"Linters: {len(project_info['linters'])}")
-    print("-"*60)
+    print("-" * 60)
 
     if not project_info["linters"]:
         print("No linters found for this project type.")
@@ -124,32 +136,51 @@ def main():
             "type": project_info["type"],
             "checks": [],
             "passed": True,
-            "message": "No linters configured"
+            "message": "No linters configured",
         }
         print(json.dumps(output, indent=2))
         sys.exit(0)
 
-    # Run each linter
+    # Run each linter in parallel
     results = []
     all_passed = True
 
-    for linter in project_info["linters"]:
-        print(f"\nRunning: {linter['name']}...")
-        result = run_linter(linter, project_path)
-        results.append(result)
+    print("\nRunning linters in parallel...")
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_linter = {
+            executor.submit(run_linter, linter, project_path): linter
+            for linter in project_info["linters"]
+        }
 
-        if result["passed"]:
-            print(f"  [PASS] {linter['name']}")
-        else:
-            print(f"  [FAIL] {linter['name']}")
-            if result["error"]:
-                print(f"  Error: {result['error'][:200]}")
-            all_passed = False
+        for future in concurrent.futures.as_completed(future_to_linter):
+            linter = future_to_linter[future]
+            try:
+                result = future.result()
+                results.append(result)
+
+                print(f"\nFinished: {linter['name']}")
+                if result["passed"]:
+                    print(f"  [PASS] {linter['name']}")
+                else:
+                    print(f"  [FAIL] {linter['name']}")
+                    if result["error"]:
+                        print(f"  Error: {result['error'][:200]}")
+                    all_passed = False
+            except Exception as exc:
+                print(f"\nFinished: {linter['name']}")
+                print(f"  [FAIL] {linter['name']} generated an exception: {exc}")
+                results.append({
+                    "name": linter["name"],
+                    "passed": False,
+                    "output": "",
+                    "error": str(exc)
+                })
+                all_passed = False
 
     # Summary
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("SUMMARY")
-    print("="*60)
+    print("=" * 60)
 
     for r in results:
         icon = "[PASS]" if r["passed"] else "[FAIL]"
@@ -160,7 +191,7 @@ def main():
         "project": str(project_path),
         "type": project_info["type"],
         "checks": results,
-        "passed": all_passed
+        "passed": all_passed,
     }
 
     print("\n" + json.dumps(output, indent=2))

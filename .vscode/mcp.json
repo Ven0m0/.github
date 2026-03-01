@@ -5,7 +5,7 @@
       "url": "https://api.githubcopilot.com/mcp/insiders",
       "tools": ["*"],
       "headers": {
-        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
+        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search",
         "Authorization": "Bearer ${GITHUB_TOKEN}"
       }
     },
@@ -37,6 +37,16 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       }
     },
+    "ref-tools": {
+      "type": "http",
+      "url": "https://api.ref.tools/mcp",
+      "tools": ["*"]
+    },
+    "grep-app": {
+      "type": "http",
+      "url": "https://mcp.grep.app",
+      "tools": ["*"]
+    },
     "grepika": {
       "type": "stdio",
       "command": "npx",
@@ -53,7 +63,7 @@
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "octocode-mcp@latest"],
-      "tools": ["*"]
+      "tools": ["*"],
       "env": {
         "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
