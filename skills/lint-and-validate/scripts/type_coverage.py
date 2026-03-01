@@ -6,21 +6,25 @@ Identifies untyped functions, any usage, and type safety issues.
 import os
 import sys
 import re
-import subprocess
+import argparse
 from pathlib import Path
+from typing import Optional
 
 # Fix Windows console encoding for Unicode output
 try:
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 except AttributeError:
     pass  # Python < 3.7
 
-def check_typescript_coverage(project_path: Path) -> dict:
+
+def check_typescript_coverage(
+    project_path: Path, max_files: Optional[int] = 30
+) -> dict:
     """Check TypeScript type coverage."""
     issues = []
     passed = []
-    stats = {'any_count': 0, 'untyped_functions': 0, 'total_functions': 0}
+    stats = {"any_count": 0, "untyped_functions": 0, "total_functions": 0}
 
     exclude_dirs = {'node_modules'}
     ts_files = []
@@ -31,41 +35,51 @@ def check_typescript_coverage(project_path: Path) -> dict:
                 ts_files.append(Path(root) / file)
 
     if not ts_files:
-        return {'type': 'typescript', 'files': 0, 'passed': [], 'issues': ["[!] No TypeScript files found"], 'stats': stats}
+        return {
+            "type": "typescript",
+            "files": 0,
+            "passed": [],
+            "issues": ["[!] No TypeScript files found"],
+            "stats": stats,
+        }
 
-    for file_path in ts_files[:30]:  # Limit
+    for file_path in ts_files[:max_files] if max_files is not None else ts_files:
         try:
-            content = file_path.read_text(encoding='utf-8', errors='ignore')
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Count 'any' usage
-            any_matches = re.findall(r':\s*any\b', content)
-            stats['any_count'] += len(any_matches)
+            any_matches = re.findall(r":\s*any\b", content)
+            stats["any_count"] += len(any_matches)
 
             # Find functions without return types
             # function name(params) { - no return type
-            untyped = re.findall(r'function\s+\w+\s*\([^)]*\)\s*{', content)
+            untyped = re.findall(r"function\s+\w+\s*\([^)]*\)\s*{", content)
             # Arrow functions without types: const fn = (x) => or (x) =>
-            untyped += re.findall(r'=\s*\([^:)]*\)\s*=>', content)
-            stats['untyped_functions'] += len(untyped)
+            untyped += re.findall(r"=\s*\([^:)]*\)\s*=>", content)
+            stats["untyped_functions"] += len(untyped)
 
             # Count typed functions
-            typed = re.findall(r'function\s+\w+\s*\([^)]*\)\s*:\s*\w+', content)
-            typed += re.findall(r':\s*\([^)]*\)\s*=>\s*\w+', content)
-            stats['total_functions'] += len(typed) + len(untyped)
+            typed = re.findall(r"function\s+\w+\s*\([^)]*\)\s*:\s*\w+", content)
+            typed += re.findall(r":\s*\([^)]*\)\s*=>\s*\w+", content)
+            stats["total_functions"] += len(typed) + len(untyped)
 
         except Exception:
             continue
 
     # Analyze results
-    if stats['any_count'] == 0:
+    if stats["any_count"] == 0:
         passed.append("[OK] No 'any' types found")
-    elif stats['any_count'] <= 5:
+    elif stats["any_count"] <= 5:
         issues.append(f"[!] {stats['any_count']} 'any' types found (acceptable)")
     else:
         issues.append(f"[X] {stats['any_count']} 'any' types found (too many)")
 
-    if stats['total_functions'] > 0:
-        typed_ratio = (stats['total_functions'] - stats['untyped_functions']) / stats['total_functions'] * 100
+    if stats["total_functions"] > 0:
+        typed_ratio = (
+            (stats["total_functions"] - stats["untyped_functions"])
+            / stats["total_functions"]
+            * 100
+        )
         if typed_ratio >= 80:
             passed.append(f"[OK] Type coverage: {typed_ratio:.0f}%")
         elif typed_ratio >= 50:
@@ -75,13 +89,20 @@ def check_typescript_coverage(project_path: Path) -> dict:
 
     passed.append(f"[OK] Analyzed {len(ts_files)} TypeScript files")
 
-    return {'type': 'typescript', 'files': len(ts_files), 'passed': passed, 'issues': issues, 'stats': stats}
+    return {
+        "type": "typescript",
+        "files": len(ts_files),
+        "passed": passed,
+        "issues": issues,
+        "stats": stats,
+    }
 
-def check_python_coverage(project_path: Path) -> dict:
+
+def check_python_coverage(project_path: Path, max_files: Optional[int] = 30) -> dict:
     """Check Python type hints coverage."""
     issues = []
     passed = []
-    stats = {'untyped_functions': 0, 'typed_functions': 0, 'any_count': 0}
+    stats = {"untyped_functions": 0, "typed_functions": 0, "any_count": 0}
 
     exclude_dirs = {'venv', '__pycache__', '.git', 'node_modules'}
     py_files = []
@@ -92,53 +113,81 @@ def check_python_coverage(project_path: Path) -> dict:
                 py_files.append(Path(root) / file)
 
     if not py_files:
-        return {'type': 'python', 'files': 0, 'passed': [], 'issues': ["[!] No Python files found"], 'stats': stats}
+        return {
+            "type": "python",
+            "files": 0,
+            "passed": [],
+            "issues": ["[!] No Python files found"],
+            "stats": stats,
+        }
 
-    for file_path in py_files[:30]:  # Limit
+    for file_path in py_files[:max_files] if max_files is not None else py_files:
         try:
-            content = file_path.read_text(encoding='utf-8', errors='ignore')
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Count Any usage
-            any_matches = re.findall(r':\s*Any\b', content)
-            stats['any_count'] += len(any_matches)
+            any_matches = re.findall(r":\s*Any\b", content)
+            stats["any_count"] += len(any_matches)
 
             # Find functions with type hints
-            typed_funcs = re.findall(r'def\s+\w+\s*\([^)]*:[^)]+\)', content)
-            typed_funcs += re.findall(r'def\s+\w+\s*\([^)]*\)\s*->', content)
-            stats['typed_functions'] += len(typed_funcs)
+            typed_funcs = re.findall(r"def\s+\w+\s*\([^)]*:[^)]+\)", content)
+            typed_funcs += re.findall(r"def\s+\w+\s*\([^)]*\)\s*->", content)
+            stats["typed_functions"] += len(typed_funcs)
 
             # Find functions without type hints
-            all_funcs = re.findall(r'def\s+\w+\s*\(', content)
-            stats['untyped_functions'] += len(all_funcs) - len(typed_funcs)
+            all_funcs = re.findall(r"def\s+\w+\s*\(", content)
+            stats["untyped_functions"] += len(all_funcs) - len(typed_funcs)
 
         except Exception:
             continue
 
-    total = stats['typed_functions'] + stats['untyped_functions']
+    total = stats["typed_functions"] + stats["untyped_functions"]
 
     if total > 0:
-        typed_ratio = stats['typed_functions'] / total * 100
+        typed_ratio = stats["typed_functions"] / total * 100
         if typed_ratio >= 70:
             passed.append(f"[OK] Type hints coverage: {typed_ratio:.0f}%")
         elif typed_ratio >= 40:
             issues.append(f"[!] Type hints coverage: {typed_ratio:.0f}%")
         else:
-            issues.append(f"[X] Type hints coverage: {typed_ratio:.0f}% (add type hints)")
+            issues.append(
+                f"[X] Type hints coverage: {typed_ratio:.0f}% (add type hints)"
+            )
 
-    if stats['any_count'] == 0:
+    if stats["any_count"] == 0:
         passed.append("[OK] No 'Any' types found")
-    elif stats['any_count'] <= 3:
+    elif stats["any_count"] <= 3:
         issues.append(f"[!] {stats['any_count']} 'Any' types found")
     else:
         issues.append(f"[X] {stats['any_count']} 'Any' types found")
 
     passed.append(f"[OK] Analyzed {len(py_files)} Python files")
 
-    return {'type': 'python', 'files': len(py_files), 'passed': passed, 'issues': issues, 'stats': stats}
+    return {
+        "type": "python",
+        "files": len(py_files),
+        "passed": passed,
+        "issues": issues,
+        "stats": stats,
+    }
+
 
 def main():
-    target = sys.argv[1] if len(sys.argv) > 1 else "."
-    project_path = Path(target)
+    parser = argparse.ArgumentParser(description="Type Coverage Checker")
+    parser.add_argument(
+        "target", nargs="?", default=".", help="Target directory to check"
+    )
+    parser.add_argument(
+        "--max-files",
+        type=int,
+        default=30,
+        help="Maximum number of files to check per language (default: 30, set to 0 for unlimited)",
+    )
+
+    args = parser.parse_args()
+
+    project_path = Path(args.target)
+    max_files = None if args.max_files == 0 else args.max_files
 
     print("\n" + "=" * 60)
     print("  TYPE COVERAGE CHECKER")
@@ -147,13 +196,13 @@ def main():
     results = []
 
     # Check TypeScript
-    ts_result = check_typescript_coverage(project_path)
-    if ts_result['files'] > 0:
+    ts_result = check_typescript_coverage(project_path, max_files)
+    if ts_result["files"] > 0:
         results.append(ts_result)
 
     # Check Python
-    py_result = check_python_coverage(project_path)
-    if py_result['files'] > 0:
+    py_result = check_python_coverage(project_path, max_files)
+    if py_result["files"] > 0:
         results.append(py_result)
 
     if not results:
@@ -165,9 +214,9 @@ def main():
     for result in results:
         print(f"\n[{result['type'].upper()}]")
         print("-" * 40)
-        for item in result['passed']:
+        for item in result["passed"]:
             print(f"  {item}")
-        for item in result['issues']:
+        for item in result["issues"]:
             print(f"  {item}")
             if item.startswith("[X]"):
                 critical_issues += 1
@@ -179,6 +228,7 @@ def main():
     else:
         print(f"[X] TYPE COVERAGE: {critical_issues} critical issues")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
