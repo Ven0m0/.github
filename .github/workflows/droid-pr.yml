@@ -32,7 +32,7 @@ jobs:
           4. DO NOT commit or push changes
           "
           # Generate review report (needs --auto to write files)
-          droid exec --auto low "Analyze the changes again and write a detailed review to review.md with:
+          droid exec -m gpt-5.3-codex --auto medium "Analyze the changes again and write a detailed review to review.md with:
           - Summary of automated fixes made
           - Remaining issues that need human attention
           - Security or performance concerns
