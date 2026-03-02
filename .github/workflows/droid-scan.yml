@@ -7,20 +7,17 @@ on:
 jobs:
   security-scan:
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v6
-      
       - name: Setup droid CLI
         run: |
           curl -fsSL https://app.factory.ai/cli | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-      
       - name: Security audit
         env:
           FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
         run: |
-          droid exec --auto medium "
+          droid exec -m gpt-5.3-codex --auto medium "
           Perform a comprehensive security audit:
           1. Check package.json for known vulnerabilities
           2. Update vulnerable dependencies to safe versions
@@ -29,7 +26,6 @@ jobs:
           5. Check for SQL injection or XSS vulnerabilities
           6. Generate security-report.md with all findings and fixes
           "
-      
       - name: Create issue if vulnerabilities found
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +38,6 @@ jobs:
               --label "security,high-priority" \
               --assignee "${{ github.repository_owner }}"
           fi
-      
       - name: Create PR for fixes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -51,14 +46,11 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            
             git checkout -b security-fixes-$(date +%Y%m%d)
             git add -A
             git commit -m "fix: security updates and dependency patches
-            
             Co-authored-by: factory-droid[bot] <138933559+factory-droid[bot]@users.noreply.github.com>"
             git push origin HEAD
-            
             gh pr create \
               --title "🔒 Security fixes" \
               --body-file security-report.md \
