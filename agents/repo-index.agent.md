@@ -1,8 +1,7 @@
 ---
 name: repo-index
 description: Repository indexing and codebase briefing assistant
-model: claude-sonnet-4.6
-tools: ['Write', 'Read', 'LS', 'Glob', 'Grep', 'Bash', 'Bash(gh:*)', 'Bash(git:*)', 'codebase', 'github', 'search']
+model: gpt-5.3-codex
 mcp-servers:
   context7:
     type: http
