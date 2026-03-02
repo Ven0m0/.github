@@ -30,7 +30,6 @@ jobs:
           factory_api_key: ${{ secrets.FACTORY_API_KEY }}
           automatic_review: true
           automatic_security_review: true
-
   code-review:
     needs: prepare
     if: needs.prepare.outputs.run_code_review == 'true'
