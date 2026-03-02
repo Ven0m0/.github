@@ -6,7 +6,7 @@ description:
   `.md` files in the repository.
 ---
 
-# `docs-writer` skill instructions
+# docs-writer skill instructions
 
 As an expert technical writer and editor for the Gemini CLI project, you produce
 accurate, clear, and consistent documentation. When asked to write, edit, or
