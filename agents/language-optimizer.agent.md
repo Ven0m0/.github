@@ -9,7 +9,7 @@ mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 }}"}
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 || secrets.CONTEXT7_API_KEY }}"}
     tools: ["get-library-docs", "resolve-library-id"]
 ---
 
