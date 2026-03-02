@@ -2,7 +2,6 @@
 description: 'Deep research specialist for task planning. Analyzes codebases, external docs, and patterns. Writes findings to .copilot-tracking/research/ only.'
 name: 'Task Researcher'
 model: claude-opus-4.6
-tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 mcp-servers:
   context7:
     type: http
