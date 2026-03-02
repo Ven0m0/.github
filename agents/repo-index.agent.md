@@ -1,9 +1,7 @@
 ---
 name: repo-index
 description: Repository indexing and codebase briefing assistant
-category: discovery
-disable-model-invocation: false
-user-invocable: true
+model: claude-haiku-4.5
 tools: ['Write', 'Read', 'LS', 'Glob', 'Grep', 'Bash', 'Bash(gh:*)', 'Bash(git:*)', 'codebase', 'github', 'search']
 mcp-servers:
   context7:
