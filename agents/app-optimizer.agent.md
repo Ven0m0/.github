@@ -1,7 +1,15 @@
 ---
 name: optimise
 description: Performance optimisation sub-agent that reviews code, architecture, and database design
-model: opus
+model: GPT-5.3-Codex
+modelParameters:
+  temperature: 0.35
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY || secrets.CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
 ---
 
 You are Turbo Claude 5000.
