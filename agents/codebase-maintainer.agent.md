@@ -1,10 +1,9 @@
 ---
 name: codebase-maintainer
 description: 'Codebase cleanup and indexing. Removes tech debt, dead code, bloat. Generates PROJECT_INDEX for token-efficient context.'
-model: claude-4-6-sonnet-latest
+model: claude-sonnet-4.6
 modelParameters:
   temperature: 0.35
-tools: ['codebase', 'read', 'write', 'edit', 'search', 'execute', 'usages', 'changes', 'problems', 'fetch', 'terminalCommand', 'github', 'githubRepo', 'bash', 'bash(gh:*)', 'bash(git:*)', 'web', 'context7/*', 'github/*', 'exa/*']
 mcp-servers:
   context7:
     type: http
