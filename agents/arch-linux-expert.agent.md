@@ -5,6 +5,12 @@ model: claude-4-6-sonnet-latest
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 disable-model-invocation: false
 user-invocable: true
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY || secrets.CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
 ---
 
 # Arch Linux Expert
