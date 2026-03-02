@@ -1,0 +1,70 @@
+name: PR Assistant
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  review-and-fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup droid CLI
+        run: |
+          curl -fsSL https://app.factory.ai/cli | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Analyze and fix code
+        env:
+          FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
+        run: |
+          # Get the diff
+          git diff origin/${{ github.base_ref }}...HEAD > pr_changes.diff
+          # Review and fix issues (pipe diff to stdin)
+          cat pr_changes.diff | droid exec --auto low "
+          Review this PR diff and:
+          1. Fix any obvious bugs, typos, or linting errors
+          2. Add missing error handling
+          3. Improve code comments where unclear
+          4. DO NOT commit or push changes
+          "
+          # Generate review report (needs --auto to write files)
+          droid exec --auto low "Analyze the changes again and write a detailed review to review.md with:
+          - Summary of automated fixes made
+          - Remaining issues that need human attention
+          - Security or performance concerns
+          - Test coverage recommendations"
+      - name: Commit fixes if any
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "fix: automated improvements for PR #${{ github.event.pull_request.number }}
+            
+            Co-authored-by: factory-droid[bot] <138933559+factory-droid[bot]@users.noreply.github.com>"
+            git push
+          fi
+      - name: Post review comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let review = '## 🤖 Automated Review\n\n';
+            
+            if (fs.existsSync('review.md')) {
+              review += fs.readFileSync('review.md', 'utf8');
+            } else {
+              review += 'Review completed successfully.';
+            }
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: review
+            });
