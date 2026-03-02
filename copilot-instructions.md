@@ -32,7 +32,7 @@
 
 ### Python
 
-Tech: Python 3.12+ | `uv` (packages) | `ruff` (lint+format) | `pyright` (types) | `pytest`
+Tech: Python 3.14+ | `uv` (packages) | `ruff` (lint+format) | `basedpyright` (types) | `pytest`
 
 ```python
 def process_data(items: list[str], limit: int = 10) -> dict[str, int]:
@@ -46,7 +46,7 @@ def process_data(items: list[str], limit: int = 10) -> dict[str, int]:
 
 ### TypeScript/JavaScript
 
-Tech: Node.js 22+ ESM | `bun` (if `bun.lockb`/`bunfig.toml`) else `pnpm` | `biome` | `vitest`
+Tech: Node.js 25+ ESM | `bun` (if `bun.lockb`/`bunfig.toml`) else `pnpm` | `biome` | `vitest`
 
 ```typescript
 interface UserConfig {
@@ -58,20 +58,6 @@ export function createClient(config: UserConfig): Client { ... }
 
 - Strict mode, `interface` over `type` for objects, no `enum` (use `as const`)
 - Layout: `src/`, `tests/`, `package.json`, `tsconfig.json`
-
-### Go
-
-Tech: Go 1.23+ | `golangci-lint` | table-driven tests
-
-```go
-func (s *Service) GetByID(ctx context.Context, id string) (*User, error) {
-    if id == "" { return nil, fmt.Errorf("id cannot be empty") }
-    ...
-}
-```
-
-- Standard layout: `cmd/`, `internal/`, `pkg/`, `go.mod`
-- Context propagation, wrap errors: `fmt.Errorf("failed: %w", err)`
 
 ### Rust
 
@@ -86,7 +72,7 @@ pub fn process(input: &str) -> Result<Output, Error> { ... }
 
 ### Java
 
-Tech: Java 21 LTS | Spring Boot 3.3+ | Gradle Kotlin DSL | Checkstyle Google
+Tech: Java 25 | Spring Boot 3.3+ | Gradle Kotlin DSL | Checkstyle Google
 
 - Constructor injection, Records for DTOs
 
@@ -110,7 +96,6 @@ return fmt.Errorf("failed to fetch user %s: %w", id, err)
 **Config**: Environment variables for runtime, YAML/TOML for complex settings, validate at startup
 
 **Imports**: stdlib > third-party > local (alphabetical within groups)
-
 </Standards>
 
 <Security>
@@ -120,7 +105,6 @@ return fmt.Errorf("failed to fetch user %s: %w", id, err)
 3. SHA-pinned Actions (commit SHA; minimum: major version tag)
 4. GITHUB_TOKEN with least privilege
 5. Pre-commit hooks with gitleaks
-
 </Security>
 
 ## CI/CD
@@ -135,12 +119,11 @@ When generating code:
 3. Add docstrings/comments for complex logic
 4. Include proper error handling
 5. Account for null, empty, and boundary conditions
-
 </WhatToAdd>
 
 ## AI Assistant Integration
 
 | File | Contents |
 |------|----------|
-| `CLAUDE.md` | Overview, structure, build/test commands, style requirements |
-| `.vscode/mcp.json` | context7, filesystem, memory (when applicable) |
+| `AGENTS.md`/`CLAUDE.md` | Overview, structure, build/test commands, style requirements |
+| `.vscode/mcp.json` | context7, filesystem, memory (when applicable), serena, github-mcp, exa |
