@@ -2,6 +2,12 @@
 description: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). DO NOT auto-invoke during normal development.
 name: documentation-writer
 tools: ['readFile', 'editFiles', 'createFile', 'textSearch', 'fileSearch', 'codebase']
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 || secrets.CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
 ---
 
 # Documentation Writer
