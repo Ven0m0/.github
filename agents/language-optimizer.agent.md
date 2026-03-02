@@ -4,7 +4,6 @@ description: 'Code optimization across Bash, Python, Rust. Safety, performance, 
 model: gpt-5.3-codex
 modelParameters:
   temperature: 0.35
-tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 mcp-servers:
   context7:
     type: http
