@@ -1,7 +1,7 @@
 ---
 name: git-expert
 description: 'Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control'
-model: claude-4-6-sonnet-latest
+model: claude-sonnet-4.6
 tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 
