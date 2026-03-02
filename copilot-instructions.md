@@ -1,264 +1,321 @@
 # GitHub Copilot Instructions
+> Organization-wide instructions for GitHub Copilot across all Ven0m0 repositories.
 
-> Organization-wide instructions for GitHub Copilot across all Ven0m0 repositories
-
-<HighLevelDetails>
-
-**Ven0m0** builds practical open source tools for developer workflows, platform engineering, automation, AI-assisted development.
-
-</HighLevelDetails>
-
+---
+## Organization Overview
+**Ven0m0** builds practical developer tools for automation, platform engineering, and AI-assisted development. This organization values:
 <Goals>
 
-- Readable, self-documenting code with explicit types, clear names
-- Fail fast with specific error messages; no silent failures
-- 80%+ test coverage; 95% for critical paths
-- Security by default: no secrets in code, environment variables for credentials
-- Conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`
-
+- **Readable, self-documenting code** with explicit types and clear names
+- **Fast failure** with specific error messages (no silent failures)
+- **High test coverage** (80%+ minimum, 95%+ for critical paths)
+- **Security by default** (no secrets in code, environment variables for credentials)
+- **Conventional commits** (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`)
 </Goals>
 
-<Limitations>
-
-- No hardcoded secrets, API keys, or credentials
-- No generic error handling (catch specific exceptions)
-- No `any` types without justification
-- No code generation without matching tests
-- No undocumented public APIs
-
-</Limitations>
-
 ---
+## Core Development Commands
+<Commands>
 
-## Auto-Orchestrator Behavior
-
-You are an intelligent Meta-Orchestrator. Analyze, orchestrate, execute autonomously — no explicit `@agent` or `/command` calls needed.
-
-### Selective Reading Rule
-
-> **Never load all skill/instruction files into context.**
-> Determine domain first, then read ONLY relevant files (MAX 3).
-
-**3-Step Process:**
-1. ANALYZE — What domain is this? (Frontend? Backend? Debug?)
-2. SELECT — Pick 1–3 most relevant skills
-3. READ — Use `read_file` on ONLY those skill files, then apply them
-
-**Domain → Skill Mapping:**
-
-| Task Domain | Read These Paths |
-|-------------|-----------------|
-| UI/React/CSS | `.github/skills/frontend-design/SKILL.md`, `.github/skills/react-patterns/SKILL.md` |
-| API/Server | `.github/skills/api-patterns/SKILL.md`, `.github/skills/nodejs-best-practices/SKILL.md` |
-| Database/Schema | `.github/skills/database-design/SKILL.md`, `.github/skills/prisma-expert/SKILL.md` |
-| Bugs/Errors | `.github/prompts/debug.prompt.md` |
-| Tests | `.github/skills/testing-patterns/SKILL.md`, `.github/skills/tdd-workflow/SKILL.md` |
-| Security | `.github/skills/vulnerability-scanner/SKILL.md` |
-| Deploy/Docker | `.github/skills/docker-expert/SKILL.md`, `.github/skills/deployment-procedures/SKILL.md` |
-| Mobile | `.github/skills/mobile-design/SKILL.md` |
-| Architecture | `.github/skills/architecture/SKILL.md`, `.github/skills/app-builder/SKILL.md` |
-
-### Mandatory Output Format
-
-Every response must start with:
-
+### JavaScript/TypeScript (Node.js with bun)
+```bash
+# Setup & dependencies
+bun install            # Install dependencies
+# Development
+bun run dev            # Start dev server
+bun run build          # Build for production
+bun run test           # Run tests
+bun run test:watch    # Watch tests
+# Quality
+bun run lint           # Lint code
+bun run format         # Format code
+bun run type-check     # TypeScript strict check
+bun run build && bun test --coverage
 ```
-TASK: [One-line description]
-DOMAIN: [FRONTEND | BACKEND | FULLSTACK | DEVOPS | SECURITY | TESTING | MOBILE | DATABASE | PLANNING | DEBUG | DOCS]
-COMPLEXITY: [SIMPLE | MEDIUM | COMPLEX]
-CLARITY: [1-10] → [Action: Proceed | Clarify]
+### Python (with uv)
+```bash
+# Setup & dependencies
+uv sync                # Install dependencies
+uv lock                # Update lock file
+uv audit               # Security audit
+# Development
+uv run python script.py # Run scripts
+uv run pytest          # Run tests
+uv run pytest -v --cov # Tests with coverage
+# Quality
+ruff check --fix       # Lint and fix
+ruff format            # Format
+mypy --strict          # Type check
+uv run pytest -v --cov && uv audit
 ```
-
-- Clarity < 8: Open with "**Clarification needed:**"
-- Clarity ≥ 8: Proceed with "**Approach:**" → "**Execution:**"
-- Always close with "**Verification:**"
-
-### Request Lifecycle
-
-**Phase 1 — Classify:** FRONTEND / BACKEND / FULLSTACK / DEVOPS / SECURITY / TESTING / MOBILE / DATABASE / PLANNING / DEBUG / DOCS
-
-**Phase 2 — Clarify (if needed):** Ask max 3 targeted questions. Format:
+### Bash/Shell Scripts
+```bash
+# Validation / Formatting
+shellcheck -s bash -P "SCRIPTDIR" -x -a -o all -S style -f diff script.sh | patch -Np1   # Format with shellcheck
+shfmt -i 2 -bn -ci -s -ln bash -w script.sh                                              # Format with shfmt
+shellharden --replace script.sh                                                          # Format with shellharden
 ```
-Quick clarification needed:
-1. [question]
-Or I can proceed with assumption: [assumption]
-```
-
-**Phase 3 — Execute:**
-```
-ANALYSIS: [codebase/problem analysis]
-APPROACH: [step-by-step plan]
-EXECUTION: [code changes]
-VERIFICATION: [how to verify]
-```
-
-**Phase 4 — Prove:** Show result/expected output, test commands, what changed, why, next steps.
-
----
-
-## Language Standards
-
-### Python
-
-Tech: Python 3.14+ | `uv` (packages) | `ruff` (lint+format) | `basedpyright` (types) | `pytest`
-
-```python
-def process_data(items: list[str], limit: int = 10) -> dict[str, int]:
-    """Process items and return counts."""
-    ...
-```
-
-- Google-style docstrings, type annotations mandatory
-- `dataclasses` or `pydantic` for data structures
-- Layout: `src/package_name/`, `tests/{unit,integration}/`, `pyproject.toml`
-
-### TypeScript/JavaScript
-
-Tech: Node.js 25+ ESM | `bun` (if `bun.lockb`/`bunfig.toml`) else `pnpm` | `biome` | `vitest`
-
-```typescript
-interface UserConfig {
-  name: string;
-  timeout?: number;
-}
-export function createClient(config: UserConfig): Client { ... }
-```
-
-- Strict mode, `interface` over `type` for objects, no `enum` (use `as const`)
-- Layout: `src/`, `tests/`, `package.json`, `tsconfig.json`
-
 ### Rust
-
-Tech: Latest stable | `clippy` pedantic | `cargo-deny` | `thiserror`
-
-```rust
-pub fn process(input: &str) -> Result<Output, Error> { ... }
+```bash
+cargo build   # Compile
+cargo test    # Run tests
+cargo fmt     # Format
+cargo clippy  # Lint
+cargo audit   # Security audit
 ```
-
-- Document all public items with examples
-- No `.unwrap()` in production
-
-### Java
-
-Tech: jdk-temurin-25 (or latest) | Spring Boot 3.3+ | Gradle Kotlin DSL | Checkstyle Google
-
-- Constructor injection, Records for DTOs
+</Commands>
 
 ---
+## Code Standards by Language
+### JavaScript/TypeScript
+- **TypeScript strict mode** (`tsconfig.json`: `"strict": true`, `"noImplicitAny": true`)
+- **Types first**: Interfaces over type aliases; type guards instead of `as` casts
+- **Naming**: Descriptive over abbreviated; functions < 50 lines
+- **React**: Functional components with hooks; stable `key` props (not indexes)
+- **Imports**: `stdlib` > `third-party` > `local` (alphabetical within groups)
+- **Tool**: `biome` for formatting/linting; `typescript --strict`; `vitest` for tests
+**Example**:
+```typescript
+interface User {
+  id: string;
+  name: string;
+  roles?: string[];
+}
+function isString(value: unknown): value is string {
+  return typeof value === "string";
+}
+```
+### Python
+- **PEP 8 + PEP 257 (docstrings) + PEP 484 (type hints)**
+- **Type annotations**: Full coverage; no `Any` without justification
+- **Modern generics**: `list[str]` not `List[str]`; `str | None` not `Optional[str]`
+- **Patterns**: Generators over lists; `pathlib` over `os.path`; f-strings
+- **Tool**: `ruff` for lint/format; `mypy --strict` for types; `pytest` for tests
+**Example**:
+```python
+from typing import Protocol, TypeVar
+Entity = TypeVar("Entity")
+class Repository(Protocol):
+    def get(self, id: str) -> Entity | None: ...
+    def save(self, entity: Entity) -> None: ...
+def stream_file(path: str) -> Iterator[str]:
+    with open(path) as f:
+        yield from f
+```
+### Bash/Shell
+- **Safety first**: `set -euo pipefail`, quote variables, `[[ ]]` not `[ ]`
+- **Performance**: Minimize forks, use builtins, batch operations
+- **Portability**: POSIX where possible; document OS requirements
+- **Clarity**: Descriptive names, explain non-obvious logic
+- **Tool**: `shellcheck`, `shfmt`, `shellharden`, use `rg`/`fd` over `grep`/`find`
 
-## Code Standards (All Languages)
+**Template**:
+```bash
+#!/usr/bin/env bash
+set -euo pipefail; shopt -s nullglob globstar
+IFS=$'\n\t' LC_ALL=C
+has(){ command -v -- "$1" &>/dev/null; }
+die(){ printf '%s\n' "$1" >&2; exit "${2:-1}"; }
+main(){
+  # Implementation
+}
+main "$@"
+```
+### Rust
+- **Idiomatic patterns**: Follow Rust conventions
+- **Ownership**: Owned by default; borrow when needed
+- **Tool**: `cargo fmt`, `cargo clippy`, `cargo audit`
 
-**Quality:** SRP, DRY, KISS — simplest working solution.
-
-**Naming:** `userCount` not `n`; `getUserById()` verb+noun; `isActive`/`hasPermission` for booleans; `SCREAMING_SNAKE_CASE` for constants.
-
-**Functions:** Max 20 lines, max 3 args, no unexpected side effects.
-
-**TypeScript:** `const` over `let`, no `var`, async/await, destructure for readability.
-
-**Error handling:** Validate inputs, try/catch, meaningful messages.
-
+---
+## Testing Standards
 <Standards>
 
-```python
-msg = f"Failed to process {item}: {reason}"
-raise ValueError(msg)
-```
-
-```go
-return fmt.Errorf("failed to fetch user %s: %w", id, err)
-```
-
-**Testing:** Table-driven, mock externals, cover edge cases, error paths.
-
-**Config:** Env vars for runtime, YAML/TOML for complex config, validate at startup.
-
-**Imports:** stdlib > third-party > local (alphabetical within groups).
+### Coverage Requirements
+- **80% minimum** for all code
+- **95% minimum** for critical paths (auth, payment, core logic)
+- **Unit tests** for logic isolation
+- **Integration tests** for component interaction
+- **E2E tests** for critical workflows (where applicable)
 </Standards>
 
+### Running Tests
+```bash
+# JavaScript/TypeScript
+bun run test --coverage      # with coverage report
+bun run test:watch           # watch mode
+# Python
+uv run pytest -v --cov       # verbose with coverage
+uv run pytest -v --cov --cov-report=html
+# Rust
+cargo test                   # all tests
+cargo test --doc             # doc tests
+```
+
+---
+## Security Standards
 <Security>
 
-1. Environment variables or secret managers for credentials
-2. Dependabot enabled, review CVEs
-3. Never use SHA-pinned Actions; use major version tags (e.g. `actions/checkout@v4`)
-4. GITHUB_TOKEN with least privilege
-5. Pre-commit hooks via `prek` with gitleaks
+### Code Security
+- **No hardcoded secrets**: Use environment variables, GitHub Secrets
+- **Input validation**: Validate at system boundaries (user input, external APIs)
+- **Dependency audit**: `uv audit` (Python), `bun audit` (JavaScript)
+- **No generic error handling**: Catch specific exceptions; include context
+- **No code generation without matching tests**
+### CI/CD Security
+- **Action pinning**: Use version tags (e.g., `actions/checkout@v6`), not branches
+- **Permissions**: Explicit `permissions:` block, `contents: read` default
+- **OIDC**: Short-lived credentials over static secrets
+- **Scanning**: CodeQL, dependency review, secret scanning enabled
+- **Inputs**: Validate all `workflow_dispatch` inputs
 </Security>
 
 ---
+## Git & Commit Conventions
+### Branch Strategy
+- **Feature branches**: `feature/description` or `fix/description`
+- **Base**: Always branch from `main`
+- **Naming**: Lowercase, hyphens, descriptive
 
-## CI/CD
+### Commit Format
+```
+<type>(<scope>): <subject>
+<body (optional)>
+```
+**Types**:
+- `feat` — New feature
+- `fix` — Bug fix
+- `docs` — Documentation
+- `style` — Formatting (no behavior change)
+- `refactor` — Code restructuring (no behavior change)
+- `perf` — Performance improvement
+- `test` — Test changes
+- `chore` — Maintenance, dependencies
 
-Reusable workflows in `.github/workflows/`: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-automerge.yml`, `git-maintenance.yml`, `img-opt.yml`
+**Examples**:
+```
+feat(agents): add debug agent for application troubleshooting
+fix(workflows): correct Python test coverage threshold detection
+docs(README): add quick-start installation section
+refactor(skills): consolidate code-maintenance patterns
+```
+### Pull Requests
+- **Title**: Same format as commit
+- **Description**: What + Why + How to test
+- **Size**: ~400 lines of code or less (split large PRs)
+- **Approval**: Minimum 1 maintainer review
+- **Merge**: Squash commits or rebase-merge for clean history
+---
+## Tooling Preferences
+<Tooling>
+
+### All Platforms (Windows/Mac/Linux)
+| Task | Preferred | Fallback |
+|------|-----------|----------|
+| Search | `rg` (ripgrep) | `grep` |
+| Find files | `fd` | `find` |
+| JSON/YAML | `jq`/`yq` | - |
+| Stream edit | `sd` | `sed` |
+| Download | `aria2c` | `curl` |
+| List | `eza` | `ls` |
+| View | `bat` | `cat` |
+### Language-Specific
+| Language | Dev Tool | Package Mgr | Linter | Formatter | Type Check | Test |
+|----------|----------|------------|--------|-----------|------------|------|
+| **JavaScript/TypeScript** | `bun` (runner) | `bun` | `biome` | `biome` | `typescript --strict` | `vitest` |
+| **Python** | `uv run` | `uv` | `ruff` | `ruff format` | `mypy --strict` | `pytest` |
+| **Bash** | - | - | `shellcheck` | `shfmt` | - | - |
+| **Rust** | `cargo` | `cargo` | `clippy` | `cargo fmt` | - | `cargo test` |
+</tooling>
+
+---
+## Code Review Checklist
+
+<code-review>
+  
+### Before Submitting a PR
+- [ ] Code runs and builds without errors
+- [ ] Tests pass: `80%+ coverage minimum`
+- [ ] Linter passes: `ruff check`, `biome check`, `shellcheck`, `clippy`
+- [ ] Types pass: `TypeScript --strict`, `mypy --strict`
+- [ ] No hardcoded secrets or sensitive data
+- [ ] Commit messages follow convention
+- [ ] Documentation updated (README, API docs, CHANGELOG if applicable)
+### When Reviewing
+1. **Correctness**: Does it do what it claims?
+2. **Security**: No secrets, input validation, dependency audit
+3. **Tests**: Adequate coverage; edge cases handled
+4. **Performance**: No O(n²) where O(n) works; caching for repeated calls
+5. **Clarity**: Readable, self-documenting, follows language standards
+6. **Maintainability**: Not over-engineered; no premature optimization
+</code-review>
+
+---
+## Common Workflows
+### New Feature
+1. **Plan**: Read relevant instruction files
+2. **Branch**: `git checkout -b feature/name`
+3. **Implement**: Small commits; pass linters and tests
+4. **Test**: 80%+ coverage; all edge cases
+5. **Document**: Update README, API docs as needed
+6. **PR**: Submit for review; wait for approval
+7. **Merge**: Squash commits; use conventional message
+### Bug Fix
+1. **Understand**: Reproduce the bug; write failing test
+2. **Fix**: Implement fix; test passes
+3. **Verify**: No regressions; affected tests updated
+4. **Commit**: `fix(scope): description`
+5. **PR**: Include reproduction steps and test output
+### Dependency Update
+- **Automated**: Dependabot PRs (auto-merge on success)
+- **Manual**: `uv lock` (Python), `bun update` (Node)
+- **Audit**: Always run `uv audit` / `bun audit` after updates
+- **Test**: Full test suite must pass
+
+---
+## Domain-to-Skill Mapping
+When working on a task, read the relevant skill module(s) first:
+| Task Domain | Relevant Skills |
+|-------------|-----------------|
+| Feature building | `app-builder/`, `agent-patterns/` |
+| Code quality | `code-maintenance/`, `code-review/`, `clean-code/` |
+| Testing | `lint-and-validate/` |
+| Frontend/React | `nextjs-best-practices/`, `nodejs-best-practices/` |
+| API/Backend | `nodejs-best-practices/` |
+| Docker/Deploy | `docker-expert/`, `workflow-development/` |
+| Git operations | `gh-cli/` |
+| Documentation | `docs-writer/`, `documentation-templates/` |
+| Performance | App architecture review; profile first |
+| Optimization | `language-optimization/` |
+
+**Rule**: Determine domain first → read 1–3 most relevant skill files → apply patterns.
 
 ---
 
-## Quick Actions
+## Limitations & Rules
 
-| Phrase | Behavior |
-|--------|----------|
-| "fix this" | Analyze error → apply fix → verify |
-| "add feature X" | Plan → implement → test |
-| "optimize" | Profile → bottlenecks → improve |
-| "refactor" | Identify issues → restructure → maintain behavior |
-| "test this" | Write appropriate tests |
-| "explain" | Clear explanation with examples |
+<Limitations>
 
-## Available Commands
-
-`/create` · `/enhance` · `/debug` · `/test` · `/deploy` · `/plan` · `/preview` · `/status` · `/brainstorm` · `/orchestrate`
-
-## Available Agents (16)
-
-`orchestrator` · `frontend-specialist` · `backend-specialist` · `database-architect` · `test-engineer` · `security-auditor` · `penetration-tester` · `devops-engineer` · `mobile-developer` · `game-developer` · `debugger` · `performance-optimizer` · `project-planner` · `documentation-writer` · `seo-specialist` · `explorer-agent`
-
-## Auto-Apply Instructions
-
-| Pattern | Instruction File |
-|---------|-----------------|
-| `*.ts, *.tsx, *.js, *.jsx` | `typescript.instructions.md` |
-| `*.css, *.scss, *.tsx, *.jsx` | `frontend.instructions.md` |
-| `api/**, server/**, routes/**` | `backend.instructions.md` |
-| `*.test.*, *.spec.*, __tests__/**` | `testing.instructions.md` |
-| `*.py` | `python.instructions.md` |
-| `*.prisma, prisma/**` | `prisma.instructions.md` |
-| `Dockerfile*, docker-compose*` | `docker.instructions.md` |
-| `*.md, docs/**` | `documentation.instructions.md` |
-| `*.swift, *.kt, *.dart` | `mobile.instructions.md` |
-| `workflows/**` | `devops.instructions.md` |
-| `api/**, auth/**, *.env*` | `security.instructions.md` |
-| `*.css, *.scss, *.tsx, *.jsx, *.vue, *.svelte` | `ui-ux-pro-max.instructions.md` |
-
-## Prompt Commands
-
-| Command | Prompt File |
-|---------|-------------|
-| `/brainstorm` | `brainstorm.prompt.md` |
-| `/create` | `create.prompt.md` |
-| `/debug` | `debug.prompt.md` |
-| `/deploy` | `deploy.prompt.md` |
-| `/enhance` | `enhance.prompt.md` |
-| `/orchestrate` | `orchestrate.prompt.md` |
-| `/plan` | `plan.prompt.md` |
-| `/preview` | `preview.prompt.md` |
-| `/status` | `status.prompt.md` |
-| `/test` | `test.prompt.md` |
+- **No hardcoded secrets**: Never commit API keys, passwords, tokens
+- **No `any` types**: Use type guards or explicit typing instead
+- **No generic catch**: Specific exceptions with context
+- **No code generation without tests**: Every generated line needs a test
+- **No undocumented public APIs**: Docstrings required for public methods
+- **No skip/xdescribe**: Don't commit skipped tests
+- **No TODO comments**: Create issues instead
+- **No large PRs**: Split into logical, reviewable chunks (< 400 LOC)
+</Limitations>
 
 ---
+## Quick Help
+**Something not clear?** Check these resources:
+- **Language standards**: `instructions/<language>.instructions.md`
+- **Domain knowledge**: `skills/<domain>/SKILL.md`
+- **CI/CD patterns**: `instructions/cicd-standards.instructions.md`
+- **Code review rubric**: `instructions/quality-standards.instructions.md`
+- **Git workflows**: `skills/gh-cli/SKILL.md`
+- **All instructions**: `instructions/INDEX.md`
 
-## AI Assistant Integration
-
-| File | Contents |
-|------|----------|
-| `AGENTS.md` / `CLAUDE.md` | Overview, structure, build/test commands, style requirements |
-| `.vscode/mcp.json` | context7, filesystem, memory (when applicable), serena, github-mcp, exa |
-
-<WhatToAdd>
-
-When generating code:
-1. Match existing style in surrounding code
-2. Include tests alongside implementation
-3. Add docstrings/comments for complex logic
-4. Include proper error handling
-5. Account for null, empty, boundary conditions
-</WhatToAdd>
+---
+**Last Updated**: March 2026
+**Organization**: Ven0m0
+**See Also**: `AGENTS.md`, `CONTRIBUTING.md`

@@ -1,226 +1,557 @@
 # Ven0m0 .github Repository Guide
 
-Organization-wide default community health files, Copilot instructions, AI agents, and development standards for all Ven0m0 repositories.
+Organization-wide defaults: community health files, Copilot instructions, AI agents, reusable workflows, and development standards for all Ven0m0 repositories.
 
-## Directory Structure
+---
+
+## Project Overview
+
+**Ven0m0** delivers practical developer tools for automation, platform engineering, and AI-assisted development. This `.github` repository provides:
+
+- **18 specialized autonomous agents** for planning, code optimization, CI/CD, documentation, debugging
+- **25 reusable skill modules** (patterns, best practices, templates)
+- **37 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
+- **Reusable GitHub Actions workflows** for multi-language CI
+- **Copilot instruction files** (org-wide + file-type scoped)
+
+---
+
+## Repository Structure
 
 ```
 .github/
-  agents/            # 12 specialized AI agents
-  skills/            # 10 reusable skill modules
-  instructions/      # 17 Copilot instruction files
-  hooks/             # Pre-commit hooks
+  agents/            # 18 autonomous AI agents
+  skills/            # 25 reusable knowledge modules
+  instructions/      # 37 language/domain standards
+  hooks/             # Git pre-commit hooks
   prompts/           # Reusable prompt templates
-  .gemini/           # Google Gemini configuration
-  .github/workflows/ # Reusable GitHub Actions workflows
+  .gemini/           # Google Gemini commands and config
+  .vscode/           # VS Code settings (MCP, extensions)
+  .github/workflows/ # Reusable CI/CD workflows
+  actions/           # Custom GitHub Actions (setup-bun, setup-node-pnpm, setup-uv)
   AGENTS.md          # This file
-  CLAUDE.md          # Symlink to AGENTS.md
-  copilot-instructions.md
+  CLAUDE.md          # Symlink → AGENTS.md
+  GEMINI.md          # Symlink → AGENTS.md
+  copilot-instructions.md       # Organization-wide Copilot instructions
+  README.md          # Quick start for inherited repos
+  CONTRIBUTING.md    # Contribution guidelines
+  FUNDING.yml        # Sponsorship info
+  dependabot.yml     # Dependency update automation
+  .markdownlint.json # Markdown linting rules
+  .megalinter.yml    # MegaLinter configuration
+  .yamllint.yml      # YAML validation
+  .editorconfig      # Editor settings (indent, line endings)
+  actionlint.yaml    # GitHub Actions linting
+  biome.json         # JavaScript/TypeScript formatting
+  bunfig.toml        # Bun package manager config
+  renovate.json      # Renovate dependency updates
+  yamlfmt.yml        # YAML formatter config
+  repo-command.yml   # Issue/PR automation rules
 ```
 
-## Agents
-
-The `agents/` directory contains 12 specialized autonomous agents:
-
-### Workflow Orchestration
-
-| Agent | Purpose |
-|-------|---------|
-| `multi-agent-workflow.agent.md` | Multi-agent workflow: planning, execution, refactoring, cleanup, review |
-
-### Planning & Architecture
-
-| Agent | Purpose |
-|-------|---------|
-| `strategic-planner.agent.md` | PRDs to implementation plans (opus) |
-| `task-researcher.agent.md` | Deep research for task planning |
-
-### Code Optimization
-
-| Agent | Purpose |
-|-------|---------|
-| `language-optimizer.agent.md` | Bash, Python, Rust optimization and refactoring (language-branching) |
-
-### Development & Engineering
-
-| Agent | Purpose |
-|-------|---------|
-| `git.agent.md` | Git & GitHub CLI workflows |
-| `workflow-engineer.agent.md` | GitHub Actions and CI/CD |
-| `github-issue-fixer.agent.md` | Issue triage and resolution |
-
-### Repository & Knowledge Management
-
-| Agent | Purpose |
-|-------|---------|
-| `codebase-maintainer.agent.md` | Cleanup and indexing (janitor + repo-index consolidated) |
-| `profile-maintainer.agent.md` | GitHub profile README management |
-
-### Quality & Analysis
-
-| Agent | Purpose |
-|-------|---------|
-| `critical-thinking.agent.md` | Deep analysis and questioning |
-| `context7.agent.md` | Documentation-powered assistant (Context7) |
-| `ai-config-expert.agent.md` | AI config: Copilot, CLAUDE.md, AGENTS.md, prompts |
-| `arch-linux-expert.agent.md` | Arch Linux specialist |
-
-### Agent Metadata
-
-```yaml
 ---
-name: agent-name
-description: Brief description
-model: claude-4-6-[sonnet|opus|haiku]-latest
-tools: [codebase, read, write, edit, search, ...]
+
+## AI Agents (18)
+
+### Orchestration & Planning
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Multi-Agent Workflow Orchestrator** | `multi-agent-workflow.agent.md` | Orchestrates planning → execution → refactoring → cleanup → review cycles for complex development tasks |
+| **Strategic Planner** | `strategic-planner.agent.md` | PRDs to architecture to implementation plans; actionable task breakdown; opus model |
+| **Task Researcher** | `task-researcher.agent.md` | Deep analysis of codebases, external docs, patterns; writes findings for task planning |
+
+### Code Development & Optimization
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Language Optimizer** | `language-optimizer.agent.md` | Code optimization: Bash, Python, Rust; safety, performance, refactoring; auto-detects language |
+| **Frontend Specialist** | `frontend-specialist.agent.md` | React/Next.js: components, styling, state management, responsive design, performance |
+| **App Optimizer** | `app-optimizer.agent.md` | Performance review: code, architecture, database design; optimization recommendations |
+
+### Git & CI/CD
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Git Expert** | `git.agent.md` | Version control: branching, commits, conflicts, GitHub CLI, safe operations |
+| **Workflow Engineer** | `workflow-engineer.agent.md` | GitHub Actions: secure CI/CD, OIDC auth, reusable patterns, debugging |
+| **GitHub Issue Fixer** | `github-issue-fixer.agent.md` | Issue triage and resolution; analyzes problems, implements fixes, creates PRs |
+
+### Documentation & Analysis
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Documentation Writer** | `doc-writer.agent.md` | Technical docs: README, API docs, changelog; use only on explicit request |
+| **Critical Thinking** | `critical-thinking.agent.md` | Challenge assumptions; root cause analysis via repeated questioning; no code edits |
+| **Context7 Expert** | `context7.agent.md` | Documentation-powered: latest library versions, correct syntax via Context7 MCP |
+| **AI Config Expert** | `ai-config-expert.agent.md` | Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs |
+
+### Repository & Maintenance
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Codebase Maintainer** | `codebase-maintainer.agent.md` | Cleanup: remove dead code, tech debt, bloat; generates PROJECT_INDEX for context efficiency |
+| **Profile Maintainer** | `profile-maintainer.agent.md` | Maintains GitHub profile README with activity insights and repo significance scoring |
+| **Repo Index** | `repo-index.agent.md` | Generates token-efficient codebase briefing and indexing |
+
+### Specialized Domains
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Arch Linux Expert** | `arch-linux-expert.agent.md` | Arch Linux: pacman workflows, rolling-release maintenance, systemd administration |
+| **Debug** | `debug.agent.md` | Application debugging; find and fix bugs with testing verification |
+
 ---
-```
 
-- **Sonnet** (0.3-0.4 temp): Code optimization, bug fixes, safe refactoring
-- **Opus** (0.6-0.7 temp): Planning, architecture, complex analysis
+## Skills (25)
 
-## Skills
+Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills based on task domain.
 
-The `skills/` directory contains 10 reusable knowledge modules:
+### Architecture & Planning
+- `prd/` — Product requirements document best practices
+- `agent-patterns/` — Agent workflow patterns and templates
+- `app-builder/` — Full-stack app scaffolding with tech-stack detection
+- `brainstorming/` — Dynamic questioning for requirements elicitation
+- `parallel-agents/` — Multi-agent coordination patterns
 
-| Skill | Purpose |
-|-------|---------|
-| `gh-cli/` | GitHub CLI reference |
-| `prd/` | PRD best practices |
-| `ai-tuning/` | AI config optimization + CLAUDE.md condensation |
-| `code-maintenance/` | Refactoring and cleanup (refactor + codebase-cleanup consolidated) |
-| `workflow-development/` | GitHub Actions workflows |
-| `agent-patterns/` | Agent workflow patterns and templates |
-| `language-optimization/` | Common optimization patterns (Bash, Python, Rust) |
-| `mcp-development/` | MCP server development (Python, TypeScript) |
-| `code-review/` | Structured review rubric for diffs/PRs |
-| `vibe-coding/` | Fast local web app prototyping |
+### Code Quality & Maintenance
+- `code-maintenance/` — Refactoring, cleanup, tech debt removal
+- `code-review/` — Structured review rubric for diffs/PRs
+- `clean-code/` — Readability, maintainability, SOLID principles
+- `language-optimization/` — Bash, Python, Rust optimization patterns
+- `lint-and-validate/` — Linting, formatting, validation automation
 
-## Instructions
+### Frontend & UI
+- `nextjs-best-practices/` — Next.js patterns and performance
+- `nodejs-best-practices/` — Node.js architecture and patterns
+- `docker-expert/` — Docker, containerization, Dockerfile best practices
+- `migration/` — Component and architecture migration patterns
 
-Organized in `instructions/` - scoped by file type and domain. See `instructions/INDEX.md` for full navigation.
+### Specialization
+- `mcp-development/` — Model Context Protocol server development (Python, TypeScript)
+- `mcp-builder/` — Building custom MCP integrations
+- `nestjs-expert/` — NestJS framework patterns
+- `docs-writer/` — Documentation templates and standards
+- `documentation-templates/` — Reusable doc structures
+- `gh-cli/` — GitHub CLI reference and workflows
+- `ai-tuning/` — AI config optimization, token efficiency
+- `vibe-coding/` — Fast local web app prototyping
+- `fix-issue/` — Issue diagnosis and resolution patterns
+- `pr-review/` — Pull request review templates and checklists
+- `workflow-development/` — GitHub Actions workflow patterns
+
+---
+
+## Instructions (37)
+
+Scoped by language and domain in `instructions/`. Copilot automatically applies based on file type via `applyTo` patterns.
 
 ### Language Standards
 
-| File | Applies To |
-|------|------------|
-| `bash.instructions.md` | `*.sh`, `*.bash` |
-| `python.instructions.md` | `*.py` |
-| `javascript.instructions.md` | `*.js`, `*.ts`, `*.tsx`, `*.jsx` |
-| `rust.instructions.md` | `*.rs` |
-| `powershell.instructions.md` | `*.ps1`, `*.psm1` |
-| `cmd.instructions.md` | `*.bat`, `*.cmd` |
-| `autohotkey.instructions.md` | `*.ahk` |
+| Language | File | Applies To |
+|----------|------|-----------|
+| **Bash/Shell** | `bash.instructions.md` | `*.sh`, `*.bash` |
+| **Python** | `python.instructions.md` | `*.py`, `pyproject.toml` |
+| **JavaScript/TypeScript** | `javascript.instructions.md` | `*.js`, `*.ts`, `*.jsx`, `*.tsx`, `*.mjs` |
+| **Rust** | `rust.instructions.md` | `*.rs` |
+| **Go** | `go.instructions.md` | `*.go` |
+| **Java** | `java.instructions.md` | `*.java` |
+| **Kotlin** | `kotlin.instructions.md` | `*.kt`, `*.kts` |
+| **C++** | `cpp.instructions.md` | `*.cpp`, `*.cc`, `*.cxx`, `*.h` |
+| **PowerShell** | `powershell.instructions.md` | `*.ps1`, `*.psm1` |
+| **cmd/Batch** | `cmd.instructions.md` | `*.bat`, `*.cmd` |
+| **AutoHotkey** | `autohotkey.instructions.md` | `*.ahk` |
 
-### Build, CI/CD & Quality
+### Build & CI/CD
+| Topic | File | Applies To |
+|-------|------|-----------|
+| **Makefile** | `makefile.instructions.md` | `Makefile`, `*.mk` |
+| **CI/CD Standards** | `cicd-standards.instructions.md` | `.github/workflows/*.yml` |
+| **Docker** | `docker.instructions.md` | `Dockerfile`, `docker-compose.yml` |
+| **DevOps** | `devops.instructions.md` | Infrastructure, deployment, monitoring |
 
-| File | Applies To |
-|------|------------|
-| `makefile.instructions.md` | `Makefile`, `*.mk` |
-| `cicd-standards.instructions.md` | `.github/workflows/*.yml` |
-| `quality-standards.instructions.md` | All code files |
+### Code Quality & Standards
+| Topic | File | Description |
+|-------|------|-------------|
+| **Quality Standards** | `quality-standards.instructions.md` | Code review, metrics, performance gates |
+| **Meta-Authoring** | `meta-authoring.instructions.md` | Agents, skills, instructions, prompts |
+| **AI Tuning** | `ai-tuning.instructions.md` | CLAUDE.md compression, token efficiency |
+| **Token Efficiency** | `token-efficient.instructions.md` | Context optimization |
+| **Memory Bank** | `memory-bank.instructions.md` | Project context storage |
 
-### AI & Tooling
+### Specialization & Domain
+| Topic | File | Purpose |
+|-------|------|---------|
+| **Frontend** | `frontend.instructions.md` | UI/UX patterns, component design |
+| **Backend** | `backend.instructions.md` | API design, database, services |
+| **Documentation** | `documentation.instructions.md` | Technical writing standards |
+| **Markdown** | `markdown.instructions.md` | Markdown syntax and conventions |
+| **Code Review** | `code-review.instructions.md` | Review process and rubric |
+| **Context Engineering** | `context-engineering.instructions.md` | Effective context management |
+| **Arch Linux** | `arch-linux.instructions.md` | Arch Linux specific workflows |
+| **Flutter** | `flutter.instructions.md` | Flutter/Dart development |
+| **Performance** | `performance.instructions.md` | Profiling, optimization, benchmarking |
+| **HTML/CSS/Design** | `html-css-style-color-guide.instructions.md` | Markup, styling, accessibility |
+| **MCP Development** | `python-mcp-server.instructions.md` | Building MCP servers in Python |
+| **Prompt Engineering** | `prompt.instructions.md` | Effective prompt design |
+| **Update Docs** | `update-docs-on-code-change.instructions.md` | Keep docs in sync with code |
+| **Taming Copilot** | `taming-copilot.instructions.md` | Copilot behavior tuning |
+| **UI/UX Pro** | `ui-ux-pro-max.instructions.md` | Advanced design patterns |
+| **File Reading** | `file-reading-optimization.instructions.md` | Efficient file analysis |
 
-| File | Applies To |
-|------|------------|
-| `meta-authoring.instructions.md` | Agents, skills, instructions, prompts |
-| `ai-tuning.instructions.md` | CLAUDE.md, copilot-instructions.md, output compression |
+---
 
 ## Development Workflows
 
 ### Git Workflow
 
-```bash
-git checkout -b feature/description
-# Make focused changes
-git commit -m "feat: add new agent"
-git push -u origin feature/description
-gh pr create --title "Feature: ..." --body "..."
-```
+1. **Create feature branch** from `main`:
+   ```bash
+   git checkout -b feature/description
+   ```
+
+2. **Make focused changes** with meaningful commits:
+   ```bash
+   git commit -m "feat(scope): description"
+   ```
+
+3. **Push and create PR**:
+   ```bash
+   git push -u origin feature/description
+   gh pr create --title "Feature: ..." --body "..."
+   ```
+
+4. **Merge after approval**:
+   ```bash
+   git merge --squash feature/description  # or rebase-merge for history
+   git push origin main
+   ```
 
 ### Conventional Commits
 
 Format: `<type>(<scope>): <subject>`
 
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`
+**Types**: `feat` (new), `fix` (bug), `docs` (docs), `style` (format), `refactor` (structure), `perf` (speed), `test` (tests), `chore` (maintenance)
+
+**Examples**:
+- `feat(agents): add debug agent`
+- `fix(workflows): correct Python test coverage threshold`
+- `docs(README): update quick-start example`
+- `refactor(skills): consolidate code-maintenance patterns`
 
 ### Reusable Workflows
+
+All repositories can call these workflows from `.github/`:
 
 ```yaml
 jobs:
   lint:
     uses: Ven0m0/.github/.github/workflows/comprehensive-lint.yml@main
+
+  ci-typescript:
+    uses: Ven0m0/.github/.github/workflows/reusable-ci-typescript.yml@main
+    with:
+      node-version: '22'
+      coverage-threshold: 80
+
+  ci-python:
+    uses: Ven0m0/.github/.github/workflows/reusable-ci-python.yml@main
+    with:
+      python-version: '3.12'
+      coverage-threshold: 90
 ```
 
-Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-automerge.yml`, `img-opt.yml`, `git-maintenance.yml`, `release.yml`, `security.yml`
+**Available reusable workflows**:
+- `comprehensive-lint.yml` — Multi-language linting, shellharden, MegaLinter
+- `reusable-ci-typescript.yml` — TypeScript/Node CI (pnpm, vitest, coverage)
+- `reusable-ci-python.yml` — Python CI (uv, pytest, coverage)
+- `reusable-ci-bun.yml` — Bun runtime CI
+- `reusable-release.yml` — Version/release automation
+- `git-maintenance.yml` — Repository cleanup (branches, stale checks)
+- `dependabot-automerge.yml` — Auto-merge dependency updates
+- `security.yml` — SAST, CodeQL, dependency review
+- `img-opt.yml` — Image optimization
+- `uv-lock.yml` — Python lock file management
 
-## Key Conventions
+---
+
+## Development Conventions
 
 ### Code Standards
 
-- **KISS**: Simple over clever, readability first
-- **YAGNI**: Don't build before needed
-- **DRY**: Extract repeated logic
-- **Fail Fast**: Validate early, specific error messages
-- **Security**: No secrets in code, validate at boundaries
+**All Languages**:
+- **KISS** — Simple over clever; readability first
+- **YAGNI** — Don't build before needed
+- **DRY** — Extract repeated logic
+- **Fail Fast** — Validate early; specific error messages
+- **Security** — No hardcoded secrets; validate at boundaries
 
-### Tool Preferences
+**Test Coverage**: 80%+ minimum, 95%+ for critical paths
 
-| Task | Preferred | Fallback |
-|------|----------|----------|
-| Search | `rg` | `grep` |
-| Find Files | `fd` | `find` |
-| JSON/YAML | `jq`/`yq` | - |
-| Stream Edit | `sd` | `sed` |
-| Download | `aria2c` | `curl` |
-| Dev (JS) | `bun` | `npm` |
-| Dev (Python) | `uv` | `pip` |
-| Lint (Python) | `ruff` | `black` |
+**Type Safety**: Full type annotations; no `any` without justification
 
-### Communication Style
+**Error Handling**: Specific exceptions; no silent failures
 
-- No emojis in code/docs unless requested
-- No em dashes - use hyphens or words
-- Clear and direct, no ambiguous language
-- Review first, then propose changes
+### Tooling Preferences
+
+| Task | Preferred | Fallback | Windows |
+|------|-----------|----------|---------|
+| Search | `rg` | `grep` | `rg` |
+| Find files | `fd` | `find` | `fd` |
+| JSON/YAML | `jq`/`yq` | - | `jq`/`yq` |
+| Stream edit | `sd` | `sed` | `sd` |
+| Download | `aria2c` | `curl` | `aria2c` |
+| List | `eza` | `ls` | `eza` |
+| View | `bat` | `cat` | `bat` |
+| **JS/TS** | `bun` (runner) | `npm` | `bun` |
+| **JS/TS Dev** | `pnpm` (package) | `npm` | `pnpm` |
+| **Python** | `uv` (runner) | `pip` | `uv` |
+| **Lint (JS)** | `biome` | `eslint` | `biome` |
+| **Format (JS)** | `biome` | `prettier` | `biome` |
+| **Lint (Python)** | `ruff` | `black` | `ruff` |
+| **Type (Python)** | `mypy --strict` | - | `mypy` |
+| **Test (Python)** | `pytest` | `unittest` | `pytest` |
+| **Lint (Bash)** | `shellcheck` | - | `shellcheck` |
+| **Format (Bash)** | `shfmt` | - | `shfmt` |
+| **Harden (Bash)** | `shellharden` | - | `shellharden` |
+
+### Language-Specific
+
+**Bash**: `set -euo pipefail`, quote variables, `[[ ]]` not `[ ]`, use `rg`/`fd` over `grep`/`find`
+
+**Python**: PEP 8 + strict types, generators over lists, pathlib over os.path, f-strings, `uv` for package management
+
+**JavaScript/TypeScript**: Strict mode, interfaces over type aliases, type guards instead of casts, stable array keys, semantic HTML, accessibility
+
+**Rust**: idiomatic patterns, `cargo fmt`, `clippy` checks, owned by default
+
+---
+
+## Key Dependencies & Tooling
+
+### CI/CD Infrastructure
+- **GitHub Actions** — Workflows, reusable patterns, secrets, OIDC auth
+- **MegaLinter** — Comprehensive multi-language linting
+- **Dependabot** — Dependency updates with auto-merge
+- **Renovate** — Alternative dep automation (configured in renovate.json)
+
+### Language Runtimes
+- **Node.js** (v20, v22) — TypeScript/JavaScript execution
+- **Python** (3.12, 3.13) — Python execution and package management
+- **Rust** (stable) — Compiled language support
+- **Bun** — JavaScript runtime and bundler
+- **Go, Java, Kotlin, C++** — Additional language support
+
+### Linting & Formatting
+- **biome** — JavaScript/TypeScript (formatter + linter, zero-config)
+- **ruff** — Python (lint + format, extremely fast)
+- **shellcheck** — Bash analysis
+- **shfmt** — Bash formatting
+- **shellharden** — Bash hardening
+- **yamllint** — YAML validation
+- **markdownlint** — Markdown validation
+- **actionlint** — GitHub Actions linting
+
+### Testing & Coverage
+- **vitest** — JavaScript/TypeScript (Vite-native)
+- **jest** — JavaScript/TypeScript (compatible)
+- **pytest** — Python (comprehensive)
+- **Codecov** — Coverage tracking
+- **bun test** — Bun native testing
+
+### Package Management
+- **pnpm** — JavaScript/TypeScript (preferred, fast, strict)
+- **bun** — JavaScript runtime + package manager
+- **npm** — JavaScript fallback
+- **uv** — Python (ultra-fast, replaces pip + venv)
+
+### Type Checking
+- **TypeScript** — `--strict` mode
+- **mypy** — Python strict typing
+- **biome** — JavaScript/TypeScript static analysis
+
+---
+
+## Common Development Tasks
+
+### Feature Development
+
+1. **Understand**: Read relevant instruction files, skill modules
+2. **Plan**: Use Strategic Planner agent for architecture
+3. **Implement**: Follow language standards; small commits
+4. **Test**: 80%+ coverage minimum
+5. **Review**: Code Review instructions; pass linters
+6. **Merge**: Conventional commit; PR approval
+
+**Commands**:
+```bash
+# TypeScript/JavaScript
+bun install && bun run test --coverage && bun run build
+
+# Python
+uv sync && uv run pytest -v --cov && uv audit
+
+# Bash
+shellcheck script.sh && shfmt -i 2 -w script.sh && shellharden script.sh
+
+# Comprehensive
+bun run lint  # or: ruff check --fix && biome check --apply
+```
+
+### Bug Fixing
+
+1. **Use Debug agent** for application bugs
+2. **Use Language Optimizer** for code quality issues
+3. **Root cause**: Critical Thinking agent for analysis
+4. **Test-driven**: Write failing test first
+5. **Verify**: All tests pass; no regressions
+
+### Testing
+
+- **Unit tests**: Logic isolation; fast feedback
+- **Integration tests**: Component interaction
+- **E2E tests**: Full workflows (where applicable)
+- **Coverage**: 80%+ minimum; critical paths 95%+
+
+### Dependency Management
+
+- **Updates**: Dependabot (auto) or `renovate` (manual)
+- **Audit**: `uv audit` (Python), `npm audit` (JS)
+- **Lock files**: Commit `pnpm-lock.yaml`, `uv.lock` for reproducibility
+
+### Documentation
+
+1. **Update README** when adding features
+2. **Maintain CHANGELOG** (if applicable)
+3. **API docs**: Docstrings + generated docs
+4. **Architecture**: Diagrams for complex systems
+5. **Use Documentation Writer agent** on explicit request
+
+---
+
+## CI/CD Pipeline
+
+### Pull Request (PR)
+
+1. **Lint** — Comprehensive linting via MegaLinter
+2. **Type Check** — TypeScript strict, Python mypy
+3. **Test** — Unit + integration tests with coverage threshold
+4. **Build** — Compile/transpile; verify artifacts
+5. **Security** — CodeQL, dependency review, SAST
+6. **Review** — Human or automated review
+
+### Merge
+
+1. **All checks pass** — No red status
+2. **Coverage maintained** — No drops below threshold
+3. **Approval** — At least 1 maintainer approval
+4. **Squash/rebase-merge** — Clean history
+
+### Deployment (Repo-Specific)
+
+- Use `reusable-release.yml` for version bumping
+- Tag releases with semantic versioning
+- Build artifacts in CI (not locally)
+- Secrets via GitHub Secrets or OIDC
+
+---
+
+## Overriding These Defaults
+
+Local files in any repository take precedence:
+
+- `copilot-instructions.md` — Repo-specific Copilot behavior
+- `CLAUDE.md` — Repo-specific Claude Code behavior
+- `AGENTS.md` — Repo-specific agent definitions
+- Language instructions — Create repo's own `.github/instructions/`
+- Workflows — Create repo's own `.github/workflows/`
+
+Example: A repository with `python-only` focus can override Python version defaults:
+
+```yaml
+# .github/workflows/ci.yml in consuming repo
+jobs:
+  ci:
+    uses: Ven0m0/.github/.github/workflows/reusable-ci-python.yml@main
+    with:
+      python-version: '3.13'  # Override default 3.12
+      coverage-threshold: 95  # Stricter than org default 90
+```
+
+---
 
 ## Extending This Repository
 
 ### Adding a New Agent
 
 1. Create `agents/new-agent.agent.md` with YAML frontmatter
-2. Define role, standards reference, workflow, and triggers
-3. Document in this AGENTS.md file
+2. Define role, reference standards, describe workflow
+3. Document in this AGENTS.md file (add row to appropriate table)
 
 ### Adding a New Skill
 
-1. Create `skills/skill-name/SKILL.md` with metadata
-2. Document prerequisites, workflows, and examples
-3. Reference from relevant agents
+1. Create `skills/skill-name/` directory
+2. Create `skills/skill-name/SKILL.md` with metadata
+3. Add prerequisites, workflows, examples
+4. Update instructions/INDEX.md
 
 ### Adding Instructions
 
 1. Create `instructions/domain.instructions.md`
-2. Set `applyTo` glob pattern in frontmatter
-3. Update `instructions/INDEX.md`
+2. Set `applyTo` glob pattern in YAML frontmatter
+3. Add applicable standards and patterns
+4. Update instructions/INDEX.md
 
-## Agent Consolidation
+### Reusable Workflows
 
-**Language Optimizer** (bash + python + rust + refactoring-expert):
-- Single agent with language-branching; auto-detects from file type
-- References `skills/language-optimization/`, `skills/code-maintenance/`
-
-**Codebase Maintainer** (janitor + repo-index):
-- Cleanup mode: remove dead code, simplify, dependency hygiene
-- Index mode: PROJECT_INDEX.md, token-efficient context
-
-**Skills consolidated**: refactor + codebase-cleanup → code-maintenance; condense → ai-tuning
-**Instructions consolidated**: agents + agent-skills + instructions + prompt → meta-authoring; token-efficient → ai-tuning
-
-**MCP Integration**: Repository agents compatible with GitHub.com; MCP at org/enterprise level
+1. Create `.github/workflows/reusable-xyz.yml`
+2. Use `on: workflow_call:` trigger
+3. Document in README.md
+4. Version tag for stability
 
 ---
 
-*Last Updated: February 2026*
-*Repository: Ven0m0/.github*
+## MCP Integration
+
+**Model Context Protocol** (MCP) servers available:
+
+- **context7** — Up-to-date library documentation and examples
+- **GitHub** — Repository, PR, issue operations (org-level)
+- **Google Gemini** — Google cloud integration
+
+Configure in agent YAML:
+```yaml
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers:
+      CONTEXT7_API_KEY: "${{ secrets.CONTEXT7_API_KEY }}"
+```
+
+---
+
+## Quick Reference
+
+| Task | Command/Approach |
+|------|------------------|
+| Lint all | `bun run lint` or `ruff check --fix && biome check --apply` |
+| Test | `bun test --coverage` or `uv run pytest -v --cov` |
+| Build | `bun run build` |
+| Format | `biome check --apply` (TS/JS) or `ruff format` (Python) |
+| Shell script | `shellcheck`, `shfmt`, `shellharden` |
+| Git setup | `git checkout -b feature/name` |
+| Commit | `git commit -m "feat(scope): desc"` |
+| PR create | `gh pr create --title "Title" --body "Body"` |
+| Release | Use `reusable-release.yml` workflow |
+| Dependency audit | `uv audit` (Python) or `npm audit` (JS) |
+
+---
+
+## Resources
+
+- **Instructions**: `instructions/` for language-specific standards
+- **Skills**: `skills/` for domain knowledge modules
+- **Agents**: `agents/` for specialized autonomous assistants
+- **Workflows**: `.github/workflows/` for CI/CD patterns
+- **Community**: See `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` in parent repos
+
+---
+
+**Last Updated**: February 2026
+**Repository**: Ven0m0/.github
+**Organization**: Ven0m0
