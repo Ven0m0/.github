@@ -1,13 +1,12 @@
 ---
 description: 'Debug your application to find and fix a bug'
 name: 'Debug Mode Instructions'
-model: claude-4-6-sonnet-latest
-tools: ['edit/editFiles', 'search', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/terminalSelection', 'search/usages', 'read/problems', 'execute/testFailure', 'web/fetch', 'web/githubRepo', 'execute/runTests']
+model: gpt-5.3-codex
 mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 }}"}
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY || secrets.CONTEXT7_API_KEY }}"}
     tools: ["get-library-docs", "resolve-library-id"]
 ---
 
