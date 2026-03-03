@@ -12,7 +12,9 @@ See ../README.md for the repository overview and usage.
 - copilot-instructions.md - organization wide Copilot instructions
 - FUNDING.yml - sponsorship configuration
 
-### Resources
+<details><summary><b>Resources</b></summary>
+
+TODO: linkify
 - smithery.ai
 - claude-plugins.dev
 - buildwithclaude.com/plugins
@@ -38,3 +40,4 @@ See ../README.md for the repository overview and usage.
 - cursor.directory
 - opencode.cafe
 - skills.rest
+</details>
