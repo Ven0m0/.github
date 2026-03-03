@@ -1,7 +1,7 @@
 ---
 name: critical-thinking
 description: 'Challenge assumptions and encourage critical thinking. Ask Why until root cause is found. No code edits.'
-model: claude-opus-4.6
+model: 'GPT-5.3-Codex'
 mcp-servers:
   context7:
     type: http
