@@ -17,7 +17,8 @@ env:
   BUN_OPTIONS: "--bun --prefer-offline --parallel --silent --no-exit-on-error --smol"
   NODE_NO_WARNINGS: 1
   NODE_SKIP_PLATFORM_CHECK: 1
-  DEBIAN_FRONTEND: noninteractive
+  DEBIAN_FRONTEND: "noninteractive"
+  DEBCONF_NOWARNINGS: "yes"
   PYTHONHASHSEED: 0
   PYTHONOPTIMIZE: 1
   PYTHONUNBUFFERED: 1
