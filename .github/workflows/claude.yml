@@ -1,5 +1,4 @@
 name: Claude Code
-
 on:
   issue_comment:
     types: [created]
@@ -36,7 +35,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: "Review this PR for security issues" 
+          prompt: "/review" 
+          trigger_phrase: "/claude"
+          assignee_trigger: "claude"
           # prompt: 'Update the pull request description to include a summary of changes.'
           # Optional: Add claude_args to customize behavior and configuration
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
