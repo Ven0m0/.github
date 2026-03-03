@@ -1,7 +1,7 @@
 ---
 name: ai-config-expert
 description: 'AI configuration expert: Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs. See instructions/ai-tuning.instructions.md'
-model: gpt-5.3-codex
+model: 'Claude Sonnet 4.6'
 modelParameters:
   temperature: 0.35
 mcp-servers:
