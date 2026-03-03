@@ -1,5 +1,4 @@
 name: "Copilot Setup Steps"
-
 # Automatically run the setup steps when they are changed to allow for easy validation, and
 # allow manual testing through the repository's "Actions" tab
 on:
@@ -10,7 +9,6 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-
 env:
   NODE_ENV: production
   NODE_OPTIONS: "--max-old-space-size=2048"
@@ -24,14 +22,12 @@ env:
   PYTHONUNBUFFERED: 1
   PIP_DISABLE_PIP_VERSION_CHECK: 1
   DO_NOT_TRACK: 1
-
 defaults:
   run:
     shell: bash
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
@@ -48,15 +44,13 @@ jobs:
         with:
           lfs: true
       - uses: astral-sh/setup-uv@v7
-      - run: uv sync --frozen || uv python install 3.14
+      - run: uv python install 3.14
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v6
         with: 
           node-version: "25"
           cache: "bun"
-      - run: bun install --frozen-lockfile
-      - name: bash
-        run: |
+      - run: |
           git config --global --add safe.directory "$(realpath .)"
           git config --global index.version 4
           git config --global index.threads 0
@@ -75,5 +69,5 @@ jobs:
           git config --global status.short true
           git config --global commit.verbose false
           git config --global feature.manyFiles true
-      #- name: Index serena
-        #run: uvx --from git+https://github.com/oraios/serena serena project index
+      - name: Index serena
+        run: uvx --from git+https://github.com/oraios/serena serena project index || true
