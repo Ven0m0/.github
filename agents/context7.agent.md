@@ -2,7 +2,7 @@
 name: Context7-Expert
 description: 'Expert in latest library versions, best practices, and correct syntax using up-to-date documentation'
 argument-hint: 'Ask about specific libraries/frameworks (e.g., "Next.js routing", "React hooks", "Tailwind CSS")'
-model: claude-sonnet-4.6
+model: 'Claude Sonnet 4.6'
 disable-model-invocation: false
 user-invocable: false
 mcp-servers:
