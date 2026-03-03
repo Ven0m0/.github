@@ -1,7 +1,7 @@
 ---
 description: 'Comprehensive multi-agent workflow orchestrating planning, execution, refactoring, cleanup, and review for complex development tasks'
 name: 'Multi-Agent Workflow Orchestrator'
-model: claude-sonnet-4.6
+model: 'Claude Sonnet 4.6'
 modelParameters:
   temperature: 0.35
 mcp-servers:
