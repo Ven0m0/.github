@@ -1,7 +1,7 @@
 ---
 name: optimise
 description: Performance optimisation sub-agent that reviews code, architecture, and database design
-model: GPT-5.3-Codex
+model: 'Claude Sonnet 4.6'
 modelParameters:
   temperature: 0.35
 mcp-servers:
