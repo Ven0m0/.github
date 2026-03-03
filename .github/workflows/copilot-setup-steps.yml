@@ -1,0 +1,55 @@
+name: "Copilot Setup Steps"
+
+# Automatically run the setup steps when they are changed to allow for easy validation, and
+# allow manual testing through the repository's "Actions" tab
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+env:
+  NODE_ENV: production
+  NODE_OPTIONS: "--disable-warning --max-old-space-size=2048"
+  BUN_OPTIONS: "--bun --prefer-offline --parallel --silent --no-exit-on-error --smol"
+  NODE_NO_WARNINGS: 1
+  NODE_SKIP_PLATFORM_CHECK: 1
+  DEBIAN_FRONTEND: noninteractive
+  PYTHONHASHSEED: 0
+  PYTHONOPTIMIZE: 1
+  PYTHONUNBUFFERED: 1
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+  DO_NOT_TRACK: 1
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "25"
+          cache: "npm"
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Index serena
+        run: uvx --from git+https://github.com/oraios/serena serena project index
