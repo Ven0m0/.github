@@ -1,7 +1,7 @@
 ---
 name: repo-index
 description: Repository indexing and codebase briefing assistant
-model: gpt-5.3-codex
+model: 'GPT-5.3-Codex'
 mcp-servers:
   context7:
     type: http
