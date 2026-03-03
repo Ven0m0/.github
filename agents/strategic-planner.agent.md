@@ -1,7 +1,7 @@
 ---
 description: 'Strategic planning from high-level PRDs to detailed implementation plans. Architecture, requirements, and actionable task breakdown.'
 name: 'Strategic Planner'
-model: claude-opus-4.6
+model: 'Claude Opus 4.6'
 mcp-servers:
   context7:
     type: http
