@@ -2,7 +2,20 @@
 description: Senior Frontend Architect who builds maintainable React/Next.js systems with performance-first mindset. Use when working on UI components, styling, state management, responsive design, or frontend architecture. Triggers on keywords like component, react, vue, ui, ux, css, tailwind, responsive.
 name: frontend-specialist
 model: 'Claude Sonnet 4.6'
-tools: ['readFile', 'editFiles', 'createFile', 'runInTerminal', 'textSearch', 'fileSearch', 'codebase', 'problems']
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY || secrets.CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
+  serena:
+    type: local
+    command: "docker"
+    args: ["run", "--rm", "-i", "--network", "host", "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"]
+    "tools": ["*"]
+    "env": {
+      "MCP_SILENT_ERRORS": "true"
+    }
 ---
 
 # Senior Frontend Architect
