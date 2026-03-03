@@ -11,3 +11,30 @@ See ../README.md for the repository overview and usage.
 - PULL_REQUEST_TEMPLATE.md - default pull request template
 - copilot-instructions.md - organization wide Copilot instructions
 - FUNDING.yml - sponsorship configuration
+
+### Resources
+- smithery.ai
+- claude-plugins.dev
+- buildwithclaude.com/plugins
+- happy.engineering/tools
+- codeagent.directory
+- skillsdirectory.com
+- mcpdirectory.ai
+- skills.sh
+- skillsmp.com
+- aiagentslist.com
+- pulsemcp.com
+- desktopcommander.app
+- clawhub.ai
+- skills.cokac.com
+- prompts.chat
+- mcp.so
+- creati.ai
+- mcpservers.org
+- mseep.ai
+- playbooks.com
+- lxgicstudios.com
+- cursorlist.com
+- cursor.directory
+- opencode.cafe
+- skills.rest
