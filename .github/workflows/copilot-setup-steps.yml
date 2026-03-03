@@ -37,18 +37,42 @@ jobs:
     timeout-minutes: 15
     continue-on-error: true
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
+      issues: read
+      id-token: write
+      actions: read
     steps:
       - uses: actions/checkout@v6
         with:
           lfs: true
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: "npm"
-      #- name: Install JavaScript dependencies
-        #run: npm ci
-
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync --frozen || uv python install 3.14
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v6
+        with: 
+          node-version: "25"
+          cache: "bun"
+      - run: bun install --frozen-lockfile
+      - name: bash
+        run: |
+          git config --global --add safe.directory "$(realpath .)"
+          git config --global index.version 4
+          git config --global index.threads 0
+          git config --global http.version "HTTP/2"
+          git config --global protocol.version 2
+          git config --global core.compression 9
+          git config --global core.preloadindex true
+          git config --global diff.context 3
+          git config --global diff.suppressBlankEmpty true
+          git config --global diff.compactionHeuristic true
+          git config --global diff.ignoreSubmodules true
+          git config --global diff.algorithm histogram
+          git config --global merge.conflictStyle zdiff3
+          git config --global fetch.parallel 0
+          git config --global pack.threads 0
+          git config --global status.short true
+          git config --global commit.verbose false
+          git config --global feature.manyFiles true
       #- name: Index serena
         #run: uvx --from git+https://github.com/oraios/serena serena project index
