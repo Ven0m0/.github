@@ -1,7 +1,7 @@
 ---
 description: 'Debug your application to find and fix a bug'
 name: 'Debug Mode Instructions'
-model: gpt-5.3-codex
+model: 'GPT-5.3-Codex'
 mcp-servers:
   context7:
     type: http
