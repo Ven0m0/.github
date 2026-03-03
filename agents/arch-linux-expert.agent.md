@@ -1,7 +1,7 @@
 ---
 name: 'Arch Linux Expert'
 description: 'Arch Linux specialist: pacman workflows, rolling-release maintenance, systemd administration.'
-model: claude-sonnet-4.6
+model: 'GPT-5.3-Codex'
 disable-model-invocation: false
 user-invocable: true
 mcp-servers:
