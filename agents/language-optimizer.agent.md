@@ -1,7 +1,7 @@
 ---
 name: language-optimizer
 description: 'Code optimization across Bash, Python, Rust. Safety, performance, refactoring. Auto-detects language from file type.'
-model: gpt-5.3-codex
+model: 'Claude Sonnet 4.6'
 modelParameters:
   temperature: 0.35
 mcp-servers:
