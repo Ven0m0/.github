@@ -6,15 +6,15 @@ modelParameters:
   temperature: 0.35
 mcp-servers:
   context7:
-    type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY || secrets.CONTEXT7_API_KEY }}"}
+    type: "http",
+    url: "https://mcp.context7.com/mcp",
+    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"},
     tools: ["get-library-docs", "resolve-library-id"]
   serena:
-    type: local
-    command: "docker"
-    args: ["run", "--rm", "-i", "--network", "host", "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"]
-    "tools": ["*"]
+    type: "local",
+    command: "docker",
+    args: ["run", "--rm", "-i", "--network", "host", "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"],
+    "tools": ["*"],
     "env": {
       "MCP_SILENT_ERRORS": "true"
     }
