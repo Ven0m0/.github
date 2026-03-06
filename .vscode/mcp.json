@@ -2,10 +2,9 @@
   "mcpServers": {
     "github-mcp-server": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/insiders",
+      "url": "https://api.githubcopilot.com/mcp/x/all/insiders",
       "tools": ["*"],
       "headers": {
-        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search",
         "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
@@ -25,9 +24,7 @@
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"],
-      "headers": {
-        "EXA_API_KEY": "${EXA_API_KEY}"
-      }
+      "headers": { "EXA_API_KEY": "${EXA_API_KEY}" }
     },
     "context7": {
       "type": "http",
@@ -45,7 +42,7 @@
     "grep-app": {
       "type": "http",
       "url": "https://mcp.grep.app",
-      "tools": ["*"]
+      "tools": ["*"]d
     },
     "grepika": {
       "type": "stdio",
@@ -64,23 +61,9 @@
       "command": "npx",
       "args": ["-y", "octocode-mcp@latest"],
       "tools": ["*"],
-      "env": {
-        "GITHUB_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      "env": { "GITHUB_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
-    "oraios/serena": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide",
-        "--project",
-        "${workspaceFolder}"
-      ]
-    }
+
   }
 }
