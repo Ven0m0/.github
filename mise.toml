@@ -1,0 +1,5 @@
+[tools]
+"actionlint" = "latest"
+"shellcheck" = "latest"
+"shfmt" = "latest"
+taplo = "latest"
