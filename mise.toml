@@ -5,6 +5,7 @@ color = true
 yes = true
 auto_install = true
 lockfile = true
+env_shell_expand = true
 
 [settings.python]
 uv_venv_auto = "create|source"
