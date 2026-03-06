@@ -1,0 +1,10 @@
+# Secrets
+.env
+secrets/
+**/*.pem
+**/*.key
+.ssh/
+
+# Build output
+dist/
+coverage/
