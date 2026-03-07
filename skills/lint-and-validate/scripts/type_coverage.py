@@ -10,6 +10,18 @@ import argparse
 from pathlib import Path
 from typing import Optional
 
+# Pre-compiled regex patterns for performance
+RE_TS_ANY = re.compile(r":\s*any\b")
+RE_TS_UNTYPED_FUNC = re.compile(r"function\s+\w+\s*\([^)]*\)\s*{")
+RE_TS_UNTYPED_ARROW = re.compile(r"=\s*\([^:)]*\)\s*=>")
+RE_TS_TYPED_FUNC = re.compile(r"function\s+\w+\s*\([^)]*\)\s*:\s*\w+")
+RE_TS_TYPED_ARROW = re.compile(r":\s*\([^)]*\)\s*=>\s*\w+")
+
+RE_PY_ANY = re.compile(r":\s*Any\b")
+RE_PY_TYPED_FUNC_PARAMS = re.compile(r"def\s+\w+\s*\([^)]*:[^)]+\)")
+RE_PY_TYPED_FUNC_RETURN = re.compile(r"def\s+\w+\s*\([^)]*\)\s*->")
+RE_PY_ALL_FUNC = re.compile(r"def\s+\w+\s*\(")
+
 # Fix Windows console encoding for Unicode output
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -48,19 +60,19 @@ def check_typescript_coverage(
             content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Count 'any' usage
-            any_matches = re.findall(r":\s*any\b", content)
+            any_matches = RE_TS_ANY.findall(content)
             stats["any_count"] += len(any_matches)
 
             # Find functions without return types
             # function name(params) { - no return type
-            untyped = re.findall(r"function\s+\w+\s*\([^)]*\)\s*{", content)
+            untyped = RE_TS_UNTYPED_FUNC.findall(content)
             # Arrow functions without types: const fn = (x) => or (x) =>
-            untyped += re.findall(r"=\s*\([^:)]*\)\s*=>", content)
+            untyped += RE_TS_UNTYPED_ARROW.findall(content)
             stats["untyped_functions"] += len(untyped)
 
             # Count typed functions
-            typed = re.findall(r"function\s+\w+\s*\([^)]*\)\s*:\s*\w+", content)
-            typed += re.findall(r":\s*\([^)]*\)\s*=>\s*\w+", content)
+            typed = RE_TS_TYPED_FUNC.findall(content)
+            typed += RE_TS_TYPED_ARROW.findall(content)
             stats["total_functions"] += len(typed) + len(untyped)
 
         except Exception:
@@ -126,16 +138,16 @@ def check_python_coverage(project_path: Path, max_files: Optional[int] = 30) -> 
             content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Count Any usage
-            any_matches = re.findall(r":\s*Any\b", content)
+            any_matches = RE_PY_ANY.findall(content)
             stats["any_count"] += len(any_matches)
 
             # Find functions with type hints
-            typed_funcs = re.findall(r"def\s+\w+\s*\([^)]*:[^)]+\)", content)
-            typed_funcs += re.findall(r"def\s+\w+\s*\([^)]*\)\s*->", content)
+            typed_funcs = RE_PY_TYPED_FUNC_PARAMS.findall(content)
+            typed_funcs += RE_PY_TYPED_FUNC_RETURN.findall(content)
             stats["typed_functions"] += len(typed_funcs)
 
             # Find functions without type hints
-            all_funcs = re.findall(r"def\s+\w+\s*\(", content)
+            all_funcs = RE_PY_ALL_FUNC.findall(content)
             stats["untyped_functions"] += len(all_funcs) - len(typed_funcs)
 
         except Exception:
