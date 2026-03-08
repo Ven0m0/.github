@@ -1,5 +1,4 @@
 name: Claude Commit Analysis
-
 on:
   workflow_dispatch:
     inputs:
@@ -11,7 +10,6 @@ on:
           - summarize-commit
           - security-review
         default: "summarize-commit"
-
 jobs:
   analyze-commit:
     runs-on: ubuntu-latest
@@ -20,18 +18,16 @@ jobs:
       pull-requests: write
       issues: write
       id-token: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 2 # Need at least 2 commits to analyze the latest
-
       - name: Run Claude Analysis
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: |
+          prompt: |-
             REPO: ${{ github.repository }}
             BRANCH: ${{ github.ref_name }}
 

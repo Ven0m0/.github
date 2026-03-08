@@ -14,10 +14,10 @@ mkdir -p "$(dirname "$LOG_FILE")"
 printf '[%s] stop reason=%s session=%s\n' \
   "$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)" \
   "$STOP_REASON" \
-  "$SESSION_ID" >> "$LOG_FILE"
+  "$SESSION_ID" >>"$LOG_FILE"
 
 # Continue normally
-cat << 'EOF'
+cat <<'EOF'
 {
   "continue": true
 }

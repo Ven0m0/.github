@@ -44,7 +44,7 @@ jobs:
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add -A
             git commit -m "fix: automated improvements for PR #${{ github.event.pull_request.number }}
-            
+
             Co-authored-by: factory-droid[bot] <138933559+factory-droid[bot]@users.noreply.github.com>"
             git push
           fi
@@ -52,16 +52,16 @@ jobs:
         if: always()
         uses: actions/github-script@v8
         with:
-          script: |
+          script: |-
             const fs = require('fs');
-            let review = '## 🤖 Automated Review\n\n';
-            
+            let review = '##  Automated Review\n\n';
+
             if (fs.existsSync('review.md')) {
               review += fs.readFileSync('review.md', 'utf8');
             } else {
               review += 'Review completed successfully.';
             }
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,

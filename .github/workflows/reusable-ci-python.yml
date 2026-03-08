@@ -60,14 +60,11 @@ on:
       coverage-percentage:
         description: 'Test coverage percentage'
         value: ${{ jobs.test.outputs.coverage }}
-
 permissions:
   contents: read
-
 defaults:
   run:
     shell: 'bash'
-
 jobs:
   # ===========================================================================
   # Lint - Check code style and formatting
@@ -81,27 +78,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-
       - name: Set up Python
         env:
           PYTHON_VERSION: ${{ inputs.python-version }}
         run: uv python install "$PYTHON_VERSION"
-
       - name: Install dependencies
         run: uv sync --all-extras
-
       - name: Run ruff check
         run: uv run ruff check --output-format=github .
-
       - name: Run ruff format check
         run: uv run ruff format --check .
-
   # ===========================================================================
   # Type Check - Static type analysis
   # ===========================================================================
@@ -114,24 +105,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-
       - name: Set up Python
         env:
           PYTHON_VERSION: ${{ inputs.python-version }}
         run: uv python install "$PYTHON_VERSION"
-
       - name: Install dependencies
         run: uv sync --all-extras
-
       - name: Run pyright
         run: uv run pyright
-
   # ===========================================================================
   # Test - Run tests with coverage (single version)
   # ===========================================================================
@@ -147,21 +133,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-
       - name: Set up Python
         env:
           PYTHON_VERSION: ${{ inputs.python-version }}
         run: uv python install "$PYTHON_VERSION"
-
       - name: Install dependencies
         run: uv sync --all-extras
-
       - name: Detect package name
         id: detect-package
         env:
@@ -176,7 +158,6 @@ jobs:
           else
             echo "package=." >> "$GITHUB_OUTPUT"
           fi
-
       - name: Run tests with coverage
         id: coverage
         env:
@@ -196,7 +177,6 @@ jobs:
             PERCENTAGE=$(echo "$COVERAGE * 100" | bc | cut -d. -f1)
             echo "percentage=$PERCENTAGE" >> "$GITHUB_OUTPUT"
           fi
-
       - name: Upload coverage report
         if: inputs.upload-coverage
         uses: codecov/codecov-action@v5
@@ -206,14 +186,12 @@ jobs:
           verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage.xml
           retention-days: 30
-
   # ===========================================================================
   # Test Matrix - Run tests across multiple Python versions
   # ===========================================================================
@@ -231,21 +209,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-
       - name: Set up Python
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
         run: uv python install "$PYTHON_VERSION"
-
       - name: Install dependencies
         run: uv sync --all-extras
-
       - name: Detect package name
         id: detect-package
         env:
@@ -259,7 +233,6 @@ jobs:
           else
             echo "package=." >> "$GITHUB_OUTPUT"
           fi
-
       - name: Run tests with coverage
         env:
           PACKAGE_NAME: ${{ steps.detect-package.outputs.package }}
@@ -271,7 +244,6 @@ jobs:
             --cov-report=xml:coverage.xml \
             --cov-fail-under="$COVERAGE_THRESHOLD" \
             -v
-
       - name: Upload coverage report
         if: inputs.upload-coverage && matrix.python-version == fromJson(inputs.python-versions-matrix)[0]
         uses: codecov/codecov-action@v5
@@ -281,7 +253,6 @@ jobs:
           verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
   # ===========================================================================
   # Summary - Aggregate results
   # ===========================================================================
@@ -298,7 +269,7 @@ jobs:
       ENABLE_MATRIX: ${{ inputs.enable-matrix }}
     steps:
       - name: Check all jobs passed
-        run: |
+        run: |-
           # Lint and type-check must pass
           if [[ "$LINT_RESULT" != "success" ]] || [[ "$TYPE_CHECK_RESULT" != "success" ]]; then
             echo "Lint or type-check failed"

@@ -12,7 +12,10 @@ OFFSET=$(printf '%s' "$INPUT" | jq -r '.tool_input.offset // 0' 2>/dev/null)
 LIMIT=$(printf '%s' "$INPUT" | jq -r '.tool_input.limit // 0' 2>/dev/null)
 
 _allow() { exit 0; }
-_deny() { printf '{"decision":"block","reason":"%s"}\n' "${1//\"/\'}"; exit 0; }
+_deny() {
+  printf '{"decision":"block","reason":"%s"}\n' "${1//\"/\'}"
+  exit 0
+}
 
 [[ -z "$FILE_PATH" ]] && _allow
 
@@ -20,19 +23,19 @@ _deny() { printf '{"decision":"block","reason":"%s"}\n' "${1//\"/\'}"; exit 0; }
 [[ ! -f "$FILE_PATH" ]] && _allow
 
 # Get file size in bytes
-FILE_BYTES=$(wc -c < "$FILE_PATH" 2>/dev/null || echo 0)
-FILE_LINES=$(wc -l < "$FILE_PATH" 2>/dev/null || echo 0)
+FILE_BYTES=$(wc -c <"$FILE_PATH" 2>/dev/null || echo 0)
+FILE_LINES=$(wc -l <"$FILE_PATH" 2>/dev/null || echo 0)
 
-MAX_BYTES=$((2 * 1024 * 1024))  # 2MB hard limit
+MAX_BYTES=$((2 * 1024 * 1024)) # 2MB hard limit
 
 # Block reads of files over 2MB without offset/limit
-if (( FILE_BYTES > MAX_BYTES )) && (( LIMIT == 0 )); then
+if ((FILE_BYTES > MAX_BYTES)) && ((LIMIT == 0)); then
   _deny "File too large to read in full (${FILE_BYTES}B, max 2MB). Use Grep to find relevant sections, then Read with offset and limit parameters."
 fi
 
 # Warn on large reads without bounds (500+ lines, no limit set)
-if (( FILE_LINES > 500 )) && (( LIMIT == 0 )); then
-  cat << EOF
+if ((FILE_LINES > 500)) && ((LIMIT == 0)); then
+  cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "PreToolUse",

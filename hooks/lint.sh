@@ -1,13 +1,13 @@
-#!/bin/bash
-INPUT=$(cat 2>/dev/null)
-TOOL_NAME=$(echo "$INPUT" | jq -r '.toolName' 2>/dev/null)
+#!/usr/bin/env bash
+set -o pipefail
 
-if [[ "$TOOL_NAME" = "edit" ] || [ "$TOOL_NAME" = "create" ]]; then
-  # Run linter before allowing edits
+INPUT=$(cat 2>/dev/null)
+TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.tool_name // .toolName // ""' 2>/dev/null)
+
+if [[ "$TOOL_NAME" = "edit" || "$TOOL_NAME" = "create" ]]; then
   npm run lint-staged
-  npx -y biome ci --changed --no-errors-on-unmatched --skip-parse-errors --files-ignore-unknown=true --use-editorconfig=true --format-with-errors=true
-  #uvx ruff format
-  if [[ $? -ne 0 ]]; then
+  if ! npx -y biome ci --changed --no-errors-on-unmatched --skip-parse-errors \
+    --files-ignore-unknown=true --use-editorconfig=true --format-with-errors=true; then
     echo '{"permissionDecision":"deny","permissionDecisionReason":"Code does not pass linting"}'
   fi
 fi

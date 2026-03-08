@@ -47,7 +47,7 @@ jobs:
       - run: uv python install 3.14
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v6
-        with: 
+        with:
           node-version: "25"
           cache: "bun"
       - run: |

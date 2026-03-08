@@ -1,6 +1,5 @@
 # Image Optimization Workflow (Reusable)
 name: Optimize Images (Reusable)
-
 on:
   workflow_call:
   inputs:
@@ -20,11 +19,9 @@ on:
       type: number
       default: 85
       description: 'Image quality for WebP/AVIF exports (0-100)'
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
@@ -40,13 +37,11 @@ jobs:
         fetch-depth: 1
         ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
         token: ${{ secrets.PAT || github.token }}
-
     - name: Cache Image Tools
       uses: actions/cache@v5
       with:
         path: ~/.cache/image-tools
         key: ${{ runner.os }}-image-tools-v1
-
     - name: Find Images
       id: find
       shell: bash
@@ -64,7 +59,7 @@ jobs:
         echo "count=$count" >> "$GITHUB_OUTPUT"
 
         if [[ $count -gt 0 ]]; then
-          echo "## � Found $count images" >> "$GITHUB_STEP_SUMMARY"
+          echo "##  Found $count images" >> "$GITHUB_STEP_SUMMARY"
         else
           echo "No images found" >> "$GITHUB_STEP_SUMMARY"
         fi
@@ -135,7 +130,7 @@ jobs:
           process_removals "webp"
         fi
 
-        echo "## � Removed $count original images" >> "$GITHUB_STEP_SUMMARY"
+        echo "##  Removed $count original images" >> "$GITHUB_STEP_SUMMARY"
     - name: Calculate Optimization Stats
       if: steps.compress.outputs.changes_detected == 'true'
       id: stats
@@ -162,15 +157,14 @@ jobs:
         commit_user_name: image-optimizer-bot[bot]
         commit_user_email: image-optimizer-bot[bot]@users.noreply.github.com
         file_pattern: "*.png *.jpg *.jpeg *.gif *.svg *.webp *.avif"
-
     - name: Comment on Pull Request
       if: steps.compress.outputs.changes_detected == 'true' && github.event_name == 'pull_request' && steps.stats.outputs.pct != ''
       uses: actions/github-script@v8
       with:
-        script: |
+        script: |-
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `## � Images optimized (~${{ steps.stats.outputs.pct }}% saved)`
+            body: `##  Images optimized (~${{ steps.stats.outputs.pct }}% saved)`
           });

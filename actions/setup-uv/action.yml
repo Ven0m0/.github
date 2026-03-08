@@ -9,11 +9,9 @@
 name: 'Setup Python with uv'
 description: 'Install Python and uv package manager with caching'
 author: 'zircote'
-
 branding:
   icon: 'package'
   color: 'blue'
-
 inputs:
   python-version:
     description: 'Python version to install'
@@ -31,7 +29,6 @@ inputs:
     description: 'Working directory for commands'
     required: false
     default: '.'
-
 outputs:
   python-version:
     description: 'Installed Python version'
@@ -42,7 +39,6 @@ outputs:
   cache-hit:
     description: 'Whether the cache was hit'
     value: ${{ steps.uv.outputs.cache-hit }}
-
 runs:
   using: 'composite'
   steps:
@@ -69,14 +65,13 @@ runs:
         UV_VERSION=$(uv --version | cut -d' ' -f2)
         echo "version=$UV_VERSION" >> "$GITHUB_OUTPUT"
         echo "Using uv $UV_VERSION"
-
     - name: Install dependencies
       if: inputs.install-dependencies == 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         EXTRAS: ${{ inputs.extras }}
-      run: |
+      run: |-
         if [[ -n "$EXTRAS" ]]; then
           uv sync --frozen --all-extras
         else
