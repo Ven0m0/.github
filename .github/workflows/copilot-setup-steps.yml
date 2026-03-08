@@ -30,18 +30,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-        with:
-          lfs: true
-
       - uses: astral-sh/setup-uv@v7
       - run: uv python install 3.14
-
       - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v6
-        with:
-          node-version: "25"
-          cache: bun
-
       - name: Git config
         run: |
           git config --global index.version 4
@@ -57,38 +48,30 @@ jobs:
           git config --global pack.threads 0
           git config --global status.short true
           git config --global commit.verbose false
-
       - name: Install linters & formatters
         run: |
           set -euo pipefail
-
           uv tool install ruff &
-
           bun install -g @biomejs/biome &
-
           # shfmt — resolve version, download raw binary
           (
             SHFMT_VER=$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest | jq -rc .tag_name)
             curl -fsSL "https://github.com/mvdan/sh/releases/download/${SHFMT_VER}/shfmt_${SHFMT_VER}_linux_amd64" -o /usr/local/bin/shfmt
             chmod +x /usr/local/bin/shfmt
           ) &
-
           # shellharden — tarball, version-agnostic filename
           (
             curl -fsSL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
               | tar xz -C /usr/local/bin shellharden
             chmod +x /usr/local/bin/shellharden
           ) &
-
           # zagi — agent-optimized git wrapper
           curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash &
-
           wait
           ruff version
           biome --version
           shfmt --version
           shellharden --version
           zagi --version || true
-
       - name: Index serena
         run: uvx --from git+https://github.com/oraios/serena serena project index || true
