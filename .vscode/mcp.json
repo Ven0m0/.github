@@ -15,15 +15,7 @@
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"],
-      "headers": { "EXA_API_KEY": "${EXA_API_KEY}" }
-    },
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp",
-      "tools": ["*"],
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      }
+      "headers": {"EXA_API_KEY": "${EXA_API_KEY}"}
     },
     "ref-tools": {
       "type": "http",
@@ -40,19 +32,6 @@
       "tools": ["*"],
       "command": "uvx",
       "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--project-from-cwd"]
-    },
-    "gitmcp-docs": {
-      "type": "http",
-      "url": "https://gitmcp.io/Ven0m0/.github",
-      "tools": ["*"]
-    },
-    "octocode": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "octocode-mcp@latest"],
-      "tools": ["*"],
-      "env": { "GITHUB_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
-    },
+    }
   }
 }
