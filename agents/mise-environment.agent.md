@@ -1,7 +1,7 @@
 ---
 name: mise-environment
 description: 'Mise (mise-en-place) dev environment management. Tool versions, tasks, env vars, CI/CD, Docker integration. Auto-triggers on mise.toml, .tool-versions, and related configs.'
-model: 'Claude Sonnet 4.6'
+model: claude-sonnet-4-6
 modelParameters:
   temperature: 0.25
 mcp-servers:

@@ -1,7 +1,7 @@
 ---
 description: 'Strategic planning from high-level PRDs to detailed implementation plans. Architecture, requirements, and actionable task breakdown.'
-name: 'Strategic Planner'
-model: 'Claude Opus 4.6'
+name: strategic-planner
+model: claude-opus-4-6
 mcp-servers:
   context7:
     type: http
@@ -12,10 +12,9 @@ mcp-servers:
     type: local
     command: "docker"
     args: ["run", "--rm", "-i", "--network", "host", "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"]
-    "tools": ["*"]
-    "env": {
-      "MCP_SILENT_ERRORS": "true"
-    }
+    tools: ["*"]
+    env:
+      MCP_SILENT_ERRORS: "true"
 ---
 
 # Strategic Planner

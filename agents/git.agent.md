@@ -1,7 +1,7 @@
 ---
 name: git-expert
 description: 'Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control'
-model: 'Claude Sonnet 4.6'
+model: claude-sonnet-4-6
 disable-model-invocation: false
 user-invocable: false
 ---

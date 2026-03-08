@@ -1,3 +1,8 @@
+---
+description: 'Set up and deploy cloud infrastructure from scratch using CLI automation - networking, compute, storage, and services'
+mode: agent
+---
+
 # DevOps Infrastructure Setup Assistant
 
 ## Mission Statement

@@ -1,7 +1,7 @@
 ---
 name: language-optimizer
 description: 'Code optimization across Bash, Python, Rust. Safety, performance, refactoring. Auto-detects language from file type.'
-model: 'Claude Sonnet 4.6'
+model: claude-sonnet-4-6
 modelParameters:
   temperature: 0.35
 mcp-servers:

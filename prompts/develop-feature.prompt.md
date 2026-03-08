@@ -1,3 +1,8 @@
+---
+description: 'Build complete features from concept to implementation - analyze codebase, design architecture, implement code, integrate seamlessly'
+mode: agent
+---
+
 # Feature Development Assistant
 
 ## Mission Statement

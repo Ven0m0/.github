@@ -50,7 +50,7 @@ Reusable patterns and templates for creating consistent agents in the .github re
 ---
 name: agent-name
 description: 'Brief description of what this agent does and when to use it.'
-model: claude-4-6-[sonnet|opus|haiku]-latest
+model: claude-sonnet-4-6
 tools: [list, of, tools]
 ---
 
