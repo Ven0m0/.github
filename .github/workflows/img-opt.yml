@@ -59,7 +59,7 @@ jobs:
         echo "count=$count" >> "$GITHUB_OUTPUT"
 
         if [[ $count -gt 0 ]]; then
-          echo "##  Found $count images" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Found $count images" >> "$GITHUB_STEP_SUMMARY"
         else
           echo "No images found" >> "$GITHUB_STEP_SUMMARY"
         fi
