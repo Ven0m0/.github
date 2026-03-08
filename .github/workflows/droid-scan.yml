@@ -32,7 +32,7 @@ jobs:
           # Note: gh CLI is pre-installed on GitHub-hosted runners
           if [ -f security-report.md ] && grep -q "vulnerability\|security\|risk" security-report.md; then
             gh issue create \
-              --title " Security audit findings - $(date +%Y-%m-%d)" \
+              --title "Security audit findings - $(date +%Y-%m-%d)" \
               --body-file security-report.md \
               --label "security,high-priority" \
               --assignee "${{ github.repository_owner }}"

@@ -108,8 +108,10 @@ jobs:
       - name: Semgrep scan
         uses: semgrep/semgrep-action@v1
         with:
-          config: >-
-            p/security-audit p/secrets p/owasp-top-ten
+          config: |
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         continue-on-error: true
