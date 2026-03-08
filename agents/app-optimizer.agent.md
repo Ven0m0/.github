@@ -1,7 +1,7 @@
 ---
 name: optimise
 description: Performance optimisation sub-agent that reviews code, architecture, and database design
-model: 'Claude Sonnet 4.6'
+model: claude-sonnet-4-6
 modelParameters:
   temperature: 0.35
 mcp-servers:

@@ -1,7 +1,7 @@
 ---
 description: 'GitHub issue resolution specialist. Analyzes, plans, and implements fixes with testing and PR creation.'
-name: 'Issue Fixer'
-model: 'GPT-5.3-Codex'
+name: github-issue-fixer
+model: claude-sonnet-4-6
 tools: [codebase, read, write, edit, search, execute, LS, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
 ---
 

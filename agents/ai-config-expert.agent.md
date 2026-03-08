@@ -1,7 +1,7 @@
 ---
 name: ai-config-expert
 description: 'AI configuration expert: Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs. See instructions/ai-tuning.instructions.md'
-model: 'Claude Sonnet 4.6'
+model: claude-sonnet-4-6
 modelParameters:
   temperature: 0.35
 mcp-servers:
@@ -14,10 +14,9 @@ mcp-servers:
     type: local
     command: "docker"
     args: ["run", "--rm", "-i", "--network", "host", "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"]
-    "tools": ["*"]
-    "env": {
-      "MCP_SILENT_ERRORS": "true"
-    }
+    tools: ["*"]
+    env:
+      MCP_SILENT_ERRORS: "true"
 ---
 
 # AI Configuration Expert

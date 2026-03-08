@@ -1,7 +1,7 @@
 ---
 name: repo-index
 description: Repository indexing and codebase briefing assistant
-model: 'GPT-5.3-Codex'
+model: claude-haiku-4-5-20251001
 mcp-servers:
   context7:
     type: http

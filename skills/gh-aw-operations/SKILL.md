@@ -1,5 +1,5 @@
 ---
-name: GitHub Agentic Workflows Operations
+name: gh-aw-operations
 description: Comprehensive skills for creating, compiling, debugging, and managing GitHub Agentic Workflows (gh-aw) with best practices and common patterns
 metadata:
   version: 1.0.0

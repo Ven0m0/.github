@@ -1,3 +1,8 @@
+---
+description: 'Analyze code against language-specific standards (PEP8, ES6+, etc.) for quality and maintainability'
+mode: agent
+---
+
 # Best Practices Check
 
 ## Goal

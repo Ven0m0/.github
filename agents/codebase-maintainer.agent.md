@@ -1,7 +1,7 @@
 ---
 name: codebase-maintainer
 description: 'Codebase cleanup and indexing. Removes tech debt, dead code, bloat. Generates PROJECT_INDEX for token-efficient context.'
-model: 'Claude Sonnet 4.6'
+model: claude-sonnet-4-6
 modelParameters:
   temperature: 0.35
 mcp-servers:

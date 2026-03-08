@@ -1,7 +1,7 @@
 ---
 description: 'Deep research specialist for task planning. Analyzes codebases, external docs, and patterns. Writes findings to .copilot-tracking/research/ only.'
-name: 'Task Researcher'
-model: 'Claude Opus 4.6'
+name: task-researcher
+model: claude-opus-4-6
 mcp-servers:
   context7:
     type: http

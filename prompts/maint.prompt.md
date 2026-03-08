@@ -1,3 +1,8 @@
+---
+description: 'Analyze and clean up codebase - identify dead code, unused dependencies, and maintainability issues'
+mode: agent
+---
+
 # Code Analysis & Cleanup Workflow
 
 ## Important: Multi-Chat Workflow
