@@ -27,12 +27,19 @@ jobs:
     timeout-minutes: 10
     continue-on-error: true
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
+      issues: read
+      id-token: write
+      actions: read
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
       - run: uv python install 3.14
       - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "25"
       - name: Git config
         run: |
           git config --global index.version 4
