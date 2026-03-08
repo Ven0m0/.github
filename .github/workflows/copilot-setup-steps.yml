@@ -1,6 +1,4 @@
 name: "Copilot Setup Steps"
-# Automatically run the setup steps when they are changed to allow for easy validation, and
-# allow manual testing through the repository's "Actions" tab
 on:
   workflow_dispatch:
   push:
@@ -10,17 +8,12 @@ on:
     paths:
       - .github/workflows/copilot-setup-steps.yml
 env:
-  NODE_ENV: production
-  NODE_OPTIONS: "--max-old-space-size=2048"
-  BUN_OPTIONS: "--bun --prefer-offline --parallel --silent --no-exit-on-error --smol"
+  DEBIAN_FRONTEND: noninteractive
+  PYTHONUNBUFFERED: 1
+  PYTHONOPTIMIZE: 1
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
   NODE_NO_WARNINGS: 1
   NODE_SKIP_PLATFORM_CHECK: 1
-  DEBIAN_FRONTEND: "noninteractive"
-  DEBCONF_NOWARNINGS: "yes"
-  PYTHONHASHSEED: 0
-  PYTHONOPTIMIZE: 1
-  PYTHONUNBUFFERED: 1
-  PIP_DISABLE_PIP_VERSION_CHECK: 1
   DO_NOT_TRACK: 1
 defaults:
   run:
@@ -31,26 +24,26 @@ concurrency:
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     continue-on-error: true
     permissions:
-      contents: write
-      pull-requests: write
-      issues: read
-      id-token: write
-      actions: read
+      contents: read
     steps:
       - uses: actions/checkout@v6
         with:
           lfs: true
+
       - uses: astral-sh/setup-uv@v7
       - run: uv python install 3.14
+
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v6
-        with: 
+        with:
           node-version: "25"
-          cache: "bun"
-      - run: |
+          cache: bun
+
+      - name: Git config
+        run: |
           git config --global index.version 4
           git config --global index.threads 0
           git config --global protocol.version 2
@@ -64,5 +57,38 @@ jobs:
           git config --global pack.threads 0
           git config --global status.short true
           git config --global commit.verbose false
+
+      - name: Install linters & formatters
+        run: |
+          set -euo pipefail
+
+          uv tool install ruff &
+
+          bun install -g @biomejs/biome &
+
+          # shfmt — resolve version, download raw binary
+          (
+            SHFMT_VER=$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest | jq -rc .tag_name)
+            curl -fsSL "https://github.com/mvdan/sh/releases/download/${SHFMT_VER}/shfmt_${SHFMT_VER}_linux_amd64" -o /usr/local/bin/shfmt
+            chmod +x /usr/local/bin/shfmt
+          ) &
+
+          # shellharden — tarball, version-agnostic filename
+          (
+            curl -fsSL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
+              | tar xz -C /usr/local/bin shellharden
+            chmod +x /usr/local/bin/shellharden
+          ) &
+
+          # zagi — agent-optimized git wrapper
+          curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash &
+
+          wait
+          ruff version
+          biome --version
+          shfmt --version
+          shellharden --version
+          zagi --version || true
+
       - name: Index serena
         run: uvx --from git+https://github.com/oraios/serena serena project index || true
