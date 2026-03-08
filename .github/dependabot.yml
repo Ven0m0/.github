@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: github-actions 
+  - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
@@ -14,7 +14,6 @@ updates:
       github-actions-all:
         patterns: ["*"]
         update-types: [minor, patch]
-
   - package-ecosystem: gitsubmodule
     directory: /
     schedule:
@@ -27,7 +26,6 @@ updates:
     groups:
       gitsubmodule-all:
         patterns: ["*"]
-
   - package-ecosystem: pip
     directory: /
     schedule:
@@ -45,7 +43,6 @@ updates:
       pip-all:
         patterns: ["*"]
         update-types: [minor, patch]
-
   - package-ecosystem: uv
     directory: /
     schedule:
@@ -63,7 +60,6 @@ updates:
       uv-all:
         patterns: ["*"]
         update-types: [minor, patch]
-
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -80,7 +76,6 @@ updates:
       npm-all:
         patterns: ["*"]
         update-types: [minor, patch]
-
   - package-ecosystem: bun
     directory: /
     schedule:
@@ -97,7 +92,6 @@ updates:
       bun-all:
         patterns: ["*"]
         update-types: [minor, patch]
-
   - package-ecosystem: cargo
     directory: /
     schedule:
@@ -113,7 +107,6 @@ updates:
       cargo-all:
         patterns: ["*"]
         update-types: [minor, patch]
-
   - package-ecosystem: rust-toolchain
     directory: /
     schedule:
@@ -127,7 +120,6 @@ updates:
       rust-toolchain-all:
         patterns: ["*"]
         update-types: [minor, patch]
-
   - package-ecosystem: "docker"
     directory: /
     schedule:

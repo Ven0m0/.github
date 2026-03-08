@@ -13,22 +13,22 @@ STATE_DIR="${HOME}/.claude/.statusline"
 mkdir -p "$STATE_DIR"
 
 # Record session start time
-date +%s > "$STATE_DIR/.session_start"
+date +%s >"$STATE_DIR/.session_start"
 
 # Log session start
 LOG_FILE="${HOME}/.claude/sessions.log"
 mkdir -p "$(dirname "$LOG_FILE")"
-printf '[%s] session_start id=%s\n' "$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)" "$SESSION_ID" >> "$LOG_FILE"
+printf '[%s] session_start id=%s\n' "$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)" "$SESSION_ID" >>"$LOG_FILE"
 
 # Rotate log if over 500 lines
-LINE_COUNT=$(wc -l < "$LOG_FILE" 2>/dev/null || echo 0)
-if (( LINE_COUNT > 500 )); then
+LINE_COUNT=$(wc -l <"$LOG_FILE" 2>/dev/null || echo 0)
+if ((LINE_COUNT > 500)); then
   TMP=$(mktemp)
-  tail -n 200 "$LOG_FILE" > "$TMP" && mv "$TMP" "$LOG_FILE"
+  tail -n 200 "$LOG_FILE" >"$TMP" && mv "$TMP" "$LOG_FILE"
 fi
 
 # Inject session-level guidance
-cat << 'EOF'
+cat <<'EOF'
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",

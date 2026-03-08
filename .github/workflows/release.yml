@@ -2,7 +2,6 @@
 # Creates GitHub releases with changelog generation
 
 name: Release
-
 on:
   workflow_call:
     inputs:
@@ -32,11 +31,9 @@ on:
       version:
         description: "Released version"
         value: ${{ jobs.release.outputs.version }}
-
 permissions:
   contents: write
   pull-requests: read
-
 jobs:
   release:
     name: Create Release
@@ -50,7 +47,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
       - name: Determine version
         id: version
         run: |
@@ -65,7 +61,6 @@ jobs:
           [[ "$VERSION" != v* ]] && VERSION="v$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "## Version: $VERSION" >> "$GITHUB_STEP_SUMMARY"
-
       - name: Generate changelog
         id: changelog
         run: |
@@ -104,7 +99,6 @@ jobs:
             echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREV_TAG...$VERSION"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
-
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2

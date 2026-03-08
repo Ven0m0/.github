@@ -17,7 +17,6 @@ import sys
 import json
 from pathlib import Path
 from datetime import datetime
-from utils import fix_windows_console_encoding
 
 # Fix Windows console encoding
 try:
@@ -169,12 +168,14 @@ def main():
             except Exception as exc:
                 print(f"\nFinished: {linter['name']}")
                 print(f"  [FAIL] {linter['name']} generated an exception: {exc}")
-                results.append({
-                    "name": linter["name"],
-                    "passed": False,
-                    "output": "",
-                    "error": str(exc)
-                })
+                results.append(
+                    {
+                        "name": linter["name"],
+                        "passed": False,
+                        "output": "",
+                        "error": str(exc),
+                    }
+                )
                 all_passed = False
 
     # Summary

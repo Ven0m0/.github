@@ -8,14 +8,12 @@ on:
     types: [opened, assigned]
   pull_request_review:
     types: [submitted]
-
 permissions:
   contents: write
   pull-requests: write
   issues: write
   id-token: write
   actions: read
-
 jobs:
   claude:
     if: |
@@ -35,14 +33,14 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: "/review" 
+          prompt: "/review"
           trigger_phrase: "/claude"
           assignee_trigger: "claude"
           # prompt: 'Update the pull request description to include a summary of changes.'
           # Optional: Add claude_args to customize behavior and configuration
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          claude_args: |
+          claude_args: |-
             --append-system-prompt "Follow our coding standards"
             --max-turns 10
             --model claude-sonnet-4-6

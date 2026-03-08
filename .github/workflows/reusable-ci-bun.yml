@@ -1,6 +1,5 @@
 # Bun Setup & Test Workflow (Reusable)
 name: Bun Setup (Reusable)
-
 on:
   workflow_call:
     inputs:
@@ -37,66 +36,55 @@ on:
     branches: [main, master]
   push:
     branches: [main, master]
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 env:
   DEBIAN_FRONTEND: noninteractive
   LC_ALL: C
-
 jobs:
   setup:
     name: Bun Setup & CI
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v6
-
-    - name: Check for Bun Dependencies
-      id: check_files
-      run: |
-        if [[ -f "package.json" || -f "bun.lockb" ]]; then
-          echo "has_files=true" >> "$GITHUB_OUTPUT"
-          echo "Bun dependency files found."
-        else
-          echo "has_files=false" >> "$GITHUB_OUTPUT"
-          echo "No Bun dependency files found."
-        fi
-      shell: bash
-
-    - name: Setup Bun
-      if: steps.check_files.outputs.has_files == 'true'
-      uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: ${{ inputs.bun-version || 'latest' }}
-
-    - name: Cache Dependencies
-      if: steps.check_files.outputs.has_files == 'true'
-      uses: actions/cache@v5
-      with:
-        path: ~/.bun/install/cache
-        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
-        restore-keys: |
-          ${{ runner.os }}-bun-
-
-    - name: Install Dependencies
-      if: steps.check_files.outputs.has_files == 'true'
-      run: bun install --frozen-lockfile
-
-    - name: Run Type Checking
-      if: inputs.run-typecheck && steps.check_files.outputs.has_files == 'true'
-      run: ${{ inputs.typecheck-command }}
-
-    - name: Run Linting
-      if: inputs.run-lint && steps.check_files.outputs.has_files == 'true'
-      run: ${{ inputs.lint-command }}
-
-    - name: Run Tests
-      if: inputs.run-tests && steps.check_files.outputs.has_files == 'true'
-      run: ${{ inputs.test-command }}
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Check for Bun Dependencies
+        id: check_files
+        run: |
+          if [[ -f "package.json" || -f "bun.lockb" ]]; then
+            echo "has_files=true" >> "$GITHUB_OUTPUT"
+            echo "Bun dependency files found."
+          else
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+            echo "No Bun dependency files found."
+          fi
+        shell: bash
+      - name: Setup Bun
+        if: steps.check_files.outputs.has_files == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ inputs.bun-version || 'latest' }}
+      - name: Cache Dependencies
+        if: steps.check_files.outputs.has_files == 'true'
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+      - name: Install Dependencies
+        if: steps.check_files.outputs.has_files == 'true'
+        run: bun install --frozen-lockfile
+      - name: Run Type Checking
+        if: inputs.run-typecheck && steps.check_files.outputs.has_files == 'true'
+        run: ${{ inputs.typecheck-command }}
+      - name: Run Linting
+        if: inputs.run-lint && steps.check_files.outputs.has_files == 'true'
+        run: ${{ inputs.lint-command }}
+      - name: Run Tests
+        if: inputs.run-tests && steps.check_files.outputs.has_files == 'true'
+        run: ${{ inputs.test-command }}

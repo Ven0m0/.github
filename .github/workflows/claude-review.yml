@@ -17,7 +17,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: "/review"
-          claude_args: |
+          claude_args: |-
             --append-system-prompt "Follow our coding standards"
             --max-turns 5
             --model claude-sonnet-4-6

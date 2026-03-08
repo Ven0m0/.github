@@ -1,9 +1,7 @@
 name: 'Gemini Automated PR Labeler'
-
 on:
   pull_request_target:
     types: ['opened', 'reopened', 'synchronize']
-
 jobs:
   label-pr:
     timeout-minutes: 10
@@ -13,13 +11,10 @@ jobs:
       pull-requests: 'write'
       contents: 'read'
       id-token: 'write'
-
     concurrency:
       group: '${{ github.workflow }}-${{ github.event.pull_request.number }}'
       cancel-in-progress: true
-
     runs-on: 'ubuntu-latest'
-
     steps:
       - name: 'Generate GitHub App Token'
         id: 'generate_token'
@@ -28,7 +23,6 @@ jobs:
           app-id: '${{ secrets.APP_ID }}'
           private-key: '${{ secrets.PRIVATE_KEY }}'
           permission-pull-requests: 'write'
-
       - name: 'Run Gemini PR size and complexity labeller'
         uses: 'google-github-actions/run-gemini-cli@52c365de8e9c38e2badd90d6a7f6230d05fadd12' # Use the specific commit SHA
         env:
@@ -57,7 +51,7 @@ jobs:
               },
               "sandbox": false
             }
-          prompt: |
+          prompt: |-
             You are a Pull Request labeller and Feedback Assistant. Your primary goal is to improve review velocity and help maintainers prioritize their work by automatically labeling pull requests based on size and complexity, and providing guidance for overly large PRs.
 
             Steps:

@@ -17,12 +17,12 @@ mkdir -p "$(dirname "$LOG_FILE")"
 TIMESTAMP=$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)
 
 # Warn on large outputs (>20KB)
-if (( OUTPUT_BYTES > 20480 )); then
-  printf '[%s] LARGE_OUTPUT tool=%s bytes=%d\n' "$TIMESTAMP" "$TOOL_NAME" "$OUTPUT_BYTES" >> "$LOG_FILE"
+if ((OUTPUT_BYTES > 20480)); then
+  printf '[%s] LARGE_OUTPUT tool=%s bytes=%d\n' "$TIMESTAMP" "$TOOL_NAME" "$OUTPUT_BYTES" >>"$LOG_FILE"
 
   # For Read tool: large reads suggest unbounded file reading
-  if [[ "$TOOL_NAME" == "Read" ]] && (( OUTPUT_BYTES > 50000 )); then
-    cat << 'EOF'
+  if [[ "$TOOL_NAME" == "Read" ]] && ((OUTPUT_BYTES > 50000)); then
+    cat <<'EOF'
 {
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
@@ -34,8 +34,8 @@ EOF
   fi
 
   # For Bash tool: large output suggests unbounded commands
-  if [[ "$TOOL_NAME" == "Bash" ]] && (( OUTPUT_BYTES > 30000 )); then
-    cat << 'EOF'
+  if [[ "$TOOL_NAME" == "Bash" ]] && ((OUTPUT_BYTES > 30000)); then
+    cat <<'EOF'
 {
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
@@ -48,13 +48,13 @@ EOF
 fi
 
 # Track tool usage stats
-printf '[%s] tool=%s bytes=%d\n' "$TIMESTAMP" "$TOOL_NAME" "$OUTPUT_BYTES" >> "$LOG_FILE"
+printf '[%s] tool=%s bytes=%d\n' "$TIMESTAMP" "$TOOL_NAME" "$OUTPUT_BYTES" >>"$LOG_FILE"
 
 # Rotate log if over 2000 lines
-LINE_COUNT=$(wc -l < "$LOG_FILE" 2>/dev/null || echo 0)
-if (( LINE_COUNT > 2000 )); then
+LINE_COUNT=$(wc -l <"$LOG_FILE" 2>/dev/null || echo 0)
+if ((LINE_COUNT > 2000)); then
   TMP=$(mktemp)
-  tail -n 1000 "$LOG_FILE" > "$TMP" && mv "$TMP" "$LOG_FILE"
+  tail -n 1000 "$LOG_FILE" >"$TMP" && mv "$TMP" "$LOG_FILE"
 fi
 
 exit 0

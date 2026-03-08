@@ -1,5 +1,4 @@
-name: '🏷️ Gemini Automated Issue Deduplication'
-
+name: 'Gemini Automated Issue Deduplication'
 on:
   issues:
     types:
@@ -14,15 +13,12 @@ on:
         description: 'issue number to dedup'
         required: true
         type: 'number'
-
 concurrency:
   group: '${{ github.workflow }}-${{ github.event.issue.number }}'
   cancel-in-progress: true
-
 defaults:
   run:
     shell: 'bash'
-
 jobs:
   find-duplicates:
     if: |-
@@ -48,14 +44,12 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd' # v6
-
       - name: 'Log in to GitHub Container Registry'
         uses: 'docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2' # v4
         with:
           registry: 'ghcr.io'
           username: '${{ github.actor }}'
           password: '${{ secrets.GITHUB_TOKEN }}'
-
       - name: 'Find Duplicate Issues'
         uses: 'google-github-actions/run-gemini-cli@9dbec29a20fab3f35017a40ad0eb798a257d4d51' # v0
         id: 'gemini_issue_deduplication'
@@ -146,7 +140,6 @@ jobs:
             - Do not modify the issue content or status.
             - Do not add comments or labels.
             - Reference all shell variables as "${VAR}" (with quotes and braces).
-
   add-comment-and-label:
     needs: 'find-duplicates'
     if: |-
@@ -178,7 +171,6 @@ jobs:
           app-id: '${{ secrets.APP_ID }}'
           private-key: '${{ secrets.PRIVATE_KEY }}'
           permission-issues: 'write'
-
       - name: 'Comment and Label Duplicate Issue'
         uses: 'actions/github-script@450193c5abd4cdb17ba9f3ffcfe8f635c4bb6c2a'
         env:

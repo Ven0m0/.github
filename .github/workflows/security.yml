@@ -2,171 +2,153 @@
 # Runs multiple security checks on the codebase
 
 name: Security
-
 on:
   workflow_call:
-  inputs:
-    scan_dependencies:
-      description: "Run dependency vulnerability scan"
-      required: false
-      type: boolean
-      default: true
-    scan_secrets:
-      description: "Run secret detection"
-      required: false
-      type: boolean
-      default: true
-    scan_sast:
-      description: "Run static analysis"
-      required: false
-      type: boolean
-      default: true
-    scan_container:
-      description: "Run container image scan"
-      required: false
-      type: boolean
-      default: false
-    container_image:
-      description: "Container image to scan"
-      required: false
-      type: string
-    fail_on_high:
-      description: "Fail on high severity findings"
-      required: false
-      type: boolean
-      default: true
-    working_directory:
-      description: "Working directory"
-      required: false
-      type: string
-      default: "."
-
+    inputs:
+      scan_dependencies:
+        description: "Run dependency vulnerability scan"
+        required: false
+        type: boolean
+        default: true
+      scan_secrets:
+        description: "Run secret detection"
+        required: false
+        type: boolean
+        default: true
+      scan_sast:
+        description: "Run static analysis"
+        required: false
+        type: boolean
+        default: true
+      scan_container:
+        description: "Run container image scan"
+        required: false
+        type: boolean
+        default: false
+      container_image:
+        description: "Container image to scan"
+        required: false
+        type: string
+      fail_on_high:
+        description: "Fail on high severity findings"
+        required: false
+        type: boolean
+        default: true
+      working_directory:
+        description: "Working directory"
+        required: false
+        type: string
+        default: "."
 permissions:
   contents: read
   security-events: write
   actions: read
-
 jobs:
   dependency-scan:
-  name: Dependency Scan
-  runs-on: ubuntu-latest
-  if: inputs.scan_dependencies
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-
-    - name: Dependency Review
-      uses: actions/dependency-review-action@v4
-      with:
-        fail-on-severity: ${{ inputs.fail_on_high && 'high' || 'critical' }}
-        deny-licenses: GPL-3.0, AGPL-3.0
-
-    - name: Trivy vulnerability scan
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: "fs"
-        scan-ref: ${{ inputs.working_directory }}
-        format: "sarif"
-        output: "trivy-results.sarif"
-        severity: "CRITICAL,HIGH"
-        exit-code: ${{ inputs.fail_on_high && '1' || '0' }}
-
-    - name: Upload Trivy results
-      uses: github/codeql-action/upload-sarif@v4
-      if: always()
-      with:
-        sarif_file: "trivy-results.sarif"
-
+    name: Dependency Scan
+    runs-on: ubuntu-latest
+    if: inputs.scan_dependencies
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: ${{ inputs.fail_on_high && 'high' || 'critical' }}
+          deny-licenses: GPL-3.0, AGPL-3.0
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: ${{ inputs.working_directory }}
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
+          exit-code: ${{ inputs.fail_on_high && '1' || '0' }}
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
   secret-scan:
-  name: Secret Detection
-  runs-on: ubuntu-latest
-  if: inputs.scan_secrets
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-
-    - name: Gitleaks scan
-      uses: gitleaks/gitleaks-action@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: TruffleHog scan
-      uses: trufflesecurity/trufflehog@main
-      with:
-        extra_args: --only-verified
-
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    if: inputs.scan_secrets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: TruffleHog scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
   sast-scan:
-  name: Static Analysis
-  runs-on: ubuntu-latest
-  if: inputs.scan_sast
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: javascript-typescript, python
-        queries: security-and-quality
-
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v4
-
-    - name: CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
-      with:
-        category: "/language:javascript-typescript,python"
-
-    - name: Semgrep scan
-      uses: semgrep/semgrep-action@v1
-      with:
-        config: >-
-          p/security-audit
-          p/secrets
-          p/owasp-top-ten
-      env:
-        SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-      continue-on-error: true
-
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    if: inputs.scan_sast
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript, python
+          queries: security-and-quality
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript-typescript,python"
+      - name: Semgrep scan
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: |
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        continue-on-error: true
   container-scan:
-  name: Container Scan
-  runs-on: ubuntu-latest
-  if: inputs.scan_container && inputs.container_image != ''
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-
-    - name: Trivy container scan
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: ${{ inputs.container_image }}
-        format: "sarif"
-        output: "container-trivy.sarif"
-        severity: "CRITICAL,HIGH"
-        exit-code: ${{ inputs.fail_on_high && '1' || '0' }}
-
-    - name: Upload container scan results
-      uses: github/codeql-action/upload-sarif@v4
-      if: always()
-      with:
-        sarif_file: "container-trivy.sarif"
-
+    name: Container Scan
+    runs-on: ubuntu-latest
+    if: inputs.scan_container && inputs.container_image != ''
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Trivy container scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ inputs.container_image }}
+          format: "sarif"
+          output: "container-trivy.sarif"
+          severity: "CRITICAL,HIGH"
+          exit-code: ${{ inputs.fail_on_high && '1' || '0' }}
+      - name: Upload container scan results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: "container-trivy.sarif"
   summary:
-  name: Security Summary
-  runs-on: ubuntu-latest
-  needs: [dependency-scan, secret-scan, sast-scan]
-  if: always()
-  steps:
-    - name: Summary
-      run: |
-        {
-          echo "## Security Scan Summary"
-          echo ""
-          echo "| Check | Status |"
-          echo "|-------|--------|"
-          echo "| Dependency Scan | ${{ needs.dependency-scan.result == 'success' && 'Pass' || needs.dependency-scan.result == 'skipped' && 'Skipped' || 'Fail' }} |"
-          echo "| Secret Detection | ${{ needs.secret-scan.result == 'success' && 'Pass' || needs.secret-scan.result == 'skipped' && 'Skipped' || 'Fail' }} |"
-          echo "| Static Analysis | ${{ needs.sast-scan.result == 'success' && 'Pass' || needs.sast-scan.result == 'skipped' && 'Skipped' || 'Fail' }} |"
-        } >> "$GITHUB_STEP_SUMMARY"
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [dependency-scan, secret-scan, sast-scan]
+    if: always()
+    steps:
+      - name: Summary
+        run: |-
+          {
+            echo "## Security Scan Summary"
+            echo ""
+            echo "| Check | Status |"
+            echo "|-------|--------|"
+            echo "| Dependency Scan | ${{ needs.dependency-scan.result == 'success' && 'Pass' || needs.dependency-scan.result == 'skipped' && 'Skipped' || 'Fail' }} |"
+            echo "| Secret Detection | ${{ needs.secret-scan.result == 'success' && 'Pass' || needs.secret-scan.result == 'skipped' && 'Skipped' || 'Fail' }} |"
+            echo "| Static Analysis | ${{ needs.sast-scan.result == 'success' && 'Pass' || needs.sast-scan.result == 'skipped' && 'Skipped' || 'Fail' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
