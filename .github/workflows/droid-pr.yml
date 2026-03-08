@@ -54,7 +54,7 @@ jobs:
         with:
           script: |-
             const fs = require('fs');
-            let review = '##  Automated Review\n\n';
+            let review = '## Automated Review\n\n';
 
             if (fs.existsSync('review.md')) {
               review += fs.readFileSync('review.md', 'utf8');
