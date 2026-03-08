@@ -1,4 +1,4 @@
-name: ' Gemini Automated Issue Deduplication'
+name: 'Gemini Automated Issue Deduplication'
 on:
   issues:
     types:
