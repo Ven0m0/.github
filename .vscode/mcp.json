@@ -3,7 +3,8 @@
     "github-mcp-server": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/x/all/insiders",
-      "tools": ["*"]
+      "tools": ["*"],
+      "headers": { "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}" }
     },
     "sequential-thinking": {
       "type": "stdio",
@@ -40,6 +41,18 @@
       "command": "npx",
       "args": ["-y", "@morphllm/morphmcp"],
       "env": { "MORPH_API_KEY": "${MORPH_API_KEY}" }
+    },
+    "git": {
+      "type": "local",
+      "tools": ["*"],
+      "command": "uvx",
+      "args": ["mcp-server-git", "--repository", "."]
+    },
+    "fetch": {
+      "type": "local",
+      "tools": ["*"],
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
     }
   }
 }
