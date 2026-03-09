@@ -57,7 +57,7 @@ jobs:
           set -euo pipefail
           uv tool install ruff &
           uv tool install llm-tldr &
-          bun install -g @biomejs/biome &
+          bun install -g @biomejs/biome @ast-grep/cli &
           # shfmt — resolve version, download raw binary
           (
             SHFMT_VER=$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest | jq -rc .tag_name)
