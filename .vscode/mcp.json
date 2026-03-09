@@ -41,18 +41,6 @@
       "command": "npx",
       "args": ["-y", "@morphllm/morphmcp"],
       "env": { "MORPH_API_KEY": "${MORPH_API_KEY}" }
-    },
-    "git": {
-      "type": "local",
-      "tools": ["*"],
-      "command": "uvx",
-      "args": ["mcp-server-git", "--repository", "."]
-    },
-    "fetch": {
-      "type": "local",
-      "tools": ["*"],
-      "command": "uvx",
-      "args": ["mcp-server-fetch"]
     }
   }
 }
