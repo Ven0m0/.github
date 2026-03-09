@@ -1,17 +1,46 @@
-permissions:
-  contents: write
-jobs:
-  publish:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Setup bun
-        uses: oven-sh/setup-bun@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '25'
-          cache: bun
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+# Composite Action: Setup Bun with Node.js
+# Provides consistent Bun environment setup across all workflows
+#
+# Usage:
+#   - uses: ./actions/setup-bun
+#     with:
+#       bun-version: 'latest'
+#       node-version: '22'
+
+name: 'Setup Bun'
+description: 'Install Bun runtime with Node.js for development workflows'
+author: 'Ven0m0'
+branding:
+  icon: 'zap'
+  color: 'orange'
+inputs:
+  bun-version:
+    description: 'Bun version to install'
+    required: false
+    default: 'latest'
+  node-version:
+    description: 'Node.js version to install alongside Bun'
+    required: false
+    default: '22'
+outputs:
+  bun-version:
+    description: 'Installed Bun version'
+    value: ${{ steps.bun-info.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+    - name: Get Bun version
+      id: bun-info
+      shell: bash
+      run: |
+        BUN_VERSION=$(bun --version)
+        echo "version=$BUN_VERSION" >> "$GITHUB_OUTPUT"
+        echo "Using Bun $BUN_VERSION"

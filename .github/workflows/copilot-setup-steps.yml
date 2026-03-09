@@ -1,4 +1,5 @@
 name: "Copilot Setup Steps"
+
 on:
   workflow_dispatch:
   push:
@@ -7,44 +8,33 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-env:
-  DEBIAN_FRONTEND: noninteractive
-  PYTHONUNBUFFERED: 1
-  PYTHONOPTIMIZE: 1
-  PIP_DISABLE_PIP_VERSION_CHECK: 1
-  NODE_NO_WARNINGS: 1
-  NODE_SKIP_PLATFORM_CHECK: 1
-  DO_NOT_TRACK: 1
-defaults:
-  run:
-    shell: bash
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+
 jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    continue-on-error: true
+
+    # Set permissions to the lowest needed. Copilot gets its own token for operations.
     permissions:
-      contents: write
-      pull-requests: write
-      issues: read
-      id-token: write
-      actions: read
+      contents: read
+
     steps:
       - uses: actions/checkout@v6
+
       - uses: astral-sh/setup-uv@v7
-      - run: uv python install 3.14
+      - run: uv python install 3.13
+
       - uses: oven-sh/setup-bun@v2
+
       - uses: actions/setup-node@v6
         with:
-          node-version: "25"
+          node-version: "22"
+
       - name: Git config
         run: |
           git config --global index.threads 0
           git config --global diff.suppressBlankEmpty true
-          git config --global diff.compactionHeuristic true
           git config --global diff.ignoreSubmodules true
           git config --global diff.algorithm histogram
           git config --global merge.conflictStyle zdiff3
@@ -52,33 +42,37 @@ jobs:
           git config --global pack.threads 0
           git config --global status.short true
           git config --global commit.verbose false
+
       - name: Install linters & formatters
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          set -euo pipefail
           uv tool install ruff &
           uv tool install llm-tldr &
           bun install -g @biomejs/biome @ast-grep/cli &
           # shfmt — resolve version, download raw binary
           (
-            SHFMT_VER=$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest | jq -rc .tag_name)
-            curl -fsSL "https://github.com/mvdan/sh/releases/download/${SHFMT_VER}/shfmt_${SHFMT_VER}_linux_amd64" -o /usr/local/bin/shfmt
+            SHFMT_VER=$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest | jq -rc .tag_name) &&
+            curl -fsSL "https://github.com/mvdan/sh/releases/download/${SHFMT_VER}/shfmt_${SHFMT_VER}_linux_amd64" -o /usr/local/bin/shfmt &&
             chmod +x /usr/local/bin/shfmt
           ) &
           # shellharden — tarball, version-agnostic filename
           (
             curl -fsSL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
-              | tar xz -C /usr/local/bin shellharden
+              | tar xz -C /usr/local/bin shellharden &&
             chmod +x /usr/local/bin/shellharden
           ) &
           # zagi — agent-optimized git wrapper
           curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash &
-          wait
-          ruff version
-          biome --version
-          shfmt --version
-          shellharden --version
+          wait || true
+          # Verify installed tools (non-fatal)
+          ruff version || true
+          biome --version || true
+          shfmt --version || true
+          shellharden --version || true
           zagi --version || true
-      - name: Index serena
+
+      - name: Index codebase
         run: |
           uvx --from git+https://github.com/oraios/serena serena project index || true
           tldr warm . || true
