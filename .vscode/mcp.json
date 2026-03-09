@@ -3,8 +3,7 @@
     "github-mcp-server": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/x/all/insiders",
-      "tools": ["*"],
-      "headers": { "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}" }
+      "tools": ["*"]
     },
     "sequential-thinking": {
       "type": "stdio",
@@ -16,13 +15,13 @@
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"],
-      "headers": {"EXA_API_KEY": "${EXA_API_KEY}"}
+      "headers": {"EXA_API_KEY": "$COPILOT_MCP_EXA_API_KEY"}
     },
     "ref-tools": {
       "type": "http",
       "url": "https://api.ref.tools/mcp",
       "tools": ["*"],
-      "headers": { "x-ref-api-key": "${REF_API_KEY" }
+      "headers": { "x-ref-api-key": "$COPILOT_MCP_REF_API_KEY" }
     },
     "grep-app": {
       "type": "http",
@@ -40,7 +39,7 @@
       "tools": ["*"],
       "command": "npx",
       "args": ["-y", "@morphllm/morphmcp"],
-      "env": { "MORPH_API_KEY": "${MORPH_API_KEY}" }
+      "env": { "MORPH_API_KEY": "$COPILOT_MCP_MORPH_API_KEY" }
     }
   }
 }
