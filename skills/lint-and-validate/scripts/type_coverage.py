@@ -31,16 +31,11 @@ except AttributeError:
     pass  # Python < 3.7
 
 
-def check_typescript_coverage(
-    project_path: Path, max_files: Optional[int] = 30
-) -> dict:
-    """Check TypeScript type coverage."""
-    issues = []
-    passed = []
-    stats = {"any_count": 0, "untyped_functions": 0, "total_functions": 0}
-
-    exclude_dirs = {"node_modules"}
+def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
+    """Find all TypeScript and Python files in a single pass."""
+    exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
     ts_files = []
+    py_files = []
     for root, dirs, files in os.walk(project_path):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
         for file in files:
@@ -48,6 +43,33 @@ def check_typescript_coverage(
                 ".d.ts"
             ):
                 ts_files.append(Path(root) / file)
+            elif file.endswith(".py"):
+                py_files.append(Path(root) / file)
+    return ts_files, py_files
+
+
+def check_typescript_coverage(
+    project_path: Path,
+    max_files: Optional[int] = 30,
+    files: Optional[list[Path]] = None,
+) -> dict:
+    """Check TypeScript type coverage."""
+    issues = []
+    passed = []
+    stats = {"any_count": 0, "untyped_functions": 0, "total_functions": 0}
+
+    if files is not None:
+        ts_files = files
+    else:
+        exclude_dirs = {"node_modules"}
+        ts_files = []
+        for root, dirs, files_in_dir in os.walk(project_path):
+            dirs[:] = [d for d in dirs if d not in exclude_dirs]
+            for file in files_in_dir:
+                if (
+                    file.endswith(".ts") or file.endswith(".tsx")
+                ) and not file.endswith(".d.ts"):
+                    ts_files.append(Path(root) / file)
 
     if not ts_files:
         return {
@@ -113,19 +135,26 @@ def check_typescript_coverage(
     }
 
 
-def check_python_coverage(project_path: Path, max_files: Optional[int] = 30) -> dict:
+def check_python_coverage(
+    project_path: Path,
+    max_files: Optional[int] = 30,
+    files: Optional[list[Path]] = None,
+) -> dict:
     """Check Python type hints coverage."""
     issues = []
     passed = []
     stats = {"untyped_functions": 0, "typed_functions": 0, "any_count": 0}
 
-    exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
-    py_files = []
-    for root, dirs, files in os.walk(project_path):
-        dirs[:] = [d for d in dirs if d not in exclude_dirs]
-        for file in files:
-            if file.endswith(".py"):
-                py_files.append(Path(root) / file)
+    if files is not None:
+        py_files = files
+    else:
+        exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
+        py_files = []
+        for root, dirs, files_in_dir in os.walk(project_path):
+            dirs[:] = [d for d in dirs if d not in exclude_dirs]
+            for file in files_in_dir:
+                if file.endswith(".py"):
+                    py_files.append(Path(root) / file)
 
     if not py_files:
         return {
@@ -210,13 +239,16 @@ def main():
 
     results = []
 
+    # Pre-discover files for both languages in a single pass
+    ts_files, py_files = find_project_files(project_path)
+
     # Check TypeScript
-    ts_result = check_typescript_coverage(project_path, max_files)
+    ts_result = check_typescript_coverage(project_path, max_files, files=ts_files)
     if ts_result["files"] > 0:
         results.append(ts_result)
 
     # Check Python
-    py_result = check_python_coverage(project_path, max_files)
+    py_result = check_python_coverage(project_path, max_files, files=py_files)
     if py_result["files"] > 0:
         results.append(py_result)
 
