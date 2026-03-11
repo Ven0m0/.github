@@ -1,6 +1,6 @@
-# context-mode — MANDATORY routing rules
+# [context-mode](https://github.com/mksglu/context-mode) — MANDATORY routing rules
 
-You have context-mode MCP tools available. These rules are NOT optional — they protect your context window from flooding. A single unrouted command can dump 56 KB into context and waste the entire session.
+You have context-mode MCP tools available. These rules are NOT optional — they protect your context window from flooding. A single unrouted command can dump 56 KB into context and waste the entire session. @https://raw.githubusercontent.com/mksglu/context-mode/refs/heads/main/docs/llms.txt
 
 ## BLOCKED commands — do NOT attempt these
 
@@ -56,3 +56,5 @@ Search results can flood context. Use `ctx_execute(language: "shell", code: "gre
 | `ctx stats` | Call the `ctx_stats` MCP tool and display the full output verbatim |
 | `ctx doctor` | Call the `ctx_doctor` MCP tool, run the returned shell command, display as checklist |
 | `ctx upgrade` | Call the `ctx_upgrade` MCP tool, run the returned shell command, display as checklist |
+
+If still unsure to to use context-code see: @https://raw.githubusercontent.com/mksglu/context-mode/refs/heads/main/docs/llms-full.txt
