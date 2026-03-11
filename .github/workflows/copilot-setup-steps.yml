@@ -51,5 +51,4 @@ jobs:
       - name: Index codebase
         run: |
           uvx --from git+https://github.com/oraios/serena serena project index || :
-          tldr warm . || :
-          tldr context main --project . || :
+          tldr warm . || :; tldr context main --project . || :
