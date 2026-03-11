@@ -2,9 +2,20 @@
   "mcpServers": {
     "github-mcp-server": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/x/all/insiders",
-      "tools": ["*"]
+      "url": "https://api.githubcopilot.com/mcp/",
+      "tools": ["*"],
+      "headers": {
+        "X-MCP-Toolsets": "default,stargazers,actions,copilot,code_security,dependabot,git,copilot_spaces,github_support_docs_search",
+        "X-MCP-Readonly": "false",
+        "X-MCP-Lockdown": "false",
+        "X-MCP-Insiders": "true"
+      }
     },
+    "playwright": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    }
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
@@ -13,7 +24,7 @@
     },
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,deep_researcher_start,deep_researcher_check,deep_search_exa",
       "tools": ["*"],
       "headers": {"EXA_API_KEY": "$COPILOT_MCP_EXA_API_KEY"}
     },
@@ -32,7 +43,7 @@
       "type": "local",
       "tools": ["*"],
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--project-from-cwd"]
+      "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
     },
     "morph-mcp": {
       "type": "local",
