@@ -44,6 +44,12 @@
       "command": "npx",
       "args": ["-y", "@morphllm/morphmcp"],
       "env": { "MORPH_API_KEY": "$COPILOT_MCP_MORPH_API_KEY" }
+    },
+    "context-mode": {
+      "type": "local",
+      "tools": ["*"],
+      "command": "npx",
+      "args": ["-y", "context-mode"]
     }
   }
 }
