@@ -131,6 +131,11 @@ updates:
       docker-all:
         patterns: ["*"]
         update-types: [minor, patch]
+  - package-ecosystem: "docker-compose" 
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
