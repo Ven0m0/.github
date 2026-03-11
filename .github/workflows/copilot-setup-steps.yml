@@ -28,7 +28,10 @@ jobs:
         with:
           python-version: 3.13
           enable-cache: true
-      - run: uv python install 3.13
+          activate-environment: true
+      - run: |
+          uv python install 3.13
+          uv pip install pip
       - uses: oven-sh/setup-bun@v2
       #- uses: actions/setup-node@v6
         #with:
