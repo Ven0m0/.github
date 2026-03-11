@@ -6,15 +6,8 @@
       "tools": ["*"],
       "headers": {
         "X-MCP-Toolsets": "default,stargazers,actions,copilot,code_security,dependabot,git,copilot_spaces,github_support_docs_search",
-        "X-MCP-Readonly": "false",
-        "X-MCP-Lockdown": "false",
         "X-MCP-Insiders": "true"
       }
-    },
-    "playwright": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"]
     }
     "sequential-thinking": {
       "type": "stdio",
