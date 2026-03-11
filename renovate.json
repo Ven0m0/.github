@@ -16,6 +16,7 @@
     ":ignoreModulesAndTests",
     ":rebaseStalePrs",
     "docker:enableMajor",
+    "preview:dockerCompose",
     ":enablePreCommit"
   ],
   "enabled": true,
