@@ -1,5 +1,4 @@
 name: "Copilot Setup Steps"
-
 on:
   workflow_dispatch:
   push:
@@ -14,42 +13,31 @@ jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     # Set permissions to the lowest needed. Copilot gets its own token for operations.
     permissions:
       contents: read
 
     steps:
       - uses: actions/checkout@v6
-
       - uses: astral-sh/setup-uv@v7
-      - run: uv python install 3.13
-
+      - run: uv python install 3.14
       - uses: oven-sh/setup-bun@v2
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: "24"
-
+      #- uses: actions/setup-node@v6
+        #with:
+          #node-version: "24"
       - name: Git config
         run: |
-          git config --global index.threads 0
-          git config --global diff.suppressBlankEmpty true
-          git config --global diff.ignoreSubmodules true
+          git config --global diff.suppressBlankEmpty true 
           git config --global diff.algorithm histogram
           git config --global merge.conflictStyle zdiff3
-          git config --global fetch.parallel 0
-          git config --global pack.threads 0
           git config --global status.short true
-          git config --global commit.verbose false
-
       - name: Install linters & formatters
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
           uv tool install ruff &
           uv tool install llm-tldr &
-          bun install -g @biomejs/biome @ast-grep/cli &
+          bun install -g @biomejs/biome @ast-grep/cli context-mode &
           # shfmt — resolve version, download raw binary
           (
             SHFMT_VER=$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest | jq -rc .tag_name) &&
@@ -71,9 +59,8 @@ jobs:
           shfmt --version || true
           shellharden --version || true
           zagi --version || true
-
       - name: Index codebase
         run: |
-          uvx --from git+https://github.com/oraios/serena serena project index || true
-          tldr warm . || true
-          tldr context main --project . || true
+          uvx --from git+https://github.com/oraios/serena serena project index || :
+          tldr warm . || :
+          tldr context main --project . || :
