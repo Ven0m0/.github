@@ -9,7 +9,10 @@
     "packages:linters",
     "schedule:weekly",
     "customManagers:biomeVersions",
-    ":dependencyDashboard"
+    ":dependencyDashboard",
+		":automergeBranch",
+		":automergeMinor",
+		":combinePatchMinorReleases"
   ],
   "enabled": true,
   "dependencyDashboard": true,
