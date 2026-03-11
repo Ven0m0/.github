@@ -55,7 +55,8 @@
   },
   "postUpdateOptions": [
     "yarnDedupeHighest",
-    "gomodTidy"
+    "gomodTidy",
+    "pnpmDedupe"
   ],
   "packageRules": [
     {
