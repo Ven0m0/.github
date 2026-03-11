@@ -49,6 +49,17 @@ def test_detect_node_project_with_tsconfig(tmp_path: Path):
     assert result["linters"][0]["name"] == "tsc"
 
 
+def test_detect_node_project_invalid_json(tmp_path: Path):
+    result = {"type": "unknown", "linters": []}
+    package_json = tmp_path / "package.json"
+    package_json.write_text("{ invalid json }")
+
+    detect_node_project(tmp_path, result)
+
+    assert result["type"] == "node"
+    assert len(result["linters"]) == 0
+
+
 def test_detect_python_project_pyproject(tmp_path: Path):
     result = {"type": "unknown", "linters": []}
     (tmp_path / "pyproject.toml").touch()
