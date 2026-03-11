@@ -4,6 +4,9 @@ on:
     types: [created]
   pull_request_review_comment:
     types: [created]
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
 jobs:
   opencode:
     if: |
@@ -27,4 +30,4 @@ jobs:
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
-          model: opencode/gpt-5.2-codex
+          model: opencode/auto:online
