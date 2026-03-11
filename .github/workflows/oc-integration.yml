@@ -7,6 +7,7 @@ on:
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+  ANTHROPIC_API_KEY: ${{ secrets.OPENCODE_API_KEY || secrets.ANTHROPIC_API_KEY }}
 jobs:
   opencode:
     if: |
@@ -24,10 +25,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
+          fetch-depth: 1
           persist-credentials: false
       - name: Run opencode
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
-          model: opencode/auto:online
+          model: opencode/auto:exacto:online # https://openrouter.ai/docs/guides/routing/model-variants/online
