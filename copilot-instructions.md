@@ -287,7 +287,7 @@ When working on a task, read the relevant skill module(s) first:
 | Performance | App architecture review; profile first |
 | Optimization | `language-optimization/` |
 
-**Rule**: Determine domain first → read 1–3 most relevant skill files → apply patterns.
+**Rule**: Determine domain first → read 1–3 most relevant skill files → apply patterns. @copilot-context-mode-instructions.md
 
 ---
 
@@ -316,6 +316,5 @@ When working on a task, read the relevant skill module(s) first:
 - **All instructions**: `instructions/INDEX.md`
 
 ---
-**Last Updated**: March 2026
 **Organization**: Ven0m0
-**See Also**: `AGENTS.md`, `CONTRIBUTING.md`
+**See Also**: `AGENTS.md`/@AGENTS.md , @CLAUDE.md `CONTRIBUTING.md`, @llms.txt
