@@ -31,6 +31,8 @@ jobs:
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          model: opencode/auto:exacto:online # https://openrouter.ai/docs/guides/routing/model-variants/online
+        with: 
+          # https://openrouter.ai/docs/guides/routing/model-variants/online
+          # :thinking:online | :extended:online | :nitro:online | :extended:online
+          model: openrouter/auto:exacto:online
           use_github_token: true
