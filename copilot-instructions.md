@@ -317,4 +317,4 @@ When working on a task, read the relevant skill module(s) first:
 
 ---
 **Organization**: Ven0m0
-**See Also**: `AGENTS.md`/@AGENTS.md , @CLAUDE.md `CONTRIBUTING.md`, @llms.txt
+**See Also**: `AGENTS.md`/@AGENTS.md,`CLAUDE.md`/@CLAUDE.md
