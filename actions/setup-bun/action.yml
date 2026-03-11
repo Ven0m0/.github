@@ -5,7 +5,7 @@
 #   - uses: ./actions/setup-bun
 #     with:
 #       bun-version: 'latest'
-#       node-version: '22'
+#       node-version: '24'
 
 name: 'Setup Bun'
 description: 'Install Bun runtime with Node.js for development workflows'
@@ -21,7 +21,7 @@ inputs:
   node-version:
     description: 'Node.js version to install alongside Bun'
     required: false
-    default: '22'
+    default: '24'
 outputs:
   bun-version:
     description: 'Installed Bun version'
@@ -29,6 +29,10 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Enable Corepack
+      shell: bash
+      run: corepack enable
+
     - name: Setup Bun
       uses: oven-sh/setup-bun@v2
       with:
