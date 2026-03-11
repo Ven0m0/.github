@@ -44,6 +44,10 @@
   "dockerfile": {
     "enabled": true
   },
+  "postUpdateOptions": [
+    "yarnDedupeHighest",
+    "gomodTidy"
+  ],
   "packageRules": [
     {
       "description": "Automerge all stable (non-0.x) updates via branch",
