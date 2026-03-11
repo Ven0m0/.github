@@ -30,6 +30,7 @@
   "separateMajorMinor": false,
   "separateMinorPatch": false,
   "ignoreUnstable": true,
+  "prCreation": "immediate",
   "prConcurrentLimit": 10,
   "respectLatest": true,
   "abandonmentThreshold": "2 years",
@@ -52,6 +53,9 @@
   },
   "dockerfile": {
     "enabled": true
+  },
+  "cargo": {
+    "rangeStrategy": "update-lockfile"
   },
   "postUpdateOptions": [
     "yarnDedupeHighest",
