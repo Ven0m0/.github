@@ -28,48 +28,26 @@ jobs:
         with:
           python-version: 3.13
           enable-cache: true
-          activate-environment: true
-      - run: |
-          uv python install 3.13
-          uv pip install pip
       - uses: oven-sh/setup-bun@v2
-      #- uses: actions/setup-node@v6
-        #with:
-          #node-version: "24"
       - name: Git config
         run: |
-          git config --global diff.suppressBlankEmpty true 
+          git config --global diff.suppressBlankEmpty true
           git config --global diff.algorithm histogram
           git config --global merge.conflictStyle zdiff3
           git config --global status.short true
-      - name: Install linters & formatters
-        env:
-          DEBIAN_FRONTEND: noninteractive
+      - name: Install tools
         run: |
+          # Python tools
           uv tool install ruff &
           uv tool install llm-tldr &
-          bun install -g @biomejs/biome @ast-grep/cli context-mode &
-          # shfmt — resolve version, download raw binary
-          (
-            SHFMT_VER=$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest | jq -rc .tag_name) &&
-            curl -fsSL "https://github.com/mvdan/sh/releases/download/${SHFMT_VER}/shfmt_${SHFMT_VER}_linux_amd64" -o /usr/local/bin/shfmt &&
-            chmod +x /usr/local/bin/shfmt
-          ) &
-          # shellharden — tarball, version-agnostic filename
-          (
-            curl -fsSL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
-              | tar xz -C /usr/local/bin shellharden &&
-            chmod +x /usr/local/bin/shellharden
-          ) &
+          # JS tools
+          bun add -g @biomejs/biome @ast-grep/cli context-mode &
+          # Binary tools (gh release download = single call, no jq/API parsing)
+          (gh release download -R mvdan/sh -p 'shfmt_*_linux_amd64' -O /usr/local/bin/shfmt && chmod +x /usr/local/bin/shfmt) &
+          (gh release download -R anordal/shellharden -p 'shellharden-x86_64-unknown-linux-gnu.tar.gz' -O- | tar xz -C /usr/local/bin shellharden && chmod +x /usr/local/bin/shellharden) &
           # zagi — agent-optimized git wrapper
           curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash &
-          wait || true
-          # Verify installed tools (non-fatal)
-          ruff version || true
-          biome --version || true
-          shfmt --version || true
-          shellharden --version || true
-          zagi --version || true
+          wait
       - name: Index codebase
         run: |
           uvx --from git+https://github.com/oraios/serena serena project index || :
