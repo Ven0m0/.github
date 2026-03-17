@@ -1,0 +1,114 @@
+name: One-off Agent Prompt
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: 'Which agent action to run'
+        required: true
+        type: choice
+        options:
+          - claude
+          - gemini
+          - droid
+          - jules
+          - opencode
+      prompt:
+        description: 'One-off prompt to run'
+        required: true
+        type: string
+      model:
+        description: 'Optional model override (used when supported by the selected provider)'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  run-provider:
+    name: '${{ matrix.name }}'
+    if: ${{ matrix.provider == github.event.inputs.provider }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - provider: claude
+            name: Claude
+            runner: ubuntu-latest
+          - provider: gemini
+            name: Gemini
+            runner: ubuntu-latest
+          - provider: droid
+            name: Droid
+            runner: ubuntu-latest
+          - provider: jules
+            name: Jules
+            runner: ubuntu-slim
+          - provider: opencode
+            name: OpenCode
+            runner: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Warn about unsupported Jules model override
+        if: ${{ matrix.provider == 'jules' && github.event.inputs.model != '' }}
+        run: echo "::warning::Jules does not expose a model override in this workflow, so the provided model input will be ignored."
+
+      - name: Run Claude
+        if: ${{ matrix.provider == 'claude' }}
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: ${{ github.event.inputs.prompt }}
+          claude_args: ${{ github.event.inputs.model != '' && format('--model {0}', github.event.inputs.model) || '' }}
+
+      - name: Run Gemini
+        if: ${{ matrix.provider == 'gemini' }}
+        uses: google-github-actions/run-gemini-cli@9dbec29a20fab3f35017a40ad0eb798a257d4d51
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          gemini_model: ${{ github.event.inputs.model }}
+          prompt: ${{ github.event.inputs.prompt }}
+
+      - name: Run Droid
+        if: ${{ matrix.provider == 'droid' }}
+        uses: Factory-AI/droid-action/base-action@v4
+        with:
+          factory_api_key: ${{ secrets.FACTORY_API_KEY }}
+          prompt: ${{ github.event.inputs.prompt }}
+          droid_args: ${{ github.event.inputs.model != '' && format('--auto low --model {0}', github.event.inputs.model) || '--auto low' }}
+
+      - name: Run Jules
+        if: ${{ matrix.provider == 'jules' }}
+        uses: BeksOmega/jules-action@v1.0.0
+        with:
+          prompt: ${{ github.event.inputs.prompt }}
+          jules_api_key: ${{ secrets.JULES_API_KEY }}
+          include_commit_log: true
+
+      - name: Run OpenCode
+        if: ${{ matrix.provider == 'opencode' }}
+        uses: anomalyco/opencode/github@latest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.OPENCODE_API_KEY || secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        with:
+          model: ${{ github.event.inputs.model != '' && github.event.inputs.model || 'openrouter/auto:exacto:online' }}
+          prompt: ${{ github.event.inputs.prompt }}
+          use_github_token: true
