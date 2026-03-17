@@ -51,17 +51,12 @@
       "args": ["-y", "@morphllm/morphmcp@latest"],
       "env": { "MORPH_API_KEY": "$COPILOT_MCP_MORPH_API_KEY" }
     },
-    "memory": {
-      "type": "stdio",
+    "modjules": {
+      "type": "local",
+      "tools": ["*"],
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "tools": ["*"]
-    },
-    "fetch": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"],
-      "tools": ["*"]
+      "args": ["-y", "@modjules/mcp"],
+      "env": { "JULES_API_KEY": "$COPILOT_MCP_JULES_API_KEY" }
     }
   }
 }
