@@ -39,9 +39,7 @@ def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
     for root, dirs, files in os.walk(project_path):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
         for file in files:
-            if (file.endswith(".ts") or file.endswith(".tsx")) and not file.endswith(
-                ".d.ts"
-            ):
+            if file.endswith((".ts", ".tsx")) and not file.endswith(".d.ts"):
                 ts_files.append(Path(root) / file)
             elif file.endswith(".py"):
                 py_files.append(Path(root) / file)
@@ -66,9 +64,7 @@ def check_typescript_coverage(
         for root, dirs, files_in_dir in os.walk(project_path):
             dirs[:] = [d for d in dirs if d not in exclude_dirs]
             for file in files_in_dir:
-                if (
-                    file.endswith(".ts") or file.endswith(".tsx")
-                ) and not file.endswith(".d.ts"):
+                if file.endswith((".ts", ".tsx")) and not file.endswith(".d.ts"):
                     ts_files.append(Path(root) / file)
 
     if not ts_files:
