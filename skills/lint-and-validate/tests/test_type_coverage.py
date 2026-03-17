@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -5,7 +6,7 @@ from pathlib import Path
 scripts_dir = Path(__file__).parent.parent / "scripts"
 sys.path.append(str(scripts_dir))
 
-from type_coverage import check_typescript_coverage
+from type_coverage import check_typescript_coverage, check_python_coverage
 
 
 def test_check_typescript_coverage_no_files(tmp_path):
@@ -80,3 +81,80 @@ def test_check_typescript_coverage_multiple_files(tmp_path):
     result = check_typescript_coverage(tmp_path)
     assert result["files"] == 2
     assert result["stats"]["any_count"] == 2
+
+
+def test_check_python_coverage_basic(tmp_path):
+    """Test Python type hints coverage basic functionality."""
+    py_file = tmp_path / "test.py"
+    py_file.write_text(
+        """
+from typing import Any
+
+def typed_func(a: int) -> int:
+    return a
+
+def untyped_func(a):
+    return a
+
+def partial_typed_func(a: int):
+    return a
+
+def another_partial_typed_func(a) -> int:
+    return a
+
+x: Any = 1
+    """,
+        encoding="utf-8",
+    )
+
+    result = check_python_coverage(tmp_path)
+
+    # typed_func: typed (params + return)
+    # untyped_func: untyped
+    # partial_typed_func: typed (params)
+    # another_partial_typed_func: typed (return)
+    # Any count: 1
+
+    assert result["files"] == 1
+    assert result["stats"]["any_count"] == 1
+    assert result["stats"]["typed_functions"] == 3
+    assert result["stats"]["untyped_functions"] == 1
+
+
+def test_check_python_coverage_unreadable_file(tmp_path):
+    """Test Python coverage with an unreadable file."""
+    py_file = tmp_path / "unreadable.py"
+    py_file.write_text("def foo(): pass", encoding="utf-8")
+
+    # Make file unreadable
+    os.chmod(py_file, 0o000)
+
+    try:
+        # Should not raise exception
+        result = check_python_coverage(tmp_path)
+        assert result["files"] == 1
+        # Since it couldn't read the file, stats should be zero
+        assert result["stats"]["typed_functions"] == 0
+        assert result["stats"]["untyped_functions"] == 0
+    finally:
+        # Restore permissions for cleanup
+        os.chmod(py_file, 0o644)
+
+
+def test_check_typescript_coverage_unreadable_file(tmp_path):
+    """Test TypeScript coverage with an unreadable file."""
+    ts_file = tmp_path / "unreadable.ts"
+    ts_file.write_text("let a: any;", encoding="utf-8")
+
+    # Make file unreadable
+    os.chmod(ts_file, 0o000)
+
+    try:
+        # Should not raise exception
+        result = check_typescript_coverage(tmp_path)
+        assert result["files"] == 1
+        # Since it couldn't read the file, stats should be zero
+        assert result["stats"]["any_count"] == 0
+    finally:
+        # Restore permissions for cleanup
+        os.chmod(ts_file, 0o644)
