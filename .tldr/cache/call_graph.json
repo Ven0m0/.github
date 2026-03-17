@@ -1,0 +1,158 @@
+{
+  "edges": [
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_node_project_with_lint_script",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_node_project"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_node_project_with_tsconfig",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_node_project"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_type_coverage.py",
+      "from_func": "test_check_python_coverage_basic",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_python_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_project_type_python",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_project_type"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "from_func": "main",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "find_project_files"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "from_func": "detect_project_type",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_node_project"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_type_coverage.py",
+      "from_func": "test_check_python_coverage_unreadable_file",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_python_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_type_coverage.py",
+      "from_func": "test_check_typescript_coverage_function_stats",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_typescript_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "from_func": "detect_project_type",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_python_project"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "from_func": "main",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_python_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "from_func": "<module>",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "main"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_node_project_invalid_json",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_node_project"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "from_func": "main",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_project_type"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_type_coverage.py",
+      "from_func": "test_check_typescript_coverage_unreadable_file",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_typescript_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_project_type_unknown",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_project_type"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_type_coverage.py",
+      "from_func": "test_check_typescript_coverage_any_detection",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_typescript_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_python_project_requirements",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_python_project"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "from_func": "main",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "run_linter"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "from_func": "main",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_typescript_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_node_project_with_eslint_dep",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_node_project"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_type_coverage.py",
+      "from_func": "test_check_typescript_coverage_no_files",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_typescript_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_project_type_node",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_project_type"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_type_coverage.py",
+      "from_func": "test_check_typescript_coverage_multiple_files",
+      "to_file": "skills/lint-and-validate/scripts/type_coverage.py",
+      "to_func": "check_typescript_coverage"
+    },
+    {
+      "from_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "from_func": "<module>",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "main"
+    },
+    {
+      "from_file": "skills/lint-and-validate/tests/test_lint_runner.py",
+      "from_func": "test_detect_python_project_pyproject",
+      "to_file": "skills/lint-and-validate/scripts/lint_runner.py",
+      "to_func": "detect_python_project"
+    }
+  ],
+  "languages": [
+    "python"
+  ],
+  "timestamp": 1773787713.288866
+}
