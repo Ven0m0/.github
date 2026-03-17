@@ -5,7 +5,7 @@
       "url": "https://api.githubcopilot.com/mcp/",
       "tools": ["*"],
       "headers": {
-        "X-MCP-Toolsets": "default,stargazers,actions,copilot,code_security,dependabot,git,copilot_spaces,github_support_docs_search",
+        "X-MCP-Toolsets": "default,stargazers,actions,copilot,git,copilot_spaces,github_support_docs_search",
         "X-MCP-Insiders": "true"
       }
     },
@@ -13,9 +13,7 @@
       "type": "local",
       "command": "npx",
       "args": ["-y", "@playwright/mcp@latest", "--headless"],
-      "tools": ["browser_navigate", "browser_navigate_back", "browser_snapshot", "browser_click", "browser_type",
-        "browser_fill_form", "browser_select_option", "browser_press_key", "browser_evaluate", "browser_wait_for", "browser_take_screenshot", 
-        "browser_console_messages", "browser_network_requests", "browser_tabs", "browser_close"]
+      "tools": ["browser_navigate", "browser_click", "browser_type", "browser_evaluate", "browser_take_screenshot"]
     },
     "sequential-thinking": {
       "type": "stdio",
