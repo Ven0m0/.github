@@ -100,7 +100,7 @@ def check_typescript_coverage(
             typed += RE_TS_TYPED_ARROW.findall(content)
             stats["total_functions"] += len(typed) + len(untyped)
 
-        except (OSError, UnicodeDecodeError):
+        except OSError:
             continue
 
     # Analyze results
