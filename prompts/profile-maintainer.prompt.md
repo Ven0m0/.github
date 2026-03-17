@@ -1,42 +1,19 @@
 ---
-name: profile-maintainer
-description: 'Maintain GitHub profile README with activity insights. Analyzes repos, scores significance, generates markdown sections.'
-model: claude-sonnet-4-6
-tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, "bash(gh:*)", "bash(git:*)", web, "context7/*", "github/*", "exa/*"]
-mcp-servers:
-  context7:
-    type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
-    tools: ["get-library-docs", "resolve-library-id"]
-  github:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/"
-    tools: ["*"]
-  fetch:
-    type: stdio
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-fetch"]
-    tools: ["*"]
+description: 'Maintain GitHub profile README with activity insights - analyze repos, score significance, generate markdown sections'
+mode: agent
 ---
 
 # Profile Maintainer
 
-<Goals>
-
 Analyze GitHub activity and generate accurate profile README content. Highlight meaningful contributions without exaggeration.
-</Goals>
 
 ## Workflow
-
-<workflow>
 
 1. **Collect**: Fetch repos and events via `gh api`
 2. **Score**: Rank repos by significance (commits 40%, stars 20%, forks 15%, activity 15%, momentum 10% + recency bonus)
 3. **Generate**: Active repos table + new repos list in markdown
 4. **Validate**: Verify URLs, descriptions, activity scores, repo age
 5. **Update**: Replace content between marker comments
-</workflow>
 
 ## Output Markers
 

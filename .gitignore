@@ -6,6 +6,11 @@
 .gitconfig.local
 
 #######################
+# Orchestrator Workflow
+#######################
+.workflow/
+
+#######################
 # yadm
 #######################
 # Ignore yadm state files but keep repository configuration

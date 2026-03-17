@@ -41,6 +41,26 @@ function isString(value: unknown): value is string {
 
 **Accessibility**: semantic HTML, `htmlFor` on labels, `lang` on `<html>`, no `javascript:` URLs, `tabIndex={0}` for custom interactive elements.
 
+## Naming Conventions
+
+- **Variables/Functions**: camelCase (`getUserById`, `isActive`)
+- **Classes/Interfaces/Types**: PascalCase (`UserService`, `AuthConfig`)
+- **Constants**: SCREAMING_SNAKE_CASE (`MAX_RETRIES`, `API_BASE_URL`)
+- **Booleans**: question form (`isActive`, `hasPermission`, `canEdit`)
+
+## Function Rules
+
+- Maximum 20 lines per function (ideally 5-10)
+- Maximum 3 arguments (prefer 0-2)
+- Single responsibility - one function = one job
+- No unexpected side effects
+
+## Error Handling
+
+- Always use try/catch for async operations
+- Provide meaningful error messages with context
+- Never swallow errors silently
+
 <Limitations>
 
 - No `enum` - use `as const`
