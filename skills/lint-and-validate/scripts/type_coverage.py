@@ -100,7 +100,7 @@ def check_typescript_coverage(
             typed += RE_TS_TYPED_ARROW.findall(content)
             stats["total_functions"] += len(typed) + len(untyped)
 
-        except Exception:
+        except (OSError, UnicodeDecodeError):
             continue
 
     # Analyze results
@@ -182,7 +182,7 @@ def check_python_coverage(
             all_funcs = RE_PY_ALL_FUNC.findall(content)
             stats["untyped_functions"] += len(all_funcs) - len(typed_funcs)
 
-        except Exception:
+        except (OSError, UnicodeDecodeError):
             continue
 
     total = stats["typed_functions"] + stats["untyped_functions"]
