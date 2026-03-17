@@ -23,7 +23,7 @@ RE_PY_TYPED_FUNC_PARAMS = re.compile(r"def\s+\w+\s*\([^)]*:[^)]+\)")
 RE_PY_TYPED_FUNC_RETURN = re.compile(r"def\s+\w+\s*\([^)]*\)\s*->")
 RE_PY_ALL_FUNC = re.compile(r"def\s+\w+\s*\(")
 
-EXCLUDE_DIRS = {"venv", "__pycache__", ".git", "node_modules"}
+EXCLUDE_DIRS = {"venv", ".venv", "__pycache__", ".git", "node_modules"}
 
 # Fix Windows console encoding for Unicode output
 try:
