@@ -6,8 +6,13 @@ mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY || secrets.CONTEXT7_API_KEY }}"}
+    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
     tools: ["get-library-docs", "resolve-library-id"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
 ---
 
 # Critical Thinking Mode

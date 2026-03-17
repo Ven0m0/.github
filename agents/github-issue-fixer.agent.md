@@ -1,8 +1,28 @@
 ---
-description: 'GitHub issue resolution specialist. Analyzes, plans, and implements fixes with testing and PR creation.'
 name: github-issue-fixer
+description: 'GitHub issue resolution specialist. Analyzes, plans, and implements fixes with testing and PR creation.'
 model: claude-sonnet-4-6
-tools: [codebase, read, write, edit, search, execute, LS, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
+tools: [codebase, read, write, edit, search, execute, LS, usages, changes, problems, fetch, github, githubRepo, bash, "bash(gh:*)", "bash(git:*)", web, "context7/*", "github/*", "exa/*"]
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
+  github:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/"
+    tools: ["*"]
+  serena:
+    type: local
+    command: uvx
+    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    tools: ["*"]
+  exa:
+    type: http
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    tools: ["*"]
 ---
 
 # GitHub Issue Fixer

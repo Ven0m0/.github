@@ -1,8 +1,23 @@
 ---
-description: 'Maintain GitHub profile README with activity insights. Analyzes repos, scores significance, generates markdown sections.'
 name: profile-maintainer
+description: 'Maintain GitHub profile README with activity insights. Analyzes repos, scores significance, generates markdown sections.'
 model: claude-sonnet-4-6
-tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, bash(gh:*), bash(git:*), web, context7/*, github/*, exa/*]
+tools: [codebase, read, write, edit, search, execute, usages, changes, problems, fetch, github, githubRepo, bash, "bash(gh:*)", "bash(git:*)", web, "context7/*", "github/*", "exa/*"]
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
+  github:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/"
+    tools: ["*"]
+  fetch:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-fetch"]
+    tools: ["*"]
 ---
 
 # Profile Maintainer

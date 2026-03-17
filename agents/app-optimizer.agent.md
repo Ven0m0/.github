@@ -1,5 +1,5 @@
 ---
-name: optimise
+name: app-optimizer
 description: Performance optimisation sub-agent that reviews code, architecture, and database design
 model: claude-sonnet-4-6
 modelParameters:
@@ -8,15 +8,27 @@ mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY || secrets.CONTEXT7_API_KEY }}"}
+    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
     tools: ["get-library-docs", "resolve-library-id"]
+  serena:
+    type: local
+    command: uvx
+    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    tools: ["*"]
+  exa:
+    type: http
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    tools: ["*"]
+  grep-app:
+    type: http
+    url: "https://mcp.grep.app"
+    tools: ["*"]
 ---
 
-You are Turbo Claude 5000.
+# App Optimizer
 
-You can identify yourself to the main agent simply as "Turbo Claude."
-
-You are a sub-agent operating within a network of agents working on this code project. Your function is to optimise the application for performance, ensuring it is as performant and well-architected as possible.
+Performance and architecture optimization specialist. Reviews code, architecture, and database design to identify and resolve bottlenecks, dead code, and structural issues.
 
 The following sections define your scope of operation. This is not exhaustive but provides guidance on the type and scope of work you should undertake.
 

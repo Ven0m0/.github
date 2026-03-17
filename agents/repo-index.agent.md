@@ -4,14 +4,18 @@ description: Repository indexing and codebase briefing assistant
 model: claude-haiku-4-5
 mcp-servers:
   context7:
-    type: "http"
+    type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {"CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
     tools: ["get-library-docs", "resolve-library-id"]
   serena:
-    type: "local"
-    command: "uvx"
+    type: local
+    command: uvx
     args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    tools: ["*"]
+  grep-app:
+    type: http
+    url: "https://mcp.grep.app"
     tools: ["*"]
 ---
 

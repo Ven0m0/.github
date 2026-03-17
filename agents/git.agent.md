@@ -2,8 +2,25 @@
 name: git-expert
 description: 'Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control'
 model: claude-sonnet-4-6
-disable-model-invocation: false
-user-invocable: false
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
+  github:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/"
+    tools: ["*"]
+  grep-app:
+    type: http
+    url: "https://mcp.grep.app"
+    tools: ["*"]
+  memory:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-memory"]
+    tools: ["*"]
 ---
 
 # Git & GitHub CLI Expert Agent
