@@ -7,9 +7,12 @@ set -o pipefail
 
 INPUT=$(cat)
 
-FILE_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // ""' 2>/dev/null)
-OFFSET=$(printf '%s' "$INPUT" | jq -r '.tool_input.offset // 0' 2>/dev/null)
-LIMIT=$(printf '%s' "$INPUT" | jq -r '.tool_input.limit // 0' 2>/dev/null)
+# Source helper script
+source "$(dirname "$0")/helper.sh"
+
+FILE_PATH=$(jq_extract '.tool_input.file_path' '')
+OFFSET=$(jq_extract '.tool_input.offset // 0' '')
+LIMIT=$(jq_extract '.tool_input.limit // 0' '')
 
 _allow() { exit 0; }
 _deny() {

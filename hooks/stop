@@ -6,8 +6,11 @@ set -o pipefail
 
 INPUT=$(cat)
 
-STOP_REASON=$(printf '%s' "$INPUT" | jq -r '.stop_reason // ""' 2>/dev/null)
-SESSION_ID=$(printf '%s' "$INPUT" | jq -r '.session_id // ""' 2>/dev/null)
+# Source helper script
+source "$(dirname "$0")/helper.sh"
+
+STOP_REASON=$(jq_extract '.stop_reason' '')
+SESSION_ID=$(jq_extract '.session_id' '')
 
 LOG_FILE="${HOME}/.claude/sessions.log"
 mkdir -p "$(dirname "$LOG_FILE")"

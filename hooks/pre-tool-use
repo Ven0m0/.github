@@ -6,6 +6,9 @@ set -o pipefail
 
 INPUT=$(cat)
 
+# Source helper script
+source "$(dirname "$0")/helper.sh"
+
 # Helpers
 _allow() { exit 0; }
 _deny() {
@@ -17,30 +20,30 @@ _suppress_ok() {
   exit 0
 }
 
-TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.tool_name // .toolName // ""' 2>/dev/null)
-COMMAND=$(printf '%s' "$INPUT" | jq -r '.tool_input.command // ""' 2>/dev/null)
+TOOL_NAME=$(jq_extract '.tool_name // .toolName' '')
+COMMAND=$(jq_extract '.tool_input.command' '')
 
 # === SIZE LIMIT CHECKS ===
 case "$TOOL_NAME" in
   Write)
-    CONTENT=$(printf '%s' "$INPUT" | jq -r '.tool_input.content // ""' 2>/dev/null)
-    FILE_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // ""' 2>/dev/null)
+    CONTENT=$(jq_extract '.tool_input.content' '')
+    FILE_PATH=$(jq_extract '.tool_input.file_path' '')
     if ((${#CONTENT} > 102400)); then
       _deny "Write blocked: content exceeds 100KB (${#CONTENT}B) for $FILE_PATH. Break into smaller writes."
     fi
     _suppress_ok
     ;;
   Edit | StrReplace)
-    NEW=$(printf '%s' "$INPUT" | jq -r '.tool_input.new_string // ""' 2>/dev/null)
-    FILE_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // ""' 2>/dev/null)
+    NEW=$(jq_extract '.tool_input.new_string' '')
+    FILE_PATH=$(jq_extract '.tool_input.file_path' '')
     if ((${#NEW} > 51200)); then
       _deny "Edit blocked: new_string exceeds 50KB (${#NEW}B) for $FILE_PATH. Use smaller targeted edits."
     fi
     _suppress_ok
     ;;
   Glob)
-    PATTERN=$(printf '%s' "$INPUT" | jq -r '.tool_input.pattern // ""' 2>/dev/null)
-    GLOB_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.path // ""' 2>/dev/null)
+    PATTERN=$(jq_extract '.tool_input.pattern' '')
+    GLOB_PATH=$(jq_extract '.tool_input.path' '')
     HOME_RE='^(/home/[^/]+|~|/Users/[^/]+|/root)/?$'
     if [[ "$PATTERN" =~ \*\* ]]; then
       if [[ "$GLOB_PATH" =~ $HOME_RE ]] || [[ -z "$GLOB_PATH" && "$PWD" =~ $HOME_RE ]]; then
