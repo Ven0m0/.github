@@ -6,8 +6,11 @@ set -o pipefail
 
 INPUT=$(cat)
 
-TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.tool_name // .toolName // ""' 2>/dev/null)
-OUTPUT=$(printf '%s' "$INPUT" | jq -r '.tool_response // .output // ""' 2>/dev/null)
+# Source helper script
+source "$(dirname "$0")/helper.sh"
+
+TOOL_NAME=$(jq_extract '.tool_name // .toolName' '')
+OUTPUT=$(jq_extract '.tool_response // .output' '')
 OUTPUT_BYTES=${#OUTPUT}
 
 # Log large outputs to stderr for visibility

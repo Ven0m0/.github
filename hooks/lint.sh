@@ -2,7 +2,10 @@
 set -o pipefail
 
 INPUT=$(cat 2>/dev/null)
-TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.tool_name // .toolName // ""' 2>/dev/null)
+
+# Source helper script
+source "$(dirname "$0")/helper.sh"
+TOOL_NAME=$(jq_extract '.tool_name // .toolName' '')
 
 if [[ "$TOOL_NAME" = "edit" || "$TOOL_NAME" = "create" ]]; then
   npm run lint-staged

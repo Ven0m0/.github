@@ -6,7 +6,10 @@ set -o pipefail
 
 INPUT=$(cat)
 
-SESSION_ID=$(printf '%s' "$INPUT" | jq -r '.session_id // ""' 2>/dev/null)
+# Source helper script
+source "$(dirname "$0")/helper.sh"
+
+SESSION_ID=$(jq_extract '.session_id' '')
 
 # Initialize state directory
 STATE_DIR="${HOME}/.claude/.statusline"
