@@ -50,6 +50,18 @@
       "command": "npx",
       "args": ["-y", "@morphllm/morphmcp@latest"],
       "env": { "MORPH_API_KEY": "$COPILOT_MCP_MORPH_API_KEY" }
+    },
+    "memory": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "tools": ["*"]
+    },
+    "fetch": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "tools": ["*"]
     }
   }
 }
