@@ -182,7 +182,7 @@ def check_python_coverage(
             all_funcs = RE_PY_ALL_FUNC.findall(content)
             stats["untyped_functions"] += len(all_funcs) - len(typed_funcs)
 
-        except (OSError, UnicodeDecodeError):
+        except OSError:
             continue
 
     total = stats["typed_functions"] + stats["untyped_functions"]
