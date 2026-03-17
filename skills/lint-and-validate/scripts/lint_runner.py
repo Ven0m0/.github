@@ -113,7 +113,19 @@ def run_linter(linter: dict, cwd: Path) -> dict:
 
 
 def main():
-    project_path = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+    try:
+        project_path = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+    except (OSError, RuntimeError) as e:
+        print(f"Error: Invalid path: {e}")
+        sys.exit(1)
+
+    if not project_path.exists():
+        print(f"Error: Path does not exist: {project_path}")
+        sys.exit(1)
+
+    if not project_path.is_dir():
+        print(f"Error: Path is not a directory: {project_path}")
+        sys.exit(1)
 
     print(f"\n{'=' * 60}")
     print("[LINT RUNNER] Unified Linting")
