@@ -52,9 +52,8 @@ jobs:
           sudo apt-get update -q; sudo apt-get install -yq --no-install-recommends ripgrep fd shellcheck shfmt || :
           uv venv && source .venv/bin/activate
           echo 'export PATH="$HOME/.local/bin:$PATH"' | tee -a ~/.bashrc ~/.profile >/dev/null 2>&1
-          uv tool install ruff &
-          uv tool install git+https://github.com/oraios/serena >/dev/null 
-          uv pip install code-graph-mcp ast-grep-py rustworkx pyright >/dev/null
+          uv tool install ruff; uv tool install pyright 
+          uv pip install code-graph-mcp ast-grep-py rustworkx >/dev/null
           bun i -g @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server zon-format >/dev/null || :
           bun pm -g trust --all >/dev/null 2>&1 & || :
           curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash >/dev/null 2>&1 || :; wait
