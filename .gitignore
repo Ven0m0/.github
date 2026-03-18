@@ -263,3 +263,5 @@ github_conf
 .idea/
 
 ‎.tldr/cache/
+.serena/cache
+.serena/project.local.yml
