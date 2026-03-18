@@ -12,6 +12,10 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DEBCONF_NOWARNINGS: yes
   DEBIAN_FRONTEND: "noninteractive"
+  NODE_ENV: "production"
+  PYTHONOPTIMIZE: 1
+  RUSTC_LOG: "off"
+  PYTHONDONTWRITEBYTECODE: 1
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot
   copilot-setup-steps:
