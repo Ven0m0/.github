@@ -1,4 +1,5 @@
 # Ven0m0 .github Repository Guide
+> Use newer/faster/better tools when possible. Always search for the available mcp servers and tools before starting work. Use tools and skills whenever you can.
 
 Organization-wide defaults: community health files, Copilot instructions, AI agents, reusable workflows, and development standards for all Ven0m0 repositories.
 
