@@ -8,7 +8,7 @@ on:
     paths:
       - .github/workflows/copilot-setup-steps.yml
 env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN: ${{ github.token }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot
@@ -42,7 +42,7 @@ jobs:
           git config --global status.short true
       - name: Install tools
         run: |
-          uv venv --seed --system-site-packages -c -p 3.14 && source .venv/bin/activate
+          uv venv && source .venv/bin/activate
           uv tool install ruff &
           uv tool install git+https://github.com/oraios/serena
           uv pip install code-graph-mcp ast-grep-py rustworkx pyright
