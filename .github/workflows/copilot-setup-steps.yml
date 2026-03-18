@@ -1,4 +1,5 @@
 name: "Copilot Setup Steps"
+
 on:
   workflow_dispatch:
   push:
@@ -7,15 +8,21 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
+
 env:
   GH_TOKEN: ${{ github.token }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DEBCONF_NOWARNINGS: yes
   DEBIAN_FRONTEND: "noninteractive"
   NODE_ENV: "production"
   PYTHONOPTIMIZE: 1
   RUSTC_LOG: "off"
   PYTHONDONTWRITEBYTECODE: 1
+  LC_ALL: "C"
+
+defaults:
+  run:
+    shell: 'bash'
+
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot
   copilot-setup-steps:
@@ -30,17 +37,32 @@ jobs:
       id-token: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout Repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
           persist-credentials: false
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT || github.token }}
+      - name: Cache uv
+        uses: actions/cache@v5
+        with:
+          path: ~/.venv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: 3.14
           enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          python-version: 3.14
+
+      - name: Cache bun
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: ${{ runner.os }}-bun-
       - uses: oven-sh/setup-bun@v2
       - name: Git config
+        shell: bash
         run: |
           git config --global diff.suppressBlankEmpty true
           git config --global diff.algorithm histogram
@@ -49,14 +71,17 @@ jobs:
       - name: Install tools
         shell: bash
         run: |
-          sudo apt-get update -q; sudo apt-get install -yq --no-install-recommends ripgrep fd shellcheck shfmt || :
+          sudo apt-get update -q; sudo apt-get install -yq --no-install-recommends ripgrep fd shellcheck shfmt || true
           uv venv && source .venv/bin/activate
-          echo 'export PATH="$HOME/.local/bin:$PATH"' | tee -a ~/.bashrc ~/.profile >/dev/null 2>&1
-          uv tool install ruff; uv tool install pyright; uv tool install git+https://github.com/stbenjam/claudelint
-          uv pip install code-graph-mcp ast-grep-py rustworkx >/dev/null
-          bun i -g @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server zon-format agnix >/dev/null || :
-          bun pm -g trust --all >/dev/null 2>&1 & || :
-          curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash >/dev/null 2>&1 || :; wait
+          echo 'export PATH="$HOME/.local/bin:$PATH"' | tee -a ~/.bashrc ~/.profile >/dev/null 2>&1 || true
+          uv tool install ruff >/dev/null 2>&1 || true
+          uv tool install pyright >/dev/null 2>&1 || true
+          uv tool install git+https://github.com/stbenjam/claudelint >/dev/null 2>&1 || true
+          uv pip install code-graph-mcp ast-grep-py rustworkx >/dev/null || true
+          bun i -g @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server zon-format agnix >/dev/null 2>&1 || true
+          bun pm -g trust --all >/dev/null 2>&1 & || true
+          curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash >/dev/null 2>&1 || true
+          sleep 2
       - name: Index codebase
         run: |
           uvx --from git+https://github.com/oraios/serena serena project index --language bash --language python --language yaml \
