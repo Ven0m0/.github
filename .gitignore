@@ -249,6 +249,7 @@ github_conf
 #######################
 *.sqlite
 *.db
+*.db-wal‎
 *.rdb
 
 #######################
@@ -265,3 +266,4 @@ github_conf
 ‎.tldr/cache/
 .serena/cache
 .serena/project.local.yml
+‎.cachebro/
