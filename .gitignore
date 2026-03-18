@@ -265,6 +265,6 @@ github_conf
 
 .tldr/cache/
 .serena/cache
-.serena/project.yml
 .serena/project.local.yml
 .cachebro/
+.github/hooks/logs
