@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: 3.13
+          python-version: 3.14
           enable-cache: true
       - uses: oven-sh/setup-bun@v2
       - name: Git config
@@ -38,11 +38,10 @@ jobs:
           git config --global status.short true
       - name: Install tools
         run: |
-          # Python tools
+          uv venv --seed --system-site-packages -c -p 3.14 && source .venv/bin/activate
           uv tool install ruff &
-          uv tool install llm-tldr &
-          # JS tools
-          bun add -g @biomejs/biome @ast-grep/cli context-mode &
+          uv pip install code-graph-mcp ast-grep-py rustworkx pyright
+          bun i -g @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server
           # Binary tools (gh release download = single call, no jq/API parsing)
           (gh release download -R mvdan/sh -p 'shfmt_*_linux_amd64' -O /usr/local/bin/shfmt && chmod +x /usr/local/bin/shfmt) &
           (gh release download -R anordal/shellharden -p 'shellharden-x86_64-unknown-linux-gnu.tar.gz' -O- | tar xz -C /usr/local/bin shellharden && chmod +x /usr/local/bin/shellharden) &
@@ -51,5 +50,5 @@ jobs:
           wait
       - name: Index codebase
         run: |
-          uvx --from git+https://github.com/oraios/serena serena project index || :
-          tldr warm . || :; tldr context main --project . || :
+          uvx --from git+https://github.com/oraios/serena serena project index --language bash --language python --language yaml \
+            --language markdown --language typescript --language rust --language toml || :
