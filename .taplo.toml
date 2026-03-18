@@ -1,0 +1,4 @@
+[formatting]
+reorder_keys = false
+compact_inline_tables = true
+allowed_blank_lines = 1
