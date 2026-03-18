@@ -18,6 +18,15 @@ mcp-servers:
     command: npx
     args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     tools: ["*"]
+  exa:
+    type: http
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    tools: ["*"]
+  grep-app:
+    type: http
+    url: "https://mcp.grep.app"
+    tools: ["*"]
 ---
 
 # Planner

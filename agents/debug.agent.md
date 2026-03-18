@@ -1,5 +1,5 @@
 ---
-description: 'Debug your application to find and fix a bug'
+description: 'Debug specialist: systematic bug finding, root cause analysis, and targeted fixes across all languages.'
 name: debug
 model: claude-sonnet-4-6
 mcp-servers:
@@ -22,6 +22,16 @@ mcp-servers:
     type: http
     url: "https://mcp.grep.app"
     tools: ["*"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
+  playwright:
+    type: local
+    command: npx
+    args: ["-y", "@playwright/mcp@latest", "--headless"]
+    tools: ["browser_navigate", "browser_click", "browser_type", "browser_evaluate", "browser_take_screenshot"]
 ---
 
 # Debug Mode Instructions

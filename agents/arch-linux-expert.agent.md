@@ -24,6 +24,11 @@ mcp-servers:
     command: npx
     args: ["-y", "@modelcontextprotocol/server-fetch"]
     tools: ["*"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
 ---
 
 # Arch Linux Expert

@@ -15,6 +15,10 @@ mcp-servers:
     command: uvx
     args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
     tools: ["*"]
+  grep-app:
+    type: http
+    url: "https://mcp.grep.app"
+    tools: ["*"]
 ---
 
 # Explorer
