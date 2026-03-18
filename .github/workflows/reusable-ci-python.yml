@@ -20,12 +20,12 @@ on:
         description: 'Python version to use'
         required: false
         type: string
-        default: '3.12'
+        default: '3.14'
       python-versions-matrix:
         description: 'JSON array of Python versions for matrix testing (e.g., ''["3.12", "3.13"]'')'
         required: false
         type: string
-        default: '["3.12"]'
+        default: '["3.14"]'
       coverage-threshold:
         description: 'Minimum coverage percentage to pass'
         required: false
