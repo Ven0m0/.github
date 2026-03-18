@@ -47,6 +47,7 @@ jobs:
         run: |
           sudo apt-get update -q; sudo apt-get install -yq --no-install-recommends ripgrep fd shellcheck shfmt || :
           uv venv && source .venv/bin/activate
+          echo 'export PATH="$HOME/.local/bin:$PATH"' | tee -a ~/.bashrc ~/.profile >/dev/null 2>&1
           uv tool install ruff &
           uv tool install git+https://github.com/oraios/serena >/dev/null 
           uv pip install code-graph-mcp ast-grep-py rustworkx pyright >/dev/null
