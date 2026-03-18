@@ -225,6 +225,7 @@ refactor(skills): consolidate code-maintenance patterns
 | **Python** | `uv run` | `uv` | `ruff` | `ruff format` | `mypy --strict` | `pytest` |
 | **Bash** | - | - | `shellcheck` | `shfmt` | - | - |
 | **Rust** | `cargo` | `cargo` | `clippy` | `cargo fmt` | - | `cargo test` |
+Use newer/faster/better tools when possible. Always search for the available mcp servers and tools before starting work. Use tools and skills whenever you can.
 </tooling>
 
 ---
