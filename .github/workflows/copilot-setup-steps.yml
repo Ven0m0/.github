@@ -1,4 +1,5 @@
 name: "Copilot Setup Steps"
+
 on:
   workflow_dispatch:
   push:
@@ -7,6 +8,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
+
 env:
   GH_TOKEN: ${{ github.token }}
   DEBCONF_NOWARNINGS: yes
@@ -15,6 +17,12 @@ env:
   PYTHONOPTIMIZE: 1
   RUSTC_LOG: "off"
   PYTHONDONTWRITEBYTECODE: 1
+  LC_ALL: "C"
+
+defaults:
+  run:
+    shell: 'bash'
+
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot
   copilot-setup-steps:
@@ -29,16 +37,32 @@ jobs:
       id-token: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout Repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
           persist-credentials: false
+          token: ${{ secrets.PAT || github.token }}
+      - name: Cache uv
+        uses: actions/cache@v5
+        with:
+          path: ~/.venv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: 3.14
           enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          python-version: 3.14
+
+      - name: Cache bun
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: ${{ runner.os }}-bun-
       - uses: oven-sh/setup-bun@v2
       - name: Git config
+        shell: bash
         run: |
           git config --global diff.suppressBlankEmpty true
           git config --global diff.algorithm histogram
