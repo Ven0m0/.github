@@ -23,9 +23,10 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 .github/
   agents/            # 14 AI agents (6 pipeline + 8 supporting)
   skills/            # 29 reusable knowledge modules
-  instructions/      # 37 language/domain standards
-  hooks/             # Git pre-commit hooks
-  prompts/           # Reusable prompt templates
+  .github/hooks/     # Git pre-commit hook scripts
+  .github/prompts/   # Reusable prompt templates
+  .github/instructions/ # 37 language/domain standards
+  .github/hooks.json # Copilot agent hooks configuration
   .gemini/           # Google Gemini commands and config
   .vscode/           # VS Code settings (MCP, extensions)
   .github/workflows/ # Reusable CI/CD workflows
@@ -138,7 +139,7 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 
 ## Instructions (37)
 
-Scoped by language and domain in `instructions/`. Copilot automatically applies based on file type via `applyTo` patterns.
+Scoped by language and domain in `.github/instructions/`. Copilot automatically applies based on file type via `applyTo` patterns.
 
 ### Language Standards
 
@@ -487,14 +488,14 @@ jobs:
 1. Create `skills/skill-name/` directory
 2. Create `skills/skill-name/SKILL.md` with metadata
 3. Add prerequisites, workflows, examples
-4. Update instructions/INDEX.md
+4. Update .github/instructions/INDEX.md
 
 ### Adding Instructions
 
-1. Create `instructions/domain.instructions.md`
+1. Create `.github/instructions/domain.instructions.md`
 2. Set `applyTo` glob pattern in YAML frontmatter
 3. Add applicable standards and patterns
-4. Update instructions/INDEX.md
+4. Update .github/instructions/INDEX.md
 
 ### Reusable Workflows
 
@@ -544,7 +545,7 @@ mcp-servers:
 
 ## Resources
 
-- **Instructions**: `instructions/` for language-specific standards
+- **Instructions**: `.github/instructions/` for language-specific standards
 - **Skills**: `skills/` for domain knowledge modules
 - **Agents**: `agents/` for specialized autonomous assistants
 - **Workflows**: `.github/workflows/` for CI/CD patterns

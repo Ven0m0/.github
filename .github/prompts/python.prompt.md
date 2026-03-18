@@ -9,7 +9,7 @@ tools: ['read', 'edit', 'search', 'execute']
 
 **Goal**: Refactor existing Python code for maintainability, type safety, and performance while preserving behavior.
 
-Standards: See `instructions/python.instructions.md`
+Standards: See `.github/instructions/python.instructions.md`
 
 ## Key Requirements
 

@@ -9,7 +9,7 @@ applyTo: '**/*.agent.md,**/SKILL.md,**/*.instructions.md,**/*.prompt.md'
 
 - **Agents**: `.github/agents/` or `agents/` | Docs: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-custom-agents
 - **Skills**: `skills/<name>/` or `.github/skills/<name>/` | Task-specific workflows, portable across VS Code/Copilot
-- **Instructions**: `instructions/` | Coding standards, applyTo glob
+- **Instructions**: `.github/instructions/` | Coding standards, applyTo glob
 - **Prompts**: `.github/prompts/` | `.prompt.md` extension
 
 </HighLevelDetails>

@@ -9,7 +9,7 @@ applyTo: "**/*.sh"
 ## Context
 
 - **Target**: Bash/Shell
-- **Standards**: See `instructions/bash.instructions.md` for complete rules
+- **Standards**: See `.github/instructions/bash.instructions.md` for complete rules
 - **Platforms**: Arch, Debian, Termux
 
 ## Task: ${TASK_NAME}
@@ -18,7 +18,7 @@ applyTo: "**/*.sh"
 
 ## Execution Steps
 
-Follow the workflow defined in `instructions/bash.instructions.md`:
+Follow the workflow defined in `.github/instructions/bash.instructions.md`:
 
 1. **Find**: `fd -e sh -e bash -t f -H -E .git ${scope}`
 2. **Lint**: `shellcheck --severity=style --format=diff ${files}`

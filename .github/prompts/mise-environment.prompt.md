@@ -9,7 +9,7 @@ Dev environment management via [mise](https://mise.jdx.dev/). Handles tool versi
 
 ## Reference
 
-- `instructions/mise.instructions.md`
+- `.github/instructions/mise.instructions.md`
 
 ## Core Rules
 
