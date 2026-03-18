@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     continue-on-error: true
-    # Set permissions to the lowest needed. Copilot gets its own token for operations
     permissions:
       contents: write
       actions: write
@@ -41,13 +40,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
-          persist-credentials: false
-          token: ${{ secrets.PAT || github.token }}
       - name: Cache uv
         uses: actions/cache@v5
         with:
-          path: ~/.venv
+          path: ~/.local/share/uv
           key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
+          restore-keys: ${{ runner.os }}-uv-
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
@@ -58,7 +56,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock', '**/bun.lockb') }}
           restore-keys: ${{ runner.os }}-bun-
       - uses: oven-sh/setup-bun@v2
       - name: Git config
@@ -72,12 +70,11 @@ jobs:
         shell: bash
         run: |
           sudo apt-get update -q; sudo apt-get install -yq --no-install-recommends ripgrep fd shellcheck shfmt || true
-          uv venv && source .venv/bin/activate
           echo 'export PATH="$HOME/.local/bin:$PATH"' | tee -a ~/.bashrc ~/.profile >/dev/null 2>&1 || true
           uv tool install ruff >/dev/null 2>&1 || true
           uv tool install pyright >/dev/null 2>&1 || true
           uv tool install git+https://github.com/stbenjam/claudelint >/dev/null 2>&1 || true
-          uv pip install code-graph-mcp ast-grep-py rustworkx >/dev/null || true
+          uv pip install --system code-graph-mcp ast-grep-py rustworkx >/dev/null 2>&1 || true
           bun i -g @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server zon-format agnix >/dev/null 2>&1 || true
           bun pm -g trust --all >/dev/null 2>&1 & || true
           curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash >/dev/null 2>&1 || true
