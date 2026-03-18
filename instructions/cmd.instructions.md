@@ -1,6 +1,6 @@
 ---
 description: 'CMD/Batch scripting standards for Windows batch file development'
-applyTo: '**/*.bat,**/*.cmd'
+applyTo: "**/*.{bat,cmd}"
 ---
 
 # CMD/Batch Scripting Standards

@@ -3,55 +3,35 @@
 # Runs as a PreToolUse hook for the Read tool
 # Inspired by github.com/johnzfitch/claude-warden
 
-set -o pipefail
+set -euo pipefail
 
-INPUT=$(cat)
+INPUT="$(cat)"
 
 # Source helper script
 source "$(dirname "$0")/helper.sh"
 
-FILE_PATH=$(jq_extract '.tool_input.file_path' '')
-OFFSET=$(jq_extract '.tool_input.offset // 0' '')
-LIMIT=$(jq_extract '.tool_input.limit // 0' '')
+FILE_PATH="$(tool_args_extract '.path // .file_path // empty' '' '.tool_input.file_path')"
+LIMIT="$(tool_args_extract '.limit // 0' '0' '.tool_input.limit')"
 
-_allow() { exit 0; }
-_deny() {
-  printf '{"decision":"block","reason":"%s"}\n' "${1//\"/\'}"
-  exit 0
-}
-
-[[ -z "$FILE_PATH" ]] && _allow
+[[ -z "${FILE_PATH}" ]] && exit 0
 
 # Skip non-existent or non-regular files
-[[ ! -f "$FILE_PATH" ]] && _allow
+[[ ! -f "${FILE_PATH}" ]] && exit 0
 
 # Get file size in bytes
-FILE_BYTES=$(wc -c <"$FILE_PATH" 2>/dev/null || echo 0)
-FILE_LINES=$(wc -l <"$FILE_PATH" 2>/dev/null || echo 0)
+FILE_BYTES="$(wc -c <"${FILE_PATH}" 2>/dev/null || echo 0)"
+FILE_LINES="$(wc -l <"${FILE_PATH}" 2>/dev/null || echo 0)"
 
 MAX_BYTES=$((2 * 1024 * 1024)) # 2MB hard limit
 
 # Block reads of files over 2MB without offset/limit
 if ((FILE_BYTES > MAX_BYTES)) && ((LIMIT == 0)); then
-  _deny "File too large to read in full (${FILE_BYTES}B, max 2MB). Use Grep to find relevant sections, then Read with offset and limit parameters."
-fi
-
-# Warn on large reads without bounds (500+ lines, no limit set)
-if ((FILE_LINES > 500)) && ((LIMIT == 0)); then
-  cat <<EOF
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PreToolUse",
-    "additionalContext": "Large file detected (${FILE_LINES} lines). Consider using Read with offset and limit to load only the relevant section, or use Grep to find the target lines first."
-  }
-}
-EOF
-  exit 0
+  deny_tool_use "File too large to read in full (${FILE_BYTES}B, max 2MB). Use Grep to find relevant sections, then Read with offset and limit parameters."
 fi
 
 # Binary file detection: skip reads of binary files
-if file "$FILE_PATH" 2>/dev/null | grep -q 'binary\|executable\|data'; then
-  _deny "Blocked: $FILE_PATH appears to be a binary file. Use wc -c or file command to inspect it instead."
+if file "${FILE_PATH}" 2>/dev/null | grep -q 'binary\|executable\|data'; then
+  deny_tool_use "Blocked: ${FILE_PATH} appears to be a binary file. Use wc -c or file command to inspect it instead."
 fi
 
-_allow
+exit 0

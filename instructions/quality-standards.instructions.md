@@ -1,5 +1,4 @@
 ---
-description: 'Code review methodology, quality metrics, and performance optimization standards'
 applyTo: "**"
 ---
 

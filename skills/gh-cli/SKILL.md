@@ -4,7 +4,8 @@ description: GitHub CLI (gh) reference for repositories, issues, PRs, Actions, r
 user-invocable: true
 disable-model-invocation: false
 context: fork
-allowed-tools: [Bash(gh *), Bash(git *)]
+agent: general-purpose
+allowed-tools: "Bash(gh *), Bash(git *)"
 ---
 
 # GitHub CLI (gh)
@@ -159,10 +160,14 @@ gh issue list --search "label:stale" --json id --jq '
   if length == 0 then
     "query { __typename }"
   else
-    "mutation { " + (to_entries | map("
-    c\(.key): addComment(input:{subjectId:\"\(.value.id)\",body:\"Closing as stale\"}){clientMutationId}
-    s\(.key): closeIssue(input:{issueId:\"\(.value.id)\"}){clientMutationId}
-  ") | join("")) + " }"
+    "mutation { " + (
+      to_entries
+      | map(
+        "c\(.key): addComment(input:{subjectId:" + (.value.id | @json) + ",body:" + ("Closing as stale" | @json) + "}){clientMutationId}" +
+        " s\(.key): closeIssue(input:{issueId:" + (.value.id | @json) + "}){clientMutationId}"
+      )
+      | join("")
+    ) + " }"
   end
 ' | gh api graphql -f query=-
 ```

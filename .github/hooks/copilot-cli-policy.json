@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "../../hooks/session-start",
+        "cwd": ".github/hooks",
+        "timeoutSec": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "../../hooks/pre-tool-use",
+        "cwd": ".github/hooks",
+        "timeoutSec": 15
+      },
+      {
+        "type": "command",
+        "bash": "../../hooks/read-guard",
+        "cwd": ".github/hooks",
+        "timeoutSec": 15
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "../../hooks/post-tool-use",
+        "cwd": ".github/hooks",
+        "timeoutSec": 10
+      },
+      {
+        "type": "command",
+        "bash": "../../hooks/lint.sh",
+        "cwd": ".github/hooks",
+        "timeoutSec": 30
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "../../hooks/session-end",
+        "cwd": ".github/hooks",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

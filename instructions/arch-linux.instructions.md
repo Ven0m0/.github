@@ -1,5 +1,4 @@
 ---
-description: 'Arch Linux administration, pacman workflows, and rolling-release best practices'
 applyTo: "**"
 excludeAgent: "code-review"
 ---

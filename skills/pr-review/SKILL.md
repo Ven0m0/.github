@@ -1,10 +1,7 @@
 ---
 name: pr-review
 description: Summarize changes in a pull request with structured analysis of what changed, why, and potential concerns. Use when asked to review a PR, summarize PR changes, or understand what a PR does.
-user-invocable: true
-disable-model-invocation: false
-context: fork
-allowed-tools: [Bash(gh *), Read, Glob, Grep]
+allowed-tools: "Bash(gh *), Read, Glob, Grep"
 ---
 
 # Pull Request Summary

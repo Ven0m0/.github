@@ -263,7 +263,8 @@ github_conf
 !.vscode/*.code-snippets
 .idea/
 
-‎.tldr/cache/
+.tldr/cache/
 .serena/cache
+.serena/project.yml
 .serena/project.local.yml
-‎.cachebro/
+.cachebro/

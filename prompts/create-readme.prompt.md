@@ -1,5 +1,5 @@
 ---
-agent: 'agent'
+agent: "always"
 description: 'Create a README.md file for the project'
 ---
 

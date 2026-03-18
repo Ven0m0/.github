@@ -1,6 +1,5 @@
 ---
-applyTo: "**/*.cpp,**/*.hpp,**/*.h,**/*.cc,**/CMakeLists.txt"
-description: "C++23/20 standards: smart pointers, RAII, safety"
+applyTo: "**/{*.cpp,*.hpp,*.h,*.cc,CMakeLists.txt}"
 ---
 
 # C++ Standards

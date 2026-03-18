@@ -1,5 +1,5 @@
 ---
-applyTo: "**/Dockerfile*,**/docker-compose*.yml,**/docker-compose*.yaml"
+applyTo: "**/{Dockerfile*,docker-compose*.yml,docker-compose*.yaml}"
 description: "Docker standards - Auto-Orchestrator"
 ---
 
