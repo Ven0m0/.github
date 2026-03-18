@@ -1,5 +1,5 @@
 ---
-applyTo: "*"
+applyTo: "**"
 ---
 
 # File Reading Optimization
