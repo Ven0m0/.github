@@ -41,7 +41,7 @@ jobs:
           uv venv --seed --system-site-packages -c -p 3.14 && source .venv/bin/activate
           uv tool install ruff &
           uv pip install code-graph-mcp ast-grep-py rustworkx pyright
-          bun i -g @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server
+          bun i -g @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server zon-format
           # Binary tools (gh release download = single call, no jq/API parsing)
           (gh release download -R mvdan/sh -p 'shfmt_*_linux_amd64' -O /usr/local/bin/shfmt && chmod +x /usr/local/bin/shfmt) &
           (gh release download -R anordal/shellharden -p 'shellharden-x86_64-unknown-linux-gnu.tar.gz' -O- | tar xz -C /usr/local/bin shellharden && chmod +x /usr/local/bin/shellharden) &
