@@ -1,5 +1,4 @@
 name: "Copilot Setup Steps"
-
 on:
   workflow_dispatch:
   push:
@@ -8,20 +7,11 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-
-env:
-  DEBCONF_NOWARNINGS: yes
-  DEBIAN_FRONTEND: "noninteractive"
-  #NODE_ENV: "production"
-  #PYTHONDONTWRITEBYTECODE: 1
-  #BINSTALL_DISABLE_TELEMETRY: true
-
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    #timeout-minutes: 59
     steps:
       - uses: actions/checkout@v6
       - name: Install uv
