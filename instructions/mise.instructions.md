@@ -1,5 +1,5 @@
 ---
-applyTo: "mise.toml,mise.*.toml,mise-tasks/**,.mise/**,**/mise.toml,**/mise.lock,.tool-versions,Dockerfile,docker-compose*.yml,.github/workflows/**,.gitlab-ci.yml"
+applyTo: "**/{mise.toml,mise.*.toml,.tool-versions,Dockerfile,docker-compose*.yml,.gitlab-ci.yml}"
 ---
 
 # Mise (mise-en-place) Instructions

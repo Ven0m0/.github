@@ -2,22 +2,23 @@
 # Stop hook: final checks before Claude stops responding
 # Inspired by github.com/johnzfitch/claude-warden
 
-set -o pipefail
+set -euo pipefail
 
-INPUT=$(cat)
+INPUT="$(cat)"
 
 # Source helper script
 source "$(dirname "$0")/helper.sh"
 
-STOP_REASON=$(jq_extract '.stop_reason' '')
-SESSION_ID=$(jq_extract '.session_id' '')
+STOP_REASON="$(jq_extract '.reason // .stop_reason // empty' '')"
+SESSION_PATH="$(jq_extract '.cwd // empty' '')"
 
 LOG_FILE="${HOME}/.claude/sessions.log"
-mkdir -p "$(dirname "$LOG_FILE")"
+mkdir -p "$(dirname "${LOG_FILE}")"
+LOG_TIMESTAMP="$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)"
 printf '[%s] stop reason=%s session=%s\n' \
-  "$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)" \
-  "$STOP_REASON" \
-  "$SESSION_ID" >>"$LOG_FILE"
+  "${LOG_TIMESTAMP}" \
+  "${STOP_REASON}" \
+  "${SESSION_PATH}" >>"${LOG_FILE}"
 
 # Continue normally
 cat <<'EOF'

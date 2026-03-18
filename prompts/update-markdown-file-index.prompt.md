@@ -1,5 +1,5 @@
 ---
-agent: 'agent'
+agent: "always"
 description: 'Update a markdown file section with an index/table of files from a specified folder.'
 tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
@@ -52,10 +52,10 @@ Group files by type/category with separate sections or sub-tables.
 
 ## Update Strategy
 
-- „ **Update existing**: If table/index section exists, replace content while preserving structure
-- ž• **Add new**: If no existing section, create new section using best-fit format
+- - **Update existing**: If table/index section exists, replace content while preserving structure
+- -- **Add new**: If no existing section, create new section using best-fit format
 -  **Preserve**: Maintain existing markdown formatting, heading levels, and document flow
-- — **Links**: Use relative paths for file links within the repository
+- - **Links**: Use relative paths for file links within the repository
 
 ## Section Identification
 

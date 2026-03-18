@@ -1,6 +1,5 @@
 ---
-applyTo: "**/api/**,**/server/**,**/routes/**"
-description: "Backend/API coding standards - Auto-Orchestrator"
+applyTo: "**/{api,server,routes}/**"
 ---
 
 # Backend/API Standards

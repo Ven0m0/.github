@@ -1,6 +1,5 @@
 ---
-applyTo: "**/*.java,**/pom.xml,**/build.gradle,**/build.gradle.kts"
-description: "Java 21 LTS: records, virtual threads, pattern matching"
+applyTo: "**/{*.java,pom.xml,build.gradle,build.gradle.kts}"
 ---
 
 # Java Standards

@@ -2,62 +2,37 @@
 # Post-tool-use hook: output size tracking, large output truncation warnings
 # Inspired by github.com/johnzfitch/claude-warden
 
-set -o pipefail
+set -euo pipefail
 
-INPUT=$(cat)
+INPUT="$(cat)"
 
 # Source helper script
 source "$(dirname "$0")/helper.sh"
 
-TOOL_NAME=$(jq_extract '.tool_name // .toolName' '')
-OUTPUT=$(jq_extract '.tool_response // .output' '')
+TOOL_NAME="$(jq_extract '.toolName // .tool_name' '')"
+OUTPUT="$(jq_extract '.toolResult.textResultForLlm // .tool_response // .output' '')"
+RESULT_TYPE="$(jq_extract '.toolResult.resultType // empty' '')"
 OUTPUT_BYTES=${#OUTPUT}
 
 # Log large outputs to stderr for visibility
 LOG_FILE="${HOME}/.claude/hook-stats.log"
-mkdir -p "$(dirname "$LOG_FILE")"
+mkdir -p "$(dirname "${LOG_FILE}")"
 
-TIMESTAMP=$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)
+TIMESTAMP="$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)"
 
 # Warn on large outputs (>20KB)
 if ((OUTPUT_BYTES > 20480)); then
-  printf '[%s] LARGE_OUTPUT tool=%s bytes=%d\n' "$TIMESTAMP" "$TOOL_NAME" "$OUTPUT_BYTES" >>"$LOG_FILE"
-
-  # For Read tool: large reads suggest unbounded file reading
-  if [[ "$TOOL_NAME" == "Read" ]] && ((OUTPUT_BYTES > 50000)); then
-    cat <<'EOF'
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": "Large file read detected (>50KB). For future reads: use Grep first to find line numbers, then Read with offset+limit. Prefer targeted 50-100 line sections over full file reads."
-  }
-}
-EOF
-    exit 0
-  fi
-
-  # For Bash tool: large output suggests unbounded commands
-  if [[ "$TOOL_NAME" == "Bash" ]] && ((OUTPUT_BYTES > 30000)); then
-    cat <<'EOF'
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": "Large command output detected (>30KB). Pipe future commands through head -n 50 or tail -n 50 to limit output size."
-  }
-}
-EOF
-    exit 0
-  fi
+  printf '[%s] LARGE_OUTPUT tool=%s bytes=%d result=%s\n' "${TIMESTAMP}" "${TOOL_NAME}" "${OUTPUT_BYTES}" "${RESULT_TYPE}" >>"${LOG_FILE}"
 fi
 
 # Track tool usage stats
-printf '[%s] tool=%s bytes=%d\n' "$TIMESTAMP" "$TOOL_NAME" "$OUTPUT_BYTES" >>"$LOG_FILE"
+printf '[%s] tool=%s bytes=%d result=%s\n' "${TIMESTAMP}" "${TOOL_NAME}" "${OUTPUT_BYTES}" "${RESULT_TYPE}" >>"${LOG_FILE}"
 
 # Rotate log if over 2000 lines
-LINE_COUNT=$(wc -l <"$LOG_FILE" 2>/dev/null || echo 0)
+LINE_COUNT="$(wc -l <"${LOG_FILE}" 2>/dev/null || echo 0)"
 if ((LINE_COUNT > 2000)); then
-  TMP=$(mktemp)
-  tail -n 1000 "$LOG_FILE" >"$TMP" && mv "$TMP" "$LOG_FILE"
+  TMP="$(mktemp)"
+  tail -n 1000 "${LOG_FILE}" >"${TMP}" && mv "${TMP}" "${LOG_FILE}"
 fi
 
 exit 0

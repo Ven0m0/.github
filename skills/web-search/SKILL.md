@@ -2,6 +2,7 @@
 name: web-search
 description: Search web content using Exa advanced search across categories - personal sites/blogs, research papers, and tweets/X. Use when searching for web content, academic papers, blog posts, or social media discussions.
 context: fork
+agent: general-purpose
 ---
 
 # Web Search (Exa Advanced)

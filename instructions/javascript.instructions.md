@@ -1,5 +1,4 @@
 ---
-description: 'JavaScript/TypeScript coding standards: strict types, modern patterns, accessibility'
 applyTo: '**/*.{js,jsx,ts,tsx,mjs}'
 ---
 

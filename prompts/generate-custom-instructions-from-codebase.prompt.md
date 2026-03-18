@@ -1,6 +1,6 @@
 ---
 description: 'Migration instructions generator for GitHub Copilot from code evolution analysis'
-agent: 'agent'
+agent: "always"
 ---
 
 # Migration Instructions Generator

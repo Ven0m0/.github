@@ -2,32 +2,33 @@
 # Session-end hook: log session completion and stats
 # Inspired by github.com/johnzfitch/claude-warden
 
-set -o pipefail
+set -euo pipefail
 
-INPUT=$(cat)
+INPUT="$(cat)"
 
 # Source helper script
 source "$(dirname "$0")/helper.sh"
 
-SESSION_ID=$(jq_extract '.session_id' '')
+SESSION_REASON="$(jq_extract '.reason // .stop_reason // empty' '')"
 STATE_DIR="${HOME}/.claude/.statusline"
 LOG_FILE="${HOME}/.claude/sessions.log"
 
 # Compute session duration if start time was recorded
 DURATION="unknown"
-START_FILE="$STATE_DIR/.session_start"
-if [[ -f "$START_FILE" ]]; then
-  START_TIME=$(cat "$START_FILE" 2>/dev/null || echo 0)
-  END_TIME=$(date +%s)
+START_FILE="${STATE_DIR}/.session_start"
+if [[ -f "${START_FILE}" ]]; then
+  START_TIME="$(cat "${START_FILE}" 2>/dev/null || echo 0)"
+  END_TIME="$(date +%s)"
   DURATION=$((END_TIME - START_TIME))
-  rm -f "$START_FILE"
+  rm -f "${START_FILE}"
 fi
 
 # Log session end
-mkdir -p "$(dirname "$LOG_FILE")"
+mkdir -p "$(dirname "${LOG_FILE}")"
+LOG_TIMESTAMP="$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)"
 printf '[%s] session_end id=%s duration=%ss\n' \
-  "$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)" \
-  "$SESSION_ID" \
-  "$DURATION" >>"$LOG_FILE"
+  "${LOG_TIMESTAMP}" \
+  "${SESSION_REASON:-complete}" \
+  "${DURATION}" >>"${LOG_FILE}"
 
 exit 0

@@ -1,6 +1,5 @@
 ---
-description: 'Instructions for building MCP servers using the Python SDK'
-applyTo: '**/*.{py,pyi},**/pyproject.toml'
+applyTo: "**/{*.py,*.pyi,pyproject.toml}"
 ---
 
 # Python MCP Server Development

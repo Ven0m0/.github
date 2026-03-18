@@ -1,6 +1,5 @@
 ---
-applyTo: "**/*.css,**/*.scss,**/*.tsx,**/*.jsx"
-description: "Frontend/UI coding standards - Auto-Orchestrator"
+applyTo: "**/*.{css,scss,tsx,jsx}"
 ---
 
 # Frontend/UI Standards

@@ -206,7 +206,7 @@ refactor(skills): consolidate code-maintenance patterns
 - **Merge**: Squash commits or rebase-merge for clean history
 ---
 ## Tooling Preferences
-<Tooling>
+<tooling>
 
 ### All Platforms (Windows/Mac/Linux)
 | Task | Preferred | Fallback |
