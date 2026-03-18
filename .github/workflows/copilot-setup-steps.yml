@@ -9,7 +9,6 @@ on:
       - .github/workflows/copilot-setup-steps.yml
 env:
   GH_TOKEN: ${{ github.token }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DEBCONF_NOWARNINGS: yes
   DEBIAN_FRONTEND: "noninteractive"
   NODE_ENV: "production"
@@ -34,7 +33,6 @@ jobs:
         with:
           fetch-depth: 1
           persist-credentials: false
-          github_token: ${{ secrets.GITHUB_TOKEN }}
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: 3.14
