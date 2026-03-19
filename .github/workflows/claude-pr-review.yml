@@ -28,7 +28,7 @@ jobs:
             echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           fi
       - name: Checkout PR
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/head', inputs.pr_number) || '' }}
