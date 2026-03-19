@@ -12,6 +12,9 @@ mcp-servers:
     type: http
     url: "https://api.githubcopilot.com/mcp/"
     tools: ["*"]
+    headers:
+      X-MCP-Toolsets: "default,stargazers,actions,copilot,git,copilot_spaces,github_support_docs_search"
+      X-MCP-Insiders: "true"
   serena:
     type: local
     command: uvx
@@ -21,6 +24,20 @@ mcp-servers:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
     headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    tools: ["*"]
+  ref-tools:
+    type: http
+    url: "https://api.ref.tools/mcp"
+    headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
+    tools: ["*"]
+  grep-app:
+    type: http
+    url: "https://mcp.grep.app"
+    tools: ["*"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     tools: ["*"]
 ---
 

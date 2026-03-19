@@ -23,6 +23,16 @@ mcp-servers:
     url: "https://api.ref.tools/mcp"
     headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
     tools: ["*"]
+  playwright:
+    type: local
+    command: npx
+    args: ["-y", "@playwright/mcp@latest", "--headless"]
+    tools: ["browser_navigate", "browser_click", "browser_type", "browser_evaluate", "browser_take_screenshot"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
 ---
 
 # Senior Frontend Architect

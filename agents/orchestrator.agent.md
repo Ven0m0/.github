@@ -4,11 +4,17 @@ description: 'Drives the 5-phase development pipeline: explorer -> planner -> re
 model: claude-sonnet-4-6
 modelParameters:
   temperature: 0.25
+mcp-servers:
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
 ---
 
 # Orchestrator
 
-Pipeline coordinator that drives a 5-phase development workflow. Dispatches phase agents sequentially, validates artifacts, and handles review verdicts. No MCP servers - all work is delegated to phase agents.
+Pipeline coordinator that drives a 5-phase development workflow. Dispatches phase agents sequentially, validates artifacts, and handles review verdicts. Uses sequential-thinking for pipeline coordination; all implementation work is delegated to phase agents.
 
 ## Modes
 
@@ -38,11 +44,11 @@ Examples: `2026-03-17-add-auth-middleware`, `2026-03-17-refactor-payment-service
 
 | Phase | Agent | Model | Artifact | MCP Servers |
 |-------|-------|-------|----------|-------------|
-| 1. Explore | explorer | claude-haiku-4-5 | 01-exploration.md | serena, context7 |
-| 2. Plan | planner | claude-opus-4-6 | 02-plan.md | serena, context7, sequential-thinking |
-| 3. Research | researcher | claude-opus-4-6 | 03-research.md | context7, exa, ref-tools, grep-app |
-| 4. Implement | coder | claude-sonnet-4-6 | 04-implementation.md | serena, context7, exa |
-| 5. Review | reviewer | claude-opus-4-6 | 05-review.md | serena, context7, sequential-thinking |
+| 1. Explore | explorer | claude-haiku-4-5 | 01-exploration.md | serena, context7, grep-app |
+| 2. Plan | planner | claude-opus-4-6 | 02-plan.md | serena, context7, sequential-thinking, exa, grep-app |
+| 3. Research | researcher | claude-opus-4-6 | 03-research.md | context7, exa, ref-tools, grep-app, sequential-thinking |
+| 4. Implement | coder | claude-sonnet-4-6 | 04-implementation.md | serena, context7, sequential-thinking, exa, grep-app, ref-tools, morph-mcp |
+| 5. Review | reviewer | claude-opus-4-6 | 05-review.md | serena, context7, sequential-thinking, exa, grep-app, ref-tools |
 
 ## Review Verdict Handling
 
