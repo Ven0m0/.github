@@ -109,8 +109,10 @@ def check_typescript_coverage(
             typed_count = len(typed_indices)
             stats["total_functions"] += typed_count + untyped_count
 
-        except Exception:
+except OSError:
             continue
+        except UnicodeDecodeError:
+            continue  # Already handled by errors="ignore" but kept for safety
 
     # Analyze results
     if stats["any_count"] == 0:
