@@ -174,13 +174,15 @@ def check_python_coverage(
             stats["any_count"] += len(any_matches)
 
             # Find functions with type hints
-            typed_funcs = RE_PY_TYPED_FUNC_PARAMS.findall(content)
-            typed_funcs += RE_PY_TYPED_FUNC_RETURN.findall(content)
-            stats["typed_functions"] += len(typed_funcs)
+            # Use a set of match positions to avoid double-counting functions
+            # that have both parameter and return types
+            typed_positions = {m.start() for m in RE_PY_TYPED_FUNC_PARAMS.finditer(content)}
+            typed_positions.update(m.start() for m in RE_PY_TYPED_FUNC_RETURN.finditer(content))
+            stats["typed_functions"] += len(typed_positions)
 
             # Find functions without type hints
             all_funcs = RE_PY_ALL_FUNC.findall(content)
-            stats["untyped_functions"] += len(all_funcs) - len(typed_funcs)
+            stats["untyped_functions"] += len(all_funcs) - len(typed_positions)
 
         except Exception:
             continue
