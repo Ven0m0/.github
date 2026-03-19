@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, ready_for_review, synchronize]
     paths:
-      - '**/*.{md,toml,yml,yaml,json,jsonc,sh,py'
+      - '**/*.{md,toml,yml,yaml,json,jsonc,sh,py}'
   workflow_dispatch:
     inputs:
       pr_number:
@@ -28,7 +28,7 @@ jobs:
             echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           fi
       - name: Checkout PR
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/head', inputs.pr_number) || '' }}
