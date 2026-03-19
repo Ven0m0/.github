@@ -25,7 +25,7 @@ Use `claudelint` for projects primarily targeting Claude Code.
 
 1.  **Installation**:
     ```bash
-    npm install -g claude-code-lint
+    bun install -g claude-code-lint
     ```
 2.  **Initialization**:
     ```bash
@@ -46,7 +46,7 @@ Use `agnix` for cross-tool compatibility or non-Claude environments.
 
 1.  **Installation**:
     ```bash
-    npm install -g agnix
+    bun install -g agnix
     ```
 2.  **Basic Linting**:
     ```bash
