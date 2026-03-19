@@ -99,8 +99,13 @@ def check_typescript_coverage(
             stats["untyped_functions"] += untyped_count
 
             # Count unique typed functions by start position
-            typed_indices = {m.start() for m in RE_TS_TYPED_FUNC.finditer(content)}
-            typed_indices.update(m.start() for m in RE_TS_TYPED_ARROW.finditer(content))
+            typed_indices = {
+                m.start()
+                for m in chain(
+                    RE_TS_TYPED_FUNC.finditer(content),
+                    RE_TS_TYPED_ARROW.finditer(content),
+                )
+            }
             typed_count = len(typed_indices)
             stats["total_functions"] += typed_count + untyped_count
 
