@@ -4,38 +4,38 @@
     "sessionStart": [
       {
         "type": "command",
-        "bash": "bash .github/hooks/session-start",
+        "bash": "bash hooks/session-start",
         "timeoutSec": 10
       }
     ],
     "sessionEnd": [
       {
         "type": "command",
-        "bash": "bash .github/hooks/session-end",
+        "bash": "bash hooks/session-end",
         "timeoutSec": 10
       }
     ],
     "preToolUse": [
       {
         "type": "command",
-        "bash": "bash .github/hooks/pre-tool-use",
+        "bash": "bash hooks/pre-tool-use",
         "timeoutSec": 10
       },
       {
         "type": "command",
-        "bash": "bash .github/hooks/read-guard",
-        "timeoutSec": 10
+        "bash": "bash hooks/read-guard",
+"timeoutSec": 10
       }
     ],
     "postToolUse": [
       {
         "type": "command",
-        "bash": "bash .github/hooks/post-tool-use",
+        "bash": "bash hooks/post-tool-use",
         "timeoutSec": 10
       },
       {
         "type": "command",
-        "bash": "bash .github/hooks/lint.sh",
+        "bash": "bash hooks/lint.sh",
         "timeoutSec": 30
       }
     ]
