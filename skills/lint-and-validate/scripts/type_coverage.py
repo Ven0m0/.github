@@ -10,6 +10,7 @@ import re
 import argparse
 from pathlib import Path
 from typing import Optional
+from itertools import chain
 
 # Pre-compiled regex patterns for performance
 RE_TS_ANY = re.compile(r":\s*any\b")
