@@ -85,20 +85,21 @@ def check_typescript_coverage(
             content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Count 'any' usage
-            any_matches = RE_TS_ANY.findall(content)
-            stats["any_count"] += len(any_matches)
+            stats["any_count"] += len(RE_TS_ANY.findall(content))
 
-            # Find functions without return types
-            # function name(params) { - no return type
-            untyped = RE_TS_UNTYPED_FUNC.findall(content)
-            # Arrow functions without types: const fn = (x) => or (x) =>
-            untyped += RE_TS_UNTYPED_ARROW.findall(content)
-            stats["untyped_functions"] += len(untyped)
+            # Find unique functions without return types by start position
+            untyped_indices = {m.start() for m in RE_TS_UNTYPED_FUNC.finditer(content)}
+            untyped_indices.update(
+                m.start() for m in RE_TS_UNTYPED_ARROW.finditer(content)
+            )
+            untyped_count = len(untyped_indices)
+            stats["untyped_functions"] += untyped_count
 
-            # Count typed functions
-            typed = RE_TS_TYPED_FUNC.findall(content)
-            typed += RE_TS_TYPED_ARROW.findall(content)
-            stats["total_functions"] += len(typed) + len(untyped)
+            # Count unique typed functions by start position
+            typed_indices = {m.start() for m in RE_TS_TYPED_FUNC.finditer(content)}
+            typed_indices.update(m.start() for m in RE_TS_TYPED_ARROW.finditer(content))
+            typed_count = len(typed_indices)
+            stats["total_functions"] += typed_count + untyped_count
 
         except Exception:
             continue
@@ -170,17 +171,19 @@ def check_python_coverage(
             content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Count Any usage
-            any_matches = RE_PY_ANY.findall(content)
-            stats["any_count"] += len(any_matches)
+            stats["any_count"] += len(RE_PY_ANY.findall(content))
 
-            # Find functions with type hints
-            typed_funcs = RE_PY_TYPED_FUNC_PARAMS.findall(content)
-            typed_funcs += RE_PY_TYPED_FUNC_RETURN.findall(content)
-            stats["typed_functions"] += len(typed_funcs)
+            # Find unique functions with type hints by start position
+            typed_indices = {m.start() for m in RE_PY_TYPED_FUNC_PARAMS.finditer(content)}
+            typed_indices.update(
+                m.start() for m in RE_PY_TYPED_FUNC_RETURN.finditer(content)
+            )
+            typed_count = len(typed_indices)
+            stats["typed_functions"] += typed_count
 
             # Find functions without type hints
-            all_funcs = RE_PY_ALL_FUNC.findall(content)
-            stats["untyped_functions"] += len(all_funcs) - len(typed_funcs)
+            all_funcs_count = len(RE_PY_ALL_FUNC.findall(content))
+            stats["untyped_functions"] += max(0, all_funcs_count - typed_count)
 
         except Exception:
             continue
