@@ -10,6 +10,7 @@ import re
 import argparse
 from pathlib import Path
 from typing import Optional
+from utils import fix_windows_console_encoding
 
 # Pre-compiled regex patterns for performance
 RE_TS_ANY = re.compile(r":\s*any\b")
@@ -24,11 +25,7 @@ RE_PY_TYPED_FUNC_RETURN = re.compile(r"def\s+\w+\s*\([^)]*\)\s*->")
 RE_PY_ALL_FUNC = re.compile(r"def\s+\w+\s*\(")
 
 # Fix Windows console encoding for Unicode output
-try:
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
-except AttributeError:
-    pass  # Python < 3.7
+fix_windows_console_encoding()
 
 
 def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:

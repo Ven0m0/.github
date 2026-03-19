@@ -17,12 +17,10 @@ import sys
 import json
 from pathlib import Path
 from datetime import datetime
+from utils import fix_windows_console_encoding
 
 # Fix Windows console encoding
-try:
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-except Exception:
-    pass
+fix_windows_console_encoding()
 
 
 def detect_node_project(project_path: Path, result: dict) -> None:
