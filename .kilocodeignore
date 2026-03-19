@@ -8,3 +8,6 @@ secrets/
 # Build output
 dist/
 coverage/
+*.logs
+*.old
+*.bak

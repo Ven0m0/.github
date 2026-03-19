@@ -51,7 +51,7 @@ jobs:
             name: Kilo
             runner: ubuntu-latest
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 30
+    timeout-minutes: 59
     permissions:
       actions: read
       contents: write
@@ -119,7 +119,7 @@ jobs:
 
       - name: Run Kilo
         if: ${{ matrix.provider == 'kilo' }}
-        uses: Kilo-Org/kilocode/github@v7.0.49
+        uses: Kilo-Org/kilocode/github@latest
         with:
           model: ${{ github.event.inputs.model != '' && github.event.inputs.model || 'kilo/kilo-auto/frontier' }}
           prompt: ${{ github.event.inputs.prompt }}

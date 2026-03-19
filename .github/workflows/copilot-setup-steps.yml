@@ -1,5 +1,4 @@
 name: "Copilot Setup Steps"
-
 on:
   workflow_dispatch:
   push:
@@ -8,48 +7,12 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-
-env:
-  DEBCONF_NOWARNINGS: yes
-  DEBIAN_FRONTEND: "noninteractive"
-  NODE_ENV: "production"
-  PYTHONOPTIMIZE: 1
-  PYTHONDONTWRITEBYTECODE: 1
-  BINSTALL_DISABLE_TELEMETRY: true
-  UV_PYTHON: 3.14
-
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    timeout-minutes: 59
     steps:
       - uses: actions/checkout@v6
       - name: Install uv
         uses: astral-sh/setup-uv@v7
-      - run: |
-          uv tool install -q ruff >/dev/null || true; uv tool install -q pyright >/dev/null || true
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-      - run: |
-          bun i -g --trust --quiet --only-missing @biomejs/biome @ast-grep/cli bash-language-server yaml-language-server @taplo/cli >/dev/null || true
-          bun pm -g trust --all >/dev/null || true
-      - name: Install rust
-        uses: moonrepo/setup-rust@v1
-        with:
-          components: rust-analyzer
-          #bins: cargo-binstall
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: sigoden/install-binary@v1.2.0
-        with:
-          repo: feel-ix-343/markdown-oxide
-      - uses: sigoden/install-binary@v1.2.0
-        with:
-          repo: mvdan/sh
-      #- run: cargo binstall -y -q --git 'https://github.com/feel-ix-343/markdown-oxide' markdown-oxide
-      - name: Index codebase
-        run: |
-          uvx --from git+https://github.com/oraios/serena serena project index --language bash --language python --language yaml \
-            --language markdown --language typescript --language rust --language toml >/dev/null || true
