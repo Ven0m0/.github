@@ -83,15 +83,6 @@ def check_typescript_coverage(
 
     for file_path in ts_files[:max_files] if max_files is not None else ts_files:
         try:
-EXCLUDE_DIRS = {"venv", ".venv", "__pycache__", ".git", "node_modules"}
-
-def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
-    """Find all TypeScript and Python files in a single pass."""
-    ts_files = []
-    py_files = []
-    for root, dirs, files in os.walk(project_path):
-        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
-
             # Count 'any' usage
             stats["any_count"] += len(RE_TS_ANY.findall(content))
 
