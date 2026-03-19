@@ -182,10 +182,13 @@ def check_python_coverage(
             stats["any_count"] += len(RE_PY_ANY.findall(content))
 
             # Find unique functions with type hints by start position
-            typed_indices = {m.start() for m in RE_PY_TYPED_FUNC_PARAMS.finditer(content)}
-            typed_indices.update(
-                m.start() for m in RE_PY_TYPED_FUNC_RETURN.finditer(content)
-            )
+            typed_indices = {
+                m.start()
+                for m in chain(
+                    RE_PY_TYPED_FUNC_PARAMS.finditer(content),
+                    RE_PY_TYPED_FUNC_RETURN.finditer(content),
+                )
+            }
             typed_count = len(typed_indices)
             stats["typed_functions"] += typed_count
 
