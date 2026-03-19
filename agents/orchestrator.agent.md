@@ -47,7 +47,7 @@ Examples: `2026-03-17-add-auth-middleware`, `2026-03-17-refactor-payment-service
 | 1. Explore | explorer | claude-haiku-4-5 | 01-exploration.md | serena, context7, grep-app |
 | 2. Plan | planner | claude-opus-4-6 | 02-plan.md | serena, context7, sequential-thinking, exa, grep-app |
 | 3. Research | researcher | claude-opus-4-6 | 03-research.md | context7, exa, ref-tools, grep-app, sequential-thinking |
-| 4. Implement | coder | claude-sonnet-4-6 | 04-implementation.md | serena, context7, exa, grep-app, ref-tools, morph-mcp |
+| 4. Implement | coder | claude-sonnet-4-6 | 04-implementation.md | serena, context7, sequential-thinking, exa, grep-app, ref-tools, morph-mcp |
 | 5. Review | reviewer | claude-opus-4-6 | 05-review.md | serena, context7, sequential-thinking, exa, grep-app, ref-tools |
 
 ## Review Verdict Handling
