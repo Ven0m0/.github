@@ -88,10 +88,13 @@ def check_typescript_coverage(
             stats["any_count"] += len(RE_TS_ANY.findall(content))
 
             # Find unique functions without return types by start position
-            untyped_indices = {m.start() for m in RE_TS_UNTYPED_FUNC.finditer(content)}
-            untyped_indices.update(
-                m.start() for m in RE_TS_UNTYPED_ARROW.finditer(content)
-            )
+            untyped_indices = {
+                m.start()
+                for m in chain(
+                    RE_TS_UNTYPED_FUNC.finditer(content),
+                    RE_TS_UNTYPED_ARROW.finditer(content),
+                )
+            }
             untyped_count = len(untyped_indices)
             stats["untyped_functions"] += untyped_count
 
