@@ -15,13 +15,6 @@ mcp-servers:
     command: uvx
     args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
     tools: ["*"]
-  github:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/"
-    tools: ["*"]
-    headers:
-      X-MCP-Toolsets: "default,stargazers,actions,copilot,git,copilot_spaces,github_support_docs_search"
-      X-MCP-Insiders: "true"
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
