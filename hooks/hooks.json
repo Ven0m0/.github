@@ -24,7 +24,7 @@
       {
         "type": "command",
         "bash": "bash hooks/read-guard",
-"timeoutSec": 10
+        "timeoutSec": 10
       }
     ],
     "postToolUse": [
