@@ -93,12 +93,12 @@ agnix skills/my-skill/SKILL.md
 **Input (`hooks.json`):**
 ```json
 {
-  "hooks": [
-    {
-      "event": "InvalidEvent",
-      "script": "./non-existent.sh"
+  "hooks": {
+    "InvalidEvent": {
+      "type": "bash",
+      "bash": "./non-existent.sh"
     }
-  ]
+  }
 }
 ```
 
@@ -110,8 +110,8 @@ claudelint validate-hooks
 **Output:**
 ```text
 hooks.json:
-  2:14  error  'InvalidEvent' is not a valid hook event. Supported: PreToolUse, PostToolUse, Stop, Notification
-  3:17  error  script path './non-existent.sh' does not exist
+  2:5   error  'InvalidEvent' is not a valid hook event. Supported: PreToolUse, PostToolUse, Stop, Notification
+  3:12  error  script path './non-existent.sh' does not exist
 ```
 
 ### Example 3: CLAUDE.md Optimization (claudelint)
