@@ -29,7 +29,7 @@ Use `claudelint` for projects primarily targeting Claude Code.
     ```
 2.  **Initialization**:
     ```bash
-    claudelint init
+    claudelint --init
     ```
     This creates `.claudelintrc.json` and `.claudelintignore` in your root.
 3.  **Full Validation**:
