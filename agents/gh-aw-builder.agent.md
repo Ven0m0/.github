@@ -8,13 +8,6 @@ mcp-servers:
     url: "https://mcp.context7.com/mcp"
     headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
     tools: ["get-library-docs", "resolve-library-id"]
-  github:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/"
-    tools: ["*"]
-    headers:
-      X-MCP-Toolsets: "default,stargazers,actions,copilot,git,copilot_spaces,github_support_docs_search"
-      X-MCP-Insiders: "true"
   serena:
     type: local
     command: uvx
