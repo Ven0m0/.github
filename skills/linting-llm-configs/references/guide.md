@@ -112,7 +112,7 @@ claudelint validate-hooks
 **Output:**
 ```text
 hooks.json:
-  2:5   error  'InvalidEvent' is not a valid hook event. Supported: PreToolUse, PostToolUse, Stop, Notification
+  2:5   error  'InvalidEvent' is not a valid hook event. Supported: sessionStart, sessionEnd, preToolUse, postToolUse
   3:12  error  script path './non-existent.sh' does not exist
 ```
 
