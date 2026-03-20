@@ -1,7 +1,6 @@
 ---
 description: 'Refactor and optimize Python code following project standards'
-agent: "agent"
-applyTo: "**/*.py"
+agent: "always"
 tools: ['read', 'edit', 'search', 'execute']
 ---
 

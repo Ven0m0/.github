@@ -1,0 +1,69 @@
+# GitHub Labels Configuration
+# Compatible with github-label-sync (https://github.com/Financial-Times/github-label-sync)
+#
+# Usage:
+#   bunx github-label-sync --access-token $GITHUB_TOKEN --labels labels.yml owner/repo
+#
+# This file defines a standardized set of labels for consistent issue and PR
+# management across all repositories in the organization.
+
+# =============================================================================
+# PRIORITY LABELS
+# Used to indicate urgency and scheduling priority
+# =============================================================================
+
+- name: "priority: critical"
+  color: "FF0000"
+  description: "Immediate attention required - production impact or security issue"
+
+- name: "priority: high"
+  color: "FF6B6B"
+  description: "Should be addressed in current sprint or iteration"
+
+- name: "priority: medium"
+  color: "FFE66D"
+  description: "Important but can be scheduled for upcoming work"
+
+- name: "priority: low"
+  color: "4ECDC4"
+  description: "Nice to have - address when time permits"
+
+# =============================================================================
+# TYPE LABELS
+# Categorize the nature of the issue or pull request
+# =============================================================================
+
+- name: "type: bug"
+  color: "D73A49"
+  description: "Something is not working as expected"
+
+- name: "type: feature"
+  color: "0075CA"
+  description: "New functionality or capability"
+
+- name: "type: enhancement"
+  color: "A2EEEF"
+  description: "Improvement to existing functionality"
+
+- name: "type: documentation"
+  color: "0075CA"
+  description: "Documentation updates or additions"
+
+- name: "type: security"
+  color: "B60205"
+  description: "Security vulnerability or hardening"
+
+- name: "type: maintenance"
+  color: "FBCA04"
+  description: "Chores, refactoring, tech debt, or dependency updates"
+
+- name: "type: performance"
+  color: "5319E7"
+  description: "Performance improvements or optimizations"
+
+# =============================================================================
+# AUTOMATION LABELS
+# =============================================================================
+- name: "jules"
+  color: "5319E7"
+  description: "Automated google-jules workflow"

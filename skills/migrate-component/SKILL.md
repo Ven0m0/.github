@@ -1,9 +1,7 @@
 ---
 name: migrate-component
 description: Migrate a component from one framework or library to another while preserving all behavior, props, tests, and accessibility. Use when asked to convert between React/Vue/Svelte/Angular or between component libraries (MUI to shadcn, etc).
-user-invocable: true
-disable-model-invocation: false
-allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
+allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
 ---
 
 # Migrate Component

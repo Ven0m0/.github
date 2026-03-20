@@ -3,7 +3,7 @@ name: language-optimization
 description: Optimize code for readability, performance, maintainability, and security across Bash, Python, and Rust. Use when asked to improve code quality, optimize performance, add type safety, or refactor for idioms.
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
+allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
 ---
 
 # Language Optimization

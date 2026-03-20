@@ -1,6 +1,5 @@
 ---
-description: 'Color usage and styling rules for accessible, professional HTML/CSS designs'
-applyTo: '**/*.html,**/*.css,**/*.js'
+applyTo: "**/*.{html,css,js}"
 ---
 
 # HTML/CSS Color Guide

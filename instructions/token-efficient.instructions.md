@@ -1,6 +1,4 @@
 ---
-name: Token Efficiency Mode
-description: Symbol-enhanced communication for compressed clarity (-50% tokens, ≥95% quality)
 applyTo: "**"
 ---
 

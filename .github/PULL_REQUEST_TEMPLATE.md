@@ -1,42 +1,58 @@
 ## Summary
 
-<!-- Concisely describe what this PR changes and why. Focus on impact and
-urgency. -->
+<!-- What changed and why. One paragraph max. -->
+
+## Type
+
+<!-- Check one. -->
+
+- [ ] 🐛 Bug fix
+- [ ] ✨ Feature
+- [ ] ♻️ Refactor
+- [ ] ⚡ Performance
+- [ ] 🔒 Security
+- [ ] 📝 Documentation
+- [ ] 🔧 Configuration / Infra
+- [ ] 🧪 Tests
+- [ ] 🗑️ Deprecation / Removal
+- [ ] 📦 Dependency update
+- [ ] 🚀 Release
 
 ## Details
 
-<!-- Add any extra context and design decisions. Keep it brief but complete. -->
+<!-- Design decisions, trade-offs, alternatives considered. Delete if trivial. -->
+
+## Breaking Changes
+
+<!-- Describe migration steps. Delete section if none. -->
 
 ## Related Issues
 
-<!-- Use keywords to auto-close issues (Closes #123, Fixes #456). If this PR is
-only related to an issue or is a partial fix, simply reference the issue number
-without a keyword (Related to #123). -->
+<!-- Closes #123, Fixes #456, or "Related to #789" for partial/reference links. -->
 
 ## How to Validate
 
-<!-- List exact steps for reviewers to validate the change. Include commands,
-expected results, and edge cases. -->
+<!--
+1. Step-by-step reproduction or verification
+2. Expected result
+3. Edge cases to check
+-->
+
+## Screenshots / Recordings
+
+<!-- Before/after if UI change. Delete section if N/A. -->
 
 ## Pre-Merge Checklist
 
-<!-- Check all that apply before requesting review or merging. -->
+- [ ] Self-reviewed the diff
+- [ ] Commit messages follow project conventions
+- [ ] Added/updated tests covering the change
+- [ ] All CI checks pass
+- [ ] Updated docs / README / CHANGELOG (if applicable)
+- [ ] No unrelated changes bundled in
+- [ ] Reviewed for security implications
+- [ ] Breaking changes documented and communicated
 
-- [ ] Updated relevant documentation and README (if needed)
-- [ ] Added/updated tests (if needed)
-- [ ] Noted breaking changes (if any)
-- [ ] Validated on required platforms/methods:
-  - [ ] Windows
-    - [ ] bunx run
-    - [ ] bunx
-    - [ ] uv run
-    - [ ] uvx
-    - [ ] Docker
-    - [ ] Podman
-  - [ ] Linux
-    - [ ] bun run
-    - [ ] bunx
-    - [ ] uv run
-    - [ ] uvx
-    - [ ] Docker
-    - [ ] Podman
+## Reviewer Notes
+
+<!-- Anything reviewers should focus on, skip, or be aware of. Delete if none. -->

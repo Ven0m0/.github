@@ -2,105 +2,99 @@
 # Pre-tool-use hook: safety checks, token dump prevention, command validation
 # Inspired by github.com/johnzfitch/claude-warden
 
-set -o pipefail
+set -euo pipefail
 
-INPUT=$(cat)
+INPUT="$(cat)"
 
-# Helpers
-_allow() { exit 0; }
-_deny() {
-  printf '{"decision":"block","reason":"%s"}\n' "${1//\"/\'}"
-  exit 0
-}
-_suppress_ok() {
-  printf '{"decision":"approve","suppressOutput":true}\n'
-  exit 0
-}
+# Source helper script
+source "$(dirname "$0")/helper.sh"
 
-TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.tool_name // .toolName // ""' 2>/dev/null)
-COMMAND=$(printf '%s' "$INPUT" | jq -r '.tool_input.command // ""' 2>/dev/null)
+TOOL_NAME="$(jq_extract '.toolName // .tool_name' '')"
+TOOL_NAME_LC="${TOOL_NAME,,}"
+COMMAND="$(tool_args_extract '.command // empty' '' '.tool_input.command')"
 
 # === SIZE LIMIT CHECKS ===
-case "$TOOL_NAME" in
-  Write)
-    CONTENT=$(printf '%s' "$INPUT" | jq -r '.tool_input.content // ""' 2>/dev/null)
-    FILE_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // ""' 2>/dev/null)
+case "${TOOL_NAME_LC}" in
+  create | write)
+    CONTENT="$(tool_args_extract '.content // empty' '' '.tool_input.content')"
+    FILE_PATH="$(tool_args_extract '.path // .file_path // empty' '' '.tool_input.file_path')"
     if ((${#CONTENT} > 102400)); then
-      _deny "Write blocked: content exceeds 100KB (${#CONTENT}B) for $FILE_PATH. Break into smaller writes."
+      deny_tool_use "Write blocked: content exceeds 100KB (${#CONTENT}B) for ${FILE_PATH}. Break into smaller writes."
     fi
-    _suppress_ok
     ;;
-  Edit | StrReplace)
-    NEW=$(printf '%s' "$INPUT" | jq -r '.tool_input.new_string // ""' 2>/dev/null)
-    FILE_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // ""' 2>/dev/null)
+  edit | strreplace)
+    NEW="$(tool_args_extract '.new_string // empty' '' '.tool_input.new_string')"
+    FILE_PATH="$(tool_args_extract '.path // .file_path // empty' '' '.tool_input.file_path')"
     if ((${#NEW} > 51200)); then
-      _deny "Edit blocked: new_string exceeds 50KB (${#NEW}B) for $FILE_PATH. Use smaller targeted edits."
+      deny_tool_use "Edit blocked: new_string exceeds 50KB (${#NEW}B) for ${FILE_PATH}. Use smaller targeted edits."
     fi
-    _suppress_ok
     ;;
-  Glob)
-    PATTERN=$(printf '%s' "$INPUT" | jq -r '.tool_input.pattern // ""' 2>/dev/null)
-    GLOB_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.path // ""' 2>/dev/null)
+  glob)
+    PATTERN="$(tool_args_extract '.pattern // empty' '' '.tool_input.pattern')"
+    GLOB_PATH="$(tool_args_extract '.path // empty' '' '.tool_input.path')"
     HOME_RE='^(/home/[^/]+|~|/Users/[^/]+|/root)/?$'
-    if [[ "$PATTERN" =~ \*\* ]]; then
-      if [[ "$GLOB_PATH" =~ $HOME_RE ]] || [[ -z "$GLOB_PATH" && "$PWD" =~ $HOME_RE ]]; then
-        _deny "Glob blocked: recursive glob in home directory. Narrow the path or use fd."
+    if [[ "${PATTERN}" =~ \*\* ]]; then
+      if [[ "${GLOB_PATH}" =~ ${HOME_RE} ]] || [[ -z "${GLOB_PATH}" && "${PWD}" =~ ${HOME_RE} ]]; then
+        deny_tool_use "Glob blocked: recursive glob in home directory. Narrow the path or use fd."
       fi
     fi
-    _suppress_ok
     ;;
-  Bash) ;; # fall through to bash checks
-  *) _allow ;;
+  bash) ;; # fall through to bash checks
+  *) exit 0 ;;
 esac
 
-[[ -z "$COMMAND" ]] && _allow
+[[ -z "${COMMAND}" ]] && exit 0
 
-NORM=$(echo "$COMMAND" | tr -s '[:space:]' ' ')
+NORM="$(printf '%s' "${COMMAND}" | tr -s '[:space:]' ' ')"
 
 # === DESTRUCTIVE COMMAND BLOCKS ===
-case "$NORM" in
+case "${NORM}" in
   *"rm -rf /"* | *"rm -fr /"* | *"rm -rf ~"* | *"rm -fr ~"* | \
     *"rm -rf ."* | *"rm -fr ."* | *"rm -rf *"* | *"rm -fr *"* | \
     *"rm --recursive --force"* | *"rm --force --recursive"* | \
     *"mkfs"* | *"dd if="* | *"dd of=/dev/"* | \
     *"> /dev/sd"* | *"> /dev/nvme"* | \
     *"chmod -R 777 /"* | *"chown -R"*)
-    _deny "Blocked: destructive command detected. Verify intent and use a safer form."
+    deny_tool_use "Blocked: destructive command detected. Verify intent and use a safer form."
     ;;
+  *) ;;
 esac
 
 # Fork bomb detection
-if [[ "$NORM" =~ :\(\)[[:space:]]*\{[[:space:]]*:\|:[[:space:]]*\&[[:space:]]*\} ]]; then
-  _deny "Blocked: fork bomb pattern detected."
+if [[ "${NORM}" =~ :\(\)[[:space:]]*\{[[:space:]]*:\|:[[:space:]]*\&[[:space:]]*\} ]]; then
+  deny_tool_use "Blocked: fork bomb pattern detected."
 fi
 
 # RCE pipe detection (curl/wget piped to interpreter)
-case "$NORM" in
+case "${NORM}" in
   *"curl"*"|"*"bash"* | *"curl"*"|"*"sh"* | *"curl"*"|"*"python"* | \
     *"wget"*"|"*"bash"* | *"wget"*"|"*"sh"* | *"wget"*"|"*"python"* | \
     *"bash <(curl"* | *"sh <(curl"* | *"bash <(wget"* | *"sh <(wget"*)
-    _deny "Blocked: remote code execution pattern (curl/wget piped to interpreter)."
+    deny_tool_use "Blocked: remote code execution pattern (curl/wget piped to interpreter)."
     ;;
+  *) ;;
 esac
 
 # === GIT SAFETY ===
 # Unbounded git log dumps entire history
-if [[ "$NORM" =~ ^[[:space:]]*git[[:space:]]+log ]] && [[ ! "$NORM" =~ (-n[[:space:]]*[0-9]+|-[0-9]+|--oneline|--stat) ]]; then
-  _deny "Blocked: unbounded git log. Use git log -n 20 --oneline or add a limit."
+if [[ "${NORM}" =~ ^[[:space:]]*git[[:space:]]+log ]] && [[ ! "${NORM}" =~ (-n[[:space:]]*[0-9]+|-[0-9]+|--oneline|--stat) ]]; then
+  deny_tool_use "Blocked: unbounded git log. Use git log -n 20 --oneline or add a limit."
 fi
 
 # git commit without quiet flag produces verbose output
-if [[ "$NORM" =~ git[[:space:]]+commit ]] && [[ ! "$NORM" =~ (-q|--quiet) ]]; then
-  _deny "Use git commit -q to suppress verbose output."
+if [[ "${NORM}" =~ git[[:space:]]+commit ]] && [[ ! "${NORM}" =~ (-q|--quiet) ]]; then
+  deny_tool_use "Use git commit -q to suppress verbose output."
 fi
 
 # === FFMPEG VERBOSITY ===
-if [[ "$NORM" =~ ffmpeg ]] && [[ ! "$NORM" =~ -nostats ]]; then
-  _deny "ffmpeg commands must include -nostats -loglevel error to suppress verbose output."
+if [[ "${NORM}" =~ ffmpeg ]] && [[ ! "${NORM}" =~ -nostats ]]; then
+  deny_tool_use "ffmpeg commands must include -nostats -loglevel error to suppress verbose output."
 fi
 
 # === ALLOW METADATA COMMANDS ===
-[[ "$NORM" =~ ^[[:space:]]*(wc|stat|file|du|md5sum|sha256sum)[[:space:]] ]] && _allow
+if [[ "${NORM}" =~ ^[[:space:]]*(wc|stat|file|du|md5sum|sha256sum)[[:space:]] ]]; then
+  exit 0
+fi
 
 # All other Bash commands are allowed
-_allow
+exit 0

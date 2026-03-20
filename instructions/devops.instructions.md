@@ -1,5 +1,5 @@
 ---
-applyTo: "**/workflows/**,**/.github/workflows/**,**/*.yml,**/*.yaml"
+applyTo: "**/*.{yml,yaml}"
 description: "CI/CD and DevOps standards - Auto-Orchestrator"
 ---
 
