@@ -1,4 +1,4 @@
-name: Claude PR Review
+name: Claude PR Review (disabled)
 on:
   pull_request:
     types: [opened, ready_for_review, synchronize]
