@@ -3,7 +3,14 @@ on:
   pull_request:
     types: [opened, ready_for_review, synchronize]
     paths:
-      - '**/*.{md,toml,yml,yaml,json,jsonc,sh,py'
+      - '**/*.md'
+      - '**/*.toml'
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '**/*.json'
+      - '**/*.jsonc'
+      - '**/*.sh'
+      - '**/*.py'
   workflow_dispatch:
     inputs:
       pr_number:
