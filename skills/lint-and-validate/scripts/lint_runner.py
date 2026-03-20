@@ -21,7 +21,12 @@ from pathlib import Path
 from utils import fix_windows_console_encoding
 
 # Fix Windows console encoding
-fix_windows_console_encoding()
+# Swallow any errors here to preserve previous behavior where reconfigure() failures were non-fatal.
+try:
+    fix_windows_console_encoding()
+except Exception:
+    # If console encoding cannot be fixed, continue with default behavior.
+    pass
 
 
 def detect_node_project(project_path: Path, result: dict) -> None:
