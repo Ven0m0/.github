@@ -2,7 +2,7 @@
 # Compatible with github-label-sync (https://github.com/Financial-Times/github-label-sync)
 #
 # Usage:
-#   npx github-label-sync --access-token $GITHUB_TOKEN --labels labels.yml owner/repo
+#   bunx github-label-sync --access-token $GITHUB_TOKEN --labels labels.yml owner/repo
 #
 # This file defines a standardized set of labels for consistent issue and PR
 # management across all repositories in the organization.
