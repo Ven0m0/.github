@@ -24,7 +24,20 @@ Using these tools helps prevent common issues such as non-triggering skills due 
 Use `claudelint` for projects primarily targeting Claude Code.
 
 1.  **Installation**:
+    
+    **Recommended (uv tool)**
+    
+    Install the `claudelint` CLI as a uv tool:
     ```bash
+    uv tool install claudelint
+    ```
+    
+    **Alternative (Node-based CLI)**
+    
+    If you prefer a Node-based global CLI, you can install the `claude-code-lint` package, which exposes the same `claudelint` commands used below:
+    ```bash
+    npm install -g claude-code-lint
+    # or
     bun install -g claude-code-lint
     ```
 2.  **Initialization**:
