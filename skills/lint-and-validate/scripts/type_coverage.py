@@ -10,6 +10,7 @@ import re
 import argparse
 from pathlib import Path
 from typing import Optional
+
 from utils import fix_windows_console_encoding
 
 # Pre-compiled regex patterns for performance
