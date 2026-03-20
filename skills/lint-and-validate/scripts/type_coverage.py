@@ -59,12 +59,7 @@ def check_typescript_coverage(
     if files is not None:
         ts_files = files
     else:
-        ts_files = []
-        for root, dirs, files_in_dir in os.walk(project_path):
-            dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
-            for file in files_in_dir:
-                if file.endswith((".ts", ".tsx")) and not file.endswith(".d.ts"):
-                    ts_files.append(Path(root) / file)
+        ts_files, _ = find_project_files(project_path)
 
     if not ts_files:
         return {
@@ -151,12 +146,7 @@ def check_python_coverage(
     if files is not None:
         py_files = files
     else:
-        py_files = []
-        for root, dirs, files_in_dir in os.walk(project_path):
-            dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
-            for file in files_in_dir:
-                if file.endswith(".py"):
-                    py_files.append(Path(root) / file)
+        _, py_files = find_project_files(project_path)
 
     if not py_files:
         return {
