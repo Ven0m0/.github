@@ -164,18 +164,24 @@ def check_python_coverage(
 
             # Count Any usage
             any_matches = RE_PY_ANY.findall(content)
-            stats["any_count"] += len(any_matches)
+def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
+    """Find all TypeScript and Python files in a single pass."""
+    exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
+    ts_files = []
+    py_files = []
+    for root, dirs, files in os.walk(project_path):
+        dirs[:] = [d for d in dirs if d not in exclude_dirs]
 
             # Find functions with type hints
-            typed_indices = {m.start() for m in RE_PY_TYPED_FUNC_PARAMS.finditer(content)}
-            typed_indices.update(
-                m.start() for m in RE_PY_TYPED_FUNC_RETURN.finditer(content)
-            )
-            stats["typed_functions"] += len(typed_indices)
+            # Use a set of match positions to avoid double-counting functions
+            # that have both parameter and return types
+            typed_positions = {m.start() for m in RE_PY_TYPED_FUNC_PARAMS.finditer(content)}
+            typed_positions.update(m.start() for m in RE_PY_TYPED_FUNC_RETURN.finditer(content))
+            stats["typed_functions"] += len(typed_positions)
 
             # Find functions without type hints
-            all_indices = {m.start() for m in RE_PY_ALL_FUNC.finditer(content)}
-            stats["untyped_functions"] += len(all_indices - typed_indices)
+            all_funcs = RE_PY_ALL_FUNC.findall(content)
+            stats["untyped_functions"] += len(all_funcs) - len(typed_positions)
 
         except OSError:
             continue
