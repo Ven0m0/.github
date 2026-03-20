@@ -108,15 +108,12 @@ def test_check_python_coverage_any_detection(tmp_path):
 
     result = check_python_coverage(tmp_path)
 
-    # Expected matches for ': Any':
-    # 1. x: Any
-    # 2. -> Any (Wait, RE_PY_ANY is r":\s*Any\b", so '-> Any' won't match)
-    # 3. a: Any
+    # Expected matches for Any usage:
+    # 1. Parameter annotation: x: Any
+    # 2. Return annotation: -> Any
+    # 3. Variable annotation: a: Any
 
-    # Let's re-check RE_PY_ANY = re.compile(r":\s*Any\b")
-    # So '-> Any' indeed doesn't match RE_PY_ANY.
-
-    assert result["stats"]["any_count"] == 2
+    assert result["stats"]["any_count"] == 3
     assert result["files"] == 1
 
 
