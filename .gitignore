@@ -268,3 +268,4 @@ github_conf
 .serena/project.local.yml
 .cachebro/
 .github/hooks/logs
+dummy_project/
