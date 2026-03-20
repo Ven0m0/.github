@@ -139,19 +139,15 @@ def test_check_python_coverage_function_stats(tmp_path):
 
     result = check_python_coverage(tmp_path)
 
-    # untyped_func: matches ALL (1), matches PARAMS (0), matches RETURN (0)
-    # params_typed: matches ALL (2), matches PARAMS (1), matches RETURN (0)
-    # return_typed: matches ALL (3), matches PARAMS (0), matches RETURN (1)
-    # fully_typed: matches ALL (4), matches PARAMS (2), matches RETURN (2)
-
-    # Current implementation:
-    # typed_funcs = RE_PY_TYPED_FUNC_PARAMS.findall(content) -> 2 matches
-    # typed_funcs += RE_PY_TYPED_FUNC_RETURN.findall(content) -> 2 matches
-    # stats["typed_functions"] = 4
-    # stats["untyped_functions"] = 4 - 4 = 0
-
-    # This is obviously wrong. fully_typed is double-counted as typed.
-    # And untyped_func is NOT counted as untyped because total_typed (4) == total_all (4).
+    # Function typing summary:
+    # - untyped_func: no type annotations (untyped)
+    # - params_typed: typed parameters, untyped return
+    # - return_typed: untyped parameters, typed return
+    # - fully_typed: both parameters and return typed
+    #
+    # Expected aggregate stats:
+    # - typed_functions: functions with any type annotations (params or return) -> 3
+    # - untyped_functions: functions without any type annotations -> 1
 
     assert result["stats"]["typed_functions"] == 3
     assert result["stats"]["untyped_functions"] == 1
