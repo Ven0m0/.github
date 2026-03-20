@@ -15,8 +15,9 @@ import subprocess
 import concurrent.futures
 import sys
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 from utils import fix_windows_console_encoding
 
 # Fix Windows console encoding
