@@ -83,6 +83,7 @@ def check_typescript_coverage(
 
     for file_path in ts_files[:max_files] if max_files is not None else ts_files:
         try:
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
             # Count 'any' usage
             stats["any_count"] += len(RE_TS_ANY.findall(content))
 
