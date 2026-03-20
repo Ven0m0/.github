@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Optional
 from itertools import chain
 
+from utils import fix_windows_console_encoding
+
 # Pre-compiled regex patterns for performance
 RE_TS_ANY = re.compile(r":\s*any\b")
 RE_TS_UNTYPED_FUNC = re.compile(r"function\s+\w+\s*\([^)]*\)\s*{")
@@ -24,25 +26,20 @@ RE_PY_TYPED_FUNC_PARAMS = re.compile(r"def\s+\w+\s*\([^)]*:[^)]+\)")
 RE_PY_TYPED_FUNC_RETURN = re.compile(r"def\s+\w+\s*\([^)]*\)\s*->")
 RE_PY_ALL_FUNC = re.compile(r"def\s+\w+\s*\(")
 
+EXCLUDE_DIRS = {"venv", ".venv", "__pycache__", ".git", "node_modules"}
+
 # Fix Windows console encoding for Unicode output
-try:
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
-except AttributeError:
-    pass  # Python < 3.7
+fix_windows_console_encoding()
 
 
 def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
     """Find all TypeScript and Python files in a single pass."""
-    exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
     ts_files = []
     py_files = []
     for root, dirs, files in os.walk(project_path):
-        dirs[:] = [d for d in dirs if d not in exclude_dirs]
+        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
         for file in files:
-            if (file.endswith(".ts") or file.endswith(".tsx")) and not file.endswith(
-                ".d.ts"
-            ):
+            if file.endswith((".ts", ".tsx")) and not file.endswith(".d.ts"):
                 ts_files.append(Path(root) / file)
             elif file.endswith(".py"):
                 py_files.append(Path(root) / file)
@@ -62,14 +59,11 @@ def check_typescript_coverage(
     if files is not None:
         ts_files = files
     else:
-        exclude_dirs = {"node_modules"}
         ts_files = []
         for root, dirs, files_in_dir in os.walk(project_path):
-            dirs[:] = [d for d in dirs if d not in exclude_dirs]
+            dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
             for file in files_in_dir:
-                if (
-                    file.endswith(".ts") or file.endswith(".tsx")
-                ) and not file.endswith(".d.ts"):
+                if file.endswith((".ts", ".tsx")) and not file.endswith(".d.ts"):
                     ts_files.append(Path(root) / file)
 
     if not ts_files:
@@ -157,10 +151,9 @@ def check_python_coverage(
     if files is not None:
         py_files = files
     else:
-        exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
         py_files = []
         for root, dirs, files_in_dir in os.walk(project_path):
-            dirs[:] = [d for d in dirs if d not in exclude_dirs]
+            dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
             for file in files_in_dir:
                 if file.endswith(".py"):
                     py_files.append(Path(root) / file)
@@ -196,7 +189,7 @@ def check_python_coverage(
             all_funcs_count = len(RE_PY_ALL_FUNC.findall(content))
             stats["untyped_functions"] += max(0, all_funcs_count - typed_count)
 
-        except Exception:
+        except OSError:
             continue
 
     total = stats["typed_functions"] + stats["untyped_functions"]

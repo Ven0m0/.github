@@ -7,49 +7,12 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
-  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot
   copilot-setup-steps:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    # Set permissions to the lowest needed. Copilot gets its own token for operations
     permissions:
-      contents: write
-      actions: write
-      issues: write
-      id-token: write
-
+      contents: read
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
-        with:
-          python-version: 3.13
-          enable-cache: true
-      - uses: oven-sh/setup-bun@v2
-      - name: Git config
-        run: |
-          git config --global diff.suppressBlankEmpty true
-          git config --global diff.algorithm histogram
-          git config --global merge.conflictStyle zdiff3
-          git config --global status.short true
-      - name: Install tools
-        run: |
-          # Python tools
-          uv tool install ruff &
-          uv tool install llm-tldr &
-          # JS tools
-          bun add -g @biomejs/biome @ast-grep/cli context-mode &
-          # Binary tools (gh release download = single call, no jq/API parsing)
-          (gh release download -R mvdan/sh -p 'shfmt_*_linux_amd64' -O /usr/local/bin/shfmt && chmod +x /usr/local/bin/shfmt) &
-          (gh release download -R anordal/shellharden -p 'shellharden-x86_64-unknown-linux-gnu.tar.gz' -O- | tar xz -C /usr/local/bin shellharden && chmod +x /usr/local/bin/shellharden) &
-          # zagi — agent-optimized git wrapper
-          curl -fsSL https://raw.githubusercontent.com/mattzcarey/zagi/main/install.sh | bash &
-          wait
-      - name: Index codebase
-        run: |
-          uvx --from git+https://github.com/oraios/serena serena project index || :
-          tldr warm . || :; tldr context main --project . || :
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7

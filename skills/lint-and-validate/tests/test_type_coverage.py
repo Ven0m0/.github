@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -5,7 +6,7 @@ from pathlib import Path
 scripts_dir = Path(__file__).parent.parent / "scripts"
 sys.path.append(str(scripts_dir))
 
-from type_coverage import check_typescript_coverage
+from type_coverage import check_typescript_coverage, check_python_coverage
 
 
 def test_check_typescript_coverage_no_files(tmp_path):
@@ -80,3 +81,85 @@ def test_check_typescript_coverage_multiple_files(tmp_path):
     result = check_typescript_coverage(tmp_path)
     assert result["files"] == 2
     assert result["stats"]["any_count"] == 2
+
+
+def test_check_python_coverage_no_files(tmp_path):
+    """Test when no Python files are present."""
+    result = check_python_coverage(tmp_path)
+    assert result["files"] == 0
+    assert "[!] No Python files found" in result["issues"]
+    assert result["stats"]["any_count"] == 0
+
+
+def test_check_python_coverage_any_detection(tmp_path):
+    """Test detection of 'Any' with various formats."""
+    py_file = tmp_path / "test.py"
+    py_file.write_text(
+        """
+        from typing import Any
+        def foo(x: Any) -> Any:
+            return x
+        a: Any = 1
+        # False positives
+        def anybody(): pass
+        any_var = True
+    """,
+        encoding="utf-8",
+    )
+
+    result = check_python_coverage(tmp_path)
+
+    # Expected matches for Any usage:
+    # 1. Parameter annotation: x: Any
+    # 2. Return annotation: -> Any
+    # 3. Variable annotation: a: Any
+
+    assert result["stats"]["any_count"] == 3
+    assert result["files"] == 1
+
+
+def test_check_python_coverage_function_stats(tmp_path):
+    """Test detection of typed and untyped functions."""
+    py_file = tmp_path / "test.py"
+    py_file.write_text(
+        """
+        def untyped_func(x):
+            pass
+
+        def params_typed(x: int):
+            pass
+
+        def return_typed(x) -> int:
+            return 1
+
+        def fully_typed(x: int) -> int:
+            return x
+    """,
+        encoding="utf-8",
+    )
+
+    result = check_python_coverage(tmp_path)
+
+    # Function typing summary:
+    # - untyped_func: no type annotations (untyped)
+    # - params_typed: typed parameters, untyped return
+    # - return_typed: untyped parameters, typed return
+    # - fully_typed: both parameters and return typed
+    #
+    # Expected aggregate stats:
+    # - typed_functions: functions with any type annotations (params or return) -> 3
+    # - untyped_functions: functions without any type annotations -> 1
+
+    assert result["stats"]["typed_functions"] == 3
+    assert result["stats"]["untyped_functions"] == 1
+
+
+def test_check_python_coverage_multiple_files(tmp_path):
+    """Test handling of multiple files."""
+    (tmp_path / "file1.py").write_text("def foo(x: int): pass")
+    (tmp_path / "file2.py").write_text("def bar(x: int): pass")
+    (tmp_path / "not_py.txt").write_text("def baz(x: int): pass")
+
+    result = check_python_coverage(tmp_path)
+    assert result["files"] == 2
+    assert result["stats"]["typed_functions"] == 2

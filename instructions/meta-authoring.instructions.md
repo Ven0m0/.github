@@ -1,6 +1,5 @@
 ---
-description: 'Guidelines for creating agents, skills, instructions, and prompts for GitHub Copilot'
-applyTo: '**/*.agent.md,**/SKILL.md,**/*.instructions.md,**/*.prompt.md'
+applyTo: "**/{*.agent.md,SKILL.md,*.instructions.md,*.prompt.md}"
 ---
 
 # Meta-Authoring: Agents, Skills, Instructions, Prompts

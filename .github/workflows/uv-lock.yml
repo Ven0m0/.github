@@ -3,10 +3,6 @@ name: Python UV Autofix (Reusable)
 on:
   workflow_call:
   workflow_dispatch:
-  pull_request:
-    branches: [main, master]
-  push:
-    branches: [main, master]
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true

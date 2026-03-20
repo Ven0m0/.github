@@ -2,30 +2,15 @@ name: Dependency auto-merge
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  workflow_dispatch:
 permissions:
   contents: write
   pull-requests: write
-  id-token: write
-  issues: write
-  statuses: write
-  packages: read
 concurrency:
   group: dep-merge-${{ github.event.pull_request.number }}
   cancel-in-progress: true
-env:
-  GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-  NODE_OPTIONS: --max-old-space-size=32768 --max-semi-space-size=256
-  UV_THREADPOOL_SIZE: 32
-  NODE_ENV: production
-  NO_COLOR: true
-defaults:
-  run:
-    shell: 'bash'
 jobs:
   automerge:
-    if: >-
-      github.event_name == 'pull_request' && (github.actor == 'dependabot[bot]' || github.actor == 'renovate[bot]')
+    if: github.actor == 'dependabot[bot]' || github.actor == 'renovate[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

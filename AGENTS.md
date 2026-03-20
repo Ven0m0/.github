@@ -1,4 +1,5 @@
 # Ven0m0 .github Repository Guide
+> Use newer/faster/better tools when possible. Always search for the available mcp servers and tools before starting work. Use tools and skills whenever you can.
 
 Organization-wide defaults: community health files, Copilot instructions, AI agents, reusable workflows, and development standards for all Ven0m0 repositories.
 
@@ -8,8 +9,8 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 **Ven0m0** delivers practical developer tools for automation, platform engineering, and AI-assisted development. This `.github` repository provides:
 
-- **18 specialized autonomous agents** for planning, code optimization, CI/CD, documentation, debugging
-- **25 reusable skill modules** (patterns, best practices, templates)
+- **14 agents (6 pipeline + 8 supporting)** for planning, code optimization, CI/CD, documentation, debugging
+- **29 reusable skill modules** (patterns, best practices, templates)
 - **37 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
 - **Reusable GitHub Actions workflows** for multi-language CI
 - **Copilot instruction files** (org-wide + file-type scoped)
@@ -20,8 +21,8 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ```
 .github/
-  agents/            # 18 autonomous AI agents
-  skills/            # 25 reusable knowledge modules
+  agents/            # 14 AI agents (6 pipeline + 8 supporting)
+  skills/            # 29 reusable knowledge modules
   instructions/      # 37 language/domain standards
   hooks/             # Git pre-commit hooks
   prompts/           # Reusable prompt templates
@@ -51,53 +52,52 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ---
 
-## AI Agents (18)
+## AI Agents (14)
 
-### Orchestration & Planning
+### Pipeline Agents
+| Agent | File | Model | Purpose |
+|-------|------|-------|---------|
+| **Orchestrator** | `orchestrator.agent.md` | claude-sonnet-4-6 | Drives 5-phase pipeline (auto/gated modes) |
+| **Explorer** | `explorer.agent.md` | claude-haiku-4-5 | Fast codebase scanning and mapping |
+| **Planner** | `planner.agent.md` | claude-opus-4-6 | Architecture design and task breakdown |
+| **Researcher** | `researcher.agent.md` | claude-opus-4-6 | Library investigation and best practices |
+| **Coder** | `coder.agent.md` | claude-sonnet-4-6 | TDD-driven implementation |
+| **Reviewer** | `reviewer.agent.md` | claude-opus-4-6 | Critical analysis and verdict |
+
+### Supporting Agents
 | Agent | File | Purpose |
 |-------|------|---------|
-| **Multi-Agent Workflow Orchestrator** | `multi-agent-workflow.agent.md` | Orchestrates planning → execution → refactoring → cleanup → review cycles for complex development tasks |
-| **Strategic Planner** | `strategic-planner.agent.md` | PRDs to architecture to implementation plans; actionable task breakdown; opus model |
-| **Task Researcher** | `task-researcher.agent.md` | Deep analysis of codebases, external docs, patterns; writes findings for task planning |
+| **Git Expert** | `git.agent.md` | Version control, branching, GitHub CLI |
+| **Workflow Engineer** | `workflow-engineer.agent.md` | GitHub Actions, CI/CD |
+| **GH AW Builder** | `gh-aw-builder.agent.md` | GitHub Agentic Workflows |
+| **Frontend Specialist** | `frontend-specialist.agent.md` | React/Next.js |
+| **Debug** | `debug.agent.md` | Bug finding and fixing |
+| **Documentation Writer** | `doc-writer.agent.md` | Technical docs (on request only) |
+| **Codebase Maintainer** | `codebase-maintainer.agent.md` | Cleanup, tech debt |
+| **Arch Linux Expert** | `arch-linux-expert.agent.md` | Arch administration |
 
-### Code Development & Optimization
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Language Optimizer** | `language-optimizer.agent.md` | Code optimization: Bash, Python, Rust; safety, performance, refactoring; auto-detects language |
-| **Frontend Specialist** | `frontend-specialist.agent.md` | React/Next.js: components, styling, state management, responsive design, performance |
-| **App Optimizer** | `app-optimizer.agent.md` | Performance review: code, architecture, database design; optimization recommendations |
+### Pipeline Workflow
 
-### Git & CI/CD
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Git Expert** | `git.agent.md` | Version control: branching, commits, conflicts, GitHub CLI, safe operations |
-| **Workflow Engineer** | `workflow-engineer.agent.md` | GitHub Actions: secure CI/CD, OIDC auth, reusable patterns, debugging |
-| **GitHub Issue Fixer** | `github-issue-fixer.agent.md` | Issue triage and resolution; analyzes problems, implements fixes, creates PRs |
+The orchestrator drives a 5-phase pipeline for complex development tasks:
 
-### Documentation & Analysis
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Documentation Writer** | `doc-writer.agent.md` | Technical docs: README, API docs, changelog; use only on explicit request |
-| **Critical Thinking** | `critical-thinking.agent.md` | Challenge assumptions; root cause analysis via repeated questioning; no code edits |
-| **Context7 Expert** | `context7.agent.md` | Documentation-powered: latest library versions, correct syntax via Context7 MCP |
-| **AI Config Expert** | `ai-config-expert.agent.md` | Copilot instructions, CLAUDE.md, AGENTS.md, prompts, MCP configs |
+```
+explorer -> planner -> researcher -> coder -> reviewer
+```
 
-### Repository & Maintenance
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Codebase Maintainer** | `codebase-maintainer.agent.md` | Cleanup: remove dead code, tech debt, bloat; generates PROJECT_INDEX for context efficiency |
-| **Profile Maintainer** | `profile-maintainer.agent.md` | Maintains GitHub profile README with activity insights and repo significance scoring |
-| **Repo Index** | `repo-index.agent.md` | Generates token-efficient codebase briefing and indexing |
+Each phase produces a structured artifact in `.workflow/{task-id}/`:
+1. `01-exploration.md` - Codebase map, relevant files, patterns, risks
+2. `02-plan.md` - Requirements, architecture, task breakdown, dependencies
+3. `03-research.md` - Findings, best practices, library recommendations
+4. `04-implementation.md` - Changes made, files modified, tests added
+5. `05-review.md` - Verdict (pass/fail/conditional), issues, suggestions
 
-### Specialized Domains
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Arch Linux Expert** | `arch-linux-expert.agent.md` | Arch Linux: pacman workflows, rolling-release maintenance, systemd administration |
-| **Debug** | `debug.agent.md` | Application debugging; find and fix bugs with testing verification |
+**Modes**: `auto` (uninterrupted) or `gated` (pause after each phase for review)
+
+**Invoke**: `@orchestrator [task description] --mode=auto|gated`
 
 ---
 
-## Skills (25)
+## Skills (29)
 
 Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills based on task domain.
 
@@ -125,14 +125,14 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 - `mcp-development/` — Model Context Protocol server development (Python, TypeScript)
 - `mcp-builder/` — Building custom MCP integrations
 - `nestjs-expert/` — NestJS framework patterns
-- `docs-writer/` — Documentation templates and standards
-- `documentation-templates/` — Reusable doc structures
+- `docs-writer/` — Documentation templates and standards (includes reusable doc structures)
 - `gh-cli/` — GitHub CLI reference and workflows
 - `ai-tuning/` — AI config optimization, token efficiency
 - `vibe-coding/` — Fast local web app prototyping
 - `fix-issue/` — Issue diagnosis and resolution patterns
 - `pr-review/` — Pull request review templates and checklists
 - `workflow-development/` — GitHub Actions workflow patterns
+- `web-search/` — Consolidated web search and discovery patterns
 
 ---
 
@@ -552,6 +552,6 @@ mcp-servers:
 
 ---
 
-**Last Updated**: February 2026
+**Last Updated**: March 2026
 **Repository**: Ven0m0/.github
 **Organization**: Ven0m0

@@ -1,5 +1,4 @@
 ---
-description: 'GitHub Actions workflow standards for CI/CD: security, performance, reusable patterns'
 applyTo: '.github/workflows/*.yml,.github/workflows/*.yaml'
 ---
 
