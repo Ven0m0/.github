@@ -80,7 +80,7 @@ jobs:
 
       - name: Run Gemini
         if: ${{ matrix.provider == 'gemini' }}
-        uses: google-github-actions/run-gemini-cli@b0c9501e0177e3780db238de33da2b3b9e53f632
+        uses: google-github-actions/run-gemini-cli@642deeb7a3882dd77c38a4722127700890330067
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
