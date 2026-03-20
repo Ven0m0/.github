@@ -12,7 +12,7 @@
 The **linting-llm-configs** skill ensures that your AI agent configuration files are syntactically correct, follow best practices, and are optimized for LLM triggering and performance. It leverages two core utilities:
 
 - **claudelint**: A deep-validation tool specifically designed for the Claude Code ecosystem. It handles `CLAUDE.md`, skill structures, hooks, and MCP configurations with high precision.
-- **agnix**: A broad-spectrum linter supporting multiple agent platforms including Cursor, Copilot, Kiro, Cline, and Gemini. It features a library of over 340 rules to enforce consistency across diverse agentic environments.
+- **agnix**: A broad-spectrum linter supporting multiple agent platforms including Cursor, Copilot, Kiro, Cline, and Gemini. It features a library of 342 rules to enforce consistency across diverse agentic environments.
 
 Using these tools helps prevent common issues such as non-triggering skills due to naming violations or inefficient context usage in `CLAUDE.md` files.
 
