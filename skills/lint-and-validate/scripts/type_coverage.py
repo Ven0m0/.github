@@ -171,7 +171,13 @@ def check_python_coverage(
 
             # Count Any usage
             any_matches = RE_PY_ANY.findall(content)
-            stats["any_count"] += len(any_matches)
+def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
+    """Find all TypeScript and Python files in a single pass."""
+    exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
+    ts_files = []
+    py_files = []
+    for root, dirs, files in os.walk(project_path):
+        dirs[:] = [d for d in dirs if d not in exclude_dirs]
 
             # Find functions with type hints
             # Use a set of match positions to avoid double-counting functions
