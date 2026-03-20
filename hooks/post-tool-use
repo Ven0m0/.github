@@ -16,7 +16,8 @@ OUTPUT_BYTES=${#OUTPUT}
 
 # Log large outputs to stderr for visibility
 LOG_FILE="${HOME}/.claude/hook-stats.log"
-mkdir -p "$(dirname "${LOG_FILE}")"
+LOG_DIR="${LOG_FILE%/*}"
+[ -d "${LOG_DIR}" ] || mkdir -p "${LOG_DIR}"
 
 TIMESTAMP="$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)"
 
