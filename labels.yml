@@ -63,10 +63,7 @@
 
 # =============================================================================
 # AUTOMATION LABELS
-# Used by gh-aw agentic workflows for automated outputs
 # =============================================================================
-
 - name: "jules"
   color: "5319E7"
   description: "Automated google-jules workflow"
-
