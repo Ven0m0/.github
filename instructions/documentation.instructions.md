@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.md,**/docs/**"
+applyTo: "**/*.md"
 description: "Documentation standards - Auto-Orchestrator"
 ---
 

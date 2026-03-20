@@ -1,6 +1,5 @@
 ---
-applyTo: "**/*.dart,**/pubspec.yaml,**/pubspec.lock"
-description: "Flutter 3.24+/Dart 3.5+: Riverpod, null safety, go_router"
+applyTo: "**/{*.dart,pubspec.yaml,pubspec.lock}"
 ---
 
 # Flutter/Dart Standards

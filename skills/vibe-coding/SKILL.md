@@ -1,9 +1,7 @@
 ---
 name: vibe-coding
 description: Rapidly prototype and build modern, responsive web applications from scratch using current frameworks and libraries. Use when you want to quickly create a new web app with full local control, creative flow, and modern best practices. Local alternative to Lovable, Bolt, and v0.
-user-invocable: true
-disable-model-invocation: false
-allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
+allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
 ---
 
 # Vibe Coding

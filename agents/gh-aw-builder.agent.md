@@ -2,6 +2,36 @@
 name: gh-aw-builder
 description: A specialized agent for creating, configuring, and managing GitHub Agentic Workflows (gh-aw) - helping you build markdown-based AI-powered automation workflows with proper frontmatter, MCP servers, safe-outputs, and best practices
 model: claude-sonnet-4-6
+mcp-servers:
+  context7:
+    type: http
+    url: "https://mcp.context7.com/mcp"
+    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    tools: ["get-library-docs", "resolve-library-id"]
+  serena:
+    type: local
+    command: uvx
+    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    tools: ["*"]
+  exa:
+    type: http
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    tools: ["*"]
+  ref-tools:
+    type: http
+    url: "https://api.ref.tools/mcp"
+    headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
+    tools: ["*"]
+  grep-app:
+    type: http
+    url: "https://mcp.grep.app"
+    tools: ["*"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
 ---
 
 # GitHub Agentic Workflow Builder Agent

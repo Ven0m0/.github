@@ -1,6 +1,5 @@
 ---
-applyTo: "*"
-description: "Tiered file reading strategy to minimize token consumption"
+applyTo: "**"
 ---
 
 # File Reading Optimization

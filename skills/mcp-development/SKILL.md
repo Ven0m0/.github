@@ -1,9 +1,7 @@
 ---
 name: mcp-development
 description: Build Model Context Protocol (MCP) servers with tools, resources, and prompts. Use when creating MCP servers, choosing stdio vs HTTP transport, debugging MCP behavior, or implementing MCP patterns in Python or TypeScript.
-user-invocable: true
-disable-model-invocation: false
-allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
+allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
 ---
 
 # MCP Development

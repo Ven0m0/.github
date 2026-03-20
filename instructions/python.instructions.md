@@ -1,6 +1,5 @@
 ---
-applyTo: "**/*.py,**/pyproject.toml"
-description: "Production Python: strict typing, security, performance"
+applyTo: "**/{*.py,pyproject.toml}"
 ---
 
 # Python Standards

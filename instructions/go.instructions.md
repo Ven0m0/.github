@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.go,**/go.mod,**/go.sum"
+applyTo: "**/{*.go,go.mod,go.sum}"
 description: "Go 1.23+: error handling, context, golangci-lint"
 ---
 

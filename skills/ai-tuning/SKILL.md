@@ -1,9 +1,7 @@
 ---
 name: ai-tuning
 description: Optimize AI assistant configurations (CLAUDE.md, copilot-instructions.md, AGENTS.md, MCP). Deduplicate memory files. Use when asked to "improve CLAUDE.md", "better copilot instructions", "tune AI", "condense CLAUDE.md", or "optimize prompts".
-user-invocable: true
-disable-model-invocation: false
-allowed-tools: [Read, Write, Edit, Glob, Grep]
+allowed-tools: "Read, Write, Edit, Glob, Grep"
 ---
 
 # AI Tuning

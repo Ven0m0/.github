@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.css,**/*.scss,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte"
+applyTo: "**/*.{css,scss,tsx,jsx,vue,svelte}"
 description: "UI/UX Design Intelligence - Auto-applied for frontend files"
 ---
 

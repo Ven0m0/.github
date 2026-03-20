@@ -1,6 +1,5 @@
 ---
-description: 'Standards for optimizing AI assistant configurations (CLAUDE.md, copilot-instructions.md, MCP, AGENTS.md)'
-applyTo: '**/*.md,**/*.json,**/*.jsonc,**/*.yml,**/*.yaml'
+applyTo: "**/*.{md,json,jsonc,yml,yaml}"
 ---
 
 # AI Tuning Instructions

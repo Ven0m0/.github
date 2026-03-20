@@ -1,5 +1,4 @@
 ---
-description: 'Rust coding standards: safety, zero-cost abstractions, idiomatic patterns'
 applyTo: '**/*.{rs,toml}'
 ---
 

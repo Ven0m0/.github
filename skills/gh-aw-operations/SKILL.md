@@ -4,7 +4,7 @@ description: Comprehensive skills for creating, compiling, debugging, and managi
 metadata:
   version: 1.0.0
   category: automation
-  tags: [github-agentic-workflows, gh-aw, automation, ci-cd, ai-workflows]
+  tags: "github-agentic-workflows, gh-aw, automation, ci-cd, ai-workflows"
 ---
 
 # GitHub Agentic Workflows Operations Skill

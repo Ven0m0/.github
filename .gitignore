@@ -6,6 +6,11 @@
 .gitconfig.local
 
 #######################
+# Orchestrator Workflow
+#######################
+.workflow/
+
+#######################
 # yadm
 #######################
 # Ignore yadm state files but keep repository configuration
@@ -244,6 +249,7 @@ github_conf
 #######################
 *.sqlite
 *.db
+*.db-wal‎
 *.rdb
 
 #######################
@@ -256,3 +262,9 @@ github_conf
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 .idea/
+
+.tldr/cache/
+.serena/cache
+.serena/project.local.yml
+.cachebro/
+.github/hooks/logs

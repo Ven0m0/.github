@@ -1,9 +1,7 @@
 ---
 name: agent-patterns
 description: Reusable workflow patterns, templates, and standards for agent development. Use when designing or reviewing agent workflows, writing structured plans, or enforcing consistent execution patterns across the agent system.
-user-invocable: false
-disable-model-invocation: false
-allowed-tools: [Read, Glob, Grep]
+allowed-tools: "Read, Glob, Grep"
 ---
 
 # Agent Patterns
