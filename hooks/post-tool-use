@@ -29,10 +29,13 @@ fi
 printf '[%s] tool=%s bytes=%d result=%s\n' "${TIMESTAMP}" "${TOOL_NAME}" "${OUTPUT_BYTES}" "${RESULT_TYPE}" >>"${LOG_FILE}"
 
 # Rotate log if over 2000 lines
-LINE_COUNT="$(wc -l <"${LOG_FILE}" 2>/dev/null || echo 0)"
-if ((LINE_COUNT > 2000)); then
-  TMP="$(mktemp)"
-  tail -n 1000 "${LOG_FILE}" >"${TMP}" && mv "${TMP}" "${LOG_FILE}"
+# Probabilistically run wc -l to reduce subprocess overhead (approx 2% of the time)
+if (( RANDOM % 50 == 0 )); then
+  LINE_COUNT="$(wc -l <"${LOG_FILE}" 2>/dev/null || echo 0)"
+  if ((LINE_COUNT > 2000)); then
+    TMP="$(mktemp)"
+    tail -n 1000 "${LOG_FILE}" >"${TMP}" && mv "${TMP}" "${LOG_FILE}"
+  fi
 fi
 
 exit 0
