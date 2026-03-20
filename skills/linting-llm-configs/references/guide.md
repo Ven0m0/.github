@@ -103,7 +103,7 @@ agnix skills/my-skill/SKILL.md
 
 ### Example 2: Invalid Hook Configuration (claudelint)
 
-> Note: This example targets Claude Code’s standalone `hooks.json` schema (as used in generic Claude Code projects), not this repository’s `hooks/hooks.json` file or its hook event keys.
+> Note: This example targets Claude Code’s standalone `hooks.json` schema (as used in generic Claude Code projects), not this repository’s `hooks/hooks.json` file. The main difference is the file format/schema (for example, top-level `version` plus arrays of `{ "type": "command", "bash": "..." }`), not the hook event names themselves.
 
 **Input (`hooks.json`):**
 ```json
