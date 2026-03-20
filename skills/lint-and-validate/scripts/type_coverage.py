@@ -10,6 +10,7 @@ import re
 import argparse
 from pathlib import Path
 from typing import Optional
+from itertools import chain
 
 from utils import fix_windows_console_encoding
 
@@ -77,22 +78,30 @@ def check_typescript_coverage(
     for file_path in ts_files[:max_files] if max_files is not None else ts_files:
         try:
             content = file_path.read_text(encoding="utf-8", errors="ignore")
-
             # Count 'any' usage
-            any_matches = RE_TS_ANY.findall(content)
-            stats["any_count"] += len(any_matches)
+            stats["any_count"] += len(RE_TS_ANY.findall(content))
 
-            # Find functions without return types
-            # function name(params) { - no return type
-            untyped = RE_TS_UNTYPED_FUNC.findall(content)
-            # Arrow functions without types: const fn = (x) => or (x) =>
-            untyped += RE_TS_UNTYPED_ARROW.findall(content)
-            stats["untyped_functions"] += len(untyped)
+            # Find unique functions without return types by start position
+            untyped_indices = {
+                m.start()
+                for m in chain(
+                    RE_TS_UNTYPED_FUNC.finditer(content),
+                    RE_TS_UNTYPED_ARROW.finditer(content),
+                )
+            }
+            untyped_count = len(untyped_indices)
+            stats["untyped_functions"] += untyped_count
 
-            # Count typed functions
-            typed = RE_TS_TYPED_FUNC.findall(content)
-            typed += RE_TS_TYPED_ARROW.findall(content)
-            stats["total_functions"] += len(typed) + len(untyped)
+            # Count unique typed functions by start position
+            typed_indices = {
+                m.start()
+                for m in chain(
+                    RE_TS_TYPED_FUNC.finditer(content),
+                    RE_TS_TYPED_ARROW.finditer(content),
+                )
+            }
+            typed_count = len(typed_indices)
+            stats["total_functions"] += typed_count + untyped_count
 
         except OSError:
             continue
@@ -163,25 +172,22 @@ def check_python_coverage(
             content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Count Any usage
-            any_matches = RE_PY_ANY.findall(content)
-def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
-    """Find all TypeScript and Python files in a single pass."""
-    exclude_dirs = {"venv", "__pycache__", ".git", "node_modules"}
-    ts_files = []
-    py_files = []
-    for root, dirs, files in os.walk(project_path):
-        dirs[:] = [d for d in dirs if d not in exclude_dirs]
+            stats["any_count"] += len(RE_PY_ANY.findall(content))
 
-            # Find functions with type hints
-            # Use a set of match positions to avoid double-counting functions
-            # that have both parameter and return types
-            typed_positions = {m.start() for m in RE_PY_TYPED_FUNC_PARAMS.finditer(content)}
-            typed_positions.update(m.start() for m in RE_PY_TYPED_FUNC_RETURN.finditer(content))
-            stats["typed_functions"] += len(typed_positions)
+            # Find unique functions with type hints by start position
+            typed_indices = {
+                m.start()
+                for m in chain(
+                    RE_PY_TYPED_FUNC_PARAMS.finditer(content),
+                    RE_PY_TYPED_FUNC_RETURN.finditer(content),
+                )
+            }
+            typed_count = len(typed_indices)
+            stats["typed_functions"] += typed_count
 
             # Find functions without type hints
-            all_funcs = RE_PY_ALL_FUNC.findall(content)
-            stats["untyped_functions"] += len(all_funcs) - len(typed_positions)
+            all_funcs_count = len(RE_PY_ALL_FUNC.findall(content))
+            stats["untyped_functions"] += max(0, all_funcs_count - typed_count)
 
         except OSError:
             continue
