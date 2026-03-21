@@ -1,37 +1,38 @@
 ## Summary
 
-<!-- What changed and why. One paragraph max. -->
+<!-- Briefly describe the changes in this PR. -->
 
-## Type
+## Type of Change
 
-<!-- Check one. -->
-
-- [ ] 🐛 Bug fix
-- [ ] ✨ Feature
-- [ ] ♻️ Refactor
-- [ ] ⚡ Performance
-- [ ] 🔒 Security
-- [ ] 📝 Documentation
-- [ ] 🔧 Configuration / Infra
-- [ ] 🧪 Tests
-- [ ] 🗑️ Deprecation / Removal
-- [ ] 📦 Dependency update
-- [ ] 🚀 Release
-
-## Details
-
-<!-- Design decisions, trade-offs, alternatives considered. Delete if trivial. -->
-
-## Breaking Changes
-
-<!-- Describe migration steps. Delete section if none. -->
+- [ ] Bug fix (non-breaking change that fixes an issue)
+- [ ] New feature (non-breaking change that adds functionality)
+- [ ] Enhancement (improvement to existing functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] Documentation update
+- [ ] Refactor (no functional changes)
+- [ ] Chore (maintenance, dependencies, CI)
 
 ## Related Issues
 
-<!-- Closes #123, Fixes #456, or "Related to #789" for partial/reference links. -->
+<!-- Link related issues: Fixes #123, Closes #456 -->
 
-## How to Validate
+## Test Plan
 
+<!-- Describe the tests you ran or plan to run to verify the changes. -->
+
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Manual testing performed
+
+## Checklist
+
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my code
+- [ ] I have commented my code where necessary
+- [ ] I have updated the documentation accordingly
+- [ ] My changes generate no new warnings
+- [ ] New and existing tests pass locally
+- [ ] Any dependent changes have been merged and published
 <!--
 1. Step-by-step reproduction or verification
 2. Expected result
