@@ -1,7 +1,7 @@
 ---
 name: orchestrator
 description: "Drives the 5-phase development pipeline: explorer -> planner -> researcher -> coder -> reviewer. Configurable auto/gated modes."
-model: claude-sonnet-4-6
+model: sonnet
 modelParameters:
   temperature: 0.25
 mcp-servers:
