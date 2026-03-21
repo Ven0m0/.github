@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: "Critical review specialist. Challenges assumptions, checks quality, security, and architecture. Returns pass/fail/conditional verdict."
-model: sonnet
+model: gpt-5.4
 mcp-servers:
   context7:
     type: http
