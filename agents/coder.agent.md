@@ -1,7 +1,7 @@
 ---
 name: coder
 description: "Implementation specialist. Writes code following plan and research artifacts. Multi-language, TDD-driven, minimal focused changes."
-model: claude-sonnet-4-6
+model: sonnet
 modelParameters:
   temperature: 0.35
 mcp-servers:
@@ -10,20 +10,6 @@ mcp-servers:
     url: "https://mcp.context7.com/mcp"
     headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
-  serena:
-    type: local
-    command: uvx
-    args:
-      [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide",
-        "--project-from-cwd",
-      ]
-    tools: ["*"]
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
