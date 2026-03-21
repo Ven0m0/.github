@@ -1,7 +1,7 @@
 ---
 description: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). DO NOT auto-invoke during normal development.
 name: documentation-writer
-model: sonnet
+model: gpt-5.4
 mcp-servers:
   context7:
     type: http
