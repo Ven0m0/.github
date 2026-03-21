@@ -3,6 +3,9 @@ on:
     types: ['opened', 'reopened', 'synchronize']
 jobs:
   label-pr:
+    permissions:
+      contents: read
+      pull-requests: write
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
