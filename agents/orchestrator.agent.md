@@ -3,7 +3,7 @@ name: orchestrator
 description: "Drives the 5-phase development pipeline: explorer -> planner -> researcher -> coder -> reviewer. Configurable auto/gated modes."
 model: sonnet
 modelParameters:
-  temperature: 0.25
+  temperature: 0.35
 mcp-servers:
   sequential-thinking:
     type: stdio
