@@ -1,7 +1,7 @@
 ---
 name: explorer
 description: "Fast codebase exploration and mapping. Scans structure, identifies patterns, surfaces relevant files and risks for downstream pipeline agents."
-model: claude-haiku-4-5
+model: haiku
 modelParameters:
   temperature: 0.25
 mcp-servers:
