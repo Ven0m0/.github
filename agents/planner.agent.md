@@ -1,7 +1,7 @@
 ---
 name: planner
 description: "Architecture design and implementation planning. Creates requirements, task breakdowns, and dependency maps from exploration artifacts."
-model: opus
+model: gpt-5.4
 mcp-servers:
   context7:
     type: http
