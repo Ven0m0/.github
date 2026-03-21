@@ -4,3 +4,9 @@ on:
 jobs:
   label-pr:
     timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label PR size
+        uses: pascalgn/size-label-action@v0.5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
