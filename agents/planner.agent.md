@@ -1,7 +1,7 @@
 ---
 name: planner
 description: "Architecture design and implementation planning. Creates requirements, task breakdowns, and dependency maps from exploration artifacts."
-model: claude-opus-4-6
+model: opus
 mcp-servers:
   context7:
     type: http
