@@ -266,8 +266,8 @@ github_conf
 .idea/
 
 .tldr/cache/
-.serena/cache
-.serena/project.local.yml
+.serena/
 .cachebro/
 .github/hooks/logs
 dummy_project/
+.omc/
