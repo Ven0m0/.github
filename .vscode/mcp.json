@@ -25,7 +25,7 @@
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"],
-      "headers": {"EXA_API_KEY": "$COPILOT_MCP_EXA_API_KEY"}
+      "headers": {"EXA_API_KEY": "$COPILOT_MCP_EXA_API_KEY" }
     },
     "ref-tools": {
       "type": "http",
@@ -44,19 +44,12 @@
       "command": "uvx",
       "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
     },
-    "morph-mcp": {
+    "octocode": {
       "type": "local",
       "tools": ["*"],
       "command": "npx",
-      "args": ["-y", "@morphllm/morphmcp@latest"],
-      "env": { "MORPH_API_KEY": "$COPILOT_MCP_MORPH_API_KEY" }
-    },
-    "modjules": {
-      "type": "local",
-      "tools": ["*"],
-      "command": "npx",
-      "args": ["-y", "@modjules/mcp"],
-      "env": { "JULES_API_KEY": "$COPILOT_MCP_JULES_API_KEY" }
+      "args": ["-y", "octocode-mcp@latest"],
+      "env": { "GITHUB_TOKEN": "$COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN" }
     }
   }
 }
