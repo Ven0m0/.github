@@ -141,12 +141,14 @@ $RECYCLE.BIN/
 #######################
 __pycache__/
 .pytest_cache/
+pytest-of-*/
 *.py[cod]
 *$py.class
 .env
 .env.*/
 .venv/
 .venv*/
+node-compile-cache/
 
 #######################
 # Node / JS / TS

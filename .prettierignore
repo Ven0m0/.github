@@ -1,0 +1,7 @@
+# Pytest artifacts
+pytest-of-*/
+.pytest_cache/
+__pycache__/
+
+# Dependencies
+node_modules/

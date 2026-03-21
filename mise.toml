@@ -45,15 +45,15 @@ run = """
 prettier --check .
 uvx --from yamllint yamllint .
 actionlint
-shellcheck hooks/*.sh .githooks/pre-commit
-shfmt -d hooks/*.sh .githooks/pre-commit
+shellcheck .githooks/pre-commit
+shfmt -d .githooks/pre-commit
 """
 
 [tasks.format]
 description = "Format repo-local shell, markdown, YAML, and JSON files"
 run = """
 prettier --write .
-shfmt -w hooks/*.sh .githooks/pre-commit
+shfmt -w .githooks/pre-commit
 """
 
 [tasks.test]
