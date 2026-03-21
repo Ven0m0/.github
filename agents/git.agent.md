@@ -1,7 +1,7 @@
 ---
 name: git-expert
 description: "Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control"
-model: claude-sonnet-4-6
+model: sonnet
 mcp-servers:
   context7:
     type: http
