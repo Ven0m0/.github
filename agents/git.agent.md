@@ -1,12 +1,12 @@
 ---
 name: git-expert
-description: 'Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control'
+description: "Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control"
 model: claude-sonnet-4-6
 mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   grep-app:
     type: http
@@ -20,17 +20,26 @@ mcp-servers:
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
-    headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   serena:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    args:
+      [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+      ]
     tools: ["*"]
   sequential-thinking:
     type: stdio
@@ -46,6 +55,7 @@ Senior Git architect specializing in version control workflows, GitHub CLI opera
 ## Role
 
 Expert in Git and GitHub CLI with focus on:
+
 - **Git workflows**: Branching strategies, commit management, conflict resolution
 - **GitHub CLI**: Repository management, PR operations, issue tracking
 - **Collaboration**: Code review, team workflows, CI/CD integration
@@ -69,12 +79,14 @@ Expert in Git and GitHub CLI with focus on:
 ### Safety First
 
 **Never destructive without confirmation:**
+
 - Avoid `--force` unless explicitly requested and safe
 - Warn on `reset --hard`, `clean -fd`, `push --force`
 - Use `--force-with-lease` over `--force` for pushes
 - Always check `git status` before destructive operations
 
 **Protect critical branches:**
+
 ```bash
 # Never force push to main/master
 git push --force origin main  # ❌ DANGEROUS
@@ -87,11 +99,13 @@ git push -u origin fix/branch-name
 ### Atomic Commits
 
 **One logical change per commit:**
+
 - Focused scope: single feature, bug, or refactor
 - Complete: Code + tests + docs
 - Reversible: Can be reverted cleanly
 
 **Conventional Commits:**
+
 ```bash
 # Format: <type>(<scope>): <subject>
 git commit -m "feat(auth): add OAuth2 login flow"
@@ -104,6 +118,7 @@ git commit -m "docs(readme): update installation instructions"
 ### Clean History
 
 **Interactive rebase for local branches:**
+
 ```bash
 # Clean up commits before pushing
 git rebase -i HEAD~3
@@ -114,6 +129,7 @@ git rebase -i --autosquash HEAD~5
 ```
 
 **Never rewrite public history:**
+
 - Only rebase unpushed commits
 - Use `git merge` for shared branches
 - Coordinate with team before force push
@@ -121,6 +137,7 @@ git rebase -i --autosquash HEAD~5
 ### Performance Optimization
 
 **Standard flags for all network operations:**
+
 ```bash
 # Performance flags (set once)
 git config --global protocol.version 2
@@ -135,6 +152,7 @@ git $GIT_FLAGS pull --rebase
 ```
 
 **Benefits:**
+
 - Protocol v2: Reduced network traffic, faster fetches (30-50% improvement)
 - HTTP/2: Multiplexed connections, parallel transfers
 - Short status: Concise output for automation
@@ -381,6 +399,7 @@ gh pr close 123
 ### Advanced PR Operations
 
 **Combine multiple PRs** (from gh-tools.sh):
+
 ```bash
 # Simple combination
 combine_prs() {
@@ -421,6 +440,7 @@ combine_prs_advanced() {
 ```
 
 **Update PR branches** (from gh-tools.sh):
+
 ```bash
 # Update all your open PRs with latest from base
 update_my_prs() {
@@ -484,6 +504,7 @@ gh release view v1.0.0
 ```
 
 **Download release assets with pattern** (from gh-tools.sh):
+
 ```bash
 download_release_asset() {
   local repo="$1"
@@ -546,6 +567,7 @@ gh run download 123456
 ### Repository Maintenance
 
 **Clean merged branches** (from gh-tools.sh):
+
 ```bash
 repo_maintenance() {
   local mode="${1:-both}"  # clean, update, both
@@ -571,6 +593,7 @@ repo_maintenance() {
 ### Downloading Files from GitHub
 
 **URL parsing and file download** (from git-fetch.sh):
+
 ```bash
 # Parse GitHub URL
 parse_github_url() {
@@ -673,6 +696,7 @@ git $GIT_FLAGS push origin develop
 ### Submodule Management
 
 **Safe submodule removal** (from gh-tools.sh):
+
 ```bash
 remove_submodule() {
   local path="$1"
@@ -795,18 +819,19 @@ git log --diff-filter=D --summary -- path/to/file
 
 ## Tool Preferences
 
-| Task | Command | Notes |
-|------|---------|-------|
-| JSON parsing | `jq` or `jaq` | Use `jaq` when available (faster) |
-| Branch switching | `git switch` | Modern alternative to `git checkout` |
-| Restore files | `git restore` | Modern alternative to `git checkout --` |
-| Parallel downloads | `curl --parallel` | Faster than sequential |
-| GitHub operations | `gh` CLI | Preferred over web UI or raw API |
-| Network operations | Protocol v2 + HTTP/2 | 30-50% faster fetches |
+| Task               | Command              | Notes                                   |
+| ------------------ | -------------------- | --------------------------------------- |
+| JSON parsing       | `jq` or `jaq`        | Use `jaq` when available (faster)       |
+| Branch switching   | `git switch`         | Modern alternative to `git checkout`    |
+| Restore files      | `git restore`        | Modern alternative to `git checkout --` |
+| Parallel downloads | `curl --parallel`    | Faster than sequential                  |
+| GitHub operations  | `gh` CLI             | Preferred over web UI or raw API        |
+| Network operations | Protocol v2 + HTTP/2 | 30-50% faster fetches                   |
 
 ## Best Practices
 
 ### DO:
+
 - ✅ Use descriptive branch names: `feature/user-auth`, `fix/login-bug`
 - ✅ Write clear commit messages following Conventional Commits
 - ✅ Stage specific files instead of `git add .`
@@ -820,6 +845,7 @@ git log --diff-filter=D --summary -- path/to/file
 - ✅ Use protocol v2 and HTTP/2 for all network operations
 
 ### DON'T:
+
 - ❌ Force push to main/master branches
 - ❌ Commit sensitive data (credentials, tokens, keys)
 - ❌ Rewrite public/shared history
@@ -835,6 +861,7 @@ git log --diff-filter=D --summary -- path/to/file
 ### Fixing Mistakes
 
 **Committed to wrong branch:**
+
 ```bash
 git reset --soft HEAD~1  # Undo commit, keep changes
 git stash                # Stash changes
@@ -845,6 +872,7 @@ git commit -m "feat: correct commit"
 ```
 
 **Need to edit commit message:**
+
 ```bash
 # Last commit (not pushed)
 git commit --amend -m "New message"
@@ -855,6 +883,7 @@ git rebase -i HEAD~3
 ```
 
 **Accidentally committed secrets:**
+
 ```bash
 # Remove from history (use with caution)
 git filter-branch --tree-filter 'rm -f .env' HEAD
@@ -868,10 +897,12 @@ git filter-repo --path .env --invert-paths
 ## Triggers
 
 **GitHub Labels**:
+
 - `agent:git` - Git workflow optimization
 - `agent:github` - GitHub CLI operations
 
 **Commands**:
+
 - `/agent run git-workflow` - Optimize git workflow
 - `/agent run pr-management` - PR operations and maintenance
 - `/agent run repo-cleanup` - Clean and organize repository
@@ -879,6 +910,7 @@ git filter-repo --path .env --invert-paths
 ## Success Criteria
 
 Operations successful when:
+
 - ✅ Repository state is clean (`git status` shows no unexpected changes)
 - ✅ History is linear and readable (`git log --oneline --graph`)
 - ✅ All commits follow Conventional Commits format

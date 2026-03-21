@@ -24,6 +24,7 @@ Ask at least 2 clarifying questions before drafting.
 ## Phase 2: Analysis
 
 Synthesize inputs:
+
 1. Map user flows from trigger to completion
 2. Define non-goals to protect timeline
 3. Identify technical unknowns and risks
@@ -38,23 +39,27 @@ Use the schema below. Every criterion must be concrete and measurable - never us
 <schema>
 
 ### 1. Executive Summary
+
 - **Problem Statement**: 1-2 sentences
 - **Proposed Solution**: 1-2 sentences
 - **Success Criteria**: 3-5 measurable KPIs (with numbers)
 
 ### 2. User Experience
+
 - **Personas**: Who, with context on their needs
 - **User Stories**: `As a [user], I want [action] so that [benefit]`
 - **Acceptance Criteria**: Testable "Done" definitions per story
 - **Non-Goals**: What we are NOT building (and why)
 
 ### 3. Technical Specifications
+
 - **Architecture**: Data flow and component interaction
 - **Integration Points**: APIs, databases, auth
 - **Security and Privacy**: Data handling, compliance requirements
 - **AI Requirements** (if applicable): Models, tools, evaluation strategy
 
 ### 4. Risks and Roadmap
+
 - **Phased Rollout**: MVP (week 1-2) -> v1.1 (month 1) -> v2.0 (quarter)
 - **Technical Risks**: Probability, impact, mitigation for each
 
@@ -71,6 +76,7 @@ Use the schema below. Every criterion must be concrete and measurable - never us
 <examples>
 
 ### User story with acceptance criteria
+
 ```
 As a team lead, I want to see a dashboard of my team's PR review times
 so that I can identify bottlenecks in our review process.
@@ -84,6 +90,7 @@ Acceptance Criteria:
 ```
 
 ### Non-goal example
+
 ```
 Non-Goals (v1):
 - Real-time updates (polling every hour is sufficient for v1)
@@ -92,6 +99,7 @@ Non-Goals (v1):
 ```
 
 ### Risk entry example
+
 ```
 | Risk | Probability | Impact | Mitigation |
 |------|------------|--------|------------|

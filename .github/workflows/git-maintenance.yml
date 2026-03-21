@@ -6,39 +6,39 @@ on:
       run_gc:
         type: boolean
         default: true
-        description: 'Run git garbage collection'
+        description: "Run git garbage collection"
       optimize_repo:
         type: boolean
         default: true
-        description: 'Optimize repository (commit-graph, loose-objects, repack)'
+        description: "Optimize repository (commit-graph, loose-objects, repack)"
       verify_integrity:
         type: boolean
         default: true
-        description: 'Verify repository integrity with fsck'
+        description: "Verify repository integrity with fsck"
       strategy:
         type: string
         default: commit
-        description: 'Submodule update strategy (commit, branch, tag)'
+        description: "Submodule update strategy (commit, branch, tag)"
       submodules:
         type: string
         default: ""
-        description: 'Space-separated list of submodules to update (empty = all)'
+        description: "Space-separated list of submodules to update (empty = all)"
       gitmodules_path:
         type: string
         default: .gitmodules
-        description: 'Path to .gitmodules file'
+        description: "Path to .gitmodules file"
       create_pr:
         type: boolean
         default: true
-        description: 'Create pull request for submodule updates'
+        description: "Create pull request for submodule updates"
       pr_branch_prefix:
         type: string
         default: chore/update-submodules
-        description: 'Branch prefix for submodule update PRs'
+        description: "Branch prefix for submodule update PRs"
       commit_message:
         type: string
         default: "chore(deps): update git submodules"
-        description: 'Commit message for submodule updates'
+        description: "Commit message for submodule updates"
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: false

@@ -12,14 +12,14 @@ Optimize AI assistant configurations. Standards: `instructions/ai-tuning.instruc
 
 ## Triggers
 
-| User says | Target |
-|-----------|--------|
-| "improve CLAUDE.md" | CLAUDE.md |
+| User says                     | Target                  |
+| ----------------------------- | ----------------------- |
+| "improve CLAUDE.md"           | CLAUDE.md               |
 | "better copilot instructions" | copilot-instructions.md |
-| "condense/deduplicate" | CLAUDE.md hierarchy |
-| "tune AI" | All configs |
-| "optimize prompts" | Prompts, AGENTS.md |
-| "add MCP servers" | .vscode/mcp.json |
+| "condense/deduplicate"        | CLAUDE.md hierarchy     |
+| "tune AI"                     | All configs             |
+| "optimize prompts"            | Prompts, AGENTS.md      |
+| "add MCP servers"             | .vscode/mcp.json        |
 
 ## Workflow
 
@@ -43,7 +43,7 @@ Optimize AI assistant configurations. Standards: `instructions/ai-tuning.instruc
    - Tables over prose: `| Action | Command |` for build/test/lint
    - Specific over general: exact commands, exact tool names
    - Hierarchy over flat: root CLAUDE.md (project) > topic rules > subdir rules
-   </optimization_rules>
+     </optimization_rules>
 
 4. **Validate**: Every command must be exact and executable in the project
 
@@ -51,12 +51,12 @@ Optimize AI assistant configurations. Standards: `instructions/ai-tuning.instruc
 
 Think through deduplication systematically:
 
-| Phase | Action |
-|-------|--------|
-| Discovery | Find all CLAUDE.md files; detect intra-file and cross-file duplication |
-| Analysis | Identify misplaced content (subdir file with project-wide rules) |
-| Present | Show duplicates, affected files, proposed consolidation; wait for approval |
-| Implement | Remove duplicates, move misplaced content, merge similar rules |
+| Phase     | Action                                                                     |
+| --------- | -------------------------------------------------------------------------- |
+| Discovery | Find all CLAUDE.md files; detect intra-file and cross-file duplication     |
+| Analysis  | Identify misplaced content (subdir file with project-wide rules)           |
+| Present   | Show duplicates, affected files, proposed consolidation; wait for approval |
+| Implement | Remove duplicates, move misplaced content, merge similar rules             |
 
 **Hierarchy**: `./CLAUDE.md` (project) > `./.claude/rules/*.md` (topic) > `./subdir/CLAUDE.md` (dir-only)
 
@@ -65,33 +65,40 @@ Think through deduplication systematically:
 <examples>
 
 ### Before optimization (verbose, vague)
+
 ```markdown
 # Project Guidelines
+
 We use Python for our backend. Please make sure to use type hints
 when writing Python code. For testing, we prefer pytest. Please run
 the linter before committing any code.
 ```
 
 ### After optimization (dense, actionable)
+
 ```markdown
 # Stack
+
 Python 3.12 | FastAPI | PostgreSQL | Redis
 
 # Dev Commands
-| Task | Command |
-|------|---------|
-| Lint | `ruff check --fix .` |
-| Format | `ruff format .` |
-| Test | `pytest -x --tb=short` |
-| Types | `mypy src/` |
+
+| Task   | Command                |
+| ------ | ---------------------- |
+| Lint   | `ruff check --fix .`   |
+| Format | `ruff format .`        |
+| Test   | `pytest -x --tb=short` |
+| Types  | `mypy src/`            |
 
 # Conventions
+
 - Type hints on all public functions
 - `result: T | None` not `Optional[T]`
 - Pydantic models for API schemas
 ```
 
 ### Deduplication example
+
 ```
 Found duplication:
   ./CLAUDE.md line 15: "Use ruff for linting"

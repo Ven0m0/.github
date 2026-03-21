@@ -6,15 +6,15 @@ Default community health files and Copilot instructions for all Ven0m0 repositor
 
 GitHub automatically uses these files when a repository doesn't define its own:
 
-| File | Purpose |
-|------|---------|
-| `CODE_OF_CONDUCT.md` | Contributor Covenant v2.1 |
-| `CONTRIBUTING.md` | Contribution guidelines |
-| `SECURITY.md` | Security policy |
-| `SUPPORT.md` | Support channels |
-| `.github/FUNDING.yml` | Sponsorship |
-| `.github/ISSUE_TEMPLATE/*` | Issue templates |
-| `.github/PULL_REQUEST_TEMPLATE.md` | PR template |
+| File                               | Purpose                   |
+| ---------------------------------- | ------------------------- |
+| `CODE_OF_CONDUCT.md`               | Contributor Covenant v2.1 |
+| `CONTRIBUTING.md`                  | Contribution guidelines   |
+| `SECURITY.md`                      | Security policy           |
+| `SUPPORT.md`                       | Support channels          |
+| `.github/FUNDING.yml`              | Sponsorship               |
+| `.github/ISSUE_TEMPLATE/*`         | Issue templates           |
+| `.github/PULL_REQUEST_TEMPLATE.md` | PR template               |
 
 ## Copilot Instructions
 
@@ -22,14 +22,14 @@ Organization-wide: `.github/copilot-instructions.md`
 
 Scoped by file type in `instructions/`:
 
-| File | Applies To |
-|------|------------|
-| `bash.instructions.md` | `*.sh`, `*.bash` |
-| `python.instructions.md` | `*.py` |
-| `javascript.instructions.md` | `*.js`, `*.ts`, `*.jsx`, `*.tsx` |
-| `rust.instructions.md` | `*.rs` |
-| `cicd-standards.instructions.md` | `.github/workflows/*.yml` |
-| `markdown.instructions.md` | `*.md` |
+| File                             | Applies To                       |
+| -------------------------------- | -------------------------------- |
+| `bash.instructions.md`           | `*.sh`, `*.bash`                 |
+| `python.instructions.md`         | `*.py`                           |
+| `javascript.instructions.md`     | `*.js`, `*.ts`, `*.jsx`, `*.tsx` |
+| `rust.instructions.md`           | `*.rs`                           |
+| `cicd-standards.instructions.md` | `.github/workflows/*.yml`        |
+| `markdown.instructions.md`       | `*.md`                           |
 
 See `instructions/INDEX.md` for the full list.
 

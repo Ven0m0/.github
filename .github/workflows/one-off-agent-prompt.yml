@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       provider:
-        description: 'Which agent action to run'
+        description: "Which agent action to run"
         required: true
         type: choice
         options:
@@ -15,19 +15,18 @@ on:
           - opencode
           - kilo
       prompt:
-        description: 'One-off prompt to run'
+        description: "One-off prompt to run"
         required: true
         type: string
       model:
-        description: 'Optional model override (used when supported by the selected provider)'
+        description: "Optional model override (used when supported by the selected provider)"
         required: false
-        default: ''
+        default: ""
         type: string
 
 jobs:
   run-provider:
-    name: '${{ matrix.name }}'
-    if: ${{ matrix.provider == github.event.inputs.provider }}
+    name: "${{ matrix.name }}"
     strategy:
       fail-fast: false
       matrix:

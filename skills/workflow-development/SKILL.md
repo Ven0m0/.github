@@ -34,7 +34,7 @@ permissions:
   contents: read
 
 steps:
-  - uses: actions/checkout@v4       # Always pin to major version tag
+  - uses: actions/checkout@v4 # Always pin to major version tag
 ```
 
 - Pin all actions to version tags (never `@main` or `@master`)
@@ -54,7 +54,7 @@ jobs:
   ci:
     uses: Ven0m0/.github/.github/workflows/reusable-ci-python.yml@main
     with:
-      python-version: '3.12'
+      python-version: "3.12"
     secrets: inherit
 
 # Definition (on: workflow_call)
@@ -63,7 +63,7 @@ on:
     inputs:
       python-version:
         type: string
-        default: '3.12'
+        default: "3.12"
 ```
 
 ## Caching
@@ -90,27 +90,28 @@ strategy:
   fail-fast: false
   matrix:
     os: [ubuntu-latest, macos-latest]
-    python-version: ['3.11', '3.12']
+    python-version: ["3.11", "3.12"]
 ```
 
 </patterns>
 
 <debugging>
 
-| Symptom | Likely Cause | Fix |
-|---------|-------------|-----|
-| "Resource not accessible by integration" | Missing permissions | Add to `permissions:` block |
-| Cache never hits | Wrong hash path | Check `hashFiles()` glob matches actual lock file |
-| Secrets unavailable in reusable workflow | Not passed through | Add `secrets: inherit` or pass explicitly |
-| Workflow not triggered | Wrong event config | Verify `on:` triggers, check branch filters |
-| "Path does not exist" | Wrong working-directory | Verify path relative to repo root |
-| Matrix job fails inconsistently | OS-specific issue | Add OS conditionals or separate jobs |
+| Symptom                                  | Likely Cause            | Fix                                               |
+| ---------------------------------------- | ----------------------- | ------------------------------------------------- |
+| "Resource not accessible by integration" | Missing permissions     | Add to `permissions:` block                       |
+| Cache never hits                         | Wrong hash path         | Check `hashFiles()` glob matches actual lock file |
+| Secrets unavailable in reusable workflow | Not passed through      | Add `secrets: inherit` or pass explicitly         |
+| Workflow not triggered                   | Wrong event config      | Verify `on:` triggers, check branch filters       |
+| "Path does not exist"                    | Wrong working-directory | Verify path relative to repo root                 |
+| Matrix job fails inconsistently          | OS-specific issue       | Add OS conditionals or separate jobs              |
 
 </debugging>
 
 <examples>
 
 ### Python CI workflow
+
 ```yaml
 name: CI
 on:
@@ -137,6 +138,7 @@ jobs:
 ```
 
 ### Release workflow with tag trigger
+
 ```yaml
 name: Release
 on:

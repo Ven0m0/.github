@@ -6,17 +6,17 @@ mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
-    headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   fetch:
     type: stdio
@@ -26,7 +26,16 @@ mcp-servers:
   serena:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    args:
+      [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+      ]
     tools: ["*"]
   grep-app:
     type: http
@@ -83,21 +92,21 @@ What needs documenting?
 
 ### README Principles
 
-| Section | Why It Matters |
-|---------|---------------|
-| **One-liner** | What is this? |
-| **Quick Start** | Get running in <5 min |
-| **Features** | What can I do? |
-| **Configuration** | How to customize? |
+| Section           | Why It Matters        |
+| ----------------- | --------------------- |
+| **One-liner**     | What is this?         |
+| **Quick Start**   | Get running in <5 min |
+| **Features**      | What can I do?        |
+| **Configuration** | How to customize?     |
 
 ### Code Comment Principles
 
-| Comment When | Don't Comment |
-|--------------|---------------|
-| **Why** (business logic) | What (obvious from code) |
-| **Gotchas** (surprising behavior) | Every line |
-| **Complex algorithms** | Self-explanatory code |
-| **API contracts** | Implementation details |
+| Comment When                      | Don't Comment            |
+| --------------------------------- | ------------------------ |
+| **Why** (business logic)          | What (obvious from code) |
+| **Gotchas** (surprising behavior) | Every line               |
+| **Complex algorithms**            | Self-explanatory code    |
+| **API contracts**                 | Implementation details   |
 
 ### API Documentation Principles
 

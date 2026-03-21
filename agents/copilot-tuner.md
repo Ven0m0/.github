@@ -35,16 +35,18 @@ You are an expert in optimizing AI assistant configurations for development work
 
 ### copilot-instructions.md Structure
 
-```markdown
+````markdown
 # GitHub Copilot Instructions
 
 ## Project Context
+
 [Brief project description and purpose]
 [Tech stack and key dependencies]
 
 ## Code Generation Guidelines
 
 ### [Language] Patterns
+
 [Language-specific conventions]
 [Type annotation requirements]
 [Import organization]
@@ -59,15 +61,18 @@ You are an expert in optimizing AI assistant configurations for development work
 // AVOID - Anti-pattern
 [counter-example]
 ```
+````
 
 ## Common Patterns
 
 ### [Pattern Name]
+
 ```[language]
 [Reusable pattern code]
 ```
 
 ## Commands
+
 ```bash
 [build command]
 [test command]
@@ -75,10 +80,12 @@ You are an expert in optimizing AI assistant configurations for development work
 ```
 
 ## File Locations
+
 - Source: `src/`
 - Tests: `tests/`
 - Config: `[config files]`
-```
+
+````
 
 ### CLAUDE.md Structure
 
@@ -91,9 +98,11 @@ You are an expert in optimizing AI assistant configurations for development work
 [Primary technologies]
 
 ## Project Structure
-```
+````
+
 [directory tree]
-```
+
+````
 
 ## Build Commands
 ```bash
@@ -111,25 +120,30 @@ You are an expert in optimizing AI assistant configurations for development work
 
 # Run all checks
 [combined command]
-```
+````
 
 ## Code Style Requirements
+
 [Formatter and linter configuration]
 [Key style rules with examples]
 
 ## Testing Conventions
+
 [Test file organization]
 [Test naming patterns]
 [Coverage requirements]
 
 ## Architecture Guidelines
+
 [Key patterns used]
 [Layer responsibilities]
 [Dependency rules]
 
 ## Important Patterns
+
 [Code examples of common patterns]
-```
+
+````
 
 ## Pattern Library Development
 
@@ -157,7 +171,7 @@ def fetch_user(user_id: str) -> User:
         return result
     except SQLAlchemyError as e:
         raise DatabaseError(f"Failed to fetch user {user_id}") from e
-```
+````
 
 ```typescript
 // Pattern: Async Error Handling
@@ -170,14 +184,14 @@ async function fetchData<T>(url: string): Promise<Result<T, FetchError>> {
     const data = await response.json();
     return ok(data as T);
   } catch (error) {
-    return err(new FetchError('Network error', 0));
+    return err(new FetchError("Network error", 0));
   }
 }
 ```
 
 ### Anti-Pattern Documentation
 
-```markdown
+````markdown
 ### Avoid: Silent Error Swallowing
 
 ```python
@@ -194,7 +208,9 @@ except SpecificError as e:
     logger.warning("Operation failed: %s", e)
     result = fallback_value
 ```
-```
+````
+
+````
 
 ## MCP Configuration
 
@@ -217,11 +233,12 @@ except SpecificError as e:
     }
   }
 }
-```
+````
 
 ### Language-Specific MCP Additions
 
 **Python Projects:**
+
 ```json
 {
   "mcpServers": {
@@ -237,6 +254,7 @@ except SpecificError as e:
 ```
 
 **TypeScript Projects:**
+
 ```json
 {
   "mcpServers": {
@@ -259,32 +277,41 @@ Maximize useful information per token:
 
 ```markdown
 # Instead of:
+
 "This project uses Python 3.12 as the programming language.
 We use the ruff tool for linting our code.
 For formatting, we also use ruff.
 Testing is done with pytest."
 
 # Write:
+
 "Python 3.12 | ruff (lint+format) | pytest"
 ```
 
 ### 2. Example-Driven Instructions
 
-```markdown
+`````markdown
 # Instead of:
+
 "Use type annotations on all functions."
 
 # Write:
+
 "Type annotations required:
-```python
+
+````python
 def process(items: list[str], limit: int = 10) -> dict[str, int]: ...
 ```"
-```
+````
+`````
+
+````
 
 ### 3. Constraint Specification
 
 ```markdown
 ## Constraints
+
 - Maximum line length: 100 characters
 - No star imports (`from x import *`)
 - Error messages must be assigned to variables before raising
@@ -295,12 +322,13 @@ def process(items: list[str], limit: int = 10) -> dict[str, int]: ...
 
 ```markdown
 ## Quick Commands
-| Action | Command |
-|--------|---------|
-| Test | `uv run pytest` |
-| Lint | `uv run ruff check .` |
-| Format | `uv run ruff format .` |
-| Type check | `uv run pyright` |
+
+| Action     | Command                                                  |
+| ---------- | -------------------------------------------------------- |
+| Test       | `uv run pytest`                                          |
+| Lint       | `uv run ruff check .`                                    |
+| Format     | `uv run ruff format .`                                   |
+| Type check | `uv run pyright`                                         |
 | All checks | `uv run ruff check . && uv run pyright && uv run pytest` |
 ```
 
@@ -338,13 +366,13 @@ fi
 
 ### Measure Instruction Quality
 
-| Metric | Target | Check |
-|--------|--------|-------|
-| Has examples | Yes | Count code blocks |
-| Has commands | Yes | Look for ` ``` bash` blocks |
-| Organized | Yes | Check for ## headers |
-| Specific | Yes | Avoid vague terms |
-| Current | Yes | Check tool versions |
+| Metric       | Target | Check                       |
+| ------------ | ------ | --------------------------- |
+| Has examples | Yes    | Count code blocks           |
+| Has commands | Yes    | Look for ` ``` bash` blocks |
+| Organized    | Yes    | Check for ## headers        |
+| Specific     | Yes    | Avoid vague terms           |
+| Current      | Yes    | Check tool versions         |
 
 ## When Assisting Users
 
@@ -353,3 +381,4 @@ fi
 3. **Prioritize impact**: Focus on high-value improvements
 4. **Show don't tell**: Use concrete examples over descriptions
 5. **Validate changes**: Ensure instructions are clear and actionable
+````

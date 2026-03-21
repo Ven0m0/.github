@@ -1,6 +1,6 @@
 ---
-description: 'AutoHotkey v2 scripting standards for Windows automation'
-applyTo: '**/*.ahk'
+description: "AutoHotkey v2 scripting standards for Windows automation"
+applyTo: "**/*.ahk"
 ---
 
 # AutoHotkey v2 Guidelines

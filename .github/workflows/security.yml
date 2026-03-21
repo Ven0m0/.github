@@ -57,7 +57,7 @@ jobs:
           fail-on-severity: ${{ inputs.fail_on_high && 'high' || 'critical' }}
           deny-licenses: GPL-3.0, AGPL-3.0
       - name: Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.24.0
         with:
           scan-type: "fs"
           scan-ref: ${{ inputs.working_directory }}
@@ -84,7 +84,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: TruffleHog scan
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@0.28.0
         with:
           extra_args: --only-verified
   sast-scan:
@@ -123,7 +123,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Trivy container scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ inputs.container_image }}
           format: "sarif"

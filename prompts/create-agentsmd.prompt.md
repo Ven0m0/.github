@@ -1,7 +1,7 @@
 ---
-description: 'Generate AGENTS.md for a repository'
+description: "Generate AGENTS.md for a repository"
 mode: agent
-tools: ['read', 'edit', 'search', 'execute']
+tools: ["read", "edit", "search", "execute"]
 ---
 
 # Create AGENTS.md
@@ -16,29 +16,36 @@ AGENTS.md is "README for agents" - provides AI coding agents with actionable tec
 # AGENTS.md
 
 ## Project Overview
+
 [Description, purpose, key technologies]
 
 ## Setup Commands
+
 - Install: `[pkg mgr] install`
 - Build: `[cmd]`
 
 ## Development Workflow
+
 - Start dev: `[cmd]`
 - Hot reload: `[cmd]`
 
 ## Testing
+
 - Run all: `[cmd]`
 - Coverage: `[cmd]`
 
 ## Code Style
+
 - Lint: `[cmd]`
 - Format: `[cmd]`
 
 ## Build and Deployment
+
 - Build: `[cmd]`
 - Deploy: `[cmd]`
 
 ## PR Guidelines
+
 - Title format, required checks
 ```
 

@@ -1,5 +1,5 @@
 ---
-description: 'Mise (mise-en-place) dev environment setup - tool versions, tasks, env vars, CI/CD, Docker integration'
+description: "Mise (mise-en-place) dev environment setup - tool versions, tasks, env vars, CI/CD, Docker integration"
 mode: agent
 ---
 
@@ -21,16 +21,16 @@ Dev environment management via [mise](https://mise.jdx.dev/). Handles tool versi
 
 ## Common Tasks
 
-| Task | Command |
-|------|---------|
-| Add tool version | `mise use <tool>@<version>` |
-| Add global tool | `mise use -g <tool>@<version>` |
-| Create task | Add `[tasks.<name>]` to `mise.toml` |
-| Create file task | Script in `mise-tasks/` with `#MISE` metadata |
-| Set env var | Add to `[env]` section |
-| Setup CI (GitHub Actions) | `jdx/mise-action@v3` with `cache: true` |
-| Docker integration | Base image with `MISE_DATA_DIR`, shims on PATH |
-| Debug environment | `mise doctor`, `mise config ls`, `mise env` |
+| Task                      | Command                                        |
+| ------------------------- | ---------------------------------------------- |
+| Add tool version          | `mise use <tool>@<version>`                    |
+| Add global tool           | `mise use -g <tool>@<version>`                 |
+| Create task               | Add `[tasks.<name>]` to `mise.toml`            |
+| Create file task          | Script in `mise-tasks/` with `#MISE` metadata  |
+| Set env var               | Add to `[env]` section                         |
+| Setup CI (GitHub Actions) | `jdx/mise-action@v3` with `cache: true`        |
+| Docker integration        | Base image with `MISE_DATA_DIR`, shims on PATH |
+| Debug environment         | `mise doctor`, `mise config ls`, `mise env`    |
 
 ## Workflow
 

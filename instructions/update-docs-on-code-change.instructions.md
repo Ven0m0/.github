@@ -1,6 +1,6 @@
 ---
-description: 'Auto-update documentation when application code changes require doc updates'
-applyTo: '**/*.{md,js,mjs,cjs,ts,tsx,jsx,py,java,cs,go,rb,php,rs,cpp,c,h,hpp}'
+description: "Auto-update documentation when application code changes require doc updates"
+applyTo: "**/*.{md,js,mjs,cjs,ts,tsx,jsx,py,java,cs,go,rb,php,rs,cpp,c,h,hpp}"
 ---
 
 # Update Documentation on Code Change
@@ -14,6 +14,7 @@ Keep documentation synchronized with code. Detect when README.md, API docs, conf
 ## Trigger Conditions
 
 Update docs when:
+
 - New features or functionality added
 - API endpoints, methods, or interfaces change
 - Breaking changes introduced
@@ -49,6 +50,7 @@ Update docs when:
 <WhatToAdd>
 
 When updating documentation:
+
 1. Update in the same commit as code changes
 2. Include before/after examples for changes
 3. Test code examples before committing

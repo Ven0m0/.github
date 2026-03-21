@@ -5,36 +5,36 @@ on:
     inputs:
       working-directory:
         type: string
-        default: '.'
-        description: 'Working directory for the workflow'
+        default: "."
+        description: "Working directory for the workflow"
       apply-shellharden:
         type: boolean
         default: true
-        description: 'Apply shellharden fixes to shell scripts'
+        description: "Apply shellharden fixes to shell scripts"
       shfmt-indent:
         type: number
         default: 2
-        description: 'Indentation size for shfmt'
+        description: "Indentation size for shfmt"
       shell-exclude-pattern:
         type: string
         default: '(^|/)\\.(git|cache|claude|venv)(/|$)'
-        description: 'Pattern to exclude shell files from processing'
+        description: "Pattern to exclude shell files from processing"
       megalinter-validate-all:
         type: boolean
         default: false
-        description: 'Validate all files or only changed files'
+        description: "Validate all files or only changed files"
       megalinter-config:
         type: string
-        default: '.megalinter.yml'
-        description: 'Path to MegaLinter configuration file'
+        default: ".megalinter.yml"
+        description: "Path to MegaLinter configuration file"
       megalinter-exclude-dirs:
         type: string
-        default: '.github,.git,.cache,node_modules'
-        description: 'Directories to exclude from MegaLinter'
+        default: ".github,.git,.cache,node_modules"
+        description: "Directories to exclude from MegaLinter"
       commit-fixes:
         type: boolean
         default: true
-        description: 'Automatically commit fixes'
+        description: "Automatically commit fixes"
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -110,7 +110,7 @@ jobs:
         if: inputs.commit-fixes && github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: 'style: apply shellharden [skip ci]'
+          commit_message: "style: apply shellharden [skip ci]"
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
   megalinter:
@@ -149,6 +149,6 @@ jobs:
         if: inputs.commit-fixes && steps.ml.outputs.has_updated_sources == 1
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: 'style: apply MegaLinter fixes [skip ci]'
+          commit_message: "style: apply MegaLinter fixes [skip ci]"
           commit_user_name: megalinter-bot[bot]
           commit_user_email: megalinter-bot[bot]@users.noreply.github.com

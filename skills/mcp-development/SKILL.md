@@ -23,29 +23,33 @@ Think through MCP server design step-by-step:
 
 ## Transport Decision
 
-| Use Case | Transport | Why |
-|----------|-----------|-----|
-| Claude Desktop | stdio | Native support, simple setup |
-| Web application | HTTP | Browser-compatible |
-| High-scale deployment | HTTP (stateless) | Horizontal scaling |
-| Local CLI tool | stdio | Pipes, process communication |
-| Multi-user service | HTTP | Session management, CORS |
-| Development/testing | stdio | Easier debugging |
+| Use Case              | Transport        | Why                          |
+| --------------------- | ---------------- | ---------------------------- |
+| Claude Desktop        | stdio            | Native support, simple setup |
+| Web application       | HTTP             | Browser-compatible           |
+| High-scale deployment | HTTP (stateless) | Horizontal scaling           |
+| Local CLI tool        | stdio            | Pipes, process communication |
+| Multi-user service    | HTTP             | Session management, CORS     |
+| Development/testing   | stdio            | Easier debugging             |
 
 </instructions>
 
 <core_concepts>
 
 ## Tools
+
 Functions the LLM can call. Define: input schema, validation, structured output, clear description.
 
 ## Resources
+
 Data the LLM can read. Types: static (fixed URI) or dynamic (URI template with parameters). Include MIME type.
 
 ## Prompts
+
 Reusable templates with arguments. Return formatted prompt text.
 
 ## Context
+
 Shared capabilities: logging (stderr only), progress reporting, sampling (LLM generation), elicitation (user input).
 
 </core_concepts>
@@ -53,6 +57,7 @@ Shared capabilities: logging (stderr only), progress reporting, sampling (LLM ge
 <patterns>
 
 ## Tool Definition Pattern
+
 1. Define input schema with validation rules
 2. Write a clear description (what it does AND when to use it)
 3. Implement logic with error handling
@@ -60,6 +65,7 @@ Shared capabilities: logging (stderr only), progress reporting, sampling (LLM ge
 5. Never leak internal errors to the LLM
 
 ## Dynamic Resource Pattern
+
 1. Define URI template: `resource://type/{id}`
 2. Parse and validate URI parameters
 3. Fetch/compute content
@@ -67,6 +73,7 @@ Shared capabilities: logging (stderr only), progress reporting, sampling (LLM ge
 5. Handle missing resources gracefully (don't crash)
 
 ## Error Handling
+
 - Catch errors in tools; return error objects, don't crash the server
 - Provide clear error messages with context
 - Log errors to stderr with tool name and parameters
@@ -77,6 +84,7 @@ Shared capabilities: logging (stderr only), progress reporting, sampling (LLM ge
 <language_specific>
 
 ## Python (FastMCP)
+
 ```python
 from mcp.server.fastmcp import FastMCP
 
@@ -99,19 +107,17 @@ async def get_doc(topic: str) -> str:
 - Log to stderr (stdout is the protocol channel)
 
 ## TypeScript
+
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 const server = new McpServer({ name: "my-server", version: "1.0.0" });
 
-server.tool("search_docs",
-  { query: z.string(), limit: z.number().default(10) },
-  async ({ query, limit }) => {
-    const results = await docIndex.search(query, limit);
-    return { content: [{ type: "text", text: JSON.stringify(results) }] };
-  }
-);
+server.tool("search_docs", { query: z.string(), limit: z.number().default(10) }, async ({ query, limit }) => {
+  const results = await docIndex.search(query, limit);
+  return { content: [{ type: "text", text: JSON.stringify(results) }] };
+});
 ```
 
 - Use Zod for runtime validation
@@ -122,13 +128,13 @@ server.tool("search_docs",
 
 <debugging>
 
-| Problem | Likely Cause | Fix |
-|---------|-------------|-----|
-| Schema validation fails | Type mismatch, missing required field | Check Pydantic/Zod schema vs input |
-| Tools not appearing | Registration error | Verify decorator/method call, check logs |
-| Transport errors | Malformed JSON-RPC | Validate message format, check stderr logs |
-| Async errors | Blocking I/O | Ensure all I/O uses async/await |
-| stdout corruption (stdio) | Logging to stdout | Redirect all logs to stderr |
+| Problem                   | Likely Cause                          | Fix                                        |
+| ------------------------- | ------------------------------------- | ------------------------------------------ |
+| Schema validation fails   | Type mismatch, missing required field | Check Pydantic/Zod schema vs input         |
+| Tools not appearing       | Registration error                    | Verify decorator/method call, check logs   |
+| Transport errors          | Malformed JSON-RPC                    | Validate message format, check stderr logs |
+| Async errors              | Blocking I/O                          | Ensure all I/O uses async/await            |
+| stdout corruption (stdio) | Logging to stdout                     | Redirect all logs to stderr                |
 
 </debugging>
 
@@ -144,6 +150,7 @@ server.tool("search_docs",
 <examples>
 
 ### Complete Python MCP server
+
 ```python
 from mcp.server.fastmcp import FastMCP
 import httpx
@@ -164,6 +171,7 @@ if __name__ == "__main__":
 ```
 
 ### Testing with MCP Inspector
+
 ```bash
 # Interactive testing
 npx @modelcontextprotocol/inspector python -m my_server
@@ -177,6 +185,7 @@ echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python -m my_server
 ## Success Criteria
 
 MCP server is complete when:
+
 - All tools/resources return correct results for valid inputs
 - Schema validation rejects invalid inputs with clear messages
 - Errors are handled gracefully (server never crashes on bad input)

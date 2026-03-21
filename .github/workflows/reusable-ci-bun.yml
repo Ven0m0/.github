@@ -6,31 +6,31 @@ on:
       bun-version:
         type: string
         default: latest
-        description: 'Bun version to use'
+        description: "Bun version to use"
       run-tests:
         type: boolean
         default: true
-        description: 'Run test suite'
+        description: "Run test suite"
       run-lint:
         type: boolean
         default: true
-        description: 'Run linting'
+        description: "Run linting"
       run-typecheck:
         type: boolean
         default: true
-        description: 'Run type checking'
+        description: "Run type checking"
       test-command:
         type: string
         default: bun test
-        description: 'Command to run tests'
+        description: "Command to run tests"
       lint-command:
         type: string
         default: bun run lint
-        description: 'Command to run linting'
+        description: "Command to run linting"
       typecheck-command:
         type: string
         default: bun run typecheck
-        description: 'Command to run type checking'
+        description: "Command to run type checking"
   workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}

@@ -18,53 +18,53 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: 'Node.js version to use'
+        description: "Node.js version to use"
         required: false
         type: string
-        default: '22'
+        default: "22"
       node-versions-matrix:
         description: 'JSON array of Node.js versions for matrix testing (e.g., ''["20", "22"]'')'
         required: false
         type: string
         default: '["22"]'
       coverage-threshold:
-        description: 'Minimum coverage percentage to pass (0 to disable)'
+        description: "Minimum coverage percentage to pass (0 to disable)"
         required: false
         type: number
         default: 80
       enable-matrix:
-        description: 'Enable matrix testing with multiple Node.js versions'
+        description: "Enable matrix testing with multiple Node.js versions"
         required: false
         type: boolean
         default: false
       enable-build:
-        description: 'Run build step after tests pass'
+        description: "Run build step after tests pass"
         required: false
         type: boolean
         default: true
       working-directory:
-        description: 'Working directory for commands'
+        description: "Working directory for commands"
         required: false
         type: string
-        default: '.'
+        default: "."
       upload-coverage:
-        description: 'Upload coverage to Codecov'
+        description: "Upload coverage to Codecov"
         required: false
         type: boolean
         default: true
       upload-artifacts:
-        description: 'Upload build artifacts'
+        description: "Upload build artifacts"
         required: false
         type: boolean
         default: true
       runs-on:
-        description: 'Runner to use'
+        description: "Runner to use"
         required: false
         type: string
-        default: 'ubuntu-latest'
+        default: "ubuntu-latest"
     outputs:
       coverage-percentage:
-        description: 'Test coverage percentage'
+        description: "Test coverage percentage"
         value: ${{ jobs.test.outputs.coverage }}
 permissions:
   contents: read
@@ -87,7 +87,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -113,7 +113,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -140,7 +140,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -200,7 +200,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -235,7 +235,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

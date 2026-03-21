@@ -18,17 +18,17 @@ Reference for GitHub CLI. If arguments are provided, execute: `gh $ARGUMENTS` or
 
 Think about what the user needs, then select the right command family:
 
-| Need | Command |
-|------|---------|
-| Authenticate | `gh auth login` / `gh auth status` |
-| Clone/create repo | `gh repo clone` / `gh repo create` |
-| Work with issues | `gh issue create/list/view/edit/close` |
-| Work with PRs | `gh pr create/list/view/checkout/merge` |
-| CI/CD status | `gh run list/view/watch` / `gh workflow run` |
-| Manage secrets | `gh secret set/list` / `gh variable set/get` |
-| Create releases | `gh release create/list/download` |
-| Search GitHub | `gh search code/issues/prs/repos` |
-| Direct API calls | `gh api /endpoint` |
+| Need              | Command                                      |
+| ----------------- | -------------------------------------------- |
+| Authenticate      | `gh auth login` / `gh auth status`           |
+| Clone/create repo | `gh repo clone` / `gh repo create`           |
+| Work with issues  | `gh issue create/list/view/edit/close`       |
+| Work with PRs     | `gh pr create/list/view/checkout/merge`      |
+| CI/CD status      | `gh run list/view/watch` / `gh workflow run` |
+| Manage secrets    | `gh secret set/list` / `gh variable set/get` |
+| Create releases   | `gh release create/list/download`            |
+| Search GitHub     | `gh search code/issues/prs/repos`            |
+| Direct API calls  | `gh api /endpoint`                           |
 
 </instructions>
 
@@ -129,11 +129,11 @@ gh repo view --json owner,name --jq '.owner.login + "/" + .name'
 
 <environment_variables>
 
-| Variable | Purpose |
-|----------|---------|
-| `GH_TOKEN` | Auth token for automation |
-| `GH_HOST` | GitHub hostname (for GHES) |
-| `GH_REPO` | Override default repository |
+| Variable             | Purpose                     |
+| -------------------- | --------------------------- |
+| `GH_TOKEN`           | Auth token for automation   |
+| `GH_HOST`            | GitHub hostname (for GHES)  |
+| `GH_REPO`            | Override default repository |
 | `GH_PROMPT_DISABLED` | Disable interactive prompts |
 
 </environment_variables>
@@ -141,6 +141,7 @@ gh repo view --json owner,name --jq '.owner.login + "/" + .name'
 <examples>
 
 ### Create PR from issue
+
 ```bash
 gh issue develop 123 --branch feature/issue-123
 git add . && git commit -m "Fix #123" && git push
@@ -148,6 +149,7 @@ gh pr create --title "Fix #123" --body "Closes #123"
 ```
 
 ### Check CI and wait for results
+
 ```bash
 gh workflow run ci.yml --ref main
 gh run list --workflow ci.yml --limit 1 --json databaseId \
@@ -155,6 +157,7 @@ gh run list --workflow ci.yml --limit 1 --json databaseId \
 ```
 
 ### Bulk close stale issues
+
 ```bash
 gh issue list --search "label:stale" --json id --jq '
   if length == 0 then

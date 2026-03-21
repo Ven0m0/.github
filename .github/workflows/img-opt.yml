@@ -6,19 +6,19 @@ on:
       export_webp:
         type: boolean
         default: true
-        description: 'Export images to WebP format'
+        description: "Export images to WebP format"
       export_avif:
         type: boolean
         default: false
-        description: 'Export images to AVIF format'
+        description: "Export images to AVIF format"
       replace_original:
         type: boolean
         default: false
-        description: 'Remove original images after conversion'
+        description: "Remove original images after conversion"
       quality:
         type: number
         default: 85
-        description: 'Image quality for WebP/AVIF exports (0-100)'
+        description: "Image quality for WebP/AVIF exports (0-100)"
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
   cancel-in-progress: true
@@ -100,7 +100,7 @@ jobs:
             local chunk_size=100
 
             for f in "${files[@]}"; do
-              local base="${f%.$ext}"
+              base="${f%.png}"
               # Add potential originals to batch
               batch+=("$base.png" "$base.jpg" "$base.jpeg" "$base.gif")
               ((count++)) || true

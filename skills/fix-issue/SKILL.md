@@ -59,6 +59,7 @@ Think step-by-step through the issue resolution:
 <examples>
 
 ### Bug fix
+
 ```
 Input: fix-issue 42
 Steps:
@@ -71,6 +72,7 @@ Steps:
 ```
 
 ### Feature request
+
 ```
 Input: fix-issue 87
 Steps:

@@ -6,41 +6,41 @@
 #     with:
 #       python-version: '3.12'
 
-name: 'Setup Python with uv'
-description: 'Install Python and uv package manager with caching'
-author: 'zircote'
+name: "Setup Python with uv"
+description: "Install Python and uv package manager with caching"
+author: "zircote"
 branding:
-  icon: 'package'
-  color: 'blue'
+  icon: "package"
+  color: "blue"
 inputs:
   python-version:
-    description: 'Python version to install'
+    description: "Python version to install"
     required: false
-    default: '3.12'
+    default: "3.12"
   install-dependencies:
-    description: 'Install dependencies after setup'
+    description: "Install dependencies after setup"
     required: false
-    default: 'true'
+    default: "true"
   extras:
-    description: 'Extra dependencies to install (comma-separated)'
+    description: "Extra dependencies to install (comma-separated)"
     required: false
-    default: ''
+    default: ""
   working-directory:
-    description: 'Working directory for commands'
+    description: "Working directory for commands"
     required: false
-    default: '.'
+    default: "."
 outputs:
   python-version:
-    description: 'Installed Python version'
+    description: "Installed Python version"
     value: ${{ steps.python.outputs.version }}
   uv-version:
-    description: 'Installed uv version'
+    description: "Installed uv version"
     value: ${{ steps.uv.outputs.version }}
   cache-hit:
-    description: 'Whether the cache was hit'
+    description: "Whether the cache was hit"
     value: ${{ steps.uv.outputs.cache-hit }}
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install uv
       id: uv

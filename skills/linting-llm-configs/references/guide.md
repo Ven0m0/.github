@@ -1,6 +1,7 @@
 # Linting LLM Configs Guide
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Workflows](#workflows)
 - [Examples](#examples)
@@ -21,25 +22,29 @@ Using these tools helps prevent common issues such as non-triggering skills due 
 ## Workflows
 
 ### 1. Initializing and Validating a Claude Code Project
+
 Use `claudelint` for projects primarily targeting Claude Code.
 
 1.  **Installation**:
-    
+
     **Recommended (uv tool)**
-    
+
     Install the `claudelint` CLI as a uv tool:
+
     ```bash
     uv tool install claudelint
     ```
-    
+
     **Alternative (Node-based CLI)**
-    
+
     If you prefer a Node-based global CLI, you can install the `claude-code-lint` package, which exposes the same `claudelint` commands used below:
+
     ```bash
     npm install -g claude-code-lint
     # or
     bun install -g claude-code-lint
     ```
+
 2.  **Initialization**:
     ```bash
     claudelint init
@@ -55,6 +60,7 @@ Use `claudelint` for projects primarily targeting Claude Code.
     ```
 
 ### 2. Multi-Platform Agent Validation
+
 Use `agnix` for cross-tool compatibility or non-Claude environments.
 
 1.  **Installation**:
@@ -81,20 +87,24 @@ Use `agnix` for cross-tool compatibility or non-Claude environments.
 ### Example 1: Invalid SKILL.md (agnix)
 
 **Input (`skills/my-skill/SKILL.md`):**
+
 ```markdown
 ---
 name: MySpecialSkill
 description: I help with coding.
 ---
+
 # MySpecialSkill
 ```
 
 **Execution:**
+
 ```bash
 agnix skills/my-skill/SKILL.md
 ```
 
 **Output:**
+
 ```text
 ✖ [AS-001] name 'MySpecialSkill' must be lowercase-kebab (e.g., 'my-special-skill')
 ✖ [AS-003] description must be in third-person (e.g., 'Helps with coding' instead of 'I help...')
@@ -106,6 +116,7 @@ agnix skills/my-skill/SKILL.md
 > Note: This example targets Claude Code’s standalone `hooks.json` schema (as used in generic Claude Code projects), not this repository’s `hooks/hooks.json` file. The main difference is the file format/schema (for example, top-level `version` plus arrays of `{ "type": "command", "bash": "..." }`), not the hook event names themselves.
 
 **Input (`hooks.json`):**
+
 ```json
 {
   "hooks": {
@@ -118,11 +129,13 @@ agnix skills/my-skill/SKILL.md
 ```
 
 **Execution:**
+
 ```bash
 claudelint validate-hooks
 ```
 
 **Output:**
+
 ```text
 hooks.json:
   2:5   error  'InvalidEvent' is not a valid hook event. Supported: sessionStart, sessionEnd, preToolUse, postToolUse
@@ -132,11 +145,13 @@ hooks.json:
 ### Example 3: CLAUDE.md Optimization (claudelint)
 
 **Command:**
+
 ```bash
 claudelint optimize-cc-md --dry-run
 ```
 
 **Output:**
+
 ```text
 [claudelint] Suggestion: The section 'Old Instructions' is rarely triggered and takes 400 tokens.
 [claudelint] Suggestion: Move '@path/to/large_file.md' to a dedicated skill to improve context window efficiency.

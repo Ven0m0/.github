@@ -1,8 +1,30 @@
 ---
 agent: "always"
-description: 'Update a markdown file section with an index/table of files from a specified folder.'
-tools: ['changes', 'search/codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'search/searchResults', 'runCommands/terminalLastCommand', 'runCommands/terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
+description: "Update a markdown file section with an index/table of files from a specified folder."
+tools:
+  [
+    "changes",
+    "search/codebase",
+    "edit/editFiles",
+    "extensions",
+    "web/fetch",
+    "findTestFiles",
+    "githubRepo",
+    "openSimpleBrowser",
+    "problems",
+    "runCommands",
+    "runTasks",
+    "runTests",
+    "search",
+    "search/searchResults",
+    "runCommands/terminalLastCommand",
+    "runCommands/terminalSelection",
+    "testFailure",
+    "usages",
+    "vscodeAPI",
+  ]
 ---
+
 # Update Markdown File Index
 
 Update markdown file `${file}` with an index/table of files from folder `${input:folder}`.
@@ -41,9 +63,9 @@ Choose format based on file types and existing content:
 
 ### Option 2: Detailed Table
 
-| File | Type | Description |
-|------|------|-------------|
-| [filename.ext](path/to/filename.ext) | Extension | Description |
+| File                                   | Type      | Description |
+| -------------------------------------- | --------- | ----------- |
+| [filename.ext](path/to/filename.ext)   | Extension | Description |
 | [filename2.ext](path/to/filename2.ext) | Extension | Description |
 
 ### Option 3: Categorized Sections
@@ -54,7 +76,7 @@ Group files by type/category with separate sections or sub-tables.
 
 - - **Update existing**: If table/index section exists, replace content while preserving structure
 - -- **Add new**: If no existing section, create new section using best-fit format
--  **Preserve**: Maintain existing markdown formatting, heading levels, and document flow
+- **Preserve**: Maintain existing markdown formatting, heading levels, and document flow
 - - **Links**: Use relative paths for file links within the repository
 
 ## Section Identification

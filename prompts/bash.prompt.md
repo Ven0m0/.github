@@ -1,5 +1,5 @@
 ---
-description: 'Write and optimize Bash/Shell scripts following project standards for Arch, Debian, and Termux platforms'
+description: "Write and optimize Bash/Shell scripts following project standards for Arch, Debian, and Termux platforms"
 mode: agent
 applyTo: "**/*.sh"
 ---

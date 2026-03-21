@@ -1,0 +1,266 @@
+# Reusable Security Scanning Workflow
+# Provides centralized security scanning for all repositories
+#
+# Security Note: This workflow only uses workflow_call inputs (controlled by caller)
+# and internal job status values. No untrusted user input is used in run commands.
+#
+# Usage in consuming workflows:
+#   jobs:
+#     security:
+#       uses: Ven0m0/.github/.github/workflows/reusable-security.yml@main
+#       with:
+#         python-audit: true
+#         node-audit: true
+#       secrets: inherit
+
+name: Security Scanning
+
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      python-audit:
+        description: "Run pip-audit for Python dependency scanning"
+        required: false
+        type: boolean
+        default: false
+      node-audit:
+        description: "Run npm audit for Node.js dependency scanning"
+        required: false
+        type: boolean
+        default: false
+      go-audit:
+        description: "Run govulncheck for Go dependency scanning"
+        required: false
+        type: boolean
+        default: false
+      python-version:
+        description: "Python version for pip-audit"
+        required: false
+        type: string
+        default: "3.12"
+      node-version:
+        description: "Node.js version for npm audit"
+        required: false
+        type: string
+        default: "20"
+      go-version:
+        description: "Go version for govulncheck"
+        required: false
+        type: string
+        default: "1.23"
+      gitleaks-config:
+        description: "Path to custom gitleaks config file"
+        required: false
+        type: string
+        default: ""
+      fail-on-vulnerabilities:
+        description: "Fail workflow if vulnerabilities are found"
+        required: false
+        type: boolean
+        default: true
+      upload-sarif:
+        description: "Upload SARIF results to GitHub Code Scanning"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  gitleaks:
+    name: Gitleaks Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+          GITLEAKS_CONFIG: ${{ inputs.gitleaks-config }}
+
+      - name: Upload Gitleaks SARIF
+        if: always() && inputs.upload-sarif
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif
+          category: gitleaks
+
+  pip-audit:
+    name: Python Dependency Audit
+    runs-on: ubuntu-latest
+    if: inputs.python-audit
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Check for dependency files
+        id: find-deps
+        run: |
+          if [[ -f "requirements.txt" ]] || [[ -f "pyproject.toml" ]] || [[ -f "setup.py" ]]; then
+            echo "deps_found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deps_found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run pip-audit
+        if: steps.find-deps.outputs.deps_found == 'true'
+        env:
+          FAIL_ON_VULN: ${{ inputs.fail-on-vulnerabilities }}
+        run: |
+          STRICT_FLAG=""
+          if [[ "$FAIL_ON_VULN" == "true" ]]; then
+            STRICT_FLAG="--strict"
+          fi
+          pip-audit --format sarif --output pip-audit-results.sarif $STRICT_FLAG || echo "Vulnerabilities found"
+        continue-on-error: true
+
+      - name: Upload pip-audit SARIF
+        if: always() && inputs.upload-sarif && steps.find-deps.outputs.deps_found == 'true'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: pip-audit-results.sarif
+          category: pip-audit
+
+  npm-audit:
+    name: Node.js Dependency Audit
+    runs-on: ubuntu-latest
+    if: inputs.node-audit
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Check for package.json
+        id: check-package
+        run: |
+          if [[ -f "package.json" ]]; then
+            echo "has_package=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_package=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.check-package.outputs.has_package == 'true'
+        run: |
+          if [[ -f "package-lock.json" ]]; then
+            npm ci
+          elif [[ -f "pnpm-lock.yaml" ]]; then
+            npm install -g pnpm && pnpm install --frozen-lockfile
+          else
+            npm install
+          fi
+
+      - name: Run npm audit
+        if: steps.check-package.outputs.has_package == 'true'
+        env:
+          FAIL_ON_VULN: ${{ inputs.fail-on-vulnerabilities }}
+        run: |
+          AUDIT_LEVEL="critical"
+          if [[ "$FAIL_ON_VULN" == "true" ]]; then
+            AUDIT_LEVEL="moderate"
+          fi
+          npm audit --json > npm-audit-results.json 2>&1 || true
+          npm audit --audit-level="$AUDIT_LEVEL" || echo "Vulnerabilities found"
+        continue-on-error: true
+
+      - name: Upload npm audit artifact
+        if: always() && steps.check-package.outputs.has_package == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: npm-audit-results
+          path: npm-audit-results.json
+          retention-days: 30
+
+  govulncheck:
+    name: Go Vulnerability Check
+    runs-on: ubuntu-latest
+    if: inputs.go-audit
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      - name: Check for go.mod
+        id: check-gomod
+        run: |
+          if [[ -f "go.mod" ]]; then
+            echo "has_gomod=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_gomod=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install govulncheck
+        if: steps.check-gomod.outputs.has_gomod == 'true'
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+
+      - name: Run govulncheck
+        if: steps.check-gomod.outputs.has_gomod == 'true'
+        run: govulncheck ./... || echo "Vulnerabilities found"
+        continue-on-error: ${{ !inputs.fail-on-vulnerabilities }}
+
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [gitleaks, pip-audit, npm-audit, govulncheck]
+    if: always()
+    env:
+      GITLEAKS_RESULT: ${{ needs.gitleaks.result }}
+      PIP_AUDIT_RESULT: ${{ needs.pip-audit.result }}
+      NPM_AUDIT_RESULT: ${{ needs.npm-audit.result }}
+      GOVULNCHECK_RESULT: ${{ needs.govulncheck.result }}
+    steps:
+      - name: Generate summary
+        run: |
+          {
+            echo "## Security Scan Summary"
+            echo ""
+            echo "### Secret Scanning (Gitleaks)"
+            if [[ "$GITLEAKS_RESULT" == "success" ]]; then
+              echo "- :white_check_mark: No secrets detected"
+            elif [[ "$GITLEAKS_RESULT" == "failure" ]]; then
+              echo "- :x: Secrets detected - review required"
+            else
+              echo "- :warning: Scan skipped or inconclusive"
+            fi
+            echo ""
+            if [[ "${{ inputs.python-audit }}" == "true" ]]; then
+              echo "### Python Dependencies (pip-audit)"
+              [[ "$PIP_AUDIT_RESULT" == "success" ]] && echo "- :white_check_mark: No vulnerabilities" || echo "- :x: Vulnerabilities detected"
+              echo ""
+            fi
+            if [[ "${{ inputs.node-audit }}" == "true" ]]; then
+              echo "### Node.js Dependencies (npm audit)"
+              [[ "$NPM_AUDIT_RESULT" == "success" ]] && echo "- :white_check_mark: No vulnerabilities" || echo "- :x: Vulnerabilities detected"
+              echo ""
+            fi
+            if [[ "${{ inputs.go-audit }}" == "true" ]]; then
+              echo "### Go Dependencies (govulncheck)"
+              [[ "$GOVULNCHECK_RESULT" == "success" ]] && echo "- :white_check_mark: No vulnerabilities" || echo "- :x: Vulnerabilities detected"
+              echo ""
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

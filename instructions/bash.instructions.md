@@ -1,5 +1,5 @@
 ---
-description: 'Bash/Shell scripting standards: safety, performance, modern idioms'
+description: "Bash/Shell scripting standards: safety, performance, modern idioms"
 applyTo: "**/*.{sh,bash}"
 ---
 
@@ -16,15 +16,15 @@ applyTo: "**/*.{sh,bash}"
 
 ## Tooling
 
-| Task | Preferred | Fallback |
-|------|-----------|----------|
-| Search | `rg` | `grep` |
-| Find files | `fd` | `find` |
-| JSON/YAML | `jq`/`yq` | - |
-| Edit | `sd` | `sed` |
-| List | `eza` | `ls` |
-| View | `bat` | `cat` |
-| Download | `aria2c` | `curl` |
+| Task       | Preferred | Fallback |
+| ---------- | --------- | -------- |
+| Search     | `rg`      | `grep`   |
+| Find files | `fd`      | `find`   |
+| JSON/YAML  | `jq`/`yq` | -        |
+| Edit       | `sd`      | `sed`    |
+| List       | `eza`     | `ls`     |
+| View       | `bat`     | `cat`    |
+| Download   | `aria2c`  | `curl`   |
 
 ## Template
 

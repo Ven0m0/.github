@@ -14,6 +14,7 @@ This skill provides expertise in creating, managing, and troubleshooting GitHub 
 ## Skill 1: Frontmatter Configuration
 
 ### Description
+
 Configure workflow frontmatter with all required and optional fields following gh-aw specifications.
 
 ### Implementation Pattern
@@ -25,30 +26,30 @@ on:
   workflow_dispatch:
     inputs:
       parameter_name:
-        description: 'Clear description of parameter'
+        description: "Clear description of parameter"
         required: false
         type: string|boolean|choice|number
-        default: "default_value"  # Boolean: "true"/"false" as strings
+        default: "default_value" # Boolean: "true"/"false" as strings
   schedule:
-    - cron: '0 9 * * 1'  # Monday 9 AM UTC
+    - cron: "0 9 * * 1" # Monday 9 AM UTC
   issues:
     types: [opened, labeled]
   pull_request:
     types: [opened, synchronize]
 
-engine: copilot  # GitHub Copilot as AI engine
+engine: copilot # GitHub Copilot as AI engine
 
 permissions:
-  contents: read      # NEVER use write — strict mode blocks it
+  contents: read # NEVER use write — strict mode blocks it
   pull-requests: read # All writes go through safe-outputs
   issues: read
 
 # ===== TOOLS CONFIGURATION =====
 tools:
-  edit:              # bare key — enables file read AND edit
-  bash:              # bare key — default safe commands
+  edit: # bare key — enables file read AND edit
+  bash: # bare key — default safe commands
   github:
-    toolsets: [pull_requests]  # Only include toolsets your workflow needs
+    toolsets: [pull_requests] # Only include toolsets your workflow needs
 
 # ===== MCP SERVERS (if needed) =====
 mcp-servers:
@@ -90,6 +91,7 @@ imports:
 ```
 
 ### Key Rules
+
 - **`edit:` is a bare key** (no value) — enables both reading and writing files. `edit: null` and `edit: true` both fail compilation.
 - **`read:` is not a valid tool** — file reading is provided by `edit:`.
 - **`bash:` is a bare key** (no value) for default safe commands, or `bash: ["cmd"]` for specific commands.
@@ -107,11 +109,13 @@ imports:
 ## Skill 2: Safe-Outputs Configuration
 
 ### Description
+
 Configure safe-outputs for GitHub operations (PRs, issues, comments) with proper validation and best practices.
 
 ### Common Safe-Output Patterns
 
 #### Pattern: Pull Request Creation
+
 ```yaml
 safe-outputs:
   create-pull-request:
@@ -119,18 +123,20 @@ safe-outputs:
     labels: [automation, bot-generated]
     draft: true
     reviewers: [copilot]
-    expires: 14  # Auto-close after 14 days
-    fallback-as-issue: true  # Create issue if PR fails
-    base-branch: main  # Target branch
+    expires: 14 # Auto-close after 14 days
+    fallback-as-issue: true # Create issue if PR fails
+    base-branch: main # Target branch
 ```
 
 **When to use:**
+
 - Automated code changes
 - Dependency upgrades
 - Code generation
 - Refactoring
 
 #### Pattern: Issue Creation
+
 ```yaml
 safe-outputs:
   create-issue:
@@ -138,50 +144,56 @@ safe-outputs:
     labels: [automation, needs-review]
     assignees: [copilot]
     expires: 7
-    group: true  # Group multiple issues as sub-issues
-    close-older-issues: true  # Close previous issues from same workflow
+    group: true # Group multiple issues as sub-issues
+    close-older-issues: true # Close previous issues from same workflow
 ```
 
 **When to use:**
+
 - Reporting findings
 - Tracking tasks
 - Alerting on issues
 - Documentation requests
 
 #### Pattern: Issue/PR Comments
+
 ```yaml
 safe-outputs:
   add-comment:
-    target: "triggering"  # Comment on triggering issue/PR
+    target: "triggering" # Comment on triggering issue/PR
     max: 3
-    hide-older-comments: true  # Hide previous comments from same workflow
+    hide-older-comments: true # Hide previous comments from same workflow
 ```
 
 **When to use:**
+
 - Status updates
 - Analysis results
 - Bot responses
 - Progress reporting
 
 #### Pattern: PR Reviews
+
 ```yaml
 safe-outputs:
   create-pull-request-review-comment:
     max: 10
     side: "RIGHT"
-    footer: "if-body"  # Only show footer when review has body
+    footer: "if-body" # Only show footer when review has body
   submit-pull-request-review:
     max: 1
     footer: false
 ```
 
 **When to use:**
+
 - Code review automation
 - Inline suggestions
 - Security analysis
 - Style checking
 
 #### Pattern: Label Management
+
 ```yaml
 safe-outputs:
   add-labels:
@@ -193,11 +205,13 @@ safe-outputs:
 ```
 
 **When to use:**
+
 - Workflow status tracking
 - Issue classification
 - Automation state management
 
 ### Available Safe-Output Types
+
 - `create-pull-request` - Create PRs with code changes
 - `create-issue` - Create issues
 - `update-issue` - Update issue title/body/status
@@ -222,27 +236,31 @@ safe-outputs:
 ## Skill 3: MCP Server Integration
 
 ### Description
+
 Configure and use Model Context Protocol (MCP) servers for specialized tool access.
 
 ### Common MCP Server Configurations
 
 #### Terraform MCP Server
+
 ```yaml
 mcp-servers:
   terraform:
     container: "hashicorp/terraform-mcp-server:0.3.3"
     env:
       TF_LOG: "INFO"
-    allowed: ["*"]  # or specific tools
+    allowed: ["*"] # or specific tools
 ```
 
 **Available operations:**
+
 - Read Terraform configurations
 - Analyze provider versions
 - Detect breaking changes
 - Generate upgrade recommendations
 
 #### Azure MCP Server
+
 ```yaml
 mcp-servers:
   azure:
@@ -252,12 +270,14 @@ mcp-servers:
 ```
 
 **Available operations:**
+
 - Azure resource queries
 - Best practices validation
 - Documentation lookup
 - Terraform Azure integration
 
 #### Custom MCP Server
+
 ```yaml
 mcp-servers:
   custom:
@@ -268,10 +288,11 @@ mcp-servers:
 ```
 
 ### Network Configuration for MCP Servers
+
 ```yaml
 network:
   allowed:
-    - defaults  # GitHub APIs
+    - defaults # GitHub APIs
     - registry.terraform.io
     - releases.hashicorp.com
     - management.azure.com
@@ -283,6 +304,7 @@ network:
 ## Skill 4: Workflow Compilation & Debugging
 
 ### Description
+
 Compile workflows and resolve common compilation errors.
 
 ### Compilation Commands
@@ -304,7 +326,9 @@ gh aw validate workflow-name
 ### Common Compilation Errors & Fixes
 
 #### Error: Invalid tool value for `edit`
+
 **Problem:**
+
 ```yaml
 tools:
   read: null   # ❌ 'read' is not a valid tool
@@ -313,132 +337,157 @@ tools:
 ```
 
 **Solution:**
+
 ```yaml
-tools:        # ✅ bare keys
+tools: # ✅ bare keys
   edit:
   bash:
 ```
 
 #### Error: Write permissions blocked by strict mode
+
 **Problem:**
+
 ```yaml
 permissions:
-  contents: write       # ❌ blocked by strict mode
-  pull-requests: write  # ❌ blocked by strict mode
+  contents: write # ❌ blocked by strict mode
+  pull-requests: write # ❌ blocked by strict mode
 ```
 
 **Solution:**
+
 ```yaml
-permissions:           # ✅ read-only
+permissions: # ✅ read-only
   contents: read
   pull-requests: read
-safe-outputs:          # ✅ write operations go here
+safe-outputs: # ✅ write operations go here
   create-pull-request: null
 ```
 
 #### Error: `pull_request` trigger requires `types`
+
 **Problem:**
+
 ```yaml
 on:
-  pull_request:        # ❌ bare null not valid
-  workflow_dispatch: null  # ❌ null not valid
+  pull_request: # ❌ bare null not valid
+  workflow_dispatch: null # ❌ null not valid
 ```
 
 **Solution:**
+
 ```yaml
 on:
-  workflow_dispatch:   # ✅ bare key
-  pull_request:        # ✅ explicit types
+  workflow_dispatch: # ✅ bare key
+  pull_request: # ✅ explicit types
     types: [opened, synchronize, reopened]
 ```
 
 #### Error: Missing permission for toolset
+
 **Problem:**
+
 ```yaml
 tools:
   github:
-    toolsets: [default]  # includes 'issues' toolset
+    toolsets: [default] # includes 'issues' toolset
 permissions:
-  contents: read          # ❌ missing 'issues: read', compiler warns
+  contents: read # ❌ missing 'issues: read', compiler warns
 ```
 
 **Solution:**
+
 ```yaml
 tools:
   github:
-    toolsets: [pull_requests]  # ✅ only what you need
+    toolsets: [pull_requests] # ✅ only what you need
 permissions:
   contents: read
   pull-requests: read
 ```
 
 #### Error: "got array, want object" for tools
+
 **Problem:**
+
 ```yaml
-tools: ['bash', 'read', 'edit']  # ❌ Wrong
+tools: ["bash", "read", "edit"] # ❌ Wrong
 ```
 
 **Solution:**
+
 ```yaml
-tools:  # ✅ Correct
+tools: # ✅ Correct
   bash:
   edit:
 ```
 
 #### Error: Boolean default must be string
+
 **Problem:**
+
 ```yaml
 workflow_dispatch:
   inputs:
     enabled:
       type: boolean
-      default: true  # ❌ Wrong
+      default: true # ❌ Wrong
 ```
 
 **Solution:**
+
 ```yaml
 workflow_dispatch:
   inputs:
     enabled:
       type: boolean
-      default: "true"  # ✅ Correct (quoted)
+      default: "true" # ✅ Correct (quoted)
 ```
 
 #### Error: Invalid safe-output field name
+
 **Problem:**
+
 ```yaml
 safe-outputs:
-  create_pull_request: null  # ❌ Wrong (underscore)
+  create_pull_request: null # ❌ Wrong (underscore)
 ```
 
 **Solution:**
+
 ```yaml
 safe-outputs:
-  create-pull-request: null  # ✅ Correct (hyphen)
+  create-pull-request: null # ✅ Correct (hyphen)
 ```
 
 #### Error: Import download failed
+
 **Problem:**
+
 ```yaml
 imports:
-  - https://raw.githubusercontent.com/owner/repo/main/agent.md  # ❌ Wrong
+  - https://raw.githubusercontent.com/owner/repo/main/agent.md # ❌ Wrong
 ```
 
 **Solution:**
+
 ```yaml
 imports:
-  - owner/repo/.github/agents/agent.md@main  # ✅ Correct
+  - owner/repo/.github/agents/agent.md@main # ✅ Correct
 ```
 
 #### Error: Safe-outputs format
+
 **Problem:**
+
 ```yaml
-safe-outputs: [create-issue, create-pull-request]  # ❌ Wrong (array)
+safe-outputs: [create-issue, create-pull-request] # ❌ Wrong (array)
 ```
 
 **Solution:**
+
 ```yaml
-safe-outputs:  # ✅ Correct (object)
+safe-outputs: # ✅ Correct (object)
   create-issue: null
   create-pull-request: null
 ```
@@ -448,18 +497,22 @@ safe-outputs:  # ✅ Correct (object)
 ## Skill 5: Workflow Testing & Deployment
 
 ### Description
+
 Deploy and test agentic workflows in GitHub Actions.
 
 ### Deployment Checklist
 
 1. **Compile Workflow**
+
    ```bash
    gh aw compile workflow-name
    ```
+
    - Verify 0 errors
    - Check warnings (informational only)
 
 2. **Commit Files**
+
    ```bash
    git add .github/workflows/workflow-name.md
    git add .github/workflows/workflow-name.lock.yml
@@ -486,12 +539,13 @@ Deploy and test agentic workflows in GitHub Actions.
 ### Testing Strategies
 
 #### Strategy 1: Manual Trigger Testing
+
 ```yaml
 on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Dry run mode (no actual changes)'
+        description: "Dry run mode (no actual changes)"
         type: boolean
         default: "true"
 ```
@@ -499,6 +553,7 @@ on:
 Test without making real changes first.
 
 #### Strategy 2: Branch Testing
+
 ```yaml
 on:
   push:
@@ -509,6 +564,7 @@ on:
 Test on dedicated test branches before enabling on main.
 
 #### Strategy 3: Label-Based Testing
+
 ```yaml
 on:
   issues:
@@ -523,23 +579,27 @@ Control execution via labels during testing.
 ## Skill 6: Import Reusable Agents & Skills
 
 ### Description
+
 Use imports to leverage reusable agents and skills from other repositories.
 
 ### Import Patterns
 
 #### Import External Agent
+
 ```yaml
 imports:
   - thomast1906/github-copilot-skills-terraform/.github/agents/terraform-provider-upgrade.agent.md@main
 ```
 
 **In markdown instructions:**
+
 ```markdown
 Use your imported Terraform provider upgrade expertise to analyze
 the current provider versions and recommend upgrades.
 ```
 
 #### Import External Skill
+
 ```yaml
 imports:
   - owner/repo/.github/skills/code-review/SKILL.md@main
@@ -547,12 +607,14 @@ imports:
 ```
 
 **In markdown instructions:**
+
 ```markdown
 Apply your code review and security scanning skills to analyze
 the changes in this pull request.
 ```
 
 #### Import Multiple Resources
+
 ```yaml
 imports:
   - owner/repo/.github/agents/analyzer.agent.md@main
@@ -563,13 +625,15 @@ imports:
 ### Import Best Practices
 
 1. **Pin to specific refs when stable:**
+
    ```yaml
    imports:
-     - owner/repo/.github/agents/agent.md@v1.2.0  # Tag
-     - owner/repo/.github/agents/agent.md@abc1234  # Commit SHA
+     - owner/repo/.github/agents/agent.md@v1.2.0 # Tag
+     - owner/repo/.github/agents/agent.md@abc1234 # Commit SHA
    ```
 
 2. **Use main/master for latest:**
+
    ```yaml
    imports:
      - owner/repo/.github/agents/agent.md@main
@@ -585,6 +649,7 @@ imports:
 ## Skill 7: Common Workflow Patterns
 
 ### Description
+
 Pre-built patterns for common automation scenarios.
 
 ### Pattern: Dependency Upgrade Workflow
@@ -730,15 +795,18 @@ When an issue is created or commented on:
 ## Skill 8: Troubleshooting Guide
 
 ### Description
+
 Diagnose and fix common issues with agentic workflows.
 
 ### Issue: Workflow Not Appearing in Actions UI
 
 **Symptoms:**
+
 - Workflow file exists but doesn't show in Actions tab
 - Can't manually trigger workflow
 
 **Diagnosis:**
+
 ```bash
 # Check if lock file was generated
 ls -la .github/workflows/*.lock.yml
@@ -751,6 +819,7 @@ gh aw compile workflow-name
 ```
 
 **Solutions:**
+
 1. Ensure both `.md` and `.lock.yml` are committed and pushed
 2. Verify `workflow_dispatch` trigger is configured
 3. Check repository Settings → Actions to ensure workflows are enabled
@@ -758,11 +827,13 @@ gh aw compile workflow-name
 ### Issue: PR Creation Fails
 
 **Symptoms:**
+
 ```
 Warning: Failed to create pull request: GitHub Actions is not permitted to create or approve pull requests.
 ```
 
 **Solution:**
+
 1. Go to: Settings → Actions → General
 2. Scroll to: "Workflow permissions"
 3. Check: ✓ Allow GitHub Actions to create and approve pull requests
@@ -771,18 +842,21 @@ Warning: Failed to create pull request: GitHub Actions is not permitted to creat
 ### Issue: MCP Server Not Working
 
 **Symptoms:**
+
 - Tools from MCP server not available
 - Connection timeouts
 
 **Diagnosis:**
+
 ```yaml
 # Check container image is correct
 mcp-servers:
   terraform:
-    container: "hashicorp/terraform-mcp-server:0.3.3"  # Verify version
+    container: "hashicorp/terraform-mcp-server:0.3.3" # Verify version
 ```
 
 **Solutions:**
+
 1. Verify container image exists and is accessible
 2. Check network allowlist includes required domains
 3. Verify environment variables are set correctly
@@ -791,11 +865,13 @@ mcp-servers:
 ### Issue: Import Not Resolving
 
 **Symptoms:**
+
 ```
 Error: Failed to download import: owner/repo/path@ref
 ```
 
 **Solutions:**
+
 1. Verify repository is public or accessible with token
 2. Check path is correct: `.github/agents/name.agent.md`
 3. Verify branch/tag/SHA exists
@@ -806,53 +882,62 @@ Error: Failed to download import: owner/repo/path@ref
 ## Skill 9: Performance Optimization
 
 ### Description
+
 Optimize workflow execution time and resource usage.
 
 ### Optimization Techniques
 
 #### 1. Minimize MCP Server Usage
+
 ```yaml
 # Only allow specific tools needed
 mcp-servers:
   terraform:
-    allowed: ["analyze_version", "detect_breaking_changes"]  # Not "*"
+    allowed: ["analyze_version", "detect_breaking_changes"] # Not "*"
 ```
 
 #### 2. Set Appropriate Timeouts
+
 ```yaml
 # Don't run indefinitely
 on:
   workflow_dispatch:
     inputs:
       timeout_minutes:
-        description: 'Maximum execution time'
+        description: "Maximum execution time"
         default: "30"
 ```
 
 #### 3. Cache Results
+
 ```yaml
 tools:
-  cache-memory: null  # Enable caching
+  cache-memory: null # Enable caching
 ```
 
 Use caching in instructions:
+
 ```markdown
 Cache analysis results to avoid re-analyzing unchanged files.
 ```
 
 #### 4. Limit Safe-Output Operations
+
 ```yaml
 safe-outputs:
   create-pull-request-review-comment:
-    max: 10  # Limit number of comments
+    max: 10 # Limit number of comments
 ```
 
 #### 5. Use Concise Instructions
+
 ```markdown
 # ❌ Avoid overly verbose instructions
+
 Please very carefully analyze every single line...
 
 # ✅ Be concise and clear
+
 Analyze changes and report findings.
 ```
 
@@ -861,52 +946,58 @@ Analyze changes and report findings.
 ## Skill 10: Security Best Practices
 
 ### Description
+
 Implement secure configurations for agentic workflows.
 
 ### Security Checklist
 
 #### Minimal Permissions
+
 ```yaml
 permissions:
-  contents: read  # Only write if absolutely necessary
-  pull-requests: write  # Only if creating PRs
-  issues: write  # Only if creating issues
+  contents: read # Only write if absolutely necessary
+  pull-requests: write # Only if creating PRs
+  issues: write # Only if creating issues
 ```
 
 #### Secret Management
+
 ```yaml
 mcp-servers:
   custom:
     env:
-      API_KEY: ${{ secrets.API_KEY }}  # Use secrets, not hardcoded values
+      API_KEY: ${{ secrets.API_KEY }} # Use secrets, not hardcoded values
 ```
 
 #### Network Restrictions
+
 ```yaml
 network:
   allowed:
     - defaults
-    - specific-domain.com  # Only allow required domains
+    - specific-domain.com # Only allow required domains
     # Don't use wildcards or overly broad allowlists
 ```
 
 #### Input Validation
+
 ```yaml
 on:
   workflow_dispatch:
     inputs:
       target:
-        type: choice  # Use choice instead of string when possible
+        type: choice # Use choice instead of string when possible
         options: [dev, staging, prod]
 ```
 
 #### Safe-Output Restrictions
+
 ```yaml
 safe-outputs:
   add-labels:
-    allowed: [bug, enhancement]  # Restrict which labels can be added
+    allowed: [bug, enhancement] # Restrict which labels can be added
   add-reviewer:
-    reviewers: [team-lead, copilot]  # Restrict who can be assigned
+    reviewers: [team-lead, copilot] # Restrict who can be assigned
 ```
 
 ---
@@ -914,6 +1005,7 @@ safe-outputs:
 ## Quick Reference Card
 
 ### File Structure
+
 ```
 .github/
 ├── workflows/
@@ -927,6 +1019,7 @@ safe-outputs:
 ```
 
 ### Essential Commands
+
 ```bash
 # Compile workflow
 gh aw compile workflow-name
@@ -942,28 +1035,30 @@ gh aw list
 ```
 
 ### Frontmatter Quick Template
+
 ```yaml
 ---
 on:
-  workflow_dispatch:            # bare key — no null
+  workflow_dispatch: # bare key — no null
   pull_request:
-    types: [opened, synchronize, reopened]  # always specify types
+    types: [opened, synchronize, reopened] # always specify types
 engine: copilot
 permissions:
-  contents: read                # never write — strict mode blocks it
-  pull-requests: read           # match only what your toolsets need
+  contents: read # never write — strict mode blocks it
+  pull-requests: read # match only what your toolsets need
 tools:
-  edit:                         # bare key — enables file read/edit
+  edit: # bare key — enables file read/edit
   github:
-    toolsets: [pull_requests]   # only what you need
+    toolsets: [pull_requests] # only what you need
 safe-outputs:
-  create-pull-request: null     # all write ops go here
+  create-pull-request: null # all write ops go here
 network:
   allowed: [defaults]
 ---
 ```
 
 ### Common Safe-Outputs
+
 - `create-pull-request` - Code changes
 - `create-issue` - Reports/alerts
 - `add-comment` - Status updates
@@ -971,6 +1066,7 @@ network:
 - `add-labels` - State management
 
 ### Debug Workflow Issues
+
 1. Check compilation: `gh aw compile workflow-name`
 2. Verify files committed: `git status`
 3. Check Actions enabled: Settings → Actions

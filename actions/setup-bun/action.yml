@@ -7,27 +7,27 @@
 #       bun-version: 'latest'
 #       node-version: '24'
 
-name: 'Setup Bun'
-description: 'Install Bun runtime with Node.js for development workflows'
-author: 'Ven0m0'
+name: "Setup Bun"
+description: "Install Bun runtime with Node.js for development workflows"
+author: "Ven0m0"
 branding:
-  icon: 'zap'
-  color: 'orange'
+  icon: "zap"
+  color: "orange"
 inputs:
   bun-version:
-    description: 'Bun version to install'
+    description: "Bun version to install"
     required: false
-    default: 'latest'
+    default: "latest"
   node-version:
-    description: 'Node.js version to install alongside Bun'
+    description: "Node.js version to install alongside Bun"
     required: false
-    default: '24'
+    default: "24"
 outputs:
   bun-version:
-    description: 'Installed Bun version'
+    description: "Installed Bun version"
     value: ${{ steps.bun-info.outputs.version }}
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Get baseline download URL
       id: bun-url

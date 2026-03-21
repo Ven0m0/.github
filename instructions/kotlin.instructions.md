@@ -17,6 +17,7 @@ Version: Kotlin 2.0+
 ## Core Rules
 
 **MUST:**
+
 - Use data classes for DTOs and value objects
 - Use sealed classes for restricted hierarchies
 - Use coroutines for async operations
@@ -25,6 +26,7 @@ Version: Kotlin 2.0+
 - Use null safety features (`?.`, `?:`, `!!`)
 
 **MUST NOT:**
+
 - Use `!!` without prior null check
 - Use `lateinit` for nullable types
 - Suppress warnings without justification

@@ -13,6 +13,7 @@ Rapidly prototype modern web applications from scratch with creative flow and qu
 ## Inputs
 
 Gather before starting (ask if not provided):
+
 - **App description**: Purpose, key features, target users
 - **Tech preferences**: Framework (React/Next.js/Vue/Svelte), styling (Tailwind/CSS modules)
 - **Feature requirements**: Core functionality, user flows
@@ -44,6 +45,7 @@ Think through the build step-by-step:
 <scope>
 
 ## In Scope
+
 - Full-stack web apps (frontend + API routes/server components)
 - Any modern framework (React, Next.js, Vue, Svelte, Astro, etc.)
 - Database integration (Prisma, Drizzle with type-safe ORMs)
@@ -51,6 +53,7 @@ Think through the build step-by-step:
 - SEO optimization (meta tags, structured data, sitemaps)
 
 ## Out of Scope
+
 - Production infrastructure management
 - Complex backend microservices (use separate skill)
 - Native mobile apps (iOS/Android)
@@ -60,22 +63,26 @@ Think through the build step-by-step:
 <conventions>
 
 ## Styling
+
 - Tailwind CSS recommended for rapid development
 - Consistent design tokens for colors, spacing, typography
 - Light/dark mode support when appropriate
 - Proper contrast ratios (WCAG AA minimum)
 
 ## State and Data
+
 - State: React Context / Zustand / Redux based on complexity
 - Data fetching: React Query, SWR, or framework built-ins
 - Always handle: loading states, error states, empty states
 
 ## Backend
+
 - API routes or server components as appropriate
 - Type-safe ORMs (Prisma, Drizzle) for databases
 - Proper validation at API boundaries
 
 ## SEO (public-facing apps)
+
 - Meta tags: title, description, Open Graph, Twitter cards
 - Structured data: JSON-LD for rich search results
 - Core Web Vitals: optimize LCP, FID, CLS
@@ -84,6 +91,7 @@ Think through the build step-by-step:
 </conventions>
 
 <required_artifacts>
+
 - Fully initialized project with all config files
 - Clean component and page structure
 - Styling implementation (Tailwind config or chosen approach)
@@ -91,7 +99,7 @@ Think through the build step-by-step:
 - README.md with: description, setup, dev commands, env vars, deployment
 - Properly configured .gitignore
 - package.json with clear scripts
-</required_artifacts>
+  </required_artifacts>
 
 <verification>
 
@@ -105,6 +113,7 @@ npm run dev          # development server
 ```
 
 Complete when:
+
 - All commands succeed without errors
 - App builds and runs in dev mode
 - Core features work across screen sizes
@@ -117,6 +126,7 @@ Complete when:
 <examples>
 
 ### SaaS landing page
+
 ```
 User: "Build a landing page - hero, features, pricing, contact form"
 
@@ -130,6 +140,7 @@ Steps:
 ```
 
 ### Admin dashboard
+
 ```
 User: "Prototype an admin dashboard - auth, data tables, charts"
 
@@ -153,6 +164,7 @@ Steps:
 ## Documentation References
 
 Always search current docs before implementing:
+
 - React: https://react.dev
 - Next.js: https://nextjs.org/docs
 - Vue: https://vuejs.org/guide

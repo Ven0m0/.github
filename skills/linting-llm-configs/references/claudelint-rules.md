@@ -26,14 +26,14 @@ Severity: `"off"` | `"warn"` | `"error"`
 
 ## Rule Categories
 
-| Category | CLI command |
-|----------|------------|
-| CLAUDE.md | `validate-cc-md` |
-| Skills | `validate-skills --path .` |
-| Settings | `validate-settings` |
-| Hooks | `validate-hooks` |
-| MCP servers | `validate-mcp` |
-| Plugins | `validate-plugin` |
+| Category    | CLI command                |
+| ----------- | -------------------------- |
+| CLAUDE.md   | `validate-cc-md`           |
+| Skills      | `validate-skills --path .` |
+| Settings    | `validate-settings`        |
+| Hooks       | `validate-hooks`           |
+| MCP servers | `validate-mcp`             |
+| Plugins     | `validate-plugin`          |
 
 Browse all: `claudelint list-rules`
 
@@ -57,8 +57,8 @@ Then use `/validate-all`, `/validate-skills`, `/optimize-cc-md`, etc.
 ## Programmatic API
 
 ```js
-import { lint } from 'claude-code-lint'
-const results = await lint({ paths: ['.'], fix: false })
+import { lint } from "claude-code-lint";
+const results = await lint({ paths: ["."], fix: false });
 ```
 
 Full API: https://claudelint.com/api/overview

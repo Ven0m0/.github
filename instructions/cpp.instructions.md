@@ -17,6 +17,7 @@ Version: C++23 / C++20
 ## Core Rules
 
 **MUST:**
+
 - Use smart pointers (`unique_ptr`, `shared_ptr`)
 - Use RAII for resource management
 - Use `std::span` for array views
@@ -25,6 +26,7 @@ Version: C++23 / C++20
 - Document public APIs with Doxygen comments
 
 **MUST NOT:**
+
 - Use raw `new`/`delete` (use smart pointers)
 - Use C-style casts (use `static_cast`, etc.)
 - Ignore compiler warnings

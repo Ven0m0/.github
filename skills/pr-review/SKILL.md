@@ -35,27 +35,32 @@ Think through the PR systematically:
 Structure the summary as:
 
 ### Overview
+
 One paragraph describing what the PR does and why.
 
 ### Changes by Area
+
 Group changes into logical categories with brief descriptions.
 
-| Area | Files | Summary |
-|------|-------|---------|
-| Feature | `src/auth/` | Added OAuth2 flow |
-| Tests | `tests/auth/` | Coverage for new auth |
-| Config | `.env.example` | New OAuth env vars |
+| Area    | Files          | Summary               |
+| ------- | -------------- | --------------------- |
+| Feature | `src/auth/`    | Added OAuth2 flow     |
+| Tests   | `tests/auth/`  | Coverage for new auth |
+| Config  | `.env.example` | New OAuth env vars    |
 
 ### Key Decisions
+
 Notable implementation choices, trade-offs, or patterns used.
 
 ### Potential Concerns
+
 - Breaking changes
 - Missing test coverage
 - Security considerations
 - Performance implications
 
 ### Verdict
+
 Overall assessment: ready to merge, needs changes, or needs discussion.
 
 </instructions>
@@ -63,6 +68,7 @@ Overall assessment: ready to merge, needs changes, or needs discussion.
 <examples>
 
 ### Simple bugfix PR
+
 ```
 Overview: Fixes null pointer in UserService.getProfile() when user has no avatar set.
 Changes: 1 file (src/services/user.ts), 1 test file
@@ -72,6 +78,7 @@ Verdict: Ready to merge
 ```
 
 ### Complex feature PR
+
 ```
 Overview: Adds real-time notifications via WebSocket with Redis pub/sub backend.
 Changes: 12 files across services, middleware, frontend, tests, and config

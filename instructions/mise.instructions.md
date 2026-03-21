@@ -59,6 +59,7 @@ Two styles — TOML (inline in `mise.toml`) and file tasks (scripts in `mise-tas
 TOML task properties: `run`, `description`, `alias`, `depends`, `depends_post`, `wait_for`, `env`, `dir`, `sources`, `outputs`, `shell`, `confirm`, `hide`, `raw`, `file`.
 
 File tasks use `#MISE` comments for metadata:
+
 ```sh
 #!/usr/bin/env bash
 #MISE description="Deploy"
@@ -83,6 +84,7 @@ mise use cargo:ripgrep                # cargo
 ## CI/CD
 
 GitHub Actions:
+
 ```yaml
 - uses: jdx/mise-action@v3
   with:
@@ -92,6 +94,7 @@ GitHub Actions:
 ```
 
 Generic CI:
+
 ```sh
 curl https://mise.run | sh
 mise install
@@ -99,6 +102,7 @@ mise x -- npm test
 ```
 
 Bootstrap (vendored, no curl needed):
+
 ```sh
 mise generate bootstrap -l -w   # generates ./bin/mise
 ./bin/mise install

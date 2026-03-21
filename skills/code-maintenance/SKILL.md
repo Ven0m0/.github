@@ -12,11 +12,11 @@ Refactoring (structure) and cleanup (removal). Behavior preserved. Gradual evolu
 
 ## Step 1: Determine Mode
 
-| Scenario | Mode | Focus |
-|----------|------|-------|
-| Code hard to maintain | Refactor | Extract, simplify, apply SOLID principles |
-| Dead code, debug artifacts | Cleanup | Remove dead code, flag uncertain items |
-| Pre-merge, production prep | Cleanup | Lint pass, verify tests, remove TODOs |
+| Scenario                   | Mode     | Focus                                     |
+| -------------------------- | -------- | ----------------------------------------- |
+| Code hard to maintain      | Refactor | Extract, simplify, apply SOLID principles |
+| Dead code, debug artifacts | Cleanup  | Remove dead code, flag uncertain items    |
+| Pre-merge, production prep | Cleanup  | Lint pass, verify tests, remove TODOs     |
 
 ## Step 2: Identify Candidates
 
@@ -24,25 +24,25 @@ Search for code smells and cleanup targets:
 
 <code_smells>
 
-| Smell | Detection | Fix |
-|-------|-----------|-----|
-| Long method (>50 lines) | Line count | Extract method |
-| Duplicated code | Search for similar blocks | Extract shared function |
-| Dead code | No references, unreachable | Delete (git has history) |
-| Magic numbers | Literal values in logic | Named constants |
-| Nested conditionals (>3 levels) | Indentation depth | Guard clauses, early returns |
-| God class/function | Too many responsibilities | Split by concern |
+| Smell                           | Detection                  | Fix                          |
+| ------------------------------- | -------------------------- | ---------------------------- |
+| Long method (>50 lines)         | Line count                 | Extract method               |
+| Duplicated code                 | Search for similar blocks  | Extract shared function      |
+| Dead code                       | No references, unreachable | Delete (git has history)     |
+| Magic numbers                   | Literal values in logic    | Named constants              |
+| Nested conditionals (>3 levels) | Indentation depth          | Guard clauses, early returns |
+| God class/function              | Too many responsibilities  | Split by concern             |
 
 </code_smells>
 
 <cleanup_targets>
 
-| Category | Remove | Flag (don't auto-remove) |
-|----------|--------|--------------------------|
-| Dead code | No refs, commented-out, unreachable | Reflection/dynamic calls |
+| Category        | Remove                                 | Flag (don't auto-remove) |
+| --------------- | -------------------------------------- | ------------------------ |
+| Dead code       | No refs, commented-out, unreachable    | Reflection/dynamic calls |
 | Debug artifacts | `print()`, `console.log()`, `debugger` | Structured logging calls |
-| Imports | Unused imports | Wildcard imports |
-| Comments | Obvious, outdated comments | "Why" explanations |
+| Imports         | Unused imports                         | Wildcard imports         |
+| Comments        | Obvious, outdated comments             | "Why" explanations       |
 
 </cleanup_targets>
 
@@ -70,6 +70,7 @@ Verify present: env vars for secrets, `.gitignore` entries for sensitive files
 <examples>
 
 ### Refactoring: Extract method
+
 ```
 Before:
   def process_order(order):
@@ -85,6 +86,7 @@ After:
 ```
 
 ### Cleanup: Remove dead code
+
 ```
 Search: rg "def legacy_handler" --files-with-matches
 Check: rg "legacy_handler" src/ -> 0 references outside definition
@@ -92,6 +94,7 @@ Action: Delete function and its tests (git preserves history)
 ```
 
 ### Cleanup: Debug artifact removal
+
 ```
 Search: rg "console\.log|debugger" src/ --count
 Found: 12 console.log statements across 5 files

@@ -109,7 +109,7 @@ def test_check_python_coverage_any_detection(tmp_path):
 
     result = check_python_coverage(tmp_path)
 
-    # Expected matches for Any usage:
+    # Expected matches for Any usage (regex handles both ': Any' and '-> Any'):
     # 1. Parameter annotation: x: Any
     # 2. Return annotation: -> Any
     # 3. Variable annotation: a: Any

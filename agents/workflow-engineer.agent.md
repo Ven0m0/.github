@@ -1,5 +1,5 @@
 ---
-description: 'GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reusable patterns, debugging.'
+description: "GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reusable patterns, debugging."
 name: workflow-engineer
 model: claude-sonnet-4-6
 modelParameters:
@@ -8,22 +8,31 @@ mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   serena:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    args:
+      [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+      ]
     tools: ["*"]
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
-    headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   grep-app:
     type: http
@@ -70,14 +79,15 @@ Standards: See `instructions/cicd-standards.instructions.md`
 ## Debugging
 
 Use `get_job_logs` and `actions_list` MCP tools to retrieve workflow run logs and status:
+
 - Examine job logs for failure patterns
 - Check action versions and compatibility
 - Verify permissions and secrets configuration
 
-| Symptom | Fix |
-|---------|-----|
-| Resource not accessible | Add to `permissions:` |
-| Cache never hits | Check `hashFiles()` paths |
-| Secrets unavailable | `secrets: inherit` or explicit passing |
-| Not triggered | Verify `on:` config |
-| Action fails silently | Check `continue-on-error`, add `if: failure()` step |
+| Symptom                 | Fix                                                 |
+| ----------------------- | --------------------------------------------------- |
+| Resource not accessible | Add to `permissions:`                               |
+| Cache never hits        | Check `hashFiles()` paths                           |
+| Secrets unavailable     | `secrets: inherit` or explicit passing              |
+| Not triggered           | Verify `on:` config                                 |
+| Action fails silently   | Check `continue-on-error`, add `if: failure()` step |

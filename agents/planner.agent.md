@@ -1,17 +1,26 @@
 ---
 name: planner
-description: 'Architecture design and implementation planning. Creates requirements, task breakdowns, and dependency maps from exploration artifacts.'
-model: opus
+description: "Architecture design and implementation planning. Creates requirements, task breakdowns, and dependency maps from exploration artifacts."
+model: claude-opus-4-6
 mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   serena:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    args:
+      [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+      ]
     tools: ["*"]
   sequential-thinking:
     type: stdio
@@ -21,7 +30,7 @@ mcp-servers:
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   grep-app:
     type: http
@@ -81,20 +90,25 @@ model: "claude-opus-4-6"
 
 ```markdown
 ## Requirements
+
 - **REQ-001**: [Functional requirement]
 - **SEC-001**: [Security requirement]
 - **CON-001**: [Technical constraint]
 
 ## Architecture
+
 [Approach, key components, interfaces, data flow]
 
 ## Task Breakdown
+
 ### Phase 1: [Name]
-| Task | Description | Files | Dependencies |
-|------|-------------|-------|-------------|
-| TASK-001 | [Specific action with file path] | path/to/file | - |
+
+| Task     | Description                      | Files        | Dependencies |
+| -------- | -------------------------------- | ------------ | ------------ |
+| TASK-001 | [Specific action with file path] | path/to/file | -            |
 
 ## Dependencies
+
 - **DEP-001**: [External or internal dependency]
 - **DEP-002**: [Task ordering constraint]
 ```

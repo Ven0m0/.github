@@ -1,6 +1,6 @@
 ---
 name: explorer
-description: 'Fast codebase exploration and mapping. Scans structure, identifies patterns, surfaces relevant files and risks for downstream pipeline agents.'
+description: "Fast codebase exploration and mapping. Scans structure, identifies patterns, surfaces relevant files and risks for downstream pipeline agents."
 model: claude-haiku-4-5
 modelParameters:
   temperature: 0.25
@@ -8,12 +8,21 @@ mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   serena:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    args:
+      [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+      ]
     tools: ["*"]
   grep-app:
     type: http
@@ -66,15 +75,19 @@ model: "claude-haiku-4-5"
 
 ```markdown
 ## Codebase Map
+
 [Directory structure, entry points, key modules]
 
 ## Relevant Files
+
 [Files directly related to the task, with brief purpose notes]
 
 ## Patterns Found
+
 [Coding conventions, architecture patterns, test organization]
 
 ## Risks
+
 [Breaking change potential, missing tests, complex dependencies]
 ```
 

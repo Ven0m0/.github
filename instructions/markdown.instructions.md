@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.md'
+applyTo: "**/*.md"
 ---
 
 # Markdown Content Standards
@@ -7,6 +7,7 @@ applyTo: '**/*.md'
 <Standards>
 
 **Structure**:
+
 - Use `##` for H2, `###` for H3; avoid H4+ (restructure instead)
 - No H1 headings (generated from title/frontmatter)
 - Use `-` for bullets, `1.` for numbered lists, 2-space indent for nesting
@@ -20,6 +21,7 @@ applyTo: '**/*.md'
 **Tables**: `|` with aligned columns and headers
 
 **Formatting**:
+
 - Line length: soft-wrap at 80 chars, hard limit at 400
 - Blank lines between sections
 - YAML frontmatter with required metadata
@@ -29,6 +31,7 @@ applyTo: '**/*.md'
 <WhatToAdd>
 
 When creating markdown content, include:
+
 - Frontmatter with relevant metadata fields
 - Descriptive headings in hierarchical order
 - Code blocks with language tags

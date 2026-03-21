@@ -1,6 +1,6 @@
 ---
 name: coder
-description: 'Implementation specialist. Writes code following plan and research artifacts. Multi-language, TDD-driven, minimal focused changes.'
+description: "Implementation specialist. Writes code following plan and research artifacts. Multi-language, TDD-driven, minimal focused changes."
 model: claude-sonnet-4-6
 modelParameters:
   temperature: 0.35
@@ -8,22 +8,31 @@ mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   serena:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    args:
+      [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+      ]
     tools: ["*"]
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
-    headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   grep-app:
     type: http
@@ -33,7 +42,7 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "@morphllm/morphmcp@latest"]
-    env: {MORPH_API_KEY: "${{ secrets.COPILOT_MCP_MORPH_API_KEY }}"}
+    env: { MORPH_API_KEY: "${{ secrets.COPILOT_MCP_MORPH_API_KEY }}" }
     tools: ["*"]
   sequential-thinking:
     type: stdio
@@ -50,13 +59,13 @@ Implementation engineer in the orchestrator pipeline. Reads plan and research ar
 
 Auto-detect language from file extensions and apply corresponding instruction file:
 
-| Extensions | Instruction File |
-|-----------|-----------------|
-| `*.sh`, `*.bash` | `instructions/bash.instructions.md` |
-| `*.py` | `instructions/python.instructions.md` |
+| Extensions                       | Instruction File                          |
+| -------------------------------- | ----------------------------------------- |
+| `*.sh`, `*.bash`                 | `instructions/bash.instructions.md`       |
+| `*.py`                           | `instructions/python.instructions.md`     |
 | `*.js`, `*.ts`, `*.tsx`, `*.jsx` | `instructions/javascript.instructions.md` |
-| `*.rs` | `instructions/rust.instructions.md` |
-| `*.go` | `instructions/go.instructions.md` |
+| `*.rs`                           | `instructions/rust.instructions.md`       |
+| `*.go`                           | `instructions/go.instructions.md`         |
 
 Cross-cutting: `instructions/quality-standards.instructions.md`, `skills/language-optimization/SKILL.md`
 
@@ -79,13 +88,13 @@ For each task in the plan:
 
 ## Language-Specific Tools
 
-| Language | Linter | Formatter | Test Runner | Package Manager |
-|----------|--------|-----------|-------------|----------------|
-| Bash | shellcheck | shfmt | - | - |
-| Python | ruff | ruff format | pytest | uv |
-| JS/TS | biome | biome | vitest/jest | pnpm/bun |
-| Rust | clippy | cargo fmt | cargo test | cargo |
-| Go | golangci-lint | gofmt | go test | go |
+| Language | Linter        | Formatter   | Test Runner | Package Manager |
+| -------- | ------------- | ----------- | ----------- | --------------- |
+| Bash     | shellcheck    | shfmt       | -           | -               |
+| Python   | ruff          | ruff format | pytest      | uv              |
+| JS/TS    | biome         | biome       | vitest/jest | pnpm/bun        |
+| Rust     | clippy        | cargo fmt   | cargo test  | cargo           |
+| Go       | golangci-lint | gofmt       | go test     | go              |
 
 ## Artifact Output
 
@@ -110,19 +119,23 @@ model: "claude-sonnet-4-6"
 
 ```markdown
 ## Changes Made
+
 [Summary of what was implemented and why]
 
 ## Files Modified
-| File | Action | Description |
-|------|--------|-------------|
+
+| File         | Action                   | Description  |
+| ------------ | ------------------------ | ------------ |
 | path/to/file | created/modified/deleted | what changed |
 
 ## Tests Added
-| Test File | Tests | Status |
-|-----------|-------|--------|
+
+| Test File    | Tests      | Status    |
+| ------------ | ---------- | --------- |
 | path/to/test | test names | pass/fail |
 
 ## Remaining TODOs
+
 [Anything not completed, with reasons]
 ```
 

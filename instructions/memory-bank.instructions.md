@@ -1,5 +1,5 @@
 ---
-description: 'Memory Bank system for maintaining project context across AI sessions'
+description: "Memory Bank system for maintaining project context across AI sessions"
 applyTo: "**"
 ---
 
@@ -41,15 +41,15 @@ tasks/              -> Individual task files + _index.md
 
 **Act Mode**: Check Memory Bank -> Update docs -> Update instructions if needed -> Execute task -> Document changes
 
-**Task Management**: Create task file -> Document thought process -> Create plan -> Update _index.md -> Execute -> Log progress -> Update status
+**Task Management**: Create task file -> Document thought process -> Create plan -> Update \_index.md -> Execute -> Log progress -> Update status
 
 ## Task Commands
 
-| Command | Action |
-|---------|--------|
-| `add task` / `create task` | New task file with ID, plan, status, update _index.md |
-| `update task [ID]` | Add progress log entry, update status, update _index.md |
-| `show tasks [filter]` | Display filtered list (all/active/pending/completed/blocked/recent) |
+| Command                    | Action                                                              |
+| -------------------------- | ------------------------------------------------------------------- |
+| `add task` / `create task` | New task file with ID, plan, status, update \_index.md              |
+| `update task [ID]`         | Add progress log entry, update status, update \_index.md            |
+| `show tasks [filter]`      | Display filtered list (all/active/pending/completed/blocked/recent) |
 
 <Goals>
 

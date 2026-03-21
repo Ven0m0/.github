@@ -16,7 +16,7 @@ rulesets[9]{prefix,tool,count,key_files}:
 
 ```
 
-## Critical SKILL.md Rules (AS-*)
+## Critical SKILL.md Rules (AS-\*)
 
 - Name: lowercase letters and hyphens only, e.g. `code-review` not `Review-Code`
 - Description: max 1024 chars, non-empty, third-person

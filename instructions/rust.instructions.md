@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.{rs,toml}'
+applyTo: "**/*.{rs,toml}"
 ---
 
 # Rust Standards

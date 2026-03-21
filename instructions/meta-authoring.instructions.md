@@ -13,42 +13,42 @@ applyTo: "**/{*.agent.md,SKILL.md,*.instructions.md,*.prompt.md}"
 
 </HighLevelDetails>
 
-## Agents (*.agent.md)
+## Agents (\*.agent.md)
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| `description` | Yes | 50-150 chars, actionable |
-| `name` | No | Defaults to filename |
-| `tools` | No | Omit = all. Principle of least privilege |
-| `model` | Optional | claude-4-6-sonnet/opus/haiku-latest. Ignored on GitHub.com |
+| Field         | Required | Notes                                                      |
+| ------------- | -------- | ---------------------------------------------------------- |
+| `description` | Yes      | 50-150 chars, actionable                                   |
+| `name`        | No       | Defaults to filename                                       |
+| `tools`       | No       | Omit = all. Principle of least privilege                   |
+| `model`       | Optional | claude-4-6-sonnet/opus/haiku-latest. Ignored on GitHub.com |
 
 **Structure**: Identity -> Responsibilities -> Workflow -> Triggers. Imperative mood.
 
 ## Skills (SKILL.md)
 
-| Field | Required | Constraints |
-|-------|----------|-------------|
-| `name` | Yes | Kebab-case, max 64 chars, no `claude`/`anthropic` |
-| `description` | Yes | WHAT + WHEN + Keywords. Primary discovery mechanism |
+| Field         | Required | Constraints                                         |
+| ------------- | -------- | --------------------------------------------------- |
+| `name`        | Yes      | Kebab-case, max 64 chars, no `claude`/`anthropic`   |
+| `description` | Yes      | WHAT + WHEN + Keywords. Primary discovery mechanism |
 
 **Sections**: When to Use, Workflows, Examples. Keep under 500 lines; use `modules/` for depth.
 
-## Instructions (*.instructions.md)
+## Instructions (\*.instructions.md)
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| `description` | Yes | 1-500 chars |
-| `applyTo` | Yes | Glob: `**/*.py`, `**` |
+| Field         | Required | Notes                 |
+| ------------- | -------- | --------------------- |
+| `description` | Yes      | 1-500 chars           |
+| `applyTo`     | Yes      | Glob: `**/*.py`, `**` |
 
 **Content**: Concrete examples, tables over prose. XML tags: `<Goals>`, `<Standards>`, `<Limitations>`.
 
-## Prompts (*.prompt.md)
+## Prompts (\*.prompt.md)
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| `description` | Yes | One sentence, actionable |
-| `mode` | Yes | `ask` \| `edit` \| `agent` |
-| `tools` | Recommended | Minimal set |
+| Field         | Required    | Notes                      |
+| ------------- | ----------- | -------------------------- |
+| `description` | Yes         | One sentence, actionable   |
+| `mode`        | Yes         | `ask` \| `edit` \| `agent` |
+| `tools`       | Recommended | Minimal set                |
 
 **Structure**: Mission -> Scope -> Workflow -> Output. Inputs: `${input:name[:placeholder]}`.
 

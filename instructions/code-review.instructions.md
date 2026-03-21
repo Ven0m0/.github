@@ -1,6 +1,6 @@
 ---
-description: 'Generic code review instructions that can be customized for any project using GitHub Copilot'
-applyTo: '**'
+description: "Generic code review instructions that can be customized for any project using GitHub Copilot"
+applyTo: "**"
 excludeAgent: "coding-agent"
 ---
 
@@ -17,18 +17,21 @@ When performing a code review, respond in **English**
 When performing a code review, prioritize issues in the following order:
 
 ### 🔴 CRITICAL (Block merge)
+
 - **Security**: Vulnerabilities, exposed secrets, authentication/authorization issues
 - **Correctness**: Logic errors, data corruption risks, race conditions
 - **Breaking Changes**: API contract changes without versioning
 - **Data Loss**: Risk of data loss or corruption
 
 ### 🟡 IMPORTANT (Requires discussion)
+
 - **Code Quality**: Severe violations of SOLID principles, excessive duplication
 - **Test Coverage**: Missing tests for critical paths or new functionality
 - **Performance**: Obvious performance bottlenecks (N+1 queries, memory leaks)
 - **Architecture**: Significant deviations from established patterns
 
 ### 🟢 SUGGESTION (Non-blocking improvements)
+
 - **Readability**: Poor naming, complex logic that could be simplified
 - **Optimization**: Performance improvements without functional impact
 - **Best Practices**: Minor deviations from conventions
@@ -48,11 +51,13 @@ When performing a code review, follow these principles:
 8. **Group related comments**: Avoid multiple comments about the same topic
 
 ## Code Quality Standards
+
 <formatting>
 
 When performing a code review, check for:
 
 ### Clean Code
+
 - Descriptive and meaningful names for variables, functions, and classes
 - Single Responsibility Principle: each function/class does one thing well
 - DRY (Don't Repeat Yourself): no code duplication
@@ -60,27 +65,29 @@ When performing a code review, check for:
 - Avoid deeply nested code (max 3-4 levels)
 - Avoid magic numbers and strings (use constants)
 - Code should be self-documenting; comments only when necessary
-</formatting>
+  </formatting>
 
 ### Examples
+
 ```javascript
 // BAD: Poor naming and magic numbers
 function calc(x, y) {
-    if (x > 100) return y * 0.15;
-    return y * 0.10;
+  if (x > 100) return y * 0.15;
+  return y * 0.1;
 }
 // GOOD: Clear naming and constants
 const PREMIUM_THRESHOLD = 100;
 const PREMIUM_DISCOUNT_RATE = 0.15;
-const STANDARD_DISCOUNT_RATE = 0.10;
+const STANDARD_DISCOUNT_RATE = 0.1;
 function calculateDiscount(orderTotal, itemPrice) {
-    const isPremiumOrder = orderTotal > PREMIUM_THRESHOLD;
-    const discountRate = isPremiumOrder ? PREMIUM_DISCOUNT_RATE : STANDARD_DISCOUNT_RATE;
-    return itemPrice * discountRate;
+  const isPremiumOrder = orderTotal > PREMIUM_THRESHOLD;
+  const discountRate = isPremiumOrder ? PREMIUM_DISCOUNT_RATE : STANDARD_DISCOUNT_RATE;
+  return itemPrice * discountRate;
 }
 ```
 
 ### Error Handling
+
 - Proper error handling at appropriate levels
 - Meaningful error messages
 - No silent failures or ignored exceptions
@@ -88,6 +95,7 @@ function calculateDiscount(orderTotal, itemPrice) {
 - Use appropriate error types/exceptions
 
 ### Examples
+
 ```python
 # BAD: Silent failure and generic error
 def process_user(user_id):
@@ -122,6 +130,7 @@ When performing a code review, check for security issues:
 - **Dependency Security**: Check for known vulnerabilities in dependencies
 
 ### Examples
+
 <examples>
 
 ```javascript
@@ -130,6 +139,7 @@ const API_KEY = "sk_live_abc123xyz789";
 // ✅ GOOD: Use environment variables
 const API_KEY = process.env.API_KEY;
 ```
+
 </examples>
 
 ## Testing Standards
@@ -145,6 +155,7 @@ When performing a code review, verify test quality:
 - **Mock Appropriately**: Mock external dependencies, not domain logic
 
 ### Examples
+
 <examples>
   
 ```typescript
@@ -156,14 +167,16 @@ test('test1', () => {
 
 // ✅ GOOD: Descriptive name and specific assertion
 test('should calculate 10% discount for orders under $100', () => {
-    const orderTotal = 50;
-    const itemPrice = 20;
+const orderTotal = 50;
+const itemPrice = 20;
 
     const discount = calculateDiscount(orderTotal, itemPrice);
 
     expect(discount).toBe(2.00);
+
 });
-```
+
+````
 </examples>
 
 ## Performance Considerations
@@ -179,7 +192,7 @@ When performing a code review, check for performance issues:
 
 ### Examples
 <examples>
-  
+
 ```python
 # ❌ BAD: N+1 query problem
 users = User.query.all()
@@ -190,7 +203,8 @@ for user in users:
 users = User.query.options(joinedload(User.orders)).all()
 for user in users:
     orders = user.orders
-```
+````
+
 </examples>
 
 ## Architecture and Design
@@ -231,7 +245,7 @@ A GitHub suggestion block uses the special `suggestion` language tag inside a fe
 
 ### Comment structure
 
-```markdown
+````markdown
 **[PRIORITY] Category: Brief title**
 
 Why this matters: [1-2 sentence explanation of the impact]
@@ -239,7 +253,9 @@ Why this matters: [1-2 sentence explanation of the impact]
 ```suggestion
 corrected code here
 ```
-```
+````
+
+````
 
 ### Example Comments
 
@@ -255,8 +271,9 @@ PreparedStatement stmt = conn.prepareStatement(
     "SELECT * FROM users WHERE email = ?"
 );
 stmt.setString(1, email);
-```
-```
+````
+
+````
 
 #### Important Issue
 ```markdown
@@ -271,8 +288,9 @@ if (!user) {
     throw new NotFoundError(`User ${id} not found`);
 }
 return user.name;
-```
-```
+````
+
+````
 
 #### Suggestion
 ```markdown
@@ -286,8 +304,9 @@ if (!user || !user.isActive || !user.hasPermission('write')) {
     return;
 }
 // do something
-```
-```
+````
+
+````
 
 #### Multi-line rename/refactor
 ```markdown
@@ -306,7 +325,8 @@ function calculateDiscount(orderTotal, itemPrice) {
         : STANDARD_DISCOUNT_RATE;
     return itemPrice * discountRate;
 }
-```
+````
+
 ```
 
 ## Review Checklist
@@ -405,3 +425,4 @@ This is a generic template. Customize this section with your project-specific in
 - **Build Tool**: [e.g., Gradle, Maven, npm, pip]
 - **Testing**: [e.g., JUnit 5, Jest, pytest]
 - **Code Style**: [e.g., follows Google Style Guide]
+```

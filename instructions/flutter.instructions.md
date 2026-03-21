@@ -17,6 +17,7 @@ Version: Flutter 3.24+ / Dart 3.5+
 ## Core Rules
 
 **MUST:**
+
 - Use Riverpod or Provider for state management
 - Use `go_router` for navigation
 - Use `freezed` for immutable models
@@ -25,6 +26,7 @@ Version: Flutter 3.24+ / Dart 3.5+
 - Separate business logic from UI
 
 **MUST NOT:**
+
 - Use `setState` in complex widgets
 - Use `BuildContext` across async gaps
 - Ignore analyzer warnings

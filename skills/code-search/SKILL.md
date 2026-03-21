@@ -14,6 +14,7 @@ ONLY use `get_code_context_exa`. Do NOT use other Exa tools.
 ## Token Isolation (Critical)
 
 Never run Exa in main context. Always spawn Task agents:
+
 - Agent calls `get_code_context_exa`
 - Agent extracts the minimum viable snippet(s) + constraints
 - Agent deduplicates near-identical results (mirrors, forks, repeated StackOverflow answers) before presenting
@@ -23,6 +24,7 @@ Never run Exa in main context. Always spawn Task agents:
 ## When to Use
 
 Use this tool for ANY programming-related request:
+
 - API usage and syntax
 - SDK/library examples
 - config and setup patterns
@@ -32,12 +34,14 @@ Use this tool for ANY programming-related request:
 ## Inputs (Supported)
 
 `get_code_context_exa` supports:
+
 - `query` (string, required)
 - `tokensNum` (number, optional; default ~5000; typical range 1000–50000)
 
 ## Query Writing Patterns (High Signal)
 
 To reduce irrelevant results and cross-language noise:
+
 - Always include the **programming language** in the query.
   - Example: use **"Go generics"** instead of just **"generics"**.
 - When applicable, also include **framework + version** (e.g., "Next.js 14", "React 19", "Python 3.12").
@@ -46,6 +50,7 @@ To reduce irrelevant results and cross-language noise:
 ## Dynamic Tuning
 
 Token strategy:
+
 - Focused snippet needed → tokensNum 1000–3000
 - Most tasks → tokensNum 5000
 - Complex integration → tokensNum 10000–20000
@@ -54,11 +59,13 @@ Token strategy:
 ## Output Format (Recommended)
 
 Return:
-1) Best minimal working snippet(s) (keep it copy/paste friendly)
-2) Notes on version / constraints / gotchas
-3) Sources (URLs if present in returned context)
+
+1. Best minimal working snippet(s) (keep it copy/paste friendly)
+2. Notes on version / constraints / gotchas
+3. Sources (URLs if present in returned context)
 
 Before presenting:
+
 - Deduplicate similar results and keep only the best representative snippet per approach.
 
 ## MCP Configuration

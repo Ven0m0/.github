@@ -17,54 +17,54 @@ on:
   workflow_call:
     inputs:
       python-version:
-        description: 'Python version to use'
+        description: "Python version to use"
         required: false
         type: string
-        default: '3.14'
+        default: "3.14"
       python-versions-matrix:
         description: 'JSON array of Python versions for matrix testing (e.g., ''["3.12", "3.13"]'')'
         required: false
         type: string
         default: '["3.14"]'
       coverage-threshold:
-        description: 'Minimum coverage percentage to pass'
+        description: "Minimum coverage percentage to pass"
         required: false
         type: number
         default: 90
       enable-matrix:
-        description: 'Enable matrix testing with multiple Python versions'
+        description: "Enable matrix testing with multiple Python versions"
         required: false
         type: boolean
         default: false
       package-name:
-        description: 'Package name for coverage reporting (defaults to src directory detection)'
+        description: "Package name for coverage reporting (defaults to src directory detection)"
         required: false
         type: string
-        default: ''
+        default: ""
       working-directory:
-        description: 'Working directory for commands'
+        description: "Working directory for commands"
         required: false
         type: string
-        default: '.'
+        default: "."
       upload-coverage:
-        description: 'Upload coverage to Codecov'
+        description: "Upload coverage to Codecov"
         required: false
         type: boolean
         default: true
       runs-on:
-        description: 'Runner to use'
+        description: "Runner to use"
         required: false
         type: string
-        default: 'ubuntu-latest'
+        default: "ubuntu-latest"
     outputs:
       coverage-percentage:
-        description: 'Test coverage percentage'
+        description: "Test coverage percentage"
         value: ${{ jobs.test.outputs.coverage }}
 permissions:
   contents: read
 defaults:
   run:
-    shell: 'bash'
+    shell: "bash"
 jobs:
   # ===========================================================================
   # Lint - Check code style and formatting

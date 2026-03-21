@@ -1,0 +1,173 @@
+# GitHub Labels Sync Workflow
+# Synchronizes labels from labels.yml to target repositories
+#
+# This workflow uses github-label-sync to ensure consistent labeling
+# across repositories in the organization.
+
+name: Sync Labels
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_repository:
+        description: "Target repository (owner/repo format, e.g., Ven0m0/my-repo)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run mode - preview changes without applying"
+        required: false
+        type: boolean
+        default: true
+      allow_added_labels:
+        description: "Allow labels not in config to remain (do not delete)"
+        required: false
+        type: boolean
+        default: true
+
+  schedule:
+    # Run weekly on Monday at 9:00 AM UTC
+    - cron: "0 9 * * 1"
+
+  workflow_call:
+    inputs:
+      target_repository:
+        description: "Target repository (owner/repo format)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run mode"
+        required: false
+        type: boolean
+        default: false
+      allow_added_labels:
+        description: "Allow labels not in config to remain"
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      LABEL_SYNC_TOKEN:
+        description: "GitHub token with repo scope for label management"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  sync-labels:
+    name: Sync Labels to Repository
+    runs-on: ubuntu-latest
+
+    if: github.event_name != 'schedule' || github.ref == 'refs/heads/main'
+
+    env:
+      TARGET_REPO: ${{ inputs.target_repository }}
+      DRY_RUN: ${{ inputs.dry_run }}
+      ALLOW_ADDED: ${{ inputs.allow_added_labels }}
+      DEFAULT_REPO: ${{ github.repository }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          sparse-checkout: |
+            labels.yml
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.0.1
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install -g github-label-sync@2.3.0 js-yaml@4.1.0
+
+      - name: Validate labels configuration
+        run: |
+          echo "Validating labels.yml format..."
+          NODE_PATH="$(npm root -g)"
+          export NODE_PATH
+          node -e "
+            const yaml = require('js-yaml');
+            const fs = require('fs');
+            try {
+              const labels = yaml.load(fs.readFileSync('labels.yml', 'utf8'));
+              if (!Array.isArray(labels)) {
+                console.error('ERROR: labels.yml must be an array');
+                process.exit(1);
+              }
+              labels.forEach((label, idx) => {
+                if (!label.name || !label.color) {
+                  console.error('ERROR: Label at index ' + idx + ' missing required fields');
+                  process.exit(1);
+                }
+              });
+              console.log('Valid: ' + labels.length + ' labels defined');
+            } catch (e) {
+              console.error('ERROR: ' + e.message);
+              process.exit(1);
+            }
+          "
+
+      - name: Determine target repository
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "repository=${DEFAULT_REPO}" >> "$GITHUB_OUTPUT"
+            echo "Scheduled sync targeting: ${DEFAULT_REPO}"
+          else
+            if ! echo "${TARGET_REPO}" | grep -qE '^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$'; then
+              echo "ERROR: Invalid repository format. Expected 'owner/repo'"
+              exit 1
+            fi
+            echo "repository=${TARGET_REPO}" >> "$GITHUB_OUTPUT"
+            echo "Manual sync targeting: ${TARGET_REPO}"
+          fi
+
+      - name: Sync labels (dry run)
+        if: env.DRY_RUN == 'true'
+        env:
+          SYNC_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          SYNC_TARGET: ${{ steps.target.outputs.repository }}
+          NODE_PATH: /usr/local/lib/node_modules
+        run: |
+          EXTRA_ARGS=""
+          if [ "${ALLOW_ADDED}" = "true" ]; then
+            EXTRA_ARGS="--allow-added-labels"
+          fi
+          github-label-sync \
+            --access-token "${SYNC_TOKEN}" \
+            --labels labels.yml \
+            --dry-run \
+            ${EXTRA_ARGS} \
+            "${SYNC_TARGET}"
+
+      - name: Sync labels (apply)
+        if: env.DRY_RUN != 'true'
+        env:
+          SYNC_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          SYNC_TARGET: ${{ steps.target.outputs.repository }}
+          NODE_PATH: /usr/local/lib/node_modules
+        run: |
+          EXTRA_ARGS=""
+          if [ "${ALLOW_ADDED}" = "true" ]; then
+            EXTRA_ARGS="--allow-added-labels"
+          fi
+          github-label-sync \
+            --access-token "${SYNC_TOKEN}" \
+            --labels labels.yml \
+            ${EXTRA_ARGS} \
+            "${SYNC_TARGET}"
+          echo "Labels synchronized successfully!"
+
+      - name: Summary
+        env:
+          SYNC_TARGET: ${{ steps.target.outputs.repository }}
+        run: |
+          {
+            echo "## Label Sync Summary"
+            echo ""
+            echo "- **Target Repository:** \`${SYNC_TARGET}\`"
+            echo "- **Mode:** $([[ "${DRY_RUN}" == 'true' ]] && echo 'Dry Run' || echo 'Applied')"
+            echo "- **Allow Added Labels:** ${ALLOW_ADDED}"
+            echo "- **Triggered By:** ${{ github.event_name }}"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -17,6 +17,7 @@ Version: Go 1.23+
 ## Core Rules
 
 **MUST:**
+
 - Use `context.Context` as first parameter for functions that may block
 - Handle all errors explicitly with proper error wrapping
 - Use `errgroup` for concurrent operations with error handling
@@ -25,6 +26,7 @@ Version: Go 1.23+
 - Document exported functions and types
 
 **MUST NOT:**
+
 - Ignore errors with blank identifier (`_`)
 - Use `panic` for normal error handling
 - Use `init()` for complex initialization logic

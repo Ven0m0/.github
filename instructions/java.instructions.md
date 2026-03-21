@@ -16,6 +16,7 @@ Version: Java 21 LTS
 ## Core Rules
 
 **MUST:**
+
 - Use records for immutable data classes
 - Use pattern matching with switch expressions
 - Use virtual threads for concurrent I/O operations
@@ -24,6 +25,7 @@ Version: Java 21 LTS
 - Document public APIs with Javadoc
 
 **MUST NOT:**
+
 - Use raw types (always parameterize generics)
 - Catch `Exception` or `Throwable` (catch specific exceptions)
 - Use `null` for empty collections (return empty collection)

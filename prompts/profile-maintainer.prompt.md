@@ -1,5 +1,5 @@
 ---
-description: 'Maintain GitHub profile README with activity insights - analyze repos, score significance, generate markdown sections'
+description: "Maintain GitHub profile README with activity insights - analyze repos, score significance, generate markdown sections"
 mode: agent
 ---
 
@@ -18,18 +18,19 @@ Analyze GitHub activity and generate accurate profile README content. Highlight 
 ## Output Markers
 
 Preserve these when updating:
+
 - `<!-- ACTIVE_REPOS_START -->` / `<!-- ACTIVE_REPOS_END -->`
 - `<!-- NEW_REPOS_START -->` / `<!-- NEW_REPOS_END -->`
 - `<!-- LAST_UPDATED_START -->` / `<!-- LAST_UPDATED_END -->`
 
 ## Activity Indicators
 
-| Score | Label |
-|-------|-------|
+| Score  | Label       |
+| ------ | ----------- |
 | >= 0.7 | Very Active |
-| >= 0.4 | Active |
-| >= 0.2 | Growing |
-| < 0.2 | Stable |
+| >= 0.4 | Active      |
+| >= 0.2 | Growing     |
+| < 0.2  | Stable      |
 
 ## Error Handling
 

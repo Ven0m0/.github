@@ -1,5 +1,5 @@
 ---
-applyTo: '.github/workflows/*.yml,.github/workflows/*.yaml'
+applyTo: ".github/workflows/*.yml,.github/workflows/*.yaml"
 ---
 
 # CI/CD and GitHub Actions Standards
@@ -19,7 +19,7 @@ name: CI
 on:
   push:
     branches: [main]
-    paths: ['src/**', 'tests/**', 'package.json']
+    paths: ["src/**", "tests/**", "package.json"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -49,6 +49,7 @@ permissions:
 <Security>
 
 ### Action Pinning
+
 ```yaml
 # CORRECT: Version tag
 - uses: actions/checkout@v4
@@ -61,19 +62,22 @@ permissions:
 ```
 
 ### Permissions (Least Privilege)
+
 ```yaml
 permissions:
-  contents: read          # Default, safe starting point
+  contents: read # Default, safe starting point
 # Add only when needed:
 # contents: write, pull-requests: write, packages: write, checks: write
 ```
 
 ### Secrets
+
 - Access via `${{ secrets.NAME }}` only, never hardcode
 - Use environment-specific secrets for deployment
 - OIDC preferred over long-lived credentials for cloud auth
 
 ### Scanning
+
 - CodeQL for SAST, Dependabot for dependency review
 - Enable secret scanning with push protection
 - `dependency-review-action` on PRs
@@ -85,6 +89,7 @@ permissions:
 ## Performance
 
 ### Caching
+
 ```yaml
 - uses: actions/cache@v4
   with:
@@ -95,19 +100,21 @@ permissions:
 ```
 
 ### Matrix Builds
+
 ```yaml
 strategy:
   fail-fast: false
   matrix:
     os: [ubuntu-latest, macos-latest]
-    node-version: ['20', '22']
+    node-version: ["20", "22"]
 ```
 
 ### Fast Checkout
+
 ```yaml
 - uses: actions/checkout@v4
   with:
-    fetch-depth: 1    # Shallow clone unless full history needed
+    fetch-depth: 1 # Shallow clone unless full history needed
 ```
 
 ---
@@ -120,7 +127,7 @@ jobs:
   ci:
     uses: Ven0m0/.github/.github/workflows/reusable-ci-python.yml@main
     with:
-      python-version: '3.12'
+      python-version: "3.12"
       coverage-threshold: 80
     secrets: inherit
 ```
@@ -132,7 +139,7 @@ on:
     inputs:
       python-version:
         type: string
-        default: '3.12'
+        default: "3.12"
     secrets:
       CODECOV_TOKEN:
         required: false
@@ -162,32 +169,32 @@ deploy:
 
 ## Testing Strategy
 
-| Level | When | Focus |
-|-------|------|-------|
-| Unit | Every push/PR | Individual components, fast feedback, high coverage |
-| Integration | PR merge | Component interactions, real services via `services` |
-| E2E | Pre-deploy | Full user flows, staging environment |
-| Performance | Nightly/weekly | Load testing, threshold enforcement |
+| Level       | When           | Focus                                                |
+| ----------- | -------------- | ---------------------------------------------------- |
+| Unit        | Every push/PR  | Individual components, fast feedback, high coverage  |
+| Integration | PR merge       | Component interactions, real services via `services` |
+| E2E         | Pre-deploy     | Full user flows, staging environment                 |
+| Performance | Nightly/weekly | Load testing, threshold enforcement                  |
 
 ## Deployment Strategies
 
-| Strategy | When | Benefit |
-|----------|------|---------|
-| Rolling | Default for stateless apps | Gradual replacement |
-| Blue/Green | Zero-downtime critical apps | Instant rollback |
-| Canary | Controlled blast radius | Early issue detection |
+| Strategy      | When                           | Benefit                     |
+| ------------- | ------------------------------ | --------------------------- |
+| Rolling       | Default for stateless apps     | Gradual replacement         |
+| Blue/Green    | Zero-downtime critical apps    | Instant rollback            |
+| Canary        | Controlled blast radius        | Early issue detection       |
 | Feature Flags | Decoupling deploy from release | A/B testing, staged rollout |
 
 ## Debugging
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Resource not accessible | Missing permissions | Add to `permissions:` |
-| Cache never hits | Wrong key format | Check `hashFiles()` paths |
-| Secrets undefined | Wrong context | Use `secrets: inherit` |
-| Workflow not triggered | Event config wrong | Verify `on:` block |
-| Timeout | Inefficient steps | Profile, add matrix, optimize caching |
-| Flaky tests | Race conditions | Explicit waits, standardize env |
+| Error                   | Cause               | Fix                                   |
+| ----------------------- | ------------------- | ------------------------------------- |
+| Resource not accessible | Missing permissions | Add to `permissions:`                 |
+| Cache never hits        | Wrong key format    | Check `hashFiles()` paths             |
+| Secrets undefined       | Wrong context       | Use `secrets: inherit`                |
+| Workflow not triggered  | Event config wrong  | Verify `on:` block                    |
+| Timeout                 | Inefficient steps   | Profile, add matrix, optimize caching |
+| Flaky tests             | Race conditions     | Explicit waits, standardize env       |
 
 ```yaml
 # Debug context

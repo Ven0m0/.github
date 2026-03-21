@@ -69,6 +69,10 @@
 ###############################################################################
 # Build / tooling specifics
 ###############################################################################
+# Mark generated workflow lock files
+.github/workflows/*.lock.yml linguist-generated=true merge=ours
+
+
 # Makefiles must use tabs; relax some whitespace warnings
 Makefile text eol=lf whitespace=blank-at-eol,-blank-at-eof,-space-before-tab,tab-in-indent,tabwidth=4
 

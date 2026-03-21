@@ -38,3 +38,38 @@ _.python.venv = ".venv"
 NODE_ENV = 'production'
 MISE_NPM_PACKAGE_MANAGER = "bun"
 PYTHONOPTIMIZE = "1"
+
+[tasks.lint]
+description = "Run repo-local lint and validation checks"
+run = """
+prettier --check .
+uvx --from yamllint yamllint .
+actionlint
+shellcheck hooks/*.sh .githooks/pre-commit
+shfmt -d hooks/*.sh .githooks/pre-commit
+"""
+
+[tasks.format]
+description = "Format repo-local shell, markdown, YAML, and JSON files"
+run = """
+prettier --write .
+shfmt -w hooks/*.sh .githooks/pre-commit
+"""
+
+[tasks.test]
+description = "Run the current Python test suite"
+env = { PYTHONPATH = "skills/lint-and-validate/scripts" }
+run = "uvx --from pytest pytest skills/lint-and-validate/tests -q"
+
+[tasks.check]
+description = "Run lint and test tasks together"
+depends = ["lint", "test"]
+run = "printf '%s\n' 'All checks passed'"
+
+[tasks.install-hooks]
+description = "Install the tracked pre-commit hook into .git/hooks"
+run = """
+mkdir -p .git/hooks
+install -m 0755 .githooks/pre-commit .git/hooks/pre-commit
+printf '%s\n' 'Installed .git/hooks/pre-commit'
+"""

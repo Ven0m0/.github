@@ -1,8 +1,8 @@
 ---
-description: 'Add GraalVM native image support to Java applications with iterative build-fix cycles'
+description: "Add GraalVM native image support to Java applications with iterative build-fix cycles"
 mode: agent
 model: claude-sonnet-4-6
-tools: ['read', 'edit', 'search', 'execute']
+tools: ["read", "edit", "search", "execute"]
 ---
 
 # GraalVM Native Image Agent
@@ -48,24 +48,25 @@ Add GraalVM native image support to Java applications. Iteratively build, analyz
 
 ### 3. Build
 
-| Framework | Command |
-|-----------|---------|
-| Maven | `mvn -Pnative native:compile` |
-| Gradle | `./gradlew nativeCompile` |
-| Spring Boot | `mvn -Pnative spring-boot:build-image` |
-| Quarkus | `./mvnw package -Pnative` |
-| Micronaut | `./mvnw package -Dpackaging=native-image` |
+| Framework   | Command                                   |
+| ----------- | ----------------------------------------- |
+| Maven       | `mvn -Pnative native:compile`             |
+| Gradle      | `./gradlew nativeCompile`                 |
+| Spring Boot | `mvn -Pnative spring-boot:build-image`    |
+| Quarkus     | `./mvnw package -Pnative`                 |
+| Micronaut   | `./mvnw package -Dpackaging=native-image` |
 
 ### 4. Fix Common Issues
 
-| Issue | Solution |
-|-------|----------|
+| Issue             | Solution                                                  |
+| ----------------- | --------------------------------------------------------- |
 | Reflection errors | Add to `reflect-config.json` or use framework annotations |
-| Missing resources | Add to `resource-config.json` |
-| JNI errors | Add to `jni-config.json` |
-| Dynamic proxy | Add to `proxy-config.json` |
+| Missing resources | Add to `resource-config.json`                             |
+| JNI errors        | Add to `jni-config.json`                                  |
+| Dynamic proxy     | Add to `proxy-config.json`                                |
 
 Use tracing agent for automatic discovery:
+
 ```sh
 java -agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image -jar target/app.jar
 ```

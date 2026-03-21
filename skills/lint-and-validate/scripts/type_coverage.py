@@ -21,7 +21,7 @@ RE_TS_UNTYPED_ARROW = re.compile(r"=\s*\([^:)]*\)\s*=>")
 RE_TS_TYPED_FUNC = re.compile(r"function\s+\w+\s*\([^)]*\)\s*:\s*\w+")
 RE_TS_TYPED_ARROW = re.compile(r":\s*\([^)]*\)\s*=>\s*\w+")
 
-RE_PY_ANY = re.compile(r":\s*Any\b")
+RE_PY_ANY = re.compile(r"(?::\s*|->\s*)Any\b")
 RE_PY_TYPED_FUNC_PARAMS = re.compile(r"def\s+\w+\s*\([^)]*:[^)]+\)")
 RE_PY_TYPED_FUNC_RETURN = re.compile(r"def\s+\w+\s*\([^)]*\)\s*->")
 RE_PY_ALL_FUNC = re.compile(r"def\s+\w+\s*\(")

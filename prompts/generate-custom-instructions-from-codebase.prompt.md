@@ -1,5 +1,5 @@
 ---
-description: 'Migration instructions generator for GitHub Copilot from code evolution analysis'
+description: "Migration instructions generator for GitHub Copilot from code evolution analysis"
 agent: "always"
 ---
 
@@ -23,17 +23,20 @@ ${VALIDATION_REQUIRED="true|false"}
 ### Phase 1: Comparative Analysis
 
 **Structural Changes:**
+
 - Compare folder structure ${SOURCE_REFERENCE} → ${TARGET_REFERENCE}
 - Identify moved/renamed/deleted files
 - Analyze config file changes
 - Document dependency changes
 
 **Code Transformation:**
+
 - ${MIGRATION_TYPE == "Framework Version"}: API changes, new features, obsolete methods, syntax changes
 - ${MIGRATION_TYPE == "Architecture Refactoring"}: Pattern changes, new abstractions, responsibility reorg, data flows
 - ${MIGRATION_TYPE == "Technology Migration"}: Tech replacements, functional equivalences, API/syntax changes, configs
 
 **Pattern Extraction:**
+
 - Identify repetitive transformations
 - Analyze conversion rules (old → new)
 - Document exceptions/special cases
@@ -45,6 +48,7 @@ ${VALIDATION_REQUIRED="true|false"}
 # Copilot Migration Instructions
 
 ## Context
+
 - **Type**: ${MIGRATION_TYPE}
 - **From**: ${SOURCE_REFERENCE} → **To**: ${TARGET_REFERENCE}
 - **Date**: [DATE] | **Scope**: ${ANALYSIS_SCOPE}
@@ -52,29 +56,34 @@ ${VALIDATION_REQUIRED="true|false"}
 ## Transformation Rules
 
 ### 1. Mandatory (${AUTOMATION_LEVEL != "Conservative"})
+
 - **Old Pattern**: [CODE]
 - **New Pattern**: [CODE]
 - **Trigger**: [DETECTION]
 - **Action**: [TRANSFORMATION]
 
 ### 2. With Validation (${VALIDATION_REQUIRED == "true"})
+
 - **Detected**: [PATTERN]
 - **Suggested**: [NEW_APPROACH]
 - **Validation**: [CRITERIA]
 - **Alternatives**: [OPTIONS]
 
 ### 3. API Correspondences (${CHANGE_FOCUS == "API Changes"})
+
 | Old API | New API | Notes | Example |
-|---------|---------|-------|---------|
+| ------- | ------- | ----- | ------- |
 | [OLD]   | [NEW]   | [CHG] | [CODE]  |
 
 ### 4. New Patterns
+
 - **Pattern**: [NAME]
 - **Usage**: [WHEN]
 - **Implementation**: [HOW]
 - **Benefits**: [WHY]
 
 ### 5. Obsolete Patterns
+
 - **Obsolete**: [OLD_PATTERN]
 - **Avoid**: [REASONS]
 - **Alternative**: [NEW_PATTERN]
@@ -83,23 +92,28 @@ ${VALIDATION_REQUIRED="true|false"}
 ## File-Specific (${GENERATE_EXAMPLES == "true"})
 
 ### Config Files
+
 [TRANSFORMATION_EXAMPLES]
 
 ### Source Files
+
 [TRANSFORMATION_EXAMPLES]
 
 ### Test Files
+
 [TRANSFORMATION_EXAMPLES]
 
 ## Validation
 
 **Auto Control Points:**
+
 - Post-transformation verifications
 - Tests to run
 - Performance metrics
 - Compatibility checks
 
 **Manual Escalation:**
+
 - [COMPLEX_CASES]
 - [ARCHITECTURAL_DECISIONS]
 - [BUSINESS_IMPACTS]
@@ -107,12 +121,14 @@ ${VALIDATION_REQUIRED="true|false"}
 ## Monitoring
 
 **Metrics:**
+
 - % code auto-migrated
 - Manual validations required
 - Auto-transformation error rate
 - Avg migration time/file
 
 **Error Reporting:**
+
 - Feedback patterns
 - Exceptions
 - Instruction adjustments
@@ -141,6 +157,7 @@ ${VALIDATION_REQUIRED="true|false"}
 ## Result
 
 Migration instructions enabling Copilot to:
+
 1. Auto-apply same transformations
 2. Maintain consistency with new conventions
 3. Avoid obsolete patterns

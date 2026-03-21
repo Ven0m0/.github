@@ -1,22 +1,22 @@
 ---
 name: researcher
-description: 'Deep research specialist. Investigates libraries, patterns, and external docs. Provides verified findings and best practices for implementation.'
-model: gpt-5.4
+description: "Deep research specialist. Investigates libraries, patterns, and external docs. Provides verified findings and best practices for implementation."
+model: claude-opus-4-6
 mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
-    headers: {x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}"}
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   grep-app:
     type: http
@@ -60,12 +60,12 @@ Deep research specialist in the orchestrator pipeline. Reads the plan artifact a
 
 ## Research Tools
 
-| Tool | Use For |
-|------|---------|
-| **Context7** | Library docs, API signatures, version info, best practices |
-| **Exa** | Web search, code context, current information, deep research |
-| **ref-tools** | Official documentation, specifications |
-| **grep-app** | GitHub code patterns, real-world usage examples |
+| Tool          | Use For                                                      |
+| ------------- | ------------------------------------------------------------ |
+| **Context7**  | Library docs, API signatures, version info, best practices   |
+| **Exa**       | Web search, code context, current information, deep research |
+| **ref-tools** | Official documentation, specifications                       |
+| **grep-app**  | GitHub code patterns, real-world usage examples              |
 
 ## Context7 Workflow (Mandatory for Library Questions)
 
@@ -99,15 +99,19 @@ model: "claude-opus-4-6"
 
 ```markdown
 ## Findings
+
 [Verified discoveries organized by topic]
 
 ## Best Practices
+
 [Current recommended patterns from authoritative sources]
 
 ## Library Recommendations
+
 [Specific libraries with versions, APIs, and usage examples]
 
 ## Constraints
+
 [Limitations, compatibility issues, known gotchas]
 ```
 

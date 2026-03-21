@@ -34,13 +34,13 @@ applyTo: "**"
 
 ### Comment Prefixes
 
-| Prefix | Meaning | Blocks Approval |
-|--------|---------|----------------|
-| `MUST` | Critical issue | Yes |
-| `SHOULD` | Strong recommendation | Usually |
-| `CONSIDER` | Suggestion | No |
-| `QUESTION` | Seeking clarification | No |
-| `NITPICK` | Minor style issue | No |
+| Prefix     | Meaning               | Blocks Approval |
+| ---------- | --------------------- | --------------- |
+| `MUST`     | Critical issue        | Yes             |
+| `SHOULD`   | Strong recommendation | Usually         |
+| `CONSIDER` | Suggestion            | No              |
+| `QUESTION` | Seeking clarification | No              |
+| `NITPICK`  | Minor style issue     | No              |
 
 ### Approval Criteria
 
@@ -63,26 +63,26 @@ Block when: failing tests, security issues, no test coverage for new code, undoc
 
 ### Common Issues and Fixes
 
-| Issue | Problem | Fix |
-|-------|---------|-----|
-| Algorithm complexity | O(n^2) where O(n) viable | Use sets/dicts for lookups |
-| Unnecessary copies | References suffice | Use views, generators, borrows |
-| Repeated computation | Same value computed N times | Cache/memoize results |
-| I/O in hot paths | DB call per item in loop | Batch queries |
-| String concat in loops | O(n^2) from immutability | Use join/StringBuilder |
-| Memory leaks | Unbounded caches | LRU with maxsize, weak refs |
-| Wrong data structure | List for membership test O(n) | Set for O(1) contains |
+| Issue                  | Problem                       | Fix                            |
+| ---------------------- | ----------------------------- | ------------------------------ |
+| Algorithm complexity   | O(n^2) where O(n) viable      | Use sets/dicts for lookups     |
+| Unnecessary copies     | References suffice            | Use views, generators, borrows |
+| Repeated computation   | Same value computed N times   | Cache/memoize results          |
+| I/O in hot paths       | DB call per item in loop      | Batch queries                  |
+| String concat in loops | O(n^2) from immutability      | Use join/StringBuilder         |
+| Memory leaks           | Unbounded caches              | LRU with maxsize, weak refs    |
+| Wrong data structure   | List for membership test O(n) | Set for O(1) contains          |
 
 ### Performance Targets
 
-| Context | Metric | Target |
-|---------|--------|--------|
-| Web page load | Initial | < 3s |
-| UI interaction | Response | < 100ms |
-| API endpoint | p95 latency | < 200ms |
-| DB query | p95 | < 50ms |
-| CLI startup | Small ops | < 100ms |
-| CLI operation | Common | < 1s |
+| Context        | Metric      | Target  |
+| -------------- | ----------- | ------- |
+| Web page load  | Initial     | < 3s    |
+| UI interaction | Response    | < 100ms |
+| API endpoint   | p95 latency | < 200ms |
+| DB query       | p95         | < 50ms  |
+| CLI startup    | Small ops   | < 100ms |
+| CLI operation  | Common      | < 1s    |
 
 ### Language-Specific Profiling
 
@@ -94,12 +94,12 @@ Block when: failing tests, security issues, no test coverage for new code, undoc
 
 ## Quality Metrics
 
-| Metric | Target | Maximum |
-|--------|--------|---------|
-| Code coverage | 80% minimum | 95%+ critical paths |
-| Cyclomatic complexity | < 10 | < 20 (refactor required) |
-| Code duplication | < 3% project-wide | - |
-| Maintainability index | > 80 | > 60 acceptable |
+| Metric                | Target            | Maximum                  |
+| --------------------- | ----------------- | ------------------------ |
+| Code coverage         | 80% minimum       | 95%+ critical paths      |
+| Cyclomatic complexity | < 10              | < 20 (refactor required) |
+| Code duplication      | < 3% project-wide | -                        |
+| Maintainability index | > 80              | > 60 acceptable          |
 
 ## Quality Gates (All PRs)
 

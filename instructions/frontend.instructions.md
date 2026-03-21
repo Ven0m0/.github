@@ -10,13 +10,13 @@ applyTo: "**/*.{css,scss,tsx,jsx}"
 
 ## ⚠️ ANTI-PATTERNS (NEVER DO)
 
-| ❌ Don't | ✅ Do |
-|----------|-------|
-| Bento grids everywhere | Ask if grid is needed |
-| Mesh/Aurora gradients | Consider solid colors first |
-| Dark + neon as default | Ask for color preference |
-| Same layout every time | Vary based on content |
-| Skip asking preferences | Always ask when unclear |
+| ❌ Don't                | ✅ Do                       |
+| ----------------------- | --------------------------- |
+| Bento grids everywhere  | Ask if grid is needed       |
+| Mesh/Aurora gradients   | Consider solid colors first |
+| Dark + neon as default  | Ask for color preference    |
+| Same layout every time  | Vary based on content       |
+| Skip asking preferences | Always ask when unclear     |
 
 ## 📐 Core Principles
 

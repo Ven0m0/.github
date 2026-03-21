@@ -24,13 +24,13 @@ Think step-by-step through the migration:
    - List every prop, event, and behavior that must be preserved
    - Identify framework-specific patterns that need translation:
 
-   | Source Pattern | Target Equivalent |
-   |---------------|-------------------|
-   | React `useState` | Vue `ref()` / Svelte `$state` |
-   | React `useEffect` | Vue `onMounted` / Svelte `$effect` |
-   | React `children` | Vue `<slot>` / Svelte `<slot>` |
-   | Vue `v-model` | React controlled input / Svelte `bind:` |
-   | Angular `@Input` | React props / Vue `defineProps` |
+   | Source Pattern    | Target Equivalent                       |
+   | ----------------- | --------------------------------------- |
+   | React `useState`  | Vue `ref()` / Svelte `$state`           |
+   | React `useEffect` | Vue `onMounted` / Svelte `$effect`      |
+   | React `children`  | Vue `<slot>` / Svelte `<slot>`          |
+   | Vue `v-model`     | React controlled input / Svelte `bind:` |
+   | Angular `@Input`  | React props / Vue `defineProps`         |
 
 3. **Implement the migration**:
    - Write the new component following target framework idioms
@@ -66,6 +66,7 @@ Think step-by-step through the migration:
 <examples>
 
 ### React to Vue 3
+
 ```
 Input: migrate-component UserCard React Vue3
 Steps:
@@ -77,6 +78,7 @@ Steps:
 ```
 
 ### MUI to shadcn/ui
+
 ```
 Input: migrate-component DataTable MUI shadcn
 Steps:

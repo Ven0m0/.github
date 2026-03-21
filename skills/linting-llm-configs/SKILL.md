@@ -30,6 +30,7 @@ claudelint check-all --strict    # zero-tolerance mode
 ```
 
 Targeted validators:
+
 ```bash
 claudelint validate-skills --path .
 claudelint validate-hooks
@@ -39,6 +40,7 @@ claudelint validate-cc-md
 ```
 
 Format + optimize:
+
 ```bash
 claudelint format --check     # dry-run formatting
 claudelint format             # apply formatting
@@ -77,7 +79,7 @@ files[10]{file,claudelint,agnix}:
 
 ## Key Rules to Know
 
-**SKILL.md (agnix AS-*/CC-SK-*)**: name must be lowercase-kebab, description max 1024 chars third-person, required frontmatter fields. Wrong syntax → skill invokes at 0% (per Vercel research on skill triggering).
+**SKILL.md (agnix AS-_/CC-SK-_)**: name must be lowercase-kebab, description max 1024 chars third-person, required frontmatter fields. Wrong syntax → skill invokes at 0% (per Vercel research on skill triggering).
 
 **CLAUDE.md (claudelint)**: size limits, import syntax `@path/to/file`, circular reference detection, frontmatter schema.
 
@@ -103,7 +105,7 @@ npm install -g agnix
 ```yaml
 - uses: agent-sh/agnix@v0
   with:
-    target: 'claude-code'
+    target: "claude-code"
 ```
 
 ## References

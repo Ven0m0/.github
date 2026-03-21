@@ -1,22 +1,31 @@
 ---
-description: 'Debug specialist: systematic bug finding, root cause analysis, and targeted fixes across all languages.'
+description: "Debug specialist: systematic bug finding, root cause analysis, and targeted fixes across all languages."
 name: debug
 model: claude-sonnet-4-6
 mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
-    headers: {CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}"}
+    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
   serena:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
+    args:
+      [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd",
+      ]
     tools: ["*"]
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: {EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}"}
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   grep-app:
     type: http
@@ -86,6 +95,7 @@ You are in debug mode. Your primary objective is to systematically identify, ana
    - Test edge cases related to the fix
 
 ## Phase 4: Quality Assurance
+
 7. **Code Quality**:
    - Review the fix for code quality and maintainability
    - Add or update tests to prevent regression
@@ -99,6 +109,7 @@ You are in debug mode. Your primary objective is to systematically identify, ana
    - Suggest improvements to prevent similar issues
 
 ## Debugging Guidelines
+
 - **Be Systematic**: Follow the phases methodically, don't jump to solutions
 - **Document Everything**: Keep detailed records of findings and attempts
 - **Think Incrementally**: Make small, testable changes rather than large refactors

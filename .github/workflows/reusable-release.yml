@@ -17,49 +17,49 @@ on:
   workflow_call:
     inputs:
       release-type:
-        description: 'Release type: auto (from conventional commits), patch, minor, major'
+        description: "Release type: auto (from conventional commits), patch, minor, major"
         required: false
         type: string
-        default: 'auto'
+        default: "auto"
       prerelease:
-        description: 'Create a prerelease (e.g., alpha, beta, rc)'
+        description: "Create a prerelease (e.g., alpha, beta, rc)"
         required: false
         type: string
-        default: ''
+        default: ""
       draft:
-        description: 'Create release as draft'
+        description: "Create release as draft"
         required: false
         type: boolean
         default: false
       generate-notes:
-        description: 'Auto-generate release notes from commits'
+        description: "Auto-generate release notes from commits"
         required: false
         type: boolean
         default: true
       upload-artifacts:
-        description: 'Upload build artifacts to release'
+        description: "Upload build artifacts to release"
         required: false
         type: boolean
         default: false
       artifacts-path:
-        description: 'Path to artifacts to upload (glob pattern)'
+        description: "Path to artifacts to upload (glob pattern)"
         required: false
         type: string
-        default: 'dist/*'
+        default: "dist/*"
       runs-on:
-        description: 'Runner to use'
+        description: "Runner to use"
         required: false
         type: string
-        default: 'ubuntu-latest'
+        default: "ubuntu-latest"
     outputs:
       version:
-        description: 'Released version number'
+        description: "Released version number"
         value: ${{ jobs.release.outputs.version }}
       tag:
-        description: 'Git tag created'
+        description: "Git tag created"
         value: ${{ jobs.release.outputs.tag }}
       release-url:
-        description: 'URL to the GitHub release'
+        description: "URL to the GitHub release"
         value: ${{ jobs.release.outputs.release-url }}
 permissions:
   contents: write
@@ -143,9 +143,11 @@ jobs:
 
           TAG="v${NEW_VERSION}"
 
-          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "bump=$BUMP" >> "$GITHUB_OUTPUT"
+          {
+            echo "new_version=${NEW_VERSION}"
+            echo "tag=${TAG}"
+            echo "bump=${BUMP}"
+          } >> "$GITHUB_OUTPUT"
           echo "New version: $NEW_VERSION (bump: $BUMP)"
       - name: Generate changelog
         id: changelog

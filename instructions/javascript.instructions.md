@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.{js,jsx,ts,tsx,mjs}'
+applyTo: "**/*.{js,jsx,ts,tsx,mjs}"
 ---
 
 # JavaScript/TypeScript Standards

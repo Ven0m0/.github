@@ -1,7 +1,7 @@
 ---
-description: 'Refactor and optimize Python code following project standards'
+description: "Refactor and optimize Python code following project standards"
 agent: "always"
-tools: ['read', 'edit', 'search', 'execute']
+tools: ["read", "edit", "search", "execute"]
 ---
 
 # Python Refactoring
@@ -19,11 +19,11 @@ Standards: See `instructions/python.instructions.md`
 
 ## High-Performance Libraries
 
-| Standard | Optimized | Reason |
-|----------|-----------|--------|
-| `json` | `orjson` | 6x faster serialization |
-| `asyncio` | `uvloop` | Node.js-level event loop |
-| `requests` | `httpx` | Async, HTTP/2 support |
+| Standard   | Optimized | Reason                   |
+| ---------- | --------- | ------------------------ |
+| `json`     | `orjson`  | 6x faster serialization  |
+| `asyncio`  | `uvloop`  | Node.js-level event loop |
+| `requests` | `httpx`   | Async, HTTP/2 support    |
 
 ## Workflow
 

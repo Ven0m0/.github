@@ -17,24 +17,29 @@ description: "Documentation standards - Auto-Orchestrator"
 Brief description (1-2 sentences)
 
 ## Features
+
 - Feature 1
 - Feature 2
 
 ## Quick Start
+
 \`\`\`bash
 npm install
 npm run dev
 \`\`\`
 
 ## Documentation
+
 - [Installation](docs/installation.md)
 - [Configuration](docs/configuration.md)
 - [API Reference](docs/api.md)
 
 ## Contributing
+
 Guidelines for contributors
 
 ## License
+
 MIT
 ```
 
@@ -48,12 +53,12 @@ MIT
 
 ## 📝 Code Comments
 
-| Type | When to Use |
-|------|-------------|
-| `// Comment` | Brief inline explanation |
+| Type           | When to Use              |
+| -------------- | ------------------------ |
+| `// Comment`   | Brief inline explanation |
 | `/** JSDoc */` | Public API documentation |
-| `// TODO:` | Future improvements |
-| `// FIXME:` | Known issues |
+| `// TODO:`     | Future improvements      |
+| `// FIXME:`    | Known issues             |
 
 ## 🔧 API Documentation
 

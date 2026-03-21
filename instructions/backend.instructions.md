@@ -20,17 +20,17 @@ applyTo: "**/{api,server,routes}/**"
 
 ## 📊 Status Codes
 
-| Code | Meaning | Use When |
-|------|---------|----------|
-| 200 | OK | Successful GET/PUT/PATCH |
-| 201 | Created | Successful POST |
-| 204 | No Content | Successful DELETE |
-| 400 | Bad Request | Invalid input |
-| 401 | Unauthorized | Missing/invalid auth |
-| 403 | Forbidden | Valid auth, no permission |
-| 404 | Not Found | Resource doesn't exist |
-| 422 | Unprocessable | Validation failed |
-| 500 | Server Error | Our fault |
+| Code | Meaning       | Use When                  |
+| ---- | ------------- | ------------------------- |
+| 200  | OK            | Successful GET/PUT/PATCH  |
+| 201  | Created       | Successful POST           |
+| 204  | No Content    | Successful DELETE         |
+| 400  | Bad Request   | Invalid input             |
+| 401  | Unauthorized  | Missing/invalid auth      |
+| 403  | Forbidden     | Valid auth, no permission |
+| 404  | Not Found     | Resource doesn't exist    |
+| 422  | Unprocessable | Validation failed         |
+| 500  | Server Error  | Our fault                 |
 
 ## 🔐 Security Rules
 
