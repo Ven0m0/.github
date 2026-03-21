@@ -1,7 +1,7 @@
 ---
 name: researcher
 description: "Deep research specialist. Investigates libraries, patterns, and external docs. Provides verified findings and best practices for implementation."
-model: claude-opus-4-6
+model: opus
 mcp-servers:
   context7:
     type: http
