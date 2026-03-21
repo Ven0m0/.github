@@ -1,7 +1,7 @@
 ---
 name: gh-aw-builder
 description: A specialized agent for creating, configuring, and managing GitHub Agentic Workflows (gh-aw) - helping you build markdown-based AI-powered automation workflows with proper frontmatter, MCP servers, safe-outputs, and best practices
-model: claude-sonnet-4-6
+model: sonnet
 mcp-servers:
   context7:
     type: http
