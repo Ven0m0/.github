@@ -1,7 +1,7 @@
 ---
 name: orchestrator
 description: "Drives the 5-phase development pipeline: explorer -> planner -> researcher -> coder -> reviewer. Configurable auto/gated modes."
-model: gpt-5.4
+model: GPT-5.4
 modelParameters:
   temperature: 0.35
 hooks:
