@@ -85,7 +85,7 @@ network:
 
 # ===== IMPORTS (if using reusable agents/skills) =====
 imports:
-  - owner/repo/.github/agents/agent-name.agent.md@main
+  - owner/repo/.github/agents/agent-name/AGENT.md@main
   - owner/repo/.github/skills/skill-name/SKILL.md@main
 ---
 ```
@@ -588,7 +588,7 @@ Use imports to leverage reusable agents and skills from other repositories.
 
 ```yaml
 imports:
-  - thomast1906/github-copilot-skills-terraform/.github/agents/terraform-provider-upgrade.agent.md@main
+  - thomast1906/github-copilot-skills-terraform/.github/agents/terraform-provider-upgrade/AGENT.md@main
 ```
 
 **In markdown instructions:**
@@ -617,7 +617,7 @@ the changes in this pull request.
 
 ```yaml
 imports:
-  - owner/repo/.github/agents/analyzer.agent.md@main
+  - owner/repo/.github/agents/analyzer/AGENT.md@main
   - owner/repo/.github/skills/reporting/SKILL.md@main
   - owner/repo/.github/skills/validation/SKILL.md@main
 ```
@@ -873,7 +873,7 @@ Error: Failed to download import: owner/repo/path@ref
 **Solutions:**
 
 1. Verify repository is public or accessible with token
-2. Check path is correct: `.github/agents/name.agent.md`
+2. Check path is correct: `.github/agents/name/AGENT.md`
 3. Verify branch/tag/SHA exists
 4. Use correct format: `owner/repo/path@ref` (not raw URL)
 

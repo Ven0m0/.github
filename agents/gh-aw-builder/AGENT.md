@@ -178,7 +178,7 @@ network:
 
 ```yaml
 imports:
-  - owner/repo/.github/agents/agent-name.agent.md@main
+  - owner/repo/.github/agents/agent-name/AGENT.md@main
   - owner/repo/.github/skills/skill-name/SKILL.md@main
 ```
 
@@ -548,7 +548,7 @@ For each workflow you create, ensure:
 
 ```yaml
 imports:
-  - thomast1906/github-copilot-skills-terraform/.github/agents/terraform-provider-upgrade.agent.md@main
+  - thomast1906/github-copilot-skills-terraform/.github/agents/terraform-provider-upgrade/AGENT.md@main
 ```
 
 **Using Specialized Skills:**

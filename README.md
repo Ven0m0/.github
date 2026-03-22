@@ -35,11 +35,15 @@ See `instructions/INDEX.md` for the full list.
 
 ## AI Agents
 
-12 specialized agents in `agents/` for planning, code optimization, CI/CD, and more. See `AGENTS.md` for details.
+21 specialized agents in `agents/` for planning, code optimization, CI/CD, and more. See `AGENTS.md` for details.
+
+## Rule System
+
+Comprehensive rules for development standards, architecture, security, and language-specific guidelines located in `rules/`. These are automatically loaded by AI agents to ensure consistency across the organization.
 
 ## Skills
 
-10 reusable knowledge modules in skills/, including `gh-cli`, `code-maintenance`, `prd`, `ai-tuning`, `workflow-development`, `language-optimization`, `code-review`, and `vibe-coding`.
+30 reusable knowledge modules in skills/, including `gh-cli`, `code-maintenance`, `prd`, `ai-tuning`, `workflow-development`, `language-optimization`, `code-review`, `vibe-coding`, and `llm-docs-optimizer`.
 
 ## Reusable Workflows
 

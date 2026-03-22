@@ -10,8 +10,8 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 **Ven0m0** delivers practical developer tools for automation, platform engineering, and AI-assisted development. This `.github` repository provides:
 
-- **14 agents (6 pipeline + 8 supporting)** for planning, code optimization, CI/CD, documentation, debugging
-- **29 reusable skill modules** (patterns, best practices, templates)
+- **21 agents (6 pipeline + 15 supporting)** for planning, code optimization, CI/CD, documentation, debugging
+- **30 reusable skill modules** (patterns, best practices, templates)
 - **37 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
 - **Reusable GitHub Actions workflows** for multi-language CI
 - **Copilot instruction files** (org-wide + file-type scoped)
@@ -22,8 +22,8 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ```
 .github/
-  agents/            # 14 AI agents (6 pipeline + 8 supporting)
-  skills/            # 29 reusable knowledge modules
+  agents/            # 21 AI agents (6 pipeline + 15 supporting)
+  skills/            # 55 reusable knowledge modules
   instructions/      # 37 language/domain standards
   hooks/             # Git pre-commit hooks
   prompts/           # Reusable prompt templates
@@ -53,7 +53,7 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ---
 
-## AI Agents (14)
+## AI Agents (21)
 
 ### Pipeline Agents
 
@@ -78,6 +78,13 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 | **Documentation Writer** | `doc-writer.agent.md`          | Technical docs (on request only)       |
 | **Codebase Maintainer**  | `codebase-maintainer.agent.md` | Cleanup, tech debt                     |
 | **Arch Linux Expert**    | `arch-linux-expert.agent.md`   | Arch administration                    |
+| **Check Secrets**        | `check-secrets.agent.md`       | Scan for secrets in code               |
+| **LLM Governance**       | `llm-governance.agent.md`      | LLM-facing file governance             |
+| **Refactor Planner**     | `refactor-planner.agent.md`    | Plan refactoring strategies            |
+| **Code Refactor Master** | `code-refactor-master.agent.md`| Execute code refactoring               |
+| **Web Research**         | `web-research-specialist.agent.md` | Web research tasks                 |
+| **TS Error Resolver**    | `ts-code-error-resolver.agent.md` | Resolve TypeScript errors          |
+| **Lint Markdown**        | `lint-markdown.agent.md`       | Markdown validation with taxonomy rules|
 
 ### Pipeline Workflow
 
@@ -101,7 +108,7 @@ Each phase produces a structured artifact in `.workflow/{task-id}/`:
 
 ---
 
-## Skills (29)
+## Skills (55)
 
 Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills based on task domain.
 
@@ -141,6 +148,7 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 - `pr-review/` — Pull request review templates and checklists
 - `workflow-development/` — GitHub Actions workflow patterns
 - `web-search/` — Consolidated web search and discovery patterns
+- `llm-docs-optimizer/` — Documentation optimization for AI assistants
 
 ---
 
@@ -502,7 +510,7 @@ jobs:
 
 ### Adding a New Agent
 
-1. Create `agents/new-agent.agent.md` with YAML frontmatter
+1. Create `agents/*/AGENT.md` with YAML frontmatter
 2. Define role, reference standards, describe workflow
 3. Document in this AGENTS.md file (add row to appropriate table)
 
