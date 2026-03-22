@@ -2,6 +2,7 @@
 name: researcher
 description: "Deep research specialist. Investigates libraries, patterns, and external docs. Provides verified findings and best practices for implementation."
 model: gpt-5.4
+agents: ['researcher', 'planner', 'coder', 'reviewer']
 mcp-servers:
   context7:
     type: http
