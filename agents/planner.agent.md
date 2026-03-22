@@ -1,27 +1,13 @@
 ---
 name: planner
 description: "Architecture design and implementation planning. Creates requirements, task breakdowns, and dependency maps from exploration artifacts."
-model: GPT-5.4
+model: ['GPT-5.4', 'Claude Opus 4.6']
 mcp-servers:
   context7:
     type: http
     url: "https://mcp.context7.com/mcp"
     headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
-  serena:
-    type: local
-    command: uvx
-    args:
-      [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide",
-        "--project-from-cwd",
-      ]
-    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -36,6 +22,11 @@ mcp-servers:
     type: http
     url: "https://mcp.grep.app"
     tools: ["*"]
+handoffs:
+  - label: Implement Plan
+    agent: agent
+    prompt: Implement the plan outlined above.
+    send: false
 ---
 
 # Planner
