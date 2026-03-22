@@ -25,7 +25,7 @@ jobs:
         with:
           output: repomix-output.xml
           compress: true
-          additional-args: '--remove-comments --remove-empty-lines --truncate-base64'
+          additional-args: "--remove-comments --remove-empty-lines --truncate-base64"
       - name: Commit Repomix output
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
