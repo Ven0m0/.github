@@ -8,7 +8,7 @@
     "fileSummary": true,
     "directoryStructure": true,
     "files": true,
-    "removeComments": false,
+    "removeComments": true,
     "removeEmptyLines": true,
     "compress": true,
     "topFilesLength": 5,
