@@ -4,6 +4,10 @@ description: "Implementation specialist. Writes code following plan and research
 model: sonnet
 modelParameters:
   temperature: 0.35
+hooks:
+  PostToolUse:
+    - type: command
+      command: "npx prettier --write \"$TOOL_INPUT_FILE_PATH\""
 mcp-servers:
   context7:
     type: http
