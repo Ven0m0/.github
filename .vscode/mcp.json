@@ -54,12 +54,6 @@
       "tools": ["*"],
       "command": "npx",
       "args": ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--truncate-base64", "--mcp"]
-    },
-    "cachebro": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "cachebro", "serve"],
-      "tools": ["*"]
     }
   }
 }
