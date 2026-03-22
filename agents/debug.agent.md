@@ -1,7 +1,7 @@
 ---
 description: "Debug specialist: systematic bug finding, root cause analysis, and targeted fixes across all languages."
 name: debug
-model: claude-sonnet-4-6
+model: sonnet
 mcp-servers:
   context7:
     type: http
