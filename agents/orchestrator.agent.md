@@ -4,6 +4,10 @@ description: "Drives the 5-phase development pipeline: explorer -> planner -> re
 model: gpt-5.4
 modelParameters:
   temperature: 0.35
+hooks:
+  SessionStart:
+    - type: command
+      command: "./scripts/inject-context.sh"
 mcp-servers:
   sequential-thinking:
     type: stdio
