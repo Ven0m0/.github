@@ -24,7 +24,7 @@ mcp-servers:
     tools: ["*"]
 handoffs:
   - label: Implement Plan
-    agent: agent
+    agent: coder
     prompt: Implement the plan outlined above.
     send: false
 ---
