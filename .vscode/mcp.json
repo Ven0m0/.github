@@ -16,44 +16,33 @@
       "type": "http",
       "tools": ["*"],
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa",
-      "headers": {"EXA_API_KEY": "$COPILOT_MCP_EXA_API_KEY" }
+      "headers": { "EXA_API_KEY": "$COPILOT_MCP_EXA_API_KEY" }
     },
     "ref-tools": {
       "type": "http",
-      "tools": ["*"],
       "url": "https://api.ref.tools/mcp",
+      "tools": ["*"],
       "headers": { "x-ref-api-key": "$COPILOT_MCP_REF_API_KEY" }
     },
-    "grep-app": {
-      "type": "http",
-      "tools": ["*"],
-      "url": "https://mcp.grep.app"
-    },
-    "serena": {
-      "type": "local",
-      "tools": ["*"],
-      "command": "uvx",
-      "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide", "--project-from-cwd"]
-    },
     "fast-filesystem": {
-      "type": "stdio",
-      "tools": ["*"],
+      "type": "local",
       "command": "npx",
       "args": ["-y", "fast-filesystem-mcp@latest"],
-      "env": { "MCP_SILENT_ERRORS": "true" }
+      "env": { "MCP_SILENT_ERRORS": "true" },
+      "tools": ["fast_read_file", "fast_read_multiple_files", "fast_write_file", "fast_large_write_file", "fast_search_files", "fast_search_code", "fast_edit_block", "fast_extract_lines", "fast_copy_file", "fast_move_file", "fast_delete_file", "fast_batch_file_operations"]
     },
     "octocode": {
       "type": "local",
-      "tools": ["*"],
       "command": "npx",
       "args": ["-y", "octocode-mcp@latest"],
-      "env": { "GITHUB_TOKEN": "$COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN", "ENABLE_LOCAL": "true", "LOG": "false" }
+      "env": { "GITHUB_TOKEN": "$COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN", "ENABLE_LOCAL": "true", "LOG": "false" },
+      "tools": ["githubSearchCode", "githubGetFileContent", "githubViewRepoStructure", "githubSearchRepositories", "lspGotoDefinition", "lspFindReferences", "lspCallHierarchy"]
     },
     "repomix": {
       "type": "local",
-      "tools": ["*"],
       "command": "npx",
-      "args": ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--truncate-base64", "--mcp"]
+      "args": ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"],
+      "tools": ["pack_codebase", "pack_remote_repository", "read_repomix_output", "grep_repomix_output"]
     }
   }
 }
