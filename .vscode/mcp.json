@@ -15,7 +15,7 @@
     "exa": {
       "type": "http",
       "tools": ["*"],
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa?exaApiKey=3c36cd57-cc25-464d-99cc-d4947aaeb67e",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa",
       "headers": {"EXA_API_KEY": "$COPILOT_MCP_EXA_API_KEY" }
     },
     "ref-tools": {
