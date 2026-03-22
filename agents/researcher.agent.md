@@ -11,7 +11,7 @@ mcp-servers:
     tools: ["get-library-docs", "resolve-library-id"]
   exa:
     type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
     headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
