@@ -93,4 +93,7 @@
   "npm.packageManager": "bun",
   "npm.runSilent": true,
   "npm.scriptRunner": "bun"
+  "[toml]": {
+    "editor.defaultFormatter": "tombi-toml.tombi"
+  }
 }
