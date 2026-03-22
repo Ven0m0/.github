@@ -2,21 +2,38 @@ name: Pack repository with Repomix
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
 jobs:
   pack-repo:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          ref: ${{ github.ref }}
+          token: ${{ secrets.PAT || github.token }}
       - name: Pack repository with Repomix
-        uses: yamadashy/repomix/.github/actions/repomix@main
+        uses: yamadashy/repomix/.github/actions/repomix@v1.12.0
         with:
           output: repomix-output.xml
           compress: true
           additional-args: '--remove-comments --remove-empty-lines --truncate-base64'
+      - name: Commit Repomix output
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: ${{ github.ref_name }}
+          commit_message: "chore(repomix): refresh repomix output [skip ci]"
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com
+          file_pattern: repomix-output.xml
 
       - name: Upload Repomix output
         uses: actions/upload-artifact@v4
