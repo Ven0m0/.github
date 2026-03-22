@@ -50,6 +50,12 @@
       "command": "npx",
       "args": ["-y", "octocode-mcp@latest"],
       "env": { "GITHUB_TOKEN": "$COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN" }
+    },
+    "repomix": {
+      "type": "local",
+      "tools": ["*"],
+      "command": "npx",
+      "args": ["-y", "repomix@latest", "--mcp"]
     }
   }
 }
