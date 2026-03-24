@@ -21,7 +21,7 @@ jobs:
           ref: ${{ github.ref }}
           token: ${{ secrets.PAT || github.token }}
       - name: Pack repository with Repomix
-        uses: yamadashy/repomix/.github/actions/repomix@v1.12.0
+        uses: yamadashy/repomix/.github/actions/repomix@v1.13.0
         with:
           output: repomix-output.xml
           compress: true
