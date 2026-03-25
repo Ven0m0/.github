@@ -2,6 +2,9 @@ name: Lint LLM config files
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
