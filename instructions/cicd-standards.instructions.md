@@ -6,7 +6,7 @@ applyTo: ".github/workflows/*.yml,.github/workflows/*.yaml"
 
 <Goals>
 
-- Security-first: SHA-pinned actions, least-privilege permissions, OIDC auth
+- Security-first: least-privilege permissions, OIDC auth
 - Performance: caching, matrix builds, path filtering, concurrency control
 - Maintainability: reusable workflows, clear naming, timeouts on all jobs
 
