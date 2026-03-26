@@ -17,6 +17,7 @@ import sys
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from utils import fix_windows_console_encoding
 
@@ -29,7 +30,7 @@ except Exception:
     pass
 
 
-def detect_node_project(project_path: Path, result: dict) -> None:
+def detect_node_project(project_path: Path, result: dict[str, Any]) -> None:
     """Detect Node.js project and available linters."""
     package_json = project_path / "package.json"
     if package_json.exists():
@@ -59,7 +60,7 @@ def detect_node_project(project_path: Path, result: dict) -> None:
             pass
 
 
-def detect_python_project(project_path: Path, result: dict) -> None:
+def detect_python_project(project_path: Path, result: dict[str, Any]) -> None:
     """Detect Python project and available linters."""
     if (project_path / "pyproject.toml").exists() or (
         project_path / "requirements.txt"
@@ -76,7 +77,7 @@ def detect_python_project(project_path: Path, result: dict) -> None:
             result["linters"].append({"name": "mypy", "cmd": ["mypy", "."]})
 
 
-def detect_project_type(project_path: Path) -> dict:
+def detect_project_type(project_path: Path) -> dict[str, Any]:
     """Detect project type and available linters."""
     result = {"type": "unknown", "linters": []}
 
@@ -87,7 +88,7 @@ def detect_project_type(project_path: Path) -> dict:
     return result
 
 
-def run_linter(linter: dict, cwd: Path) -> dict:
+def run_linter(linter: dict[str, Any], cwd: Path) -> dict[str, Any]:
     """Run a single linter and return results."""
     result = {"name": linter["name"], "passed": False, "output": "", "error": ""}
 
@@ -114,6 +115,49 @@ def run_linter(linter: dict, cwd: Path) -> dict:
         result["error"] = str(e)
 
     return result
+
+
+
+def run_linters_parallel(linters: list[dict[str, Any]], project_path: Path) -> tuple[list[dict[str, Any]], bool]:
+    """Run configured linters in parallel and collect results."""
+    results = []
+    all_passed = True
+
+    print("\nRunning linters in parallel...")
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_linter = {
+            executor.submit(run_linter, linter, project_path): linter
+            for linter in linters
+        }
+
+        for future in concurrent.futures.as_completed(future_to_linter):
+            linter = future_to_linter[future]
+            try:
+                result = future.result()
+                results.append(result)
+
+                print(f"\nFinished: {linter['name']}")
+                if result["passed"]:
+                    print(f"  [PASS] {linter['name']}")
+                else:
+                    print(f"  [FAIL] {linter['name']}")
+                    if result["error"]:
+                        print(f"  Error: {result['error'][:200]}")
+                    all_passed = False
+            except Exception as exc:
+                print(f"\nFinished: {linter['name']}")
+                print(f"  [FAIL] {linter['name']} generated an exception: {exc}")
+                results.append(
+                    {
+                        "name": linter["name"],
+                        "passed": False,
+                        "output": "",
+                        "error": str(exc),
+                    }
+                )
+                all_passed = False
+
+    return results, all_passed
 
 
 def main():
@@ -157,42 +201,7 @@ def main():
         sys.exit(0)
 
     # Run each linter in parallel
-    results = []
-    all_passed = True
-
-    print("\nRunning linters in parallel...")
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        future_to_linter = {
-            executor.submit(run_linter, linter, project_path): linter
-            for linter in project_info["linters"]
-        }
-
-        for future in concurrent.futures.as_completed(future_to_linter):
-            linter = future_to_linter[future]
-            try:
-                result = future.result()
-                results.append(result)
-
-                print(f"\nFinished: {linter['name']}")
-                if result["passed"]:
-                    print(f"  [PASS] {linter['name']}")
-                else:
-                    print(f"  [FAIL] {linter['name']}")
-                    if result["error"]:
-                        print(f"  Error: {result['error'][:200]}")
-                    all_passed = False
-            except Exception as exc:
-                print(f"\nFinished: {linter['name']}")
-                print(f"  [FAIL] {linter['name']} generated an exception: {exc}")
-                results.append(
-                    {
-                        "name": linter["name"],
-                        "passed": False,
-                        "output": "",
-                        "error": str(exc),
-                    }
-                )
-                all_passed = False
+    results, all_passed = run_linters_parallel(project_info["linters"], project_path)
 
     # Summary
     print("\n" + "=" * 60)
