@@ -27,7 +27,6 @@ env:
   DEBCONF_NOWARNINGS: yes
   NODE_NO_WARNINGS: "1"
   DO_NOT_TRACK: "1"
-  CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
@@ -73,7 +72,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Warn about unsupported Jules model override
@@ -91,6 +90,8 @@ jobs:
         env:
           CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"
           CLAUDE_CODE_ENABLE_TELEMETRY: "0"
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+          DISABLE_NON_ESSENTIAL_MODEL_CALLS: "1"
           CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
           ENABLE_TOOL_SEARCH: "1"
           ENABLE_LSP_TOOL: "1"
