@@ -6,6 +6,8 @@
 #     with:
 #       provider: claude        # claude | gemini | jules | opencode | kilo
 #       prompt: "Fix the bug"
+#       git-author-name: github-actions[bot]
+#       git-author-email: 41898282+github-actions[bot]@users.noreply.github.com
 #
 # API keys can be passed as inputs OR set as env vars on the calling job/step.
 # Inputs take precedence; env vars are the fallback.
@@ -35,6 +37,22 @@ inputs:
     default: ""
   github-token:
     description: "GitHub token for provider authentication and repository access (falls back to env.GITHUB_TOKEN)"
+    required: false
+    default: ""
+  git-author-name:
+    description: "Git author name exposed to agent runs for repo-mutating prompts"
+    required: false
+    default: "github-actions[bot]"
+  git-author-email:
+    description: "Git author email exposed to agent runs for repo-mutating prompts"
+    required: false
+    default: "41898282+github-actions[bot]@users.noreply.github.com"
+  git-committer-name:
+    description: "Git committer name exposed to agent runs (defaults to git-author-name)"
+    required: false
+    default: ""
+  git-committer-email:
+    description: "Git committer email exposed to agent runs (defaults to git-author-email)"
     required: false
     default: ""
   anthropic-api-key:
@@ -69,6 +87,34 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        case "${{ inputs.provider }}" in
+          claude|gemini|jules|opencode|kilo) ;;
+          *)
+            echo "::error::Unsupported provider '${{ inputs.provider }}'. Expected one of: claude, gemini, jules, opencode, kilo."
+            exit 1
+            ;;
+        esac
+
+        if [[ -z "${{ inputs.git-author-name }}" || -z "${{ inputs.git-author-email }}" ]]; then
+          echo "::error::git-author-name and git-author-email must both be non-empty."
+          exit 1
+        fi
+
+        if [[ -n "${{ inputs.git-committer-name }}" && -z "${{ inputs.git-committer-email }}" ]]; then
+          echo "::error::git-committer-email is required when git-committer-name is set."
+          exit 1
+        fi
+
+        if [[ -z "${{ inputs.git-committer-name }}" && -n "${{ inputs.git-committer-email }}" ]]; then
+          echo "::error::git-committer-name is required when git-committer-email is set."
+          exit 1
+        fi
+
     - name: Warn about unsupported Jules model override
       if: ${{ inputs.provider == 'jules' && inputs.model != '' }}
       shell: bash
@@ -83,6 +129,10 @@ runs:
         prompt: ${{ inputs.prompt }}
         claude_args: ${{ inputs.model != '' && format('--model {0}', inputs.model) || '' }}
       env:
+        GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
+        GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
+        GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
+        GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
         CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"
         CLAUDE_CODE_ENABLE_TELEMETRY: "0"
         CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
@@ -97,6 +147,10 @@ runs:
       if: ${{ inputs.provider == 'gemini' }}
       uses: google-github-actions/run-gemini-cli@642deeb7a3882dd77c38a4722127700890330067
       env:
+        GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
+        GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
+        GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
+        GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
       with:
         gemini_api_key: ${{ inputs.gemini-api-key || env.GEMINI_API_KEY }}
@@ -106,6 +160,11 @@ runs:
     - name: Run Jules
       if: ${{ inputs.provider == 'jules' }}
       uses: BeksOmega/jules-action@v1.0.0
+      env:
+        GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
+        GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
+        GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
+        GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
       with:
         prompt: ${{ inputs.prompt }}
         jules_api_key: ${{ inputs.jules-api-key || env.JULES_API_KEY }}
@@ -115,6 +174,10 @@ runs:
       if: ${{ inputs.provider == 'opencode' }}
       uses: anomalyco/opencode/github@latest
       env:
+        GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
+        GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
+        GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
+        GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
         ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
         GH_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
@@ -147,6 +210,10 @@ runs:
       if: ${{ inputs.provider == 'kilo' }}
       uses: Kilo-Org/kilocode/github@v7.1.8
       env:
+        GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
+        GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
+        GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
+        GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
         OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
         ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
