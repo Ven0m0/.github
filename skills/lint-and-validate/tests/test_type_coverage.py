@@ -88,8 +88,6 @@ def test_check_python_coverage_basic(tmp_path):
     py_file = tmp_path / "test.py"
     py_file.write_text(
         """
-from typing import Any
-
 def typed_func(a: int) -> int:
     return a
 
