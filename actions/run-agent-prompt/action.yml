@@ -183,6 +183,10 @@ runs:
             echo "binary_name=kilo" >> "$GITHUB_OUTPUT"
             echo "install_dir=$HOME/.kilo/bin" >> "$GITHUB_OUTPUT"
             ;;
+          *)
+            echo "::error::Unsupported provider '${{ inputs.provider }}' for shared CLI metadata."
+            exit 1
+            ;;
         esac
 
     - name: Get OpenCode/Kilo version
@@ -287,7 +291,12 @@ runs:
         extract_dir = pathlib.Path(os.environ["TMP_DIR"]) / "extract"
         dest_dir = pathlib.Path(os.environ["DEST_DIR"])
         expected_sha256 = os.environ["ASSET_SHA256"]
-        binary_names = {os.environ["BINARY_NAME"], f"{os.environ['BINARY_NAME']}.exe"}
+        binary_name = os.environ["BINARY_NAME"]
+        if not binary_name:
+            sys.stderr.write("Missing binary name for CLI install\n")
+            sys.exit(1)
+
+        binary_names = {binary_name, f"{binary_name}.exe"}
         tool_name = os.environ["TOOL_NAME"]
 
         actual_sha256 = hashlib.sha256(asset_path.read_bytes()).hexdigest()
