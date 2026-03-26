@@ -168,25 +168,10 @@ def check_python_coverage(
     for file_path in py_files[:max_files] if max_files is not None else py_files:
         try:
             content = file_path.read_text(encoding="utf-8", errors="ignore")
-
-            # Count Any usage
-            stats["any_count"] += len(RE_PY_ANY.findall(content))
-
-            # Find unique functions with type hints by start position
-            typed_indices = {
-                m.start()
-                for m in chain(
-                    RE_PY_TYPED_FUNC_PARAMS.finditer(content),
-                    RE_PY_TYPED_FUNC_RETURN.finditer(content),
-                )
-            }
-            typed_count = len(typed_indices)
-            stats["typed_functions"] += typed_count
-
-            # Find functions without type hints
-            all_funcs_count = len(RE_PY_ALL_FUNC.findall(content))
-            stats["untyped_functions"] += max(0, all_funcs_count - typed_count)
-
+            file_stats = analyze_python_file(content)
+            stats["any_count"] += file_stats["any_count"]
+            stats["typed_functions"] += file_stats["typed_functions"]
+            stats["untyped_functions"] += file_stats["untyped_functions"]
         except OSError:
             continue
 

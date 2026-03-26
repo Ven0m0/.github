@@ -1,0 +1,15 @@
+🧹 Refactor check_python_coverage by extracting file analysis logic
+
+🎯 What:
+Extracted the core file processing logic from `check_python_coverage` in `skills/lint-and-validate/scripts/type_coverage.py` into a new, standalone function `analyze_python_file(content: str) -> dict[str, int]`. The main loop now iterates over files and aggregates the results from this new function.
+
+💡 Why:
+The original `check_python_coverage` function was doing too many things: iterating over files, reading them, handling errors, computing stats using regex, and formatting the final output. Extracting the text analysis logic into a separate function reduces the complexity of the main loop, improves readability, and makes the core logic easily testable in isolation.
+
+✅ Verification:
+- Ran all tests in `skills/lint-and-validate/tests/test_type_coverage.py` before and after the change using `PYTHONPATH=skills/lint-and-validate/scripts pytest`.
+- Added a new unit test `test_analyze_python_file` to verify the extracted function directly. All tests pass successfully.
+- Manually requested a code review via the MCP server, receiving a 'Correct' rating.
+
+✨ Result:
+The codebase is cleaner, `check_python_coverage` is shorter and focused on file I/O and reporting, and the core text-processing logic is isolated and fully testable.
