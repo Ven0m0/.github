@@ -9,6 +9,15 @@ mcp-servers:
     type: http
     url: "https://mcp.grep.app"
     tools: ["*"]
+  gitmcp:
+    type: http
+    url: "https://gitmcp.io/docs"
+    tools: ["*"]
+  github-mcp-server:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
   fast-filesystem:
     type: local
     command: npx

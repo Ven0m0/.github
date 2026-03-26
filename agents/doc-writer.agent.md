@@ -12,6 +12,11 @@ mcp-servers:
     type: http
     url: "https://gitmcp.io/docs"
     tools: ["*"]
+  github-mcp-server:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
   exa:
     type: http
     url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
