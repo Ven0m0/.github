@@ -8,6 +8,10 @@ mcp-servers:
     url: "https://mcp.context7.com/mcp"
     headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
     tools: ["get-library-docs", "resolve-library-id"]
+  gitmcp:
+    type: http
+    url: "https://gitmcp.io/docs"
+    tools: ["*"]
   grep-app:
     type: http
     url: "https://mcp.grep.app"
