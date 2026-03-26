@@ -1,86 +1,381 @@
-# Bun Setup & Test Workflow (Reusable)
-name: Bun Setup (Reusable)
+# Reusable Bun CI Workflow
+# Provides centralized TypeScript/JavaScript CI for repositories using Bun
+#
+# Security Note: This workflow only uses workflow_call inputs (controlled by caller)
+# and internal job status values. No untrusted user input is used in run commands.
+#
+# Usage in consuming workflows:
+#   jobs:
+#     ci:
+#       uses: Ven0m0/.github/.github/workflows/reusable-ci-bun.yml@main
+#       with:
+#         bun-version: "latest"
+#         coverage-threshold: 80
+#       secrets: inherit
+
+name: Bun CI
+
 on:
   workflow_call:
     inputs:
       bun-version:
-        type: string
-        default: latest
         description: "Bun version to use"
+        required: false
+        type: string
+        default: "latest"
+      bun-versions-matrix:
+        description: 'JSON array of Bun versions for matrix testing (e.g., ''["1.2.7", "latest"]'')'
+        required: false
+        type: string
+        default: '["latest"]'
+      coverage-threshold:
+        description: "Minimum coverage percentage to pass (0 to disable)"
+        required: false
+        type: number
+        default: 80
+      enable-matrix:
+        description: "Enable matrix testing with multiple Bun versions"
+        required: false
+        type: boolean
+        default: false
+      enable-build:
+        description: "Run build step after tests pass"
+        required: false
+        type: boolean
+        default: true
+      working-directory:
+        description: "Working directory for commands"
+        required: false
+        type: string
+        default: "."
+      upload-coverage:
+        description: "Upload coverage to Codecov"
+        required: false
+        type: boolean
+        default: true
+      upload-artifacts:
+        description: "Upload build artifacts"
+        required: false
+        type: boolean
+        default: true
+      runs-on:
+        description: "Runner to use"
+        required: false
+        type: string
+        default: "ubuntu-latest"
       run-tests:
-        type: boolean
-        default: true
         description: "Run test suite"
+        required: false
+        type: boolean
+        default: true
       run-lint:
-        type: boolean
-        default: true
         description: "Run linting"
-      run-typecheck:
+        required: false
         type: boolean
         default: true
+      run-typecheck:
         description: "Run type checking"
+        required: false
+        type: boolean
+        default: true
       test-command:
-        type: string
-        default: bun test
         description: "Command to run tests"
+        required: false
+        type: string
+        default: "bun run test:coverage"
       lint-command:
-        type: string
-        default: bun run lint
         description: "Command to run linting"
-      typecheck-command:
+        required: false
         type: string
-        default: bun run typecheck
+        default: "bun run lint"
+      format-command:
+        description: "Command to check formatting"
+        required: false
+        type: string
+        default: "bun run format:check"
+      typecheck-command:
         description: "Command to run type checking"
+        required: false
+        type: string
+        default: "bun run typecheck"
+      build-command:
+        description: "Command to run the build"
+        required: false
+        type: string
+        default: "bun run build"
+    outputs:
+      coverage-percentage:
+        description: "Test coverage percentage"
+        value: ${{ jobs.test.outputs.coverage }}
   workflow_dispatch:
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+
 permissions:
   contents: read
+
 env:
   DEBIAN_FRONTEND: noninteractive
   LC_ALL: C
+
 jobs:
-  setup:
-    name: Bun Setup & CI
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  lint:
+    name: Lint
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ inputs.run-lint }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Check for Bun Dependencies
-        id: check_files
-        run: |
-          if [[ -f "package.json" || -f "bun.lockb" ]]; then
-            echo "has_files=true" >> "$GITHUB_OUTPUT"
-            echo "Bun dependency files found."
-          else
-            echo "has_files=false" >> "$GITHUB_OUTPUT"
-            echo "No Bun dependency files found."
-          fi
-        shell: bash
+
       - name: Setup Bun
-        if: steps.check_files.outputs.has_files == 'true'
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: ${{ inputs.bun-version || 'latest' }}
-      - name: Cache Dependencies
-        if: steps.check_files.outputs.has_files == 'true'
+          bun-version: ${{ inputs.bun-version }}
+
+      - name: Cache dependencies
         uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
           restore-keys: |
             ${{ runner.os }}-bun-
-      - name: Install Dependencies
-        if: steps.check_files.outputs.has_files == 'true'
+
+      - name: Install dependencies
         run: bun install --frozen-lockfile
-      - name: Run Type Checking
-        if: inputs.run-typecheck && steps.check_files.outputs.has_files == 'true'
-        run: ${{ inputs.typecheck-command }}
-      - name: Run Linting
-        if: inputs.run-lint && steps.check_files.outputs.has_files == 'true'
+
+      - name: Run lint
         run: ${{ inputs.lint-command }}
-      - name: Run Tests
-        if: inputs.run-tests && steps.check_files.outputs.has_files == 'true'
+
+      - name: Check formatting
+        run: ${{ inputs.format-command }}
+
+  typecheck:
+    name: Type Check
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ inputs.run-typecheck }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ inputs.bun-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run type check
+        run: ${{ inputs.typecheck-command }}
+
+  test:
+    name: Test
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ inputs.run-tests && !inputs.enable-matrix }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    outputs:
+      coverage: ${{ steps.coverage.outputs.percentage }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ inputs.bun-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run tests with coverage
+        id: coverage
+        run: |
+          ${{ inputs.test-command }}
+
+          if [[ -f "coverage/lcov.info" ]]; then
+            lines=$(awk -F: '/^LF:/{sum+=$2} END{print sum+0}' coverage/lcov.info)
+            hits=$(awk -F: '/^LH:/{sum+=$2} END{print sum+0}' coverage/lcov.info)
+            if [[ "$lines" -gt 0 ]]; then
+              percentage=$((hits * 100 / lines))
+              echo "percentage=$percentage" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Check coverage threshold
+        if: inputs.coverage-threshold > 0
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.percentage }}
+          THRESHOLD: ${{ inputs.coverage-threshold }}
+        run: |
+          if [[ -n "$COVERAGE" ]] && [[ "$COVERAGE" -lt "$THRESHOLD" ]]; then
+            echo "Coverage $COVERAGE% is below threshold $THRESHOLD%"
+            exit 1
+          fi
+
+      - name: Upload coverage report
+        if: inputs.upload-coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ${{ inputs.working-directory }}/coverage/lcov.info
+          fail_ci_if_error: false
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  test-matrix:
+    name: Test (Bun ${{ matrix.bun-version }})
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ inputs.run-tests && inputs.enable-matrix }}
+    strategy:
+      fail-fast: false
+      matrix:
+        bun-version: ${{ fromJson(inputs.bun-versions-matrix) }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ matrix.bun-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ matrix.bun-version }}-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          restore-keys: |
+            ${{ runner.os }}-bun-${{ matrix.bun-version }}-
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run tests with coverage
         run: ${{ inputs.test-command }}
+
+      - name: Upload coverage report
+        if: inputs.upload-coverage && matrix.bun-version == fromJson(inputs.bun-versions-matrix)[0]
+        uses: codecov/codecov-action@v5
+        with:
+          files: ${{ inputs.working-directory }}/coverage/lcov.info
+          fail_ci_if_error: false
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    name: Build
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ inputs.enable-build }}
+    needs: [lint, typecheck, test, test-matrix]
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ inputs.bun-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: ${{ inputs.build-command }}
+
+      - name: Upload build artifacts
+        if: inputs.upload-artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: ${{ inputs.working-directory }}/dist/
+          retention-days: 7
+
+  all-checks-pass:
+    name: All Checks Pass
+    if: always()
+    needs: [lint, typecheck, test, test-matrix, build]
+    runs-on: ubuntu-latest
+    env:
+      LINT_RESULT: ${{ needs.lint.result }}
+      TYPECHECK_RESULT: ${{ needs.typecheck.result }}
+      TEST_RESULT: ${{ needs.test.result }}
+      TEST_MATRIX_RESULT: ${{ needs.test-matrix.result }}
+      BUILD_RESULT: ${{ needs.build.result }}
+      RUN_LINT: ${{ inputs.run-lint }}
+      RUN_TYPECHECK: ${{ inputs.run-typecheck }}
+      RUN_TESTS: ${{ inputs.run-tests }}
+      ENABLE_MATRIX: ${{ inputs.enable-matrix }}
+      ENABLE_BUILD: ${{ inputs.enable-build }}
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "$RUN_LINT" == "true" ]] && [[ "$LINT_RESULT" != "success" ]]; then
+            echo "Lint failed"
+            exit 1
+          fi
+
+          if [[ "$RUN_TYPECHECK" == "true" ]] && [[ "$TYPECHECK_RESULT" != "success" ]]; then
+            echo "Type check failed"
+            exit 1
+          fi
+
+          if [[ "$RUN_TESTS" == "true" ]]; then
+            if [[ "$ENABLE_MATRIX" == "true" ]]; then
+              if [[ "$TEST_MATRIX_RESULT" != "success" ]]; then
+                echo "Matrix tests failed"
+                exit 1
+              fi
+            elif [[ "$TEST_RESULT" != "success" ]]; then
+              echo "Tests failed"
+              exit 1
+            fi
+          fi
+
+          if [[ "$ENABLE_BUILD" == "true" ]] && [[ "$BUILD_RESULT" != "success" ]]; then
+            echo "Build failed"
+            exit 1
+          fi
+
+          echo "All checks passed!"

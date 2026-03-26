@@ -275,9 +275,9 @@ jobs:
     uses: Ven0m0/.github/.github/workflows/comprehensive-lint.yml@main
 
   ci-typescript:
-    uses: Ven0m0/.github/.github/workflows/reusable-ci-typescript.yml@main
+    uses: Ven0m0/.github/.github/workflows/reusable-ci-bun.yml@main
     with:
-      node-version: "22"
+      bun-version: "latest"
       coverage-threshold: 80
 
   ci-python:
@@ -290,9 +290,8 @@ jobs:
 **Available reusable workflows**:
 
 - `comprehensive-lint.yml` — Multi-language linting, shellharden, MegaLinter
-- `reusable-ci-typescript.yml` — TypeScript/Node CI (pnpm, vitest, coverage)
+- `reusable-ci-bun.yml` — Bun-based TypeScript/JavaScript CI (lint, typecheck, coverage, build, matrix)
 - `reusable-ci-python.yml` — Python CI (uv, pytest, coverage)
-- `reusable-ci-bun.yml` — Bun runtime CI
 - `reusable-release.yml` — Version/release automation
 - `git-maintenance.yml` — Repository cleanup (branches, stale checks)
 - `dependabot-automerge.yml` — Auto-merge dependency updates
