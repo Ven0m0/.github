@@ -14,7 +14,7 @@ on:
       shfmt-indent:
         type: number
         default: 2
-        description: "Indentation size for shfmt"
+        description: "Indentation size for shfmt (reserved for compatibility)"
       shell-exclude-pattern:
         type: string
         default: '(^|/)\\.(git|cache|claude|venv)(/|$)'
@@ -46,9 +46,10 @@ permissions:
 env:
   DEBIAN_FRONTEND: noninteractive
 jobs:
-  comprehensive-lint:
+  megalinter:
     name: Comprehensive Lint
     runs-on: ubuntu-latest
+    # Shellharden and MegaLinter now run serially inside one composite action.
     timeout-minutes: 30
     permissions:
       contents: write
@@ -70,6 +71,7 @@ jobs:
           working-directory: ${{ inputs.working-directory }}
           apply-shellharden: ${{ inputs.apply-shellharden }}
           shfmt-indent: ${{ inputs.shfmt-indent }}
+          is-same-repo-pull-request: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
           shell-exclude-pattern: ${{ inputs.shell-exclude-pattern }}
           megalinter-validate-all: ${{ inputs.megalinter-validate-all }}
           megalinter-config: ${{ inputs.megalinter-config }}

@@ -19,9 +19,13 @@ inputs:
     required: false
     default: "true"
   shfmt-indent:
-    description: "Indentation size for shfmt"
+    description: "Indentation size for shfmt (reserved for compatibility)"
     required: false
     default: "2"
+  is-same-repo-pull-request:
+    description: "Whether the caller is a pull request from the same repository"
+    required: false
+    default: "false"
   shell-exclude-pattern:
     description: "Pattern to exclude shell files from processing"
     required: false
@@ -57,7 +61,7 @@ runs:
       id: cache-shellharden
       with:
         path: ~/.local/bin/shellharden
-        key: shellharden-${{ runner.os }}-${{ runner.arch }}
+        key: shellharden-${{ runner.os }}-${{ runner.arch }}-v4.3.1
 
     - name: Install Shellharden
       if: inputs.apply-shellharden == 'true' && steps.cache-shellharden.outputs.cache-hit != 'true'
@@ -65,9 +69,48 @@ runs:
       run: |
         set -euo pipefail
         bin="$HOME/.local/bin"
+        version="v4.3.1"
+        tmpdir="$(mktemp -d)"
+        trap 'rm -rf "$tmpdir"' EXIT
+        case "$RUNNER_ARCH" in
+          X64) target_arch="x86_64" ;;
+          ARM64) target_arch="aarch64" ;;
+          *)
+            echo "Unsupported runner architecture: $RUNNER_ARCH" >&2
+            exit 1
+            ;;
+        esac
+        case "$RUNNER_OS" in
+          Linux)
+            target_os="unknown-linux-gnu"
+            archive="shellharden-${target_arch}-${target_os}.tar.gz"
+            extract_cmd=(tar xzf "$tmpdir/$archive" -C "$bin" shellharden)
+            ;;
+          macOS)
+            target_os="apple-darwin"
+            archive="shellharden-${target_arch}-${target_os}.tar.gz"
+            extract_cmd=(tar xzf "$tmpdir/$archive" -C "$bin" shellharden)
+            ;;
+          Windows)
+            target_os="pc-windows-msvc"
+            archive="shellharden-${target_arch}-${target_os}.zip"
+            extract_cmd=(unzip -p "$tmpdir/$archive" shellharden.exe > "$bin/shellharden")
+            ;;
+          *)
+            echo "Unsupported runner OS: $RUNNER_OS" >&2
+            exit 1
+            ;;
+        esac
+        checksum="$archive.sha512"
+        base_url="https://github.com/anordal/shellharden/releases/download/$version"
         mkdir -p "$bin"
-        curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
-          | tar xz -C "$bin" shellharden
+        curl -sfL "$base_url/$archive" -o "$tmpdir/$archive"
+        curl -sfL "$base_url/$checksum" -o "$tmpdir/$checksum"
+        (
+          cd "$tmpdir"
+          sha512sum --check "$checksum"
+        )
+        "${extract_cmd[@]}"
         chmod +x "$bin/shellharden"
 
     - name: Run Shellharden
@@ -102,7 +145,7 @@ runs:
         echo "Hardened $count/${#files[@]} shell files"
 
     - name: Commit Shellharden Fixes
-      if: inputs.commit-fixes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+      if: inputs.commit-fixes == 'true' && inputs.is-same-repo-pull-request == 'true'
       uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: "style: apply shellharden [skip ci]"
