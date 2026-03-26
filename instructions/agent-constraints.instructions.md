@@ -1,10 +1,10 @@
 ---
-applyTo: "agents/gem-*.agent.md"
+applyTo: "agents/*.agent.md"
 ---
 
-# Gem Agent Shared Constraints
+# Agent Shared Constraints
 
-Canonical constraints for all Gemini pipeline agents (`gem-orchestrator`, `gem-researcher`, `gem-planner`, `gem-implementer`, `gem-reviewer`, `gem-devops`). Applied automatically when editing gem agent files.
+Canonical constraints for pipeline and supporting agents. Applied automatically when editing agent files.
 
 ## Tool Usage
 
