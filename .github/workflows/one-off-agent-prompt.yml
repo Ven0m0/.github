@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       provider:
-        description: "Which agent action to run"
+        description: "Which agent to run"
         required: true
         type: choice
         options:
@@ -17,50 +17,24 @@ on:
         required: true
         type: string
       model:
-        description: "Optional model override (used when supported by the selected provider)"
+        description: "Optional model override (supported by claude, gemini, opencode, kilo)"
         required: false
         default: ""
         type: string
 
 env:
-  DEBIAN_FRONTEND: "noninteractive"
-  DEBCONF_NOWARNINGS: yes
+  DEBIAN_FRONTEND: noninteractive
+  DEBCONF_NOWARNINGS: "yes"
   NODE_NO_WARNINGS: "1"
   DO_NOT_TRACK: "1"
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
   GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
-  OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-  Z_AI_API_KEY: ${{ secrets.Z_AI_API_KEY }}
-  MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
-  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-  OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
 jobs:
   run-provider:
-    name: "${{ matrix.name }}"
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - provider: claude
-            name: Claude
-            runner: ubuntu-latest
-          - provider: gemini
-            name: Gemini
-            runner: ubuntu-latest
-          - provider: jules
-            name: Jules
-            runner: ubuntu-slim
-          - provider: opencode
-            name: OpenCode
-            runner: ubuntu-latest
-          - provider: kilo
-            name: Kilo
-            runner: ubuntu-latest
-    runs-on: ${{ matrix.runner }}
+    name: "Run ${{ github.event.inputs.provider }}"
+    # Jules requires ubuntu-slim; all other providers use ubuntu-latest
+    runs-on: ${{ github.event.inputs.provider == 'jules' && 'ubuntu-slim' || 'ubuntu-latest' }}
     timeout-minutes: 59
     permissions:
       actions: read
@@ -72,105 +46,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          fetch-depth: 1
+          # Jules needs full history for include_commit_log; others only need HEAD
+          fetch-depth: ${{ github.event.inputs.provider == 'jules' && '0' || '1' }}
           persist-credentials: false
 
-      - name: Warn about unsupported Jules model override
-        if: ${{ matrix.provider == 'jules' && github.event.inputs.model != '' }}
-        run: echo "::warning::Jules does not expose a model override in this workflow, so the provided model input will be ignored."
-
-      - name: Run Claude
-        if: ${{ matrix.provider == 'claude' }}
-        uses: anthropics/claude-code-action@v1
+      - name: Run agent
+        uses: ./actions/run-agent-prompt
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          provider: ${{ github.event.inputs.provider }}
           prompt: ${{ github.event.inputs.prompt }}
-          claude_args: ${{ github.event.inputs.model != '' && format('--model {0}', github.event.inputs.model) || '' }}
-        env:
-          CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"
-          CLAUDE_CODE_ENABLE_TELEMETRY: "0"
-          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
-          DISABLE_NON_ESSENTIAL_MODEL_CALLS: "1"
-          CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
-          ENABLE_TOOL_SEARCH: "1"
-          ENABLE_LSP_TOOL: "1"
-          USE_BUILTIN_RIPGREP: "1"
-          CLAUDE_CODE_ENABLE_TASKS: "true"
-      - name: Run Gemini
-        if: ${{ matrix.provider == 'gemini' }}
-        uses: google-github-actions/run-gemini-cli@642deeb7a3882dd77c38a4722127700890330067
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          gemini_model: ${{ github.event.inputs.model }}
-          prompt: ${{ github.event.inputs.prompt }}
-
-      - name: Run Jules
-        if: ${{ matrix.provider == 'jules' }}
-        uses: BeksOmega/jules-action@v1.0.0
-        with:
-          prompt: ${{ github.event.inputs.prompt }}
-          jules_api_key: ${{ secrets.JULES_API_KEY }}
-          include_commit_log: true
-
-      - name: Run OpenCode
-        if: ${{ matrix.provider == 'opencode' }}
-        uses: anomalyco/opencode/github@latest
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          OPENCODE_ENABLE_EXA: true
-          OPENCODE_EXPERIMENTAL: true
-          OPENCODE_EXPERIMENTAL_EXA: true
-          OPENCODE_EXPERIMENTAL_LSP_TOOL: true
-          OPENCODE_EXPERIMENTAL_LSP_TY: true
-          OPENCODE_EXPERIMENTAL_MARKDOWN: true
-          OPENCODE_EXPERIMENTAL_PLAN_MODE: true
-          OPENCODE_ENABLE_EXPERIMENTAL_MODELS: true
-          OPENCODE_EXPERIMENTAL_FILEWATCHER: true
-          OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
-          OPENCODE_EXPERIMENTAL_LAZY_TOOLS: true
-          OPENCODE_PRUNE_SCALE_WITH_CONTEXT: true
-          OPENCODE_DISABLE_FILETIME_CHECK: true
-          OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: true
-          OPENCODE_DISABLE_AUTOUPDATE: true
-          OPENCODE_EXPERIMENTAL_OXFMT: true
-          MORPH_TIMEOUT: "60000"
-          MORPH_MODEL: morph-v3-fast
-        with:
-          model: ${{ github.event.inputs.model != '' && github.event.inputs.model || 'openrouter/auto:exacto:online' }}
-          prompt: ${{ github.event.inputs.prompt }}
-          use_github_token: true
-
-      - name: Run Kilo
-        if: ${{ matrix.provider == 'kilo' }}
-        uses: Kilo-Org/kilocode/github@latest
-        with:
-          model: ${{ github.event.inputs.model != '' && github.event.inputs.model || 'kilo/kilo-auto/frontier' }}
-          prompt: ${{ github.event.inputs.prompt }}
-          kilo_api_key: ${{ secrets.KILO_API_KEY }}
-          kilo_org_id: ${{ secrets.KILO_ORG_ID }}
-        env:
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          OPENCODE_ENABLE_EXA: true
-          OPENCODE_EXPERIMENTAL: true
-          OPENCODE_EXPERIMENTAL_EXA: true
-          OPENCODE_EXPERIMENTAL_LSP_TOOL: true
-          OPENCODE_EXPERIMENTAL_LSP_TY: true
-          OPENCODE_EXPERIMENTAL_MARKDOWN: true
-          OPENCODE_EXPERIMENTAL_PLAN_MODE: true
-          OPENCODE_ENABLE_EXPERIMENTAL_MODELS: true
-          OPENCODE_EXPERIMENTAL_FILEWATCHER: true
-          OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
-          OPENCODE_EXPERIMENTAL_LAZY_TOOLS: true
-          OPENCODE_PRUNE_SCALE_WITH_CONTEXT: true
-          OPENCODE_DISABLE_FILETIME_CHECK: true
-          OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: true
-          OPENCODE_DISABLE_AUTOUPDATE: true
-          OPENCODE_EXPERIMENTAL_OXFMT: true
-          MORPH_TIMEOUT: "60000"
-          MORPH_MODEL: morph-v3-fast
+          model: ${{ github.event.inputs.model }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          jules-api-key: ${{ secrets.JULES_API_KEY }}
+          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}
+          openrouter-api-key: ${{ secrets.OPENROUTER_API_KEY }}
+          kilo-api-key: ${{ secrets.KILO_API_KEY }}
+          kilo-org-id: ${{ secrets.KILO_ORG_ID }}

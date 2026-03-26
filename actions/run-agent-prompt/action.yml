@@ -1,0 +1,168 @@
+# Composite Action: Run Agent Prompt
+# Dispatch a one-off prompt to a specified AI agent provider.
+#
+# Usage:
+#   - uses: ./actions/run-agent-prompt
+#     with:
+#       provider: claude        # claude | gemini | jules | opencode | kilo
+#       prompt: "Fix the bug"
+#       github-token: ${{ secrets.GITHUB_TOKEN }}
+#       anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+name: "Run Agent Prompt"
+description: "Dispatch a one-off prompt to a specified AI agent provider (Claude, Gemini, Jules, OpenCode, or Kilo)"
+author: "Ven0m0"
+
+branding:
+  icon: "terminal"
+  color: "purple"
+
+inputs:
+  provider:
+    description: "AI agent provider: claude | gemini | jules | opencode | kilo"
+    required: true
+  prompt:
+    description: "Prompt to send to the agent"
+    required: true
+  model:
+    description: "Model override (supported by claude, gemini, opencode, kilo; ignored for jules)"
+    required: false
+    default: ""
+  github-token:
+    description: "GitHub token for provider authentication and repository access"
+    required: true
+  anthropic-api-key:
+    description: "Anthropic API key (required for claude provider)"
+    required: false
+    default: ""
+  gemini-api-key:
+    description: "Google Gemini API key (required for gemini provider)"
+    required: false
+    default: ""
+  jules-api-key:
+    description: "Jules API key (required for jules provider)"
+    required: false
+    default: ""
+  opencode-api-key:
+    description: "OpenCode API key (required for opencode provider)"
+    required: false
+    default: ""
+  openrouter-api-key:
+    description: "OpenRouter API key (optional, used by opencode and kilo for model routing)"
+    required: false
+    default: ""
+  kilo-api-key:
+    description: "Kilo API key (required for kilo provider)"
+    required: false
+    default: ""
+  kilo-org-id:
+    description: "Kilo organization ID (required for kilo provider)"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Warn about unsupported Jules model override
+      if: ${{ inputs.provider == 'jules' && inputs.model != '' }}
+      shell: bash
+      run: echo "::warning::Jules does not expose a model override; the provided model input will be ignored."
+
+    - name: Run Claude
+      if: ${{ inputs.provider == 'claude' }}
+      uses: anthropics/claude-code-action@v1
+      with:
+        anthropic_api_key: ${{ inputs.anthropic-api-key }}
+        github_token: ${{ inputs.github-token }}
+        prompt: ${{ inputs.prompt }}
+        claude_args: ${{ inputs.model != '' && format('--model {0}', inputs.model) || '' }}
+      env:
+        CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"
+        CLAUDE_CODE_ENABLE_TELEMETRY: "0"
+        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+        DISABLE_NON_ESSENTIAL_MODEL_CALLS: "1"
+        CLAUDE_CODE_ATTRIBUTION_HEADER: "0"
+        ENABLE_TOOL_SEARCH: "1"
+        ENABLE_LSP_TOOL: "1"
+        USE_BUILTIN_RIPGREP: "1"
+        CLAUDE_CODE_ENABLE_TASKS: "true"
+
+    - name: Run Gemini
+      if: ${{ inputs.provider == 'gemini' }}
+      uses: google-github-actions/run-gemini-cli@642deeb7a3882dd77c38a4722127700890330067
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      with:
+        gemini_api_key: ${{ inputs.gemini-api-key }}
+        gemini_model: ${{ inputs.model }}
+        prompt: ${{ inputs.prompt }}
+
+    - name: Run Jules
+      if: ${{ inputs.provider == 'jules' }}
+      uses: BeksOmega/jules-action@v1.0.0
+      with:
+        prompt: ${{ inputs.prompt }}
+        jules_api_key: ${{ inputs.jules-api-key }}
+        include_commit_log: true
+
+    - name: Run OpenCode
+      if: ${{ inputs.provider == 'opencode' }}
+      uses: anomalyco/opencode/github@latest
+      env:
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        OPENCODE_API_KEY: ${{ inputs.opencode-api-key }}
+        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
+        OPENCODE_ENABLE_EXA: "true"
+        OPENCODE_EXPERIMENTAL: "true"
+        OPENCODE_EXPERIMENTAL_EXA: "true"
+        OPENCODE_EXPERIMENTAL_LSP_TOOL: "true"
+        OPENCODE_EXPERIMENTAL_LSP_TY: "true"
+        OPENCODE_EXPERIMENTAL_MARKDOWN: "true"
+        OPENCODE_EXPERIMENTAL_PLAN_MODE: "true"
+        OPENCODE_ENABLE_EXPERIMENTAL_MODELS: "true"
+        OPENCODE_EXPERIMENTAL_FILEWATCHER: "true"
+        OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
+        OPENCODE_EXPERIMENTAL_LAZY_TOOLS: "true"
+        OPENCODE_PRUNE_SCALE_WITH_CONTEXT: "true"
+        OPENCODE_DISABLE_FILETIME_CHECK: "true"
+        OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: "true"
+        OPENCODE_DISABLE_AUTOUPDATE: "true"
+        OPENCODE_EXPERIMENTAL_OXFMT: "true"
+        MORPH_TIMEOUT: "60000"
+        MORPH_MODEL: morph-v3-fast
+      with:
+        model: ${{ inputs.model != '' && inputs.model || 'openrouter/auto:exacto:online' }}
+        prompt: ${{ inputs.prompt }}
+        use_github_token: true
+
+    - name: Run Kilo
+      if: ${{ inputs.provider == 'kilo' }}
+      uses: Kilo-Org/kilocode/github@latest
+      env:
+        OPENCODE_API_KEY: ${{ inputs.opencode-api-key }}
+        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
+        OPENCODE_ENABLE_EXA: "true"
+        OPENCODE_EXPERIMENTAL: "true"
+        OPENCODE_EXPERIMENTAL_EXA: "true"
+        OPENCODE_EXPERIMENTAL_LSP_TOOL: "true"
+        OPENCODE_EXPERIMENTAL_LSP_TY: "true"
+        OPENCODE_EXPERIMENTAL_MARKDOWN: "true"
+        OPENCODE_EXPERIMENTAL_PLAN_MODE: "true"
+        OPENCODE_ENABLE_EXPERIMENTAL_MODELS: "true"
+        OPENCODE_EXPERIMENTAL_FILEWATCHER: "true"
+        OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
+        OPENCODE_EXPERIMENTAL_LAZY_TOOLS: "true"
+        OPENCODE_PRUNE_SCALE_WITH_CONTEXT: "true"
+        OPENCODE_DISABLE_FILETIME_CHECK: "true"
+        OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: "true"
+        OPENCODE_DISABLE_AUTOUPDATE: "true"
+        OPENCODE_EXPERIMENTAL_OXFMT: "true"
+        MORPH_TIMEOUT: "60000"
+        MORPH_MODEL: morph-v3-fast
+      with:
+        model: ${{ inputs.model != '' && inputs.model || 'kilo/kilo-auto/frontier' }}
+        prompt: ${{ inputs.prompt }}
+        kilo_api_key: ${{ inputs.kilo-api-key }}
+        kilo_org_id: ${{ inputs.kilo-org-id }}
