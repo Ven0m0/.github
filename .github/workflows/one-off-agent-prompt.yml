@@ -122,12 +122,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OPENCODE_ENABLE_EXA: true
           OPENCODE_EXPERIMENTAL: true
+          OPENCODE_EXPERIMENTAL_EXA: true
           OPENCODE_EXPERIMENTAL_LSP_TOOL: true
+          OPENCODE_EXPERIMENTAL_LSP_TY: true
+          OPENCODE_EXPERIMENTAL_MARKDOWN: true
+          OPENCODE_EXPERIMENTAL_PLAN_MODE: true
           OPENCODE_ENABLE_EXPERIMENTAL_MODELS: true
           OPENCODE_EXPERIMENTAL_FILEWATCHER: true
+          OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
+          OPENCODE_EXPERIMENTAL_LAZY_TOOLS: true
+          OPENCODE_PRUNE_SCALE_WITH_CONTEXT: true
+          OPENCODE_DISABLE_FILETIME_CHECK: true
+          OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: true
           OPENCODE_DISABLE_AUTOUPDATE: true
           OPENCODE_EXPERIMENTAL_OXFMT: true
+          MORPH_TIMEOUT: "60000"
+          MORPH_MODEL: morph-v3-fast
         with:
           model: ${{ github.event.inputs.model != '' && github.event.inputs.model || 'openrouter/auto:exacto:online' }}
           prompt: ${{ github.event.inputs.prompt }}
@@ -143,9 +155,21 @@ jobs:
           kilo_org_id: ${{ secrets.KILO_ORG_ID }}
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OPENCODE_ENABLE_EXA: true
           OPENCODE_EXPERIMENTAL: true
+          OPENCODE_EXPERIMENTAL_EXA: true
           OPENCODE_EXPERIMENTAL_LSP_TOOL: true
+          OPENCODE_EXPERIMENTAL_LSP_TY: true
+          OPENCODE_EXPERIMENTAL_MARKDOWN: true
+          OPENCODE_EXPERIMENTAL_PLAN_MODE: true
           OPENCODE_ENABLE_EXPERIMENTAL_MODELS: true
           OPENCODE_EXPERIMENTAL_FILEWATCHER: true
+          OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
+          OPENCODE_EXPERIMENTAL_LAZY_TOOLS: true
+          OPENCODE_PRUNE_SCALE_WITH_CONTEXT: true
+          OPENCODE_DISABLE_FILETIME_CHECK: true
+          OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: true
           OPENCODE_DISABLE_AUTOUPDATE: true
           OPENCODE_EXPERIMENTAL_OXFMT: true
+          MORPH_TIMEOUT: "60000"
+          MORPH_MODEL: morph-v3-fast
