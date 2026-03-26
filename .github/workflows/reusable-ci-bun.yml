@@ -141,7 +141,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/{bun.lock,bun.lockb,package.json}', inputs.working-directory)) }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
@@ -174,7 +174,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/{bun.lock,bun.lockb,package.json}', inputs.working-directory)) }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
@@ -206,7 +206,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/{bun.lock,bun.lockb,package.json}', inputs.working-directory)) }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
@@ -219,8 +219,7 @@ jobs:
           ${{ inputs.test-command }}
 
           if [[ -f "coverage/lcov.info" ]]; then
-            lines=$(awk -F: '/^LF:/{sum+=$2} END{print sum+0}' coverage/lcov.info)
-            hits=$(awk -F: '/^LH:/{sum+=$2} END{print sum+0}' coverage/lcov.info)
+            read -r lines hits < <(awk -F: '/^LF:/{lines+=$2} /^LH:/{hits+=$2} END{print lines+0, hits+0}' coverage/lcov.info)
             if [[ "$lines" -gt 0 ]]; then
               percentage=$((hits * 100 / lines))
               echo "percentage=$percentage" >> "$GITHUB_OUTPUT"
@@ -272,7 +271,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ matrix.bun-version }}-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          key: ${{ runner.os }}-bun-${{ matrix.bun-version }}-${{ hashFiles(format('{0}/{bun.lock,bun.lockb,package.json}', inputs.working-directory)) }}
           restore-keys: |
             ${{ runner.os }}-bun-${{ matrix.bun-version }}-
             ${{ runner.os }}-bun-
@@ -323,7 +322,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
+          key: ${{ runner.os }}-bun-${{ hashFiles(format('{0}/{bun.lock,bun.lockb,package.json}', inputs.working-directory)) }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
