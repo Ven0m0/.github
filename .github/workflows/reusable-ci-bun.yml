@@ -239,7 +239,7 @@ jobs:
 
       - name: Upload coverage report
         if: inputs.upload-coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: ${{ inputs.working-directory }}/coverage/lcov.info
           fail_ci_if_error: false
@@ -284,7 +284,7 @@ jobs:
 
       - name: Upload coverage report
         if: inputs.upload-coverage && matrix.bun-version == fromJson(inputs.bun-versions-matrix)[0]
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: ${{ inputs.working-directory }}/coverage/lcov.info
           fail_ci_if_error: false

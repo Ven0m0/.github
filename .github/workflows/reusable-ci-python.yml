@@ -179,7 +179,7 @@ jobs:
           fi
       - name: Upload coverage report
         if: inputs.upload-coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: coverage.xml
           fail_ci_if_error: false
@@ -246,7 +246,7 @@ jobs:
             -v
       - name: Upload coverage report
         if: inputs.upload-coverage && matrix.python-version == fromJson(inputs.python-versions-matrix)[0]
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: coverage.xml
           fail_ci_if_error: false

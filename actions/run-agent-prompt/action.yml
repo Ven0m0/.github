@@ -145,7 +145,7 @@ runs:
 
     - name: Run Kilo
       if: ${{ inputs.provider == 'kilo' }}
-      uses: Kilo-Org/kilocode/github@v7.1.4
+      uses: Kilo-Org/kilocode/github@v7.1.8
       env:
         OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}

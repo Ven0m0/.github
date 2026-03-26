@@ -140,7 +140,7 @@ jobs:
 
       - name: Upload coverage report
         if: inputs.upload-coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: coverage.out
           fail_ci_if_error: false
@@ -193,7 +193,7 @@ jobs:
 
       - name: Upload coverage report
         if: inputs.upload-coverage && matrix.go-version == fromJson(inputs.go-versions-matrix)[0]
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: coverage.out
           fail_ci_if_error: false
