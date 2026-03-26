@@ -1,12 +1,12 @@
 ---
 name: mcp-development
-description: Build Model Context Protocol (MCP) servers with tools, resources, and prompts. Use when creating MCP servers, choosing stdio vs HTTP transport, debugging MCP behavior, or implementing MCP patterns in Python or TypeScript.
+description: Build Model Context Protocol (MCP) servers with tools, resources, prompts, and client configs. Use when creating MCP servers, choosing transports, designing schemas, or implementing custom MCP integrations in Python or TypeScript.
 allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
 ---
 
 # MCP Development
 
-Build and debug Model Context Protocol (MCP) servers in Python and TypeScript.
+Build and debug Model Context Protocol (MCP) servers and integrations in Python and TypeScript.
 
 <instructions>
 
@@ -15,22 +15,33 @@ Build and debug Model Context Protocol (MCP) servers in Python and TypeScript.
 Think through MCP server design step-by-step:
 
 1. **Define scope**: What tools/resources/prompts does the server need?
-2. **Choose transport**: stdio (local, single-user) or HTTP (web, multi-user)?
+2. **Choose transport**: stdio, HTTP/SSE, or WebSocket based on client/runtime
 3. **Design schemas**: Input/output schemas for each tool, URI templates for resources
 4. **Implement**: Tool logic with validation, error handling, structured output
-5. **Test**: MCP Inspector for interactive testing, unit tests for logic
-6. **Deploy**: Configure for target environment (Claude Desktop, web app, CLI)
+5. **Configure clients**: Claude Desktop, editor MCP config, web deployment
+6. **Test**: MCP Inspector plus unit/integration coverage
+7. **Deploy**: Package with environment-based config and clear operational limits
+
+## Project Structure
+
+```text
+my-mcp-server/
+├── src/
+│   └── index.ts | server.py
+├── package.json | pyproject.toml
+└── README.md
+```
 
 ## Transport Decision
 
-| Use Case              | Transport        | Why                          |
-| --------------------- | ---------------- | ---------------------------- |
-| Claude Desktop        | stdio            | Native support, simple setup |
-| Web application       | HTTP             | Browser-compatible           |
-| High-scale deployment | HTTP (stateless) | Horizontal scaling           |
-| Local CLI tool        | stdio            | Pipes, process communication |
-| Multi-user service    | HTTP             | Session management, CORS     |
-| Development/testing   | stdio            | Easier debugging             |
+| Use Case              | Transport         | Why                           |
+| --------------------- | ----------------- | ----------------------------- |
+| Claude Desktop        | stdio             | Native support, simple setup  |
+| Local CLI tool        | stdio             | Pipes, process communication  |
+| Web application       | HTTP/SSE          | Browser-compatible streaming  |
+| High-scale deployment | HTTP (stateless)  | Horizontal scaling            |
+| Multi-user service    | HTTP or WebSocket | Session management / realtime |
+| Development/testing   | stdio             | Easier debugging              |
 
 </instructions>
 
@@ -38,15 +49,34 @@ Think through MCP server design step-by-step:
 
 ## Tools
 
-Functions the LLM can call. Define: input schema, validation, structured output, clear description.
+Functions the LLM can call. Each tool should have:
+
+- Clear action-oriented name
+- Input schema with descriptions and validation
+- Structured output
+- A description that explains what it does and when to use it
 
 ## Resources
 
-Data the LLM can read. Types: static (fixed URI) or dynamic (URI template with parameters). Include MIME type.
+Data the LLM can read.
+
+| Type     | Use                         |
+| -------- | --------------------------- |
+| Static   | Fixed docs/config           |
+| Dynamic  | Computed on request         |
+| Template | URI pattern with parameters |
+
+URI patterns:
+
+| Pattern       | Example             |
+| ------------- | ------------------- |
+| Fixed         | `docs://readme`     |
+| Parameterized | `users://{userId}`  |
+| Collection    | `files://project/*` |
 
 ## Prompts
 
-Reusable templates with arguments. Return formatted prompt text.
+Reusable templates with arguments. Return formatted prompt text for repeatable workflows.
 
 ## Context
 
@@ -64,13 +94,37 @@ Shared capabilities: logging (stderr only), progress reporting, sampling (LLM ge
 4. Return structured output (human-readable + machine-readable)
 5. Never leak internal errors to the LLM
 
-## Dynamic Resource Pattern
+## Resource Pattern
 
 1. Define URI template: `resource://type/{id}`
 2. Parse and validate URI parameters
 3. Fetch/compute content
 4. Return with appropriate MIME type
-5. Handle missing resources gracefully (don't crash)
+5. Handle missing resources gracefully
+
+## Configuration Pattern
+
+| Field     | Purpose               |
+| --------- | --------------------- |
+| `command` | Executable to run     |
+| `args`    | Command arguments     |
+| `env`     | Environment variables |
+
+Example:
+
+```json
+{
+  "mcpServers": {
+    "my-server": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "API_BASE_URL": "https://api.example.com"
+      }
+    }
+  }
+}
+```
 
 ## Error Handling
 
@@ -103,7 +157,7 @@ async def get_doc(topic: str) -> str:
 ```
 
 - Use Pydantic for schema validation
-- All I/O must be async
+- All I/O should be async
 - Log to stderr (stdout is the protocol channel)
 
 ## TypeScript
@@ -125,6 +179,26 @@ server.tool("search_docs", { query: z.string(), limit: z.number().default(10) },
 - Handle transport cleanup on disconnect
 
 </language_specific>
+
+<testing>
+
+## Testing
+
+| Type        | Focus                                |
+| ----------- | ------------------------------------ |
+| Unit        | Tool/resource logic                  |
+| Integration | Full server startup + protocol flow  |
+| Contract    | Schema validation and response shape |
+
+```bash
+# Interactive testing
+npx @modelcontextprotocol/inspector python -m my_server
+
+# Manual stdio test
+echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python -m my_server
+```
+
+</testing>
 
 <debugging>
 
@@ -170,21 +244,11 @@ if __name__ == "__main__":
     mcp.run(transport="stdio")
 ```
 
-### Testing with MCP Inspector
-
-```bash
-# Interactive testing
-npx @modelcontextprotocol/inspector python -m my_server
-
-# Manual stdio test
-echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python -m my_server
-```
-
 </examples>
 
 ## Success Criteria
 
-MCP server is complete when:
+MCP server or integration is complete when:
 
 - All tools/resources return correct results for valid inputs
 - Schema validation rejects invalid inputs with clear messages
@@ -192,3 +256,4 @@ MCP server is complete when:
 - Tests pass (unit for logic, integration for full workflow)
 - LLM can discover and correctly use all tools
 - Logging is sufficient to debug issues in production
+- Client config is documented and reproducible
