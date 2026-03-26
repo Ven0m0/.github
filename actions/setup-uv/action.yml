@@ -2,7 +2,7 @@
 # Provides consistent Python environment setup across all workflows
 #
 # Usage:
-#   - uses: ./actions/setup-python-uv
+#   - uses: ./actions/setup-uv
 #     with:
 #       python-version: '3.12'
 
@@ -22,9 +22,13 @@ inputs:
     required: false
     default: "true"
   extras:
-    description: "Extra dependencies to install (comma-separated)"
+    description: "When non-empty, install all extras"
     required: false
     default: ""
+  frozen:
+    description: "Whether to require uv.lock to be up to date during dependency installation"
+    required: false
+    default: "true"
   working-directory:
     description: "Working directory for commands"
     required: false
@@ -35,7 +39,7 @@ outputs:
     value: ${{ steps.python.outputs.version }}
   uv-version:
     description: "Installed uv version"
-    value: ${{ steps.uv.outputs.version }}
+    value: ${{ steps.uv-version.outputs.version }}
   cache-hit:
     description: "Whether the cache was hit"
     value: ${{ steps.uv.outputs.cache-hit }}
@@ -54,26 +58,16 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         PYTHON_VERSION: ${{ inputs.python-version }}
-      run: |
-        uv python install "${PYTHON_VERSION:=3.13}"
-        INSTALLED_VERSION=$(uv python find "$PYTHON_VERSION" | xargs -I{} {} --version | cut -d' ' -f2)
-        echo "version=$INSTALLED_VERSION" >> "$GITHUB_OUTPUT"
-        echo "Installed Python $INSTALLED_VERSION"
+      run: ${{ github.action_path }}/scripts/install-python.sh
     - name: Get uv version
+      id: uv-version
       shell: bash
-      run: |
-        UV_VERSION=$(uv --version | cut -d' ' -f2)
-        echo "version=$UV_VERSION" >> "$GITHUB_OUTPUT"
-        echo "Using uv $UV_VERSION"
+      run: ${{ github.action_path }}/scripts/write-uv-version.sh
     - name: Install dependencies
       if: inputs.install-dependencies == 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         EXTRAS: ${{ inputs.extras }}
-      run: |-
-        if [[ -n "$EXTRAS" ]]; then
-          uv sync --frozen --all-extras
-        else
-          uv sync --frozen
-        fi
+        FROZEN: ${{ inputs.frozen }}
+      run: ${{ github.action_path }}/scripts/sync-dependencies.sh

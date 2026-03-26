@@ -24,7 +24,7 @@ inputs:
     required: false
     default: "true"
   extras:
-    description: "Extra dependencies to install (comma-separated)"
+    description: "When non-empty, install all extras"
     required: false
     default: ""
   working-directory:
@@ -38,7 +38,7 @@ outputs:
     value: ${{ steps.python.outputs.version }}
   uv-version:
     description: "Installed uv version"
-    value: ${{ steps.uv-ver.outputs.version }}
+    value: ${{ steps.uv-version.outputs.version }}
   cache-hit:
     description: "Whether the cache was hit"
     value: ${{ steps.uv.outputs.cache-hit }}
@@ -59,19 +59,12 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         PYTHON_VERSION: ${{ inputs.python-version }}
-      run: |
-        uv python install "$PYTHON_VERSION"
-        INSTALLED=$(uv run python --version | cut -d' ' -f2)
-        echo "version=$INSTALLED" >> "$GITHUB_OUTPUT"
-        echo "Installed Python $INSTALLED"
+      run: ${{ github.action_path }}/../setup-uv/scripts/install-python.sh
 
     - name: Get uv version
-      id: uv-ver
+      id: uv-version
       shell: bash
-      run: |
-        UV_VERSION=$(uv --version | cut -d' ' -f2)
-        echo "version=$UV_VERSION" >> "$GITHUB_OUTPUT"
-        echo "Using uv $UV_VERSION"
+      run: ${{ github.action_path }}/../setup-uv/scripts/write-uv-version.sh
 
     - name: Install dependencies
       if: inputs.install-dependencies == 'true'
@@ -79,9 +72,5 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         EXTRAS: ${{ inputs.extras }}
-      run: |
-        if [[ -n "$EXTRAS" ]]; then
-          uv sync --all-extras
-        else
-          uv sync
-        fi
+        FROZEN: "false"
+      run: ${{ github.action_path }}/../setup-uv/scripts/sync-dependencies.sh

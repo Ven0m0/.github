@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `actions/release-notes/` - Composite action to generate release notes from conventional commits
 - `actions/security-scan/` - Composite action for secrets and dependency scanning
 - `actions/setup-node-pnpm/` - Composite action for Node.js + pnpm setup with caching
-- `actions/setup-python-uv/` - Composite action for Python + uv setup with caching
+- `actions/setup-uv/` - Composite action for Python + uv setup with caching
 - `.github/workflows/sync-labels.yml` - Workflow to sync labels from `labels.yml`
 - `.github/workflows/reusable-ci-go.yml` - Reusable Go CI workflow
 - `.github/workflows/reusable-security.yml` - Reusable security scanning workflow
