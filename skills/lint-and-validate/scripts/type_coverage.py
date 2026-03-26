@@ -46,60 +46,41 @@ def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:
     return ts_files, py_files
 
 
-def check_typescript_coverage(
-    project_path: Path,
-    max_files: Optional[int] = 30,
-    files: Optional[list[Path]] = None,
-) -> dict:
-    """Check TypeScript type coverage."""
-    issues = []
-    passed = []
-    stats = {"any_count": 0, "untyped_functions": 0, "total_functions": 0}
 
-    if files is not None:
-        ts_files = files
-    else:
-        ts_files, _ = find_project_files(project_path)
+def _analyze_typescript_file(file_path: Path, stats: dict) -> None:
+    try:
+        content = file_path.read_text(encoding="utf-8", errors="ignore")
+        # Count 'any' usage
+        stats["any_count"] += len(RE_TS_ANY.findall(content))
 
-    if not ts_files:
-        return {
-            "type": "typescript",
-            "files": 0,
-            "passed": [],
-            "issues": ["[!] No TypeScript files found"],
-            "stats": stats,
+        # Find unique functions without return types by start position
+        untyped_indices = {
+            m.start()
+            for m in chain(
+                RE_TS_UNTYPED_FUNC.finditer(content),
+                RE_TS_UNTYPED_ARROW.finditer(content),
+            )
         }
+        untyped_count = len(untyped_indices)
+        stats["untyped_functions"] += untyped_count
 
-    for file_path in ts_files[:max_files] if max_files is not None else ts_files:
-        try:
-            content = file_path.read_text(encoding="utf-8", errors="ignore")
-            # Count 'any' usage
-            stats["any_count"] += len(RE_TS_ANY.findall(content))
+        # Count unique typed functions by start position
+        typed_indices = {
+            m.start()
+            for m in chain(
+                RE_TS_TYPED_FUNC.finditer(content),
+                RE_TS_TYPED_ARROW.finditer(content),
+            )
+        }
+        typed_count = len(typed_indices)
+        stats["total_functions"] += typed_count + untyped_count
+    except OSError:
+        pass
 
-            # Find unique functions without return types by start position
-            untyped_indices = {
-                m.start()
-                for m in chain(
-                    RE_TS_UNTYPED_FUNC.finditer(content),
-                    RE_TS_UNTYPED_ARROW.finditer(content),
-                )
-            }
-            untyped_count = len(untyped_indices)
-            stats["untyped_functions"] += untyped_count
 
-            # Count unique typed functions by start position
-            typed_indices = {
-                m.start()
-                for m in chain(
-                    RE_TS_TYPED_FUNC.finditer(content),
-                    RE_TS_TYPED_ARROW.finditer(content),
-                )
-            }
-            typed_count = len(typed_indices)
-            stats["total_functions"] += typed_count + untyped_count
-
-        except OSError:
-            continue
+def _format_typescript_results(stats: dict, file_count: int) -> tuple[list[str], list[str]]:
+    passed = []
+    issues = []
 
     # Analyze results
     if stats["any_count"] == 0:
@@ -122,7 +103,36 @@ def check_typescript_coverage(
         else:
             issues.append(f"[X] Type coverage: {typed_ratio:.0f}% (too low)")
 
-    passed.append(f"[OK] Analyzed {len(ts_files)} TypeScript files")
+    passed.append(f"[OK] Analyzed {file_count} TypeScript files")
+    return passed, issues
+
+
+def check_typescript_coverage(
+    project_path: Path,
+    max_files: Optional[int] = 30,
+    files: Optional[list[Path]] = None,
+) -> dict:
+    """Check TypeScript type coverage."""
+    stats = {"any_count": 0, "untyped_functions": 0, "total_functions": 0}
+
+    if files is not None:
+        ts_files = files
+    else:
+        ts_files, _ = find_project_files(project_path)
+
+    if not ts_files:
+        return {
+            "type": "typescript",
+            "files": 0,
+            "passed": [],
+            "issues": ["[!] No TypeScript files found"],
+            "stats": stats,
+        }
+
+    for file_path in ts_files[:max_files] if max_files is not None else ts_files:
+        _analyze_typescript_file(file_path, stats)
+
+    passed, issues = _format_typescript_results(stats, len(ts_files))
 
     return {
         "type": "typescript",
@@ -131,34 +141,6 @@ def check_typescript_coverage(
         "issues": issues,
         "stats": stats,
     }
-
-
-
-def analyze_python_file(content: str) -> dict[str, int]:
-    """Analyze a single Python file's content for type hints."""
-    stats = {"untyped_functions": 0, "typed_functions": 0, "any_count": 0}
-
-    # Count Any usage
-    stats["any_count"] = len(RE_PY_ANY.findall(content))
-
-    # Find unique functions with type hints by start position
-    typed_indices = {
-        m.start()
-        for m in chain(
-            RE_PY_TYPED_FUNC_PARAMS.finditer(content),
-            RE_PY_TYPED_FUNC_RETURN.finditer(content),
-        )
-    }
-    typed_count = len(typed_indices)
-    stats["typed_functions"] = typed_count
-
-    # Find functions without type hints
-    all_funcs_count = len(RE_PY_ALL_FUNC.findall(content))
-    stats["untyped_functions"] = max(0, all_funcs_count - typed_count)
-
-    return stats
-
-
 def check_python_coverage(
     project_path: Path,
     max_files: Optional[int] = 30,
