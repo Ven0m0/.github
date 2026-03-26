@@ -149,6 +149,7 @@ runs:
       env:
         OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
         OPENCODE_ENABLE_EXA: "true"
         OPENCODE_EXPERIMENTAL: "true"
         OPENCODE_EXPERIMENTAL_EXA: "true"
@@ -172,3 +173,4 @@ runs:
         prompt: ${{ inputs.prompt }}
         kilo_api_key: ${{ inputs.kilo-api-key || env.KILO_API_KEY }}
         kilo_org_id: ${{ inputs.kilo-org-id || env.KILO_ORG_ID }}
+        use_github_token: true
