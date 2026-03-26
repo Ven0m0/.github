@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+: "${FROZEN:?FROZEN is required}"
+
 sync_args=()
 
-if [[ "${FROZEN:-true}" == "true" ]]; then
+if [[ "${FROZEN}" == "true" ]]; then
   sync_args+=(--frozen)
 fi
 
-if [[ -n "${EXTRAS:-}" ]]; then
-  uv sync "${sync_args[@]}" --all-extras
-else
-  uv sync "${sync_args[@]}"
-fi
+case "${EXTRAS:-}" in
+  "" | false | 0 | no | off)
+    uv sync "${sync_args[@]}"
+    ;;
+  *)
+    uv sync "${sync_args[@]}" --all-extras
+    ;;
+esac

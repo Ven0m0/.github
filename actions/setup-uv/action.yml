@@ -5,6 +5,7 @@
 #   - uses: ./actions/setup-uv
 #     with:
 #       python-version: '3.12'
+#       frozen: 'true'
 
 name: "Setup Python with uv"
 description: "Install Python and uv package manager with caching"
@@ -22,7 +23,7 @@ inputs:
     required: false
     default: "true"
   extras:
-    description: "When non-empty, install all extras"
+    description: "Set to install all extras; disabled only when set to false, 0, no, or off"
     required: false
     default: ""
   frozen:
