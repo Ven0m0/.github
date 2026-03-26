@@ -1,0 +1,137 @@
+name: "Comprehensive Lint"
+description: "Run shell hardening and MegaLinter with optional auto-commit support"
+author: "Ven0m0"
+
+branding:
+  icon: "check-circle"
+  color: "green"
+
+inputs:
+  github-token:
+    description: "GitHub token for MegaLinter and optional fix commits"
+    required: true
+  working-directory:
+    description: "Working directory for shell file discovery"
+    required: false
+    default: "."
+  apply-shellharden:
+    description: "Apply shellharden fixes to shell scripts"
+    required: false
+    default: "true"
+  shfmt-indent:
+    description: "Indentation size for shfmt"
+    required: false
+    default: "2"
+  shell-exclude-pattern:
+    description: "Pattern to exclude shell files from processing"
+    required: false
+    default: '(^|/)\.(git|cache|claude|venv)(/|$)'
+  megalinter-validate-all:
+    description: "Validate all files or only changed files"
+    required: false
+    default: "false"
+  megalinter-config:
+    description: "Path to MegaLinter configuration file"
+    required: false
+    default: ".megalinter.yml"
+  megalinter-exclude-dirs:
+    description: "Directories to exclude from MegaLinter"
+    required: false
+    default: ".github,.git,.cache,node_modules"
+  commit-fixes:
+    description: "Automatically commit fixes"
+    required: false
+    default: "true"
+
+outputs:
+  megalinter-updated-sources:
+    description: "Whether MegaLinter updated repository sources"
+    value: ${{ steps.megalinter.outputs.has_updated_sources }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache Shellharden Binary
+      if: inputs.apply-shellharden == 'true'
+      uses: actions/cache@v5
+      id: cache-shellharden
+      with:
+        path: ~/.local/bin/shellharden
+        key: shellharden-${{ runner.os }}-${{ runner.arch }}
+
+    - name: Install Shellharden
+      if: inputs.apply-shellharden == 'true' && steps.cache-shellharden.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        bin="$HOME/.local/bin"
+        mkdir -p "$bin"
+        curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
+          | tar xz -C "$bin" shellharden
+        chmod +x "$bin/shellharden"
+
+    - name: Run Shellharden
+      if: inputs.apply-shellharden == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        EXCLUDE: ${{ inputs.shell-exclude-pattern }}
+      run: |
+        set -euo pipefail
+        shopt -s globstar nullglob
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        export PATH="$HOME/.local/bin:$PATH"
+
+        mapfile -t files < <({
+          find . -name "*.sh" -type f
+          find . -name "*.bash" -type f -exec grep -l "^#!" {} +
+        } | grep -vE "$EXCLUDE" | sort -u)
+
+        if [[ ${#files[@]} -eq 0 ]]; then
+          echo "No shell files found"
+          exit 0
+        fi
+
+        count=0
+        for file in "${files[@]}"; do
+          if shellharden --replace "$file" &>/dev/null; then
+            ((count++)) || true
+          fi
+        done
+
+        echo "Hardened $count/${#files[@]} shell files"
+
+    - name: Commit Shellharden Fixes
+      if: inputs.commit-fixes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+      uses: stefanzweifel/git-auto-commit-action@v7
+      with:
+        commit_message: "style: apply shellharden [skip ci]"
+        commit_user_name: github-actions[bot]
+        commit_user_email: github-actions[bot]@users.noreply.github.com
+
+    - name: Run MegaLinter
+      id: megalinter
+      uses: oxsecurity/megalinter@v9
+      env:
+        VALIDATE_ALL_CODEBASE: ${{ inputs.megalinter-validate-all }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        APPLY_FIXES: all
+        MEGALINTER_CONFIG: ${{ inputs.megalinter-config }}
+        FILTER_REGEX_EXCLUDE: ${{ inputs.megalinter-exclude-dirs }}
+
+    - name: Archive MegaLinter Reports
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: megalinter-reports
+        path: |
+          megalinter-reports
+          mega-linter.log
+
+    - name: Commit MegaLinter Fixes
+      if: inputs.commit-fixes == 'true' && steps.megalinter.outputs.has_updated_sources == '1'
+      uses: stefanzweifel/git-auto-commit-action@v7
+      with:
+        commit_message: "style: apply MegaLinter fixes [skip ci]"
+        commit_user_name: megalinter-bot[bot]
+        commit_user_email: megalinter-bot[bot]@users.noreply.github.com

@@ -46,77 +46,10 @@ permissions:
 env:
   DEBIAN_FRONTEND: noninteractive
 jobs:
-  shellharden-fix:
-    name: Shell Hardening
-    if: inputs.apply-shellharden
-    runs-on: ubuntu-slim
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - name: Cache Shellharden Binary
-        uses: actions/cache@v5
-        id: cache-shellharden
-        with:
-          path: ~/.local/bin/shellharden
-          key: shellharden-${{ runner.os }}-${{ runner.arch }}
-      - name: Install Shellharden
-        if: steps.cache-shellharden.outputs.cache-hit != 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          bin="$HOME/.local/bin"
-          mkdir -p "$bin"
-          curl -sfL https://github.com/anordal/shellharden/releases/latest/download/shellharden-x86_64-unknown-linux-gnu.tar.gz \
-            | tar xz -C "$bin" shellharden
-          chmod +x "$bin/shellharden"
-      - name: Run Shellharden
-        env:
-          EXCLUDE: ${{ inputs.shell-exclude-pattern }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          shopt -s globstar nullglob
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          export PATH="$HOME/.local/bin:$PATH"
-
-          # Find all shell files
-          mapfile -t files < <({
-            find . -name "*.sh" -type f
-            find . -name "*.bash" -type f -exec grep -l "^#!" {} +
-          } | grep -vE "$EXCLUDE" | sort -u)
-
-          if [[ ${#files[@]} -eq 0 ]]; then
-            echo "No shell files found"
-            exit 0
-          fi
-
-          # Apply shellharden
-          count=0
-          for file in "${files[@]}"; do
-            if shellharden --replace "$file" &>/dev/null; then
-              ((count++)) || true
-            fi
-          done
-
-          echo "Hardened $count/${#files[@]} shell files"
-      - name: Commit Fixes
-        if: inputs.commit-fixes && github.event.pull_request.head.repo.full_name == github.repository
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: "style: apply shellharden [skip ci]"
-          commit_user_name: github-actions[bot]
-          commit_user_email: github-actions[bot]@users.noreply.github.com
-  megalinter:
-    name: MegaLinter
+  comprehensive-lint:
+    name: Comprehensive Lint
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     permissions:
       contents: write
       issues: write
@@ -127,28 +60,18 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-      - name: Run MegaLinter
-        id: ml
-        uses: oxsecurity/megalinter@v9
-        env:
-          VALIDATE_ALL_CODEBASE: ${{ inputs.megalinter-validate-all }}
-          GITHUB_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-          APPLY_FIXES: all
-          MEGALINTER_CONFIG: ${{ inputs.megalinter-config }}
-          FILTER_REGEX_EXCLUDE: ${{ inputs.megalinter-exclude-dirs }}
-      - name: Archive MegaLinter Reports
-        if: always()
-        uses: actions/upload-artifact@v7
+
+      - name: Run comprehensive lint action
+        uses: ./actions/comprehensive-lint
         with:
-          name: megalinter-reports
-          path: |
-            megalinter-reports
-            mega-linter.log
-      - name: Commit MegaLinter Fixes
-        if: inputs.commit-fixes && steps.ml.outputs.has_updated_sources == 1
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: "style: apply MegaLinter fixes [skip ci]"
-          commit_user_name: megalinter-bot[bot]
-          commit_user_email: megalinter-bot[bot]@users.noreply.github.com
+          github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          working-directory: ${{ inputs.working-directory }}
+          apply-shellharden: ${{ inputs.apply-shellharden }}
+          shfmt-indent: ${{ inputs.shfmt-indent }}
+          shell-exclude-pattern: ${{ inputs.shell-exclude-pattern }}
+          megalinter-validate-all: ${{ inputs.megalinter-validate-all }}
+          megalinter-config: ${{ inputs.megalinter-config }}
+          megalinter-exclude-dirs: ${{ inputs.megalinter-exclude-dirs }}
+          commit-fixes: ${{ inputs.commit-fixes }}

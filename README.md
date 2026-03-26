@@ -53,6 +53,18 @@ jobs:
 
 Available: `comprehensive-lint.yml`, `bun.yml`, `uv-lock.yml`, `dependabot-automerge.yml`, `img-opt.yml`, `git-maintenance.yml`, `release.yml`, `security.yml`
 
+## Reusable Actions
+
+Call from any repository after checkout:
+
+```yaml
+steps:
+  - uses: actions/checkout@v6
+  - uses: Ven0m0/.github/actions/comprehensive-lint@main
+    with:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ## Overriding
 
 Local files in a repository take precedence over these defaults.
