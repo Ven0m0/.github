@@ -163,3 +163,32 @@ def test_check_python_coverage_multiple_files(tmp_path):
     result = check_python_coverage(tmp_path)
     assert result["files"] == 2
     assert result["stats"]["typed_functions"] == 2
+
+def test_analyze_python_file():
+    """Test analyze_python_file directly."""
+    from type_coverage import analyze_python_file
+
+    content = """
+    from typing import Any
+
+    def untyped_func(x):
+        pass
+
+    def typed_params(x: int):
+        pass
+
+    def typed_return(x) -> int:
+        return 1
+
+    def fully_typed(x: int) -> int:
+        return x
+
+    def any_typed(x: Any) -> Any:
+        return x
+    """
+
+    stats = analyze_python_file(content)
+
+    assert stats["untyped_functions"] == 1
+    assert stats["typed_functions"] == 4
+    assert stats["any_count"] == 2
