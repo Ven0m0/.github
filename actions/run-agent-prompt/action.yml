@@ -100,18 +100,9 @@ runs:
             ;;
         esac
 
-        if [[ -z "${{ inputs.git-author-name }}" || -z "${{ inputs.git-author-email }}" ]]; then
-          echo "::error::git-author-name and git-author-email must both be non-empty."
-          exit 1
-        fi
-
-        if [[ -n "${{ inputs.git-committer-name }}" && -z "${{ inputs.git-committer-email }}" ]]; then
-          echo "::error::git-committer-email is required when git-committer-name is set."
-          exit 1
-        fi
-
-        if [[ -z "${{ inputs.git-committer-name }}" && -n "${{ inputs.git-committer-email }}" ]]; then
-          echo "::error::git-committer-name is required when git-committer-email is set."
+        if [[ -n "${{ inputs.git-committer-name }}" && -z "${{ inputs.git-committer-email }}" ]] ||
+          [[ -z "${{ inputs.git-committer-name }}" && -n "${{ inputs.git-committer-email }}" ]]; then
+          echo "::error::git-committer-name and git-committer-email must either both be set or both be blank."
           exit 1
         fi
 
