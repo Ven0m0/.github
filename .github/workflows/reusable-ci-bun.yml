@@ -296,11 +296,20 @@ jobs:
   build:
     name: Build
     runs-on: ${{ inputs.runs-on }}
-    if: ${{ inputs.enable-build }}
+    if: ${{ always() && inputs.enable-build }}
     needs: [lint, typecheck, test, test-matrix]
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
+    env:
+      LINT_RESULT: ${{ needs.lint.result }}
+      TYPECHECK_RESULT: ${{ needs.typecheck.result }}
+      TEST_RESULT: ${{ needs.test.result }}
+      TEST_MATRIX_RESULT: ${{ needs.test-matrix.result }}
+      RUN_LINT: ${{ inputs.run-lint }}
+      RUN_TYPECHECK: ${{ inputs.run-typecheck }}
+      RUN_TESTS: ${{ inputs.run-tests }}
+      ENABLE_MATRIX: ${{ inputs.enable-matrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -320,6 +329,30 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Ensure prerequisite checks passed
+        run: |
+          if [[ "$RUN_LINT" == "true" ]] && [[ "$LINT_RESULT" != "success" ]]; then
+            echo "Lint failed"
+            exit 1
+          fi
+
+          if [[ "$RUN_TYPECHECK" == "true" ]] && [[ "$TYPECHECK_RESULT" != "success" ]]; then
+            echo "Type check failed"
+            exit 1
+          fi
+
+          if [[ "$RUN_TESTS" == "true" ]]; then
+            if [[ "$ENABLE_MATRIX" == "true" ]]; then
+              if [[ "$TEST_MATRIX_RESULT" != "success" ]]; then
+                echo "Matrix tests failed"
+                exit 1
+              fi
+            elif [[ "$TEST_RESULT" != "success" ]]; then
+              echo "Tests failed"
+              exit 1
+            fi
+          fi
 
       - name: Build
         run: ${{ inputs.build-command }}
