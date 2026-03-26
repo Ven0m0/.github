@@ -23,6 +23,10 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
+    env:
+      GITHUB_TOKEN: "${env:GITHUB_TOKEN}"
+      ENABLE_LOCAL: "true"
+      LOG: "info"
     tools: ["*"]
 ---
 # Universal Janitor
