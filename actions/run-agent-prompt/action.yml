@@ -6,8 +6,13 @@
 #     with:
 #       provider: claude        # claude | gemini | jules | opencode | kilo
 #       prompt: "Fix the bug"
-#       github-token: ${{ secrets.GITHUB_TOKEN }}
-#       anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+#
+# API keys can be passed as inputs OR set as env vars on the calling job/step.
+# Inputs take precedence; env vars are the fallback.
+#
+# Expected env var names (when not passing as inputs):
+#   ANTHROPIC_API_KEY, GEMINI_API_KEY, JULES_API_KEY,
+#   OPENCODE_API_KEY, OPENROUTER_API_KEY, KILO_API_KEY, KILO_ORG_ID
 
 name: "Run Agent Prompt"
 description: "Dispatch a one-off prompt to a specified AI agent provider (Claude, Gemini, Jules, OpenCode, or Kilo)"
@@ -29,34 +34,35 @@ inputs:
     required: false
     default: ""
   github-token:
-    description: "GitHub token for provider authentication and repository access"
-    required: true
+    description: "GitHub token for provider authentication and repository access (falls back to env.GITHUB_TOKEN)"
+    required: false
+    default: ""
   anthropic-api-key:
-    description: "Anthropic API key (required for claude provider)"
+    description: "Anthropic API key (falls back to env.ANTHROPIC_API_KEY)"
     required: false
     default: ""
   gemini-api-key:
-    description: "Google Gemini API key (required for gemini provider)"
+    description: "Google Gemini API key (falls back to env.GEMINI_API_KEY)"
     required: false
     default: ""
   jules-api-key:
-    description: "Jules API key (required for jules provider)"
+    description: "Jules API key (falls back to env.JULES_API_KEY)"
     required: false
     default: ""
   opencode-api-key:
-    description: "OpenCode API key (required for opencode provider)"
+    description: "OpenCode API key (falls back to env.OPENCODE_API_KEY)"
     required: false
     default: ""
   openrouter-api-key:
-    description: "OpenRouter API key (optional, used by opencode and kilo for model routing)"
+    description: "OpenRouter API key (falls back to env.OPENROUTER_API_KEY)"
     required: false
     default: ""
   kilo-api-key:
-    description: "Kilo API key (required for kilo provider)"
+    description: "Kilo API key (falls back to env.KILO_API_KEY)"
     required: false
     default: ""
   kilo-org-id:
-    description: "Kilo organization ID (required for kilo provider)"
+    description: "Kilo organization ID (falls back to env.KILO_ORG_ID)"
     required: false
     default: ""
 
@@ -72,8 +78,8 @@ runs:
       if: ${{ inputs.provider == 'claude' }}
       uses: anthropics/claude-code-action@v1
       with:
-        anthropic_api_key: ${{ inputs.anthropic-api-key }}
-        github_token: ${{ inputs.github-token }}
+        anthropic_api_key: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
+        github_token: ${{ inputs.github-token || env.GITHUB_TOKEN }}
         prompt: ${{ inputs.prompt }}
         claude_args: ${{ inputs.model != '' && format('--model {0}', inputs.model) || '' }}
       env:
@@ -91,9 +97,9 @@ runs:
       if: ${{ inputs.provider == 'gemini' }}
       uses: google-github-actions/run-gemini-cli@642deeb7a3882dd77c38a4722127700890330067
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
       with:
-        gemini_api_key: ${{ inputs.gemini-api-key }}
+        gemini_api_key: ${{ inputs.gemini-api-key || env.GEMINI_API_KEY }}
         gemini_model: ${{ inputs.model }}
         prompt: ${{ inputs.prompt }}
 
@@ -102,18 +108,18 @@ runs:
       uses: BeksOmega/jules-action@v1.0.0
       with:
         prompt: ${{ inputs.prompt }}
-        jules_api_key: ${{ inputs.jules-api-key }}
+        jules_api_key: ${{ inputs.jules-api-key || env.JULES_API_KEY }}
         include_commit_log: true
 
     - name: Run OpenCode
       if: ${{ inputs.provider == 'opencode' }}
       uses: anomalyco/opencode/github@latest
       env:
-        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-        GH_TOKEN: ${{ inputs.github-token }}
-        OPENCODE_API_KEY: ${{ inputs.opencode-api-key }}
-        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
+        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
+        OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
+        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
         OPENCODE_ENABLE_EXA: "true"
         OPENCODE_EXPERIMENTAL: "true"
         OPENCODE_EXPERIMENTAL_EXA: "true"
@@ -141,8 +147,8 @@ runs:
       if: ${{ inputs.provider == 'kilo' }}
       uses: Kilo-Org/kilocode/github@latest
       env:
-        OPENCODE_API_KEY: ${{ inputs.opencode-api-key }}
-        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
+        OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
+        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
         OPENCODE_ENABLE_EXA: "true"
         OPENCODE_EXPERIMENTAL: "true"
         OPENCODE_EXPERIMENTAL_EXA: "true"
@@ -164,5 +170,5 @@ runs:
       with:
         model: ${{ inputs.model != '' && inputs.model || 'kilo/kilo-auto/frontier' }}
         prompt: ${{ inputs.prompt }}
-        kilo_api_key: ${{ inputs.kilo-api-key }}
-        kilo_org_id: ${{ inputs.kilo-org-id }}
+        kilo_api_key: ${{ inputs.kilo-api-key || env.KILO_API_KEY }}
+        kilo_org_id: ${{ inputs.kilo-org-id || env.KILO_ORG_ID }}
