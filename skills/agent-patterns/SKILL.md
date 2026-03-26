@@ -1,6 +1,6 @@
 ---
 name: agent-patterns
-description: Reusable workflow patterns, templates, and standards for agent development. Use when designing or reviewing agent workflows, writing structured plans, or enforcing consistent execution patterns across the agent system.
+description: Reusable workflow patterns, templates, and standards for agent development and AI project configuration. Use when designing agent workflows, writing or tuning Copilot/CLAUDE guidance, or enforcing consistent execution patterns across the agent system.
 allowed-tools: "Read, Glob, Grep"
 ---
 
@@ -91,6 +91,91 @@ Input -> Expected behavior -> Output
 ```
 
 </agent_template>
+
+<ai_config_patterns>
+
+## Foundation File Templates
+
+### copilot-instructions.md Template
+
+```markdown
+# GitHub Copilot Instructions
+
+## Project Context
+
+- Purpose: [what the repo does]
+- Stack: [language | framework | package manager]
+- Key paths: `src/`, `tests/`, `[config dir]`
+
+## Code Generation Guidelines
+
+### [Language]
+
+- Follow [style/tool]
+- Prefer [pattern]
+- Avoid [anti-pattern]
+
+## Commands
+
+| Action | Command           |
+| ------ | ----------------- |
+| Test   | `[exact command]` |
+| Lint   | `[exact command]` |
+| Build  | `[exact command]` |
+```
+
+### CLAUDE.md / AGENTS.md Template
+
+```markdown
+# Project Guide
+
+## Overview
+
+[What the project does, architecture, important constraints]
+
+## Structure
+
+[Key directories and responsibilities]
+
+## Commands
+
+| Action     | Command           |
+| ---------- | ----------------- |
+| Install    | `[exact command]` |
+| Test       | `[exact command]` |
+| Lint       | `[exact command]` |
+| Type check | `[exact command]` |
+
+## Conventions
+
+- [Rule with example or reference]
+- [Important project-specific constraint]
+```
+
+### AI Config Optimization Rules
+
+| Prefer                                 | Over                                     |
+| -------------------------------------- | ---------------------------------------- |
+| Exact commands                         | Generic advice like "run tests"          |
+| Examples/snippets                      | Abstract prose                           |
+| Tables/checklists                      | Dense paragraphs                         |
+| Project-wide rules in foundation files | Repeating the same rule in every subfile |
+| Explicit constraints                   | Implied expectations                     |
+
+### MCP Config Pattern
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"]
+    }
+  }
+}
+```
+
+</ai_config_patterns>
 
 <model_selection>
 
@@ -191,6 +276,8 @@ Auto-detects from: file extensions, project files, explicit user request
 | Match model to task complexity   | Use Opus for simple cleanup tasks      |
 | XML tags for structured sections | Flat unstructured prose                |
 | Concrete examples with I/O       | Abstract descriptions without examples |
+| Exact commands/configs           | Placeholder or unverifiable guidance   |
+| Shared foundation templates      | Copy-pasted cross-file duplication     |
 
 </best_practices>
 

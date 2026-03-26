@@ -10,8 +10,8 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 **Ven0m0** delivers practical developer tools for automation, platform engineering, and AI-assisted development. This `.github` repository provides:
 
-- **21 agents** (1 unified pipeline + 10 supporting + 4 standalone utilities) for planning, code optimization, CI/CD, documentation, debugging
-- **32 reusable skill modules** (patterns, best practices, templates)
+- **20 agents** (6 pipeline + 9 supporting + 5 standalone utilities) for planning, code optimization, CI/CD, documentation, debugging
+- **30 reusable skill modules** (patterns, best practices, templates)
 - **38 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
 - **Reusable GitHub Actions workflows** for multi-language CI
 - **Copilot instruction files** (org-wide + file-type scoped)
@@ -22,8 +22,8 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ```
 .github/
-  agents/            # 21 AI agents (pipeline + supporting + standalone utilities)
-  skills/            # 29 reusable knowledge modules
+  agents/            # 20 AI agents (pipeline + supporting + standalone utilities)
+  skills/            # 30 reusable knowledge modules
   instructions/      # 37 language/domain standards
   hooks/             # Git pre-commit hooks
   prompts/           # Reusable prompt templates
@@ -53,20 +53,20 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ---
 
-## AI Agents (21)
+## AI Agents (20)
 
 One unified pipeline. All orchestration, planning, and review innovations from prior Gemini and RUG pipelines have been merged into the single `orchestrator → explorer → planner → researcher → coder → reviewer` pipeline.
 
 ### Pipeline Agents
 
-| Agent            | File                    | Model             | Purpose                                    |
-| ---------------- | ----------------------- | ----------------- | ------------------------------------------ |
+| Agent            | File                    | Model             | Purpose                                                           |
+| ---------------- | ----------------------- | ----------------- | ----------------------------------------------------------------- |
 | **Orchestrator** | `orchestrator.agent.md` | claude-sonnet-4-6 | Drives 5-phase pipeline; discuss, PRD, multi-plan, wave execution |
-| **Explorer**     | `explorer.agent.md`     | claude-haiku-4-5  | Fast codebase scanning and mapping         |
+| **Explorer**     | `explorer.agent.md`     | claude-haiku-4-5  | Fast codebase scanning and mapping                                |
 | **Planner**      | `planner.agent.md`      | claude-opus-4-6   | DAG-based task breakdown, wave assignments, pre-mortem, contracts |
-| **Researcher**   | `researcher.agent.md`   | claude-opus-4-6   | Library investigation and best practices   |
-| **Coder**        | `coder.agent.md`        | claude-sonnet-4-6 | TDD-driven implementation                  |
-| **Reviewer**     | `reviewer.agent.md`     | claude-opus-4-6   | task/wave/plan scopes; OWASP; PRD compliance |
+| **Researcher**   | `researcher.agent.md`   | claude-opus-4-6   | Library investigation and best practices                          |
+| **Coder**        | `coder.agent.md`        | claude-sonnet-4-6 | TDD-driven implementation                                         |
+| **Reviewer**     | `reviewer.agent.md`     | claude-opus-4-6   | task/wave/plan scopes; OWASP; PRD compliance                      |
 
 ### Pipeline Workflow
 
@@ -74,13 +74,13 @@ One unified pipeline. All orchestration, planning, and review innovations from p
 [discuss + PRD] → explorer → planner → researcher → coder → reviewer
 ```
 
-| Phase     | Artifact                 | What It Produces |
-| --------- | ------------------------ | ---------------- |
-| Explore   | `01-exploration.md`      | Codebase map, relevant files, patterns, risks |
-| Plan      | `02-plan.md`             | DAG tasks with wave assignments, contracts, pre-mortem |
-| Research  | `03-research.md`         | Findings, best practices, library recommendations |
-| Implement | `04-implementation.md`   | Changes made, files modified, tests added |
-| Review    | `05-review.md`           | Verdict (pass/fail/conditional), issues, suggestions |
+| Phase     | Artifact               | What It Produces                                       |
+| --------- | ---------------------- | ------------------------------------------------------ |
+| Explore   | `01-exploration.md`    | Codebase map, relevant files, patterns, risks          |
+| Plan      | `02-plan.md`           | DAG tasks with wave assignments, contracts, pre-mortem |
+| Research  | `03-research.md`       | Findings, best practices, library recommendations      |
+| Implement | `04-implementation.md` | Changes made, files modified, tests added              |
+| Review    | `05-review.md`         | Verdict (pass/fail/conditional), issues, suggestions   |
 
 **Modes**: `auto` (uninterrupted) or `gated` (pause after each phase for approval)
 
@@ -90,34 +90,33 @@ One unified pipeline. All orchestration, planning, and review innovations from p
 
 Invokable by the orchestrator during any phase, or directly by the user.
 
-| Agent                    | File                           | Purpose                                |
-| ------------------------ | ------------------------------ | -------------------------------------- |
-| **Git Expert**           | `git.agent.md`                 | Version control, branching, GitHub CLI |
-| **Workflow Engineer**    | `workflow-engineer.agent.md`   | GitHub Actions, CI/CD                  |
-| **GH AW Builder**        | `gh-aw-builder.agent.md`       | GitHub Agentic Workflows               |
-| **Frontend Specialist**  | `frontend-specialist.agent.md` | React/Next.js                          |
-| **Debug**                | `debug.agent.md`               | Bug finding and fixing                 |
-| **Documentation Writer** | `doc-writer.agent.md`          | Technical docs (on request only)       |
-| **Codebase Maintainer**  | `codebase-maintainer.agent.md` | Cleanup, tech debt, PROJECT_INDEX      |
-| **Arch Linux Expert**    | `arch-linux-expert.agent.md`   | Arch administration                    |
-| **Copilot Tuner**        | `copilot-tuner.agent.md`       | Optimize Copilot/CLAUDE.md/MCP configs |
-| **Repo Architect**       | `repo-architect.agent.md`      | Repository structure and ADRs          |
+| Agent                    | File                           | Purpose                                          |
+| ------------------------ | ------------------------------ | ------------------------------------------------ |
+| **Git Expert**           | `git.agent.md`                 | Version control, branching, GitHub CLI           |
+| **Workflow Engineer**    | `workflow-engineer.agent.md`   | GitHub Actions, CI/CD                            |
+| **GH AW Builder**        | `gh-aw-builder.agent.md`       | GitHub Agentic Workflows                         |
+| **Frontend Specialist**  | `frontend-specialist.agent.md` | React/Next.js                                    |
+| **Debug**                | `debug.agent.md`               | Bug finding and fixing                           |
+| **Documentation Writer** | `doc-writer.agent.md`          | Technical docs (on request only)                 |
+| **Codebase Maintainer**  | `codebase-maintainer.agent.md` | Cleanup, tech debt, PROJECT_INDEX                |
+| **Arch Linux Expert**    | `arch-linux-expert.agent.md`   | Arch administration                              |
+| **Repo Architect**       | `repo-architect.agent.md`      | Repository structure, AI config tuning, and ADRs |
 
 ### Standalone Utility Agents
 
 Standalone agents for specific workflows — not part of the orchestrator pipeline.
 
-| Agent                   | File                                    | Purpose                              |
-| ----------------------- | --------------------------------------- | ------------------------------------ |
-| **SWE**                 | `swe-subagent.agent.md`                 | Senior engineer for direct tasks     |
-| **QA**                  | `qa-subagent.agent.md`                  | Test planning and bug hunting        |
-| **Universal Janitor**   | `janitor.agent.md`                      | Tech debt and dead code removal      |
-| **GPT-5 Beast Mode**    | `gpt-5-beast-mode.agent.md`             | Autonomous GPT-5 task execution      |
-| **One-Shot Planner**    | `one-shot-feature-issue-planner.agent.md` | Feature → GitHub issue (no follow-up) |
+| Agent                 | File                                      | Purpose                               |
+| --------------------- | ----------------------------------------- | ------------------------------------- |
+| **SWE**               | `swe-subagent.agent.md`                   | Senior engineer for direct tasks      |
+| **QA**                | `qa-subagent.agent.md`                    | Test planning and bug hunting         |
+| **Universal Janitor** | `janitor.agent.md`                        | Tech debt and dead code removal       |
+| **GPT-5 Beast Mode**  | `gpt-5-beast-mode.agent.md`               | Autonomous GPT-5 task execution       |
+| **One-Shot Planner**  | `one-shot-feature-issue-planner.agent.md` | Feature → GitHub issue (no follow-up) |
 
 ---
 
-## Skills (32)
+## Skills (30)
 
 Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills based on task domain.
 
@@ -146,12 +145,11 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 
 ### Specialization
 
-- `mcp-development/` — Model Context Protocol server development (Python, TypeScript)
-- `mcp-builder/` — Building custom MCP integrations
+- `mcp-development/` — Model Context Protocol server development and custom integrations
 - `nestjs-expert/` — NestJS framework patterns
 - `docs-writer/` — Documentation templates and standards (includes reusable doc structures)
 - `gh-cli/` — GitHub CLI reference and workflows
-- `ai-tuning/` — AI config optimization, token efficiency
+- `ai-tuning/` — AI config optimization, validation, and token efficiency
 - `vibe-coding/` — Fast local web app prototyping
 - `fix-issue/` — Issue diagnosis and resolution patterns
 - `pr-review/` — Pull request review templates and checklists
@@ -191,14 +189,14 @@ Scoped by language and domain in `instructions/`. Copilot automatically applies 
 
 ### Code Quality & Standards
 
-| Topic                 | File                                | Description                             |
-| --------------------- | ----------------------------------- | --------------------------------------- |
-| **Quality Standards** | `quality-standards.instructions.md` | Code review, metrics, performance gates |
-| **Meta-Authoring**        | `meta-authoring.instructions.md`        | Agents, skills, instructions, prompts            |
-| **AI Tuning**             | `ai-tuning.instructions.md`             | CLAUDE.md compression, token efficiency          |
-| **Token Efficiency**      | `token-efficient.instructions.md`       | Context optimization                             |
-| **Memory Bank**           | `memory-bank.instructions.md`           | Project context storage                          |
-| **Agent Constraints**     | `agent-constraints.instructions.md`     | Shared constraints applied to all pipeline agents |
+| Topic                 | File                                | Description                                       |
+| --------------------- | ----------------------------------- | ------------------------------------------------- |
+| **Quality Standards** | `quality-standards.instructions.md` | Code review, metrics, performance gates           |
+| **Meta-Authoring**    | `meta-authoring.instructions.md`    | Agents, skills, instructions, prompts             |
+| **AI Tuning**         | `ai-tuning.instructions.md`         | CLAUDE.md compression, token efficiency           |
+| **Token Efficiency**  | `token-efficient.instructions.md`   | Context optimization                              |
+| **Memory Bank**       | `memory-bank.instructions.md`       | Project context storage                           |
+| **Agent Constraints** | `agent-constraints.instructions.md` | Shared constraints applied to all pipeline agents |
 
 ### Specialization & Domain
 
