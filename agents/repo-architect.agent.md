@@ -24,6 +24,10 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
+    env:
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
+      ENABLE_LOCAL: "${ENABLE_LOCAL}"
+      LOG: "${LOG}"
     tools: ["*"]
 ---
 
