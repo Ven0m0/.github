@@ -3,6 +3,32 @@ description: "Bootstraps, tunes, and validates agentic project structures and AI
 name: "Repo Architect Agent"
 model: GPT-4.1
 tools: ["changes", "codebase", "editFiles", "fetch", "new", "problems", "runCommands", "search", "terminalLastCommand"]
+mcp-servers:
+  github-mcp-server:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
+  fast-filesystem:
+    type: local
+    command: npx
+    args: ["-y", "fast-filesystem-mcp"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
+    args: ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env:
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
+      ENABLE_LOCAL: "${ENABLE_LOCAL}"
+      LOG: "${LOG}"
+    tools: ["*"]
 ---
 
 # Repo Architect Agent

@@ -28,6 +28,28 @@ mcp-servers:
     type: http
     url: "https://mcp.grep.app"
     tools: ["*"]
+  github-mcp-server:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
+  fast-filesystem:
+    type: local
+    command: npx
+    args: ["-y", "fast-filesystem-mcp"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
+    args: ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+    tools: ["*"]
   morph-mcp:
     type: local
     command: npx

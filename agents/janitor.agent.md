@@ -2,6 +2,32 @@
 description: 'Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation.'
 name: 'Universal Janitor'
 tools: [vscode/extensions, vscode/getProjectSetupInfo, vscode/installExtension, vscode/newWorkspace, vscode/runCommand, vscode/vscodeAPI, execute/getTerminalOutput, execute/runTask, execute/createAndRunTask, execute/runTests, execute/runInTerminal, execute/testFailure, read/terminalSelection, read/terminalLastCommand, read/getTaskOutput, read/problems, read/readFile, browser, 'github/*', 'microsoft.docs.mcp/*', edit/editFiles, search, web]
+mcp-servers:
+  github-mcp-server:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
+  fast-filesystem:
+    type: local
+    command: npx
+    args: ["-y", "fast-filesystem-mcp"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
+    args: ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env:
+      GITHUB_TOKEN: "${env:GITHUB_TOKEN}"
+      ENABLE_LOCAL: "true"
+      LOG: "info"
+    tools: ["*"]
 ---
 # Universal Janitor
 
