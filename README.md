@@ -35,11 +35,11 @@ See `instructions/INDEX.md` for the full list.
 
 ## AI Agents
 
-12 specialized agents in `agents/` for planning, code optimization, CI/CD, and more. See `AGENTS.md` for details.
+Specialized agents in `agents/` handle planning, code optimization, CI/CD, and more. See `AGENTS.md` for details.
 
 ## Skills
 
-10 reusable knowledge modules in skills/, including `gh-cli`, `code-maintenance`, `prd`, `ai-tuning`, `workflow-development`, `language-optimization`, `code-review`, and `vibe-coding`.
+Reusable knowledge modules in `skills/` cover planning, maintenance, review, workflows, and framework guidance including `nodejs-best-practices` for Node.js, Next.js, and NestJS tasks.
 
 ## Reusable Workflows
 

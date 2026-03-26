@@ -1,11 +1,11 @@
 ---
 name: nodejs-best-practices
-description: Node.js development principles and decision-making. Framework selection, async patterns, security, and architecture. Teaches thinking, not copying.
+description: Node.js, Next.js, and NestJS development principles. Framework selection, architecture, validation, security, and testing guidance for modern TypeScript web stacks.
 ---
 
-# Node.js Best Practices
+# Node.js, Next.js, and NestJS Best Practices
 
-> Principles and decision-making for Node.js development in 2025.
+> Principles and decision-making for modern TypeScript web stacks in 2025.
 > **Learn to THINK, not memorize code patterns.**
 
 ---
@@ -295,6 +295,56 @@ node --test src/**/*.test.ts
 ├── Good coverage reporting
 └── Watch mode available
 ```
+
+---
+
+## 9. Framework Tracks
+
+### Choose the Right Track
+
+| Need | Choose | Why |
+| ---- | ------ | --- |
+| Full-stack React app, SSR/ISR, App Router | **Next.js** | Frontend + backend in one deployment model |
+| Structured backend API, modules, DI, guards | **NestJS** | Strong architecture for larger teams/services |
+| Separate UI and API, clear deployment boundaries | **Next.js + NestJS** | Best when frontend and backend lifecycles differ |
+
+### Shared Rules Across Both
+
+- Keep business rules outside route/controller glue
+- Validate at the boundary, not deep in the call stack
+- Centralize auth, error formatting, and logging policies
+- Prefer typed contracts for server/client and service/module boundaries
+
+### Next.js Focus Areas
+
+| Topic | Rule of Thumb |
+| ----- | ------------- |
+| Server vs Client Components | Server by default; add client only for interactivity |
+| Data fetching | Fetch on the server first; use client fetch only when UI state demands it |
+| Routing | Use `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx` consistently |
+| Mutations | Prefer server actions or route handlers with validation |
+| Caching | Choose explicit `revalidate`, tags, or `no-store` per route |
+| Metadata | Define static metadata unless route data must drive it |
+
+### NestJS Focus Areas
+
+| Topic | Rule of Thumb |
+| ----- | ------------- |
+| Module boundaries | Group by feature; export providers intentionally |
+| Dependency injection | Prefer explicit providers/tokens; treat `forwardRef()` as a last resort |
+| Request pipeline | Middleware -> guards -> interceptors -> pipes -> handler |
+| Controllers | Keep HTTP concerns thin; move domain logic into services |
+| Validation | Validate DTOs at the controller boundary before service logic |
+| Testing | Validate in order: typecheck -> unit -> integration/e2e |
+
+### When Running Both Together
+
+| Concern | Recommended Split |
+| ------- | ----------------- |
+| UI rendering, forms, route-level UX | Next.js |
+| Domain services, async jobs, complex authz | NestJS |
+| Shared types/schemas | Separate package or generated contract layer |
+| Caching and invalidation | Next.js owns UI cache, NestJS owns data consistency |
 
 ---
 

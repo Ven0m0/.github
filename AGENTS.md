@@ -116,7 +116,7 @@ Standalone agents for specific workflows — not part of the orchestrator pipeli
 
 ---
 
-## Skills (30)
+## Skills
 
 Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills based on task domain.
 
@@ -138,15 +138,12 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 
 ### Frontend & UI
 
-- `nextjs-best-practices/` — Next.js patterns and performance
-- `nodejs-best-practices/` — Node.js architecture and patterns
+- `nodejs-best-practices/` — Node.js, Next.js, and NestJS architecture and patterns
 - `docker-expert/` — Docker, containerization, Dockerfile best practices
-- `migration/` — Component and architecture migration patterns
 
 ### Specialization
 
 - `mcp-development/` — Model Context Protocol server development and custom integrations
-- `nestjs-expert/` — NestJS framework patterns
 - `docs-writer/` — Documentation templates and standards (includes reusable doc structures)
 - `gh-cli/` — GitHub CLI reference and workflows
 - `ai-tuning/` — AI config optimization, validation, and token efficiency
