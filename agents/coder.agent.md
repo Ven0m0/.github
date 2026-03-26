@@ -48,6 +48,7 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
+    env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
     tools: ["*"]
   morph-mcp:
     type: local
