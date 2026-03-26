@@ -5,11 +5,6 @@ model: GPT-5.4
 modelParameters:
   temperature: 0.25
 mcp-servers:
-  context7:
-    type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
-    tools: ["get-library-docs", "resolve-library-id"]
   grep-app:
     type: http
     url: "https://mcp.grep.app"
@@ -55,6 +50,12 @@ mcp-servers:
         "lspFindReferences",
         "lspCallHierarchy",
       ]
+  morph-mcp:
+    type: local
+    command: npx
+    args: ["-y", "@morphllm/morphmcp@latest"]
+    env: { MORPH_API_KEY: "${{ secrets.COPILOT_MCP_MORPH_API_KEY }}" }
+    tools: ["*"]
 ---
 
 # Explorer
