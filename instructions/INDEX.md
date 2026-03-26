@@ -35,11 +35,12 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 
 ## AI & Tooling
 
-| Module                        | Scope                                                 |
-| ----------------------------- | ----------------------------------------------------- |
-| **meta-authoring**            | Agents, skills, instructions, prompts                 |
-| **ai-tuning**                 | AI assistant configs, guard rails, output compression |
-| **file-reading-optimization** | Tiered file reading strategy, token budget awareness  |
+| Module                        | Scope                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| **meta-authoring**            | Agents, skills, instructions, prompts                                     |
+| **ai-tuning**                 | AI assistant configs, guard rails, output compression                     |
+| **file-reading-optimization** | Tiered file reading strategy, token budget awareness                      |
+| **agent-constraints**     | Shared constraints for all pipeline agents; applied via applyTo             |
 
 ## Documentation & Process
 
@@ -74,6 +75,7 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 | GitHub Actions                    | `cicd-standards`            | -                        |
 | Code review                       | `quality-standards`         | Language-specific module |
 | Agent/skill/instruction authoring | `meta-authoring`            | `ai-tuning`              |
+| Agent authoring                   | `agent-constraints`     | `meta-authoring`         |
 | Token efficiency                  | `file-reading-optimization` | `ai-tuning`              |
 
 ## XML Tag Convention

@@ -10,9 +10,9 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 **Ven0m0** delivers practical developer tools for automation, platform engineering, and AI-assisted development. This `.github` repository provides:
 
-- **14 agents (6 pipeline + 8 supporting)** for planning, code optimization, CI/CD, documentation, debugging
-- **29 reusable skill modules** (patterns, best practices, templates)
-- **37 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
+- **21 agents** (1 unified pipeline + 10 supporting + 4 standalone utilities) for planning, code optimization, CI/CD, documentation, debugging
+- **32 reusable skill modules** (patterns, best practices, templates)
+- **38 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
 - **Reusable GitHub Actions workflows** for multi-language CI
 - **Copilot instruction files** (org-wide + file-type scoped)
 
@@ -22,7 +22,7 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ```
 .github/
-  agents/            # 14 AI agents (6 pipeline + 8 supporting)
+  agents/            # 21 AI agents (pipeline + supporting + standalone utilities)
   skills/            # 29 reusable knowledge modules
   instructions/      # 37 language/domain standards
   hooks/             # Git pre-commit hooks
@@ -53,20 +53,42 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ---
 
-## AI Agents (14)
+## AI Agents (21)
+
+One unified pipeline. All orchestration, planning, and review innovations from prior Gemini and RUG pipelines have been merged into the single `orchestrator → explorer → planner → researcher → coder → reviewer` pipeline.
 
 ### Pipeline Agents
 
 | Agent            | File                    | Model             | Purpose                                    |
 | ---------------- | ----------------------- | ----------------- | ------------------------------------------ |
-| **Orchestrator** | `orchestrator.agent.md` | claude-sonnet-4-6 | Drives 5-phase pipeline (auto/gated modes) |
+| **Orchestrator** | `orchestrator.agent.md` | claude-sonnet-4-6 | Drives 5-phase pipeline; discuss, PRD, multi-plan, wave execution |
 | **Explorer**     | `explorer.agent.md`     | claude-haiku-4-5  | Fast codebase scanning and mapping         |
-| **Planner**      | `planner.agent.md`      | claude-opus-4-6   | Architecture design and task breakdown     |
+| **Planner**      | `planner.agent.md`      | claude-opus-4-6   | DAG-based task breakdown, wave assignments, pre-mortem, contracts |
 | **Researcher**   | `researcher.agent.md`   | claude-opus-4-6   | Library investigation and best practices   |
 | **Coder**        | `coder.agent.md`        | claude-sonnet-4-6 | TDD-driven implementation                  |
-| **Reviewer**     | `reviewer.agent.md`     | claude-opus-4-6   | Critical analysis and verdict              |
+| **Reviewer**     | `reviewer.agent.md`     | claude-opus-4-6   | task/wave/plan scopes; OWASP; PRD compliance |
+
+### Pipeline Workflow
+
+```
+[discuss + PRD] → explorer → planner → researcher → coder → reviewer
+```
+
+| Phase     | Artifact                 | What It Produces |
+| --------- | ------------------------ | ---------------- |
+| Explore   | `01-exploration.md`      | Codebase map, relevant files, patterns, risks |
+| Plan      | `02-plan.md`             | DAG tasks with wave assignments, contracts, pre-mortem |
+| Research  | `03-research.md`         | Findings, best practices, library recommendations |
+| Implement | `04-implementation.md`   | Changes made, files modified, tests added |
+| Review    | `05-review.md`           | Verdict (pass/fail/conditional), issues, suggestions |
+
+**Modes**: `auto` (uninterrupted) or `gated` (pause after each phase for approval)
+
+**Invoke**: `@orchestrator [task description] --mode=auto|gated`
 
 ### Supporting Agents
+
+Invokable by the orchestrator during any phase, or directly by the user.
 
 | Agent                    | File                           | Purpose                                |
 | ------------------------ | ------------------------------ | -------------------------------------- |
@@ -76,32 +98,26 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 | **Frontend Specialist**  | `frontend-specialist.agent.md` | React/Next.js                          |
 | **Debug**                | `debug.agent.md`               | Bug finding and fixing                 |
 | **Documentation Writer** | `doc-writer.agent.md`          | Technical docs (on request only)       |
-| **Codebase Maintainer**  | `codebase-maintainer.agent.md` | Cleanup, tech debt                     |
+| **Codebase Maintainer**  | `codebase-maintainer.agent.md` | Cleanup, tech debt, PROJECT_INDEX      |
 | **Arch Linux Expert**    | `arch-linux-expert.agent.md`   | Arch administration                    |
+| **Copilot Tuner**        | `copilot-tuner.agent.md`       | Optimize Copilot/CLAUDE.md/MCP configs |
+| **Repo Architect**       | `repo-architect.agent.md`      | Repository structure and ADRs          |
 
-### Pipeline Workflow
+### Standalone Utility Agents
 
-The orchestrator drives a 5-phase pipeline for complex development tasks:
+Standalone agents for specific workflows — not part of the orchestrator pipeline.
 
-```
-explorer -> planner -> researcher -> coder -> reviewer
-```
-
-Each phase produces a structured artifact in `.workflow/{task-id}/`:
-
-1. `01-exploration.md` - Codebase map, relevant files, patterns, risks
-2. `02-plan.md` - Requirements, architecture, task breakdown, dependencies
-3. `03-research.md` - Findings, best practices, library recommendations
-4. `04-implementation.md` - Changes made, files modified, tests added
-5. `05-review.md` - Verdict (pass/fail/conditional), issues, suggestions
-
-**Modes**: `auto` (uninterrupted) or `gated` (pause after each phase for review)
-
-**Invoke**: `@orchestrator [task description] --mode=auto|gated`
+| Agent                   | File                                    | Purpose                              |
+| ----------------------- | --------------------------------------- | ------------------------------------ |
+| **SWE**                 | `swe-subagent.agent.md`                 | Senior engineer for direct tasks     |
+| **QA**                  | `qa-subagent.agent.md`                  | Test planning and bug hunting        |
+| **Universal Janitor**   | `janitor.agent.md`                      | Tech debt and dead code removal      |
+| **GPT-5 Beast Mode**    | `gpt-5-beast-mode.agent.md`             | Autonomous GPT-5 task execution      |
+| **One-Shot Planner**    | `one-shot-feature-issue-planner.agent.md` | Feature → GitHub issue (no follow-up) |
 
 ---
 
-## Skills (29)
+## Skills (32)
 
 Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills based on task domain.
 
@@ -144,7 +160,7 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 
 ---
 
-## Instructions (37)
+## Instructions (38)
 
 Scoped by language and domain in `instructions/`. Copilot automatically applies based on file type via `applyTo` patterns.
 
@@ -178,10 +194,11 @@ Scoped by language and domain in `instructions/`. Copilot automatically applies 
 | Topic                 | File                                | Description                             |
 | --------------------- | ----------------------------------- | --------------------------------------- |
 | **Quality Standards** | `quality-standards.instructions.md` | Code review, metrics, performance gates |
-| **Meta-Authoring**    | `meta-authoring.instructions.md`    | Agents, skills, instructions, prompts   |
-| **AI Tuning**         | `ai-tuning.instructions.md`         | CLAUDE.md compression, token efficiency |
-| **Token Efficiency**  | `token-efficient.instructions.md`   | Context optimization                    |
-| **Memory Bank**       | `memory-bank.instructions.md`       | Project context storage                 |
+| **Meta-Authoring**        | `meta-authoring.instructions.md`        | Agents, skills, instructions, prompts            |
+| **AI Tuning**             | `ai-tuning.instructions.md`             | CLAUDE.md compression, token efficiency          |
+| **Token Efficiency**      | `token-efficient.instructions.md`       | Context optimization                             |
+| **Memory Bank**           | `memory-bank.instructions.md`           | Project context storage                          |
+| **Agent Constraints**     | `agent-constraints.instructions.md`     | Shared constraints applied to all pipeline agents |
 
 ### Specialization & Domain
 
