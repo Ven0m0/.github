@@ -340,7 +340,7 @@ When working on a task, read the relevant skill module(s) first:
 | Feature building | `app-builder/`, `agent-patterns/` |
 | Code quality | `code-maintenance/`, `code-review/`, `clean-code/` |
 | Testing | `lint-and-validate/` |
-| Frontend/React | `nextjs-best-practices/`, `nodejs-best-practices/` |
+| Frontend/React | `nodejs-best-practices/`, `premium-frontend-ui/` |
 | API/Backend | `nodejs-best-practices/` |
 | Docker/Deploy | `docker-expert/`, `workflow-development/` |
 | Git operations | `gh-cli/` |
