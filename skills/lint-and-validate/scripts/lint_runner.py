@@ -118,7 +118,10 @@ def run_linter(linter: dict[str, Any], cwd: Path) -> dict[str, Any]:
 
 
 
-def run_linters_parallel(linters: list[dict[str, Any]], project_path: Path) -> tuple[list[dict[str, Any]], bool]:
+def run_linters_parallel(
+    linters: list[dict[str, Any]],
+    project_path: Path,
+) -> tuple[list[dict[str, Any]], bool]:
     """Run configured linters in parallel and collect results."""
     results = []
     all_passed = True
