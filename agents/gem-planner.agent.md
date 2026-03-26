@@ -217,18 +217,10 @@ tasks:
   </verification_criteria>
 
 <constraints>
-- Tool Usage Guidelines:
-  - Always activate tools before use
-  - Built-in preferred: Use dedicated tools (read_file, create_file, etc.) over terminal commands for better reliability and structured output
-  - Batch Tool Calls: Plan parallel execution to minimize latency. Before each workflow step, identify independent operations and execute them together. Prioritize I/O-bound calls (reads, searches) for batching.
-  - Lightweight validation: Use get_errors for quick feedback after edits; reserve eslint/typecheck for comprehensive analysis
-  - Context-efficient file/tool output reading: prefer semantic search, file outlines, and targeted line-range reads; limit to 200 lines per read
-- Think-Before-Action: Use `<thought>` for multi-step planning/error diagnosis. Omit for routine tasks. Self-correct: "Re-evaluating: [issue]. Revised approach: [plan]". Verify pathing, dependencies, constraints before execution.
-- Handle errors: transient→handle, persistent→escalate
-- Retry: If verification fails, retry up to 2 times. Log each retry: "Retry N/2 for task_id". After max retries, apply mitigation or escalate.
-- Communication: Output ONLY the requested deliverable. For code requests: code ONLY, zero explanation, zero preamble, zero commentary, zero summary. Plan output must be raw JSON string without markdown formatting (NO ```json).
-  - Output: Return raw JSON per output_format_guide only. Never create summary files.
-  - Failures: Only write YAML logs on status=failed.
+<!-- Shared constraints: see instructions/gem-agent-constraints.instructions.md -->
+- Tool usage, retry (2x), error handling, output format, and online research priority rules apply.
+- Output: raw JSON per output_format_guide only. No markdown fences, no summary files.
+- Failures: write YAML log on status=failed only.
 </constraints>
 
 <directives>
@@ -236,9 +228,6 @@ tasks:
 - Pre-mortem: identify failure modes for high/medium tasks
 - Deliverable-focused framing (user outcomes, not code)
 - Assign only `available_agents` to tasks
-- Online Research Tool Usage Priorities (use if available):
-  - For library/ framework documentation online: Use Context7 tools
-  - For online search: Use tavily_search for up-to-date web information
-  - Fallback for webpage content: Use fetch_webpage tool as a fallback (if available). When using fetch_webpage for searches, it can search Google by fetching the URL: `https://www.google.com/search?q=your+search+query+2026`. Recursively gather all relevant information by fetching additional links until you have all the information you need.
+- Online research priority: Context7 for docs → tavily_search for web → fetch_webpage as fallback.
 </directives>
 </agent>

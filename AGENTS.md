@@ -10,9 +10,9 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 **Ven0m0** delivers practical developer tools for automation, platform engineering, and AI-assisted development. This `.github` repository provides:
 
-- **14 agents (6 pipeline + 8 supporting)** for planning, code optimization, CI/CD, documentation, debugging
-- **29 reusable skill modules** (patterns, best practices, templates)
-- **37 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
+- **28 agents across 3 pipelines** (Claude, Gemini, RUG/GPT-5) for planning, code optimization, CI/CD, documentation, debugging
+- **32 reusable skill modules** (patterns, best practices, templates)
+- **38 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
 - **Reusable GitHub Actions workflows** for multi-language CI
 - **Copilot instruction files** (org-wide + file-type scoped)
 
@@ -22,7 +22,7 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ```
 .github/
-  agents/            # 14 AI agents (6 pipeline + 8 supporting)
+  agents/            # 28 AI agents across 3 pipelines (Claude, Gemini, RUG/GPT-5)
   skills/            # 29 reusable knowledge modules
   instructions/      # 37 language/domain standards
   hooks/             # Git pre-commit hooks
@@ -53,9 +53,19 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 
 ---
 
-## AI Agents (14)
+## AI Agents (28)
 
-### Pipeline Agents
+This repo contains three independent orchestration pipelines for different AI runtimes. Each pipeline is self-contained — agents within a pipeline share I/O contracts and cannot be mixed across pipelines.
+
+| Pipeline | Orchestrator | Runtime | I/O Format | Artifact Path |
+| -------- | ------------ | ------- | ---------- | ------------- |
+| **Claude** | `orchestrator` | Claude/Copilot + MCP | Markdown artifacts | `.workflow/{task-id}/` |
+| **Gemini** | `gem-orchestrator` | Gemini/VSCode tools | JSON + YAML | `docs/plan/{plan-id}/` |
+| **RUG** | `rug-orchestrator` | GPT-5/VSCode tools | runSubagent delegation | todo list |
+
+---
+
+### Claude Pipeline Agents
 
 | Agent            | File                    | Model             | Purpose                                    |
 | ---------------- | ----------------------- | ----------------- | ------------------------------------------ |
@@ -66,7 +76,7 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 | **Coder**        | `coder.agent.md`        | claude-sonnet-4-6 | TDD-driven implementation                  |
 | **Reviewer**     | `reviewer.agent.md`     | claude-opus-4-6   | Critical analysis and verdict              |
 
-### Supporting Agents
+### Claude Supporting Agents
 
 | Agent                    | File                           | Purpose                                |
 | ------------------------ | ------------------------------ | -------------------------------------- |
@@ -76,12 +86,12 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 | **Frontend Specialist**  | `frontend-specialist.agent.md` | React/Next.js                          |
 | **Debug**                | `debug.agent.md`               | Bug finding and fixing                 |
 | **Documentation Writer** | `doc-writer.agent.md`          | Technical docs (on request only)       |
-| **Codebase Maintainer**  | `codebase-maintainer.agent.md` | Cleanup, tech debt                     |
+| **Codebase Maintainer**  | `codebase-maintainer.agent.md` | Cleanup, tech debt, PROJECT_INDEX      |
 | **Arch Linux Expert**    | `arch-linux-expert.agent.md`   | Arch administration                    |
+| **Copilot Tuner**        | `copilot-tuner.agent.md`       | Optimize Copilot/CLAUDE.md/MCP configs |
+| **Repo Architect**       | `repo-architect.agent.md`      | Repository structure and ADRs          |
 
-### Pipeline Workflow
-
-The orchestrator drives a 5-phase pipeline for complex development tasks:
+### Claude Pipeline Workflow
 
 ```
 explorer -> planner -> researcher -> coder -> reviewer
@@ -101,7 +111,41 @@ Each phase produces a structured artifact in `.workflow/{task-id}/`:
 
 ---
 
-## Skills (29)
+### Gemini Pipeline Agents
+
+DAG-based wave execution. Uses VSCode tools + Gemini model. Agents communicate via JSON. Artifacts saved to `docs/plan/{plan-id}/`.
+
+Shared constraints: `instructions/gem-agent-constraints.instructions.md`
+
+| Agent | File | Purpose |
+| ----- | ---- | ------- |
+| **Gem Orchestrator** | `gem-orchestrator.agent.md` | Phase detection, delegation, synthesis |
+| **Gem Researcher** | `gem-researcher.agent.md` | Codebase exploration, YAML findings |
+| **Gem Planner** | `gem-planner.agent.md` | DAG-based plan.yaml generation |
+| **Gem Implementer** | `gem-implementer.agent.md` | TDD implementation |
+| **Gem Reviewer** | `gem-reviewer.agent.md` | OWASP, secrets, PRD compliance |
+| **Gem DevOps** | `gem-devops.agent.md` | Infrastructure, CI/CD deployment |
+
+**Invoke**: `@gem-orchestrator [objective]`
+
+---
+
+### RUG / GPT-5 Pipeline Agents
+
+Pure delegation model. Orchestrator never does implementation work — all tasks delegated to subagents via `runSubagent`.
+
+| Agent | File | Purpose |
+| ----- | ---- | ------- |
+| **RUG Orchestrator** | `rug-orchestrator.agent.md` | Decompose → delegate → validate loop |
+| **SWE** | `swe-subagent.agent.md` | Senior engineer implementation |
+| **QA** | `qa-subagent.agent.md` | Test planning, bug hunting |
+| **GPT-5 Beast Mode** | `gpt-5-beast-mode.agent.md` | Autonomous GPT-5 task execution |
+| **Universal Janitor** | `janitor.agent.md` | Tech debt, dead code removal |
+| **One-Shot Planner** | `one-shot-feature-issue-planner.agent.md` | Feature → GitHub issue (no follow-up) |
+
+---
+
+## Skills (32)
 
 Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills based on task domain.
 
@@ -144,7 +188,7 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 
 ---
 
-## Instructions (37)
+## Instructions (38)
 
 Scoped by language and domain in `instructions/`. Copilot automatically applies based on file type via `applyTo` patterns.
 
@@ -178,10 +222,11 @@ Scoped by language and domain in `instructions/`. Copilot automatically applies 
 | Topic                 | File                                | Description                             |
 | --------------------- | ----------------------------------- | --------------------------------------- |
 | **Quality Standards** | `quality-standards.instructions.md` | Code review, metrics, performance gates |
-| **Meta-Authoring**    | `meta-authoring.instructions.md`    | Agents, skills, instructions, prompts   |
-| **AI Tuning**         | `ai-tuning.instructions.md`         | CLAUDE.md compression, token efficiency |
-| **Token Efficiency**  | `token-efficient.instructions.md`   | Context optimization                    |
-| **Memory Bank**       | `memory-bank.instructions.md`       | Project context storage                 |
+| **Meta-Authoring**        | `meta-authoring.instructions.md`        | Agents, skills, instructions, prompts            |
+| **AI Tuning**             | `ai-tuning.instructions.md`             | CLAUDE.md compression, token efficiency          |
+| **Token Efficiency**      | `token-efficient.instructions.md`       | Context optimization                             |
+| **Memory Bank**           | `memory-bank.instructions.md`           | Project context storage                          |
+| **Gem Agent Constraints** | `gem-agent-constraints.instructions.md` | Shared constraints for Gemini pipeline agents    |
 
 ### Specialization & Domain
 

@@ -180,3 +180,7 @@ For all categories, return:
 1. Results - title, author/source, date, key insights or summary
 2. Sources - URLs with context (venue for papers, handle for tweets)
 3. Notes - relevant observations (author expertise, methodology, sentiment)
+
+## Related
+
+- `skills/code-search/` — Use for code snippets, API examples, and SDK usage via `get_code_context_exa`

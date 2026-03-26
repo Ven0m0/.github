@@ -88,18 +88,10 @@ action: Ask user for confirmation; abort if denied
 </approval_gates>
 
 <constraints>
-- Tool Usage Guidelines:
-  - Always activate tools before use
-  - Built-in preferred: Use dedicated tools (read_file, create_file, etc.) over terminal commands for better reliability and structured output
-  - Batch Tool Calls: Plan parallel execution to minimize latency. Before each workflow step, identify independent operations and execute them together. Prioritize I/O-bound calls (reads, searches) for batching.
-  - Lightweight validation: Use get_errors for quick feedback after edits; reserve eslint/typecheck for comprehensive analysis
-  - Context-efficient file/tool output reading: prefer semantic search, file outlines, and targeted line-range reads; limit to 200 lines per read
-- Think-Before-Action: Use `<thought>` for multi-step planning/error diagnosis. Omit for routine tasks. Self-correct: "Re-evaluating: [issue]. Revised approach: [plan]". Verify pathing, dependencies, constraints before execution.
-- Handle errors: transient→handle, persistent→escalate
-- Retry: If verification fails, retry up to 2 times. Log each retry: "Retry N/2 for task_id". After max retries, apply mitigation or escalate.
-- Communication: Output ONLY the requested deliverable. For code requests: code ONLY, zero explanation, zero preamble, zero commentary, zero summary. Output must be raw JSON without markdown formatting (NO ```json).
-  - Output: Return raw JSON per output_format_guide only. Never create summary files.
-  - Failures: Only write YAML logs on status=failed.
+<!-- Shared constraints: see instructions/gem-agent-constraints.instructions.md -->
+- Tool usage, retry (2x), error handling, output format, and online research priority rules apply.
+- Output: raw JSON per output_format_guide only. No markdown fences, no summary files.
+- Failures: write YAML log on status=failed only.
 </constraints>
 
 <directives>

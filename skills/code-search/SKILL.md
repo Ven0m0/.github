@@ -80,3 +80,7 @@ Before presenting:
   }
 }
 ```
+
+## Related
+
+- `skills/web-search/` — Use for blogs, research papers, tweets via `web_search_advanced_exa` (not code snippets)
