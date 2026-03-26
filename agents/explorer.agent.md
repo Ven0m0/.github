@@ -14,6 +14,23 @@ mcp-servers:
     type: http
     url: "https://mcp.grep.app"
     tools: ["*"]
+  fast-filesystem:
+    type: local
+    command: npx
+    args: ["-y", "fast-filesystem-mcp"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["fast_read_file", "fast_read_multiple_files", "fast_write_file", "fast_large_write_file", "fast_search_files", "fast_search_code", "fast_edit_block", "fast_extract_lines", "fast_copy_file", "fast_move_file", "fast_delete_file", "fast_batch_file_operations"]
+  repomix:
+    type: local
+    command: npx
+    args: ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
+    tools: ["pack_codebase", "pack_remote_repository", "read_repomix_output", "grep_repomix_output"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
+    tools: ["githubSearchCode", "githubGetFileContent", "githubViewRepoStructure", "githubSearchRepositories", "lspGotoDefinition", "lspFindReferences", "lspCallHierarchy"]
 ---
 
 # Explorer
