@@ -89,6 +89,7 @@ runs:
   steps:
     - name: Validate inputs
       shell: bash
+      # TODO: simplify/shorten
       run: |
         set -euo pipefail
 
@@ -190,126 +191,26 @@ runs:
         prompt: ${{ inputs.prompt }}
         use_github_token: true
 
-    - name: Resolve Kilo asset metadata
-      if: ${{ inputs.provider == 'kilo' }}
-      id: kilo-asset
+    - name: Get Kilo version
+      id: version
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
       run: |
-        set -euo pipefail
-
-        case "${RUNNER_OS}/${RUNNER_ARCH}" in
-          Linux/X64) asset_name="kilo-linux-x64-baseline.tar.gz" ;;
-          Linux/ARM64) asset_name="kilo-linux-arm64.tar.gz" ;;
-          macOS/X64) asset_name="kilo-darwin-x64-baseline.zip" ;;
-          macOS/ARM64) asset_name="kilo-darwin-arm64.zip" ;;
-          Windows/X64) asset_name="kilo-windows-x64-baseline.zip" ;;
-          Windows/ARM64) asset_name="kilo-windows-arm64.zip" ;;
-          *)
-            echo "::error::Unsupported runner for Kilo: ${RUNNER_OS}/${RUNNER_ARCH}"
-            exit 1
-            ;;
-        esac
-
-        release_json="$(mktemp)"
-        curl -fsSL \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/Kilo-Org/kilocode/releases/latest \
-          -o "$release_json"
-
-        python3 - "$release_json" "$asset_name" <<'PY' >> "$GITHUB_OUTPUT"
-        import json
-        import sys
-
-        release_path, asset_name = sys.argv[1:3]
-        with open(release_path, encoding="utf-8") as handle:
-            data = json.load(handle)
-
-        version = data.get("tag_name", "<unknown>")
-        asset = next((item for item in data.get("assets", []) if item.get("name") == asset_name), None)
-        if asset is None:
-            sys.stderr.write(f"Missing asset {asset_name} in Kilo release {version}\n")
-            sys.exit(1)
-
-        digest = asset.get("digest", "")
-        if not digest.startswith("sha256:"):
-            sys.stderr.write(f"Missing sha256 digest for Kilo asset {asset_name} in release {version}\n")
-            sys.exit(1)
-
-        print(f"asset_name={asset_name}")
-        print(f"asset_url={asset['browser_download_url']}")
-        print(f"asset_sha256={digest.removeprefix('sha256:')}")
-        PY
-
-    - name: Install Kilo CLI
-      if: ${{ inputs.provider == 'kilo' }}
+        VERSION=$(curl -sf https://api.github.com/repos/Kilo-Org/kilocode/releases/latest | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
+        echo "version=${VERSION:-latest}" >> $GITHUB_OUTPUT
+    - name: Cache Kilo
+      id: cache
+      uses: actions/cache@v5.0.4
+      with:
+        path: ~/.kilo/bin
+        key: kilo-${{ runner.os }}-${{ runner.arch }}-${{ steps.version.outputs.version }}
+    - name: Install Kilo
+      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
-      env:
-        ASSET_NAME: ${{ steps.kilo-asset.outputs.asset_name }}
-        ASSET_URL: ${{ steps.kilo-asset.outputs.asset_url }}
-        ASSET_SHA256: ${{ steps.kilo-asset.outputs.asset_sha256 }}
-      run: |
-        set -euo pipefail
-
-        tmp_dir="$(mktemp -d)"
-        asset_path="$tmp_dir/$ASSET_NAME"
-        export ASSET_SHA256 asset_path tmp_dir
-
-        curl -fsSL "$ASSET_URL" -o "$asset_path"
-
-        python3 - <<'PY'
-        import hashlib
-        import os
-        import pathlib
-        import shutil
-        import sys
-        import tarfile
-        import zipfile
-
-        asset_path = pathlib.Path(os.environ["asset_path"])
-        extract_dir = pathlib.Path(os.environ["tmp_dir"]) / "extract"
-        expected_sha256 = os.environ["ASSET_SHA256"]
-        destination_dir = pathlib.Path.home() / ".kilo" / "bin"
-
-        actual_sha256 = hashlib.sha256(asset_path.read_bytes()).hexdigest()
-        if actual_sha256 != expected_sha256:
-            sys.stderr.write(
-                f"SHA256 mismatch for {asset_path.name}: expected {expected_sha256}, got {actual_sha256}\n"
-            )
-            sys.exit(1)
-
-        extract_dir.mkdir(parents=True, exist_ok=True)
-        if tarfile.is_tarfile(asset_path):
-            with tarfile.open(asset_path, "r:*") as archive:
-                archive.extractall(extract_dir)
-        elif zipfile.is_zipfile(asset_path):
-            with zipfile.ZipFile(asset_path) as archive:
-                archive.extractall(extract_dir)
-        else:
-            sys.stderr.write(f"Unsupported Kilo archive format: {asset_path.name}\n")
-            sys.exit(1)
-
-        binary = next(
-            (candidate for candidate in extract_dir.rglob("*") if candidate.is_file() and candidate.name in {"kilo", "kilo.exe"}),
-            None,
-        )
-        if binary is None:
-            sys.stderr.write("Unable to locate Kilo binary in extracted archive\n")
-            sys.exit(1)
-
-        destination_dir.mkdir(parents=True, exist_ok=True)
-        destination = destination_dir / binary.name
-        shutil.copy2(binary, destination)
-        destination.chmod(destination.stat().st_mode | 0o755)
-        PY
-
+      run: curl -fsSL https://kilo.ai/cli/install | bash
     - name: Add Kilo to PATH
       if: ${{ inputs.provider == 'kilo' }}
       shell: bash
       run: echo "$HOME/.kilo/bin" >> "$GITHUB_PATH"
-
     - name: Run Kilo
       if: ${{ inputs.provider == 'kilo' }}
       shell: bash
