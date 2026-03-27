@@ -1,23 +1,5 @@
-# Composite Action: Run Agent Prompt
-# Dispatch a one-off prompt to a specified AI agent provider.
-#
-# Usage:
-#   - uses: ./actions/run-agent-prompt
-#     with:
-#       provider: claude        # claude | gemini | jules | opencode | kilo
-#       prompt: "Fix the bug"
-#       git-author-name: github-actions[bot]
-#       git-author-email: 41898282+github-actions[bot]@users.noreply.github.com
-#
-# API keys can be passed as inputs OR set as env vars on the calling job/step.
-# Inputs take precedence; env vars are the fallback.
-#
-# Expected env var names (when not passing as inputs):
-#   ANTHROPIC_API_KEY, GEMINI_API_KEY, JULES_API_KEY,
-#   OPENCODE_API_KEY, OPENROUTER_API_KEY, KILO_API_KEY, KILO_ORG_ID
-
 name: "Run Agent Prompt"
-description: "Dispatch a one-off prompt to a specified AI agent provider (Claude, Gemini, Jules, OpenCode, or Kilo)"
+description: "Dispatch a one-off prompt to a specified AI agent provider (claude | gemini | jules | opencode | kilo)"
 author: "Ven0m0"
 
 branding:
@@ -26,91 +8,66 @@ branding:
 
 inputs:
   provider:
-    description: "AI agent provider: claude | gemini | jules | opencode | kilo"
+    description: "claude | gemini | jules | opencode | kilo"
     required: true
   prompt:
     description: "Prompt to send to the agent"
     required: true
   model:
-    description: "Model override (supported by claude, gemini, opencode, kilo; ignored for jules)"
+    description: "Model override (ignored for jules)"
     required: false
     default: ""
   github-token:
-    description: "GitHub token for provider authentication and repository access (falls back to env.GITHUB_TOKEN)"
+    description: "GitHub token (falls back to env.GITHUB_TOKEN)"
     required: false
     default: ""
   git-author-name:
-    description: "Git author name exposed to agent runs for repo-mutating prompts"
     required: false
     default: "github-actions[bot]"
   git-author-email:
-    description: "Git author email exposed to agent runs for repo-mutating prompts"
     required: false
     default: "41898282+github-actions[bot]@users.noreply.github.com"
   git-committer-name:
-    description: "Git committer name exposed to agent runs (defaults to git-author-name)"
     required: false
     default: ""
   git-committer-email:
-    description: "Git committer email exposed to agent runs (defaults to git-author-email)"
     required: false
     default: ""
   anthropic-api-key:
-    description: "Anthropic API key (falls back to env.ANTHROPIC_API_KEY)"
     required: false
     default: ""
   gemini-api-key:
-    description: "Google Gemini API key (falls back to env.GEMINI_API_KEY)"
     required: false
     default: ""
   jules-api-key:
-    description: "Jules API key (falls back to env.JULES_API_KEY)"
     required: false
     default: ""
   opencode-api-key:
-    description: "OpenCode API key (falls back to env.OPENCODE_API_KEY)"
     required: false
     default: ""
   openrouter-api-key:
-    description: "OpenRouter API key (falls back to env.OPENROUTER_API_KEY)"
     required: false
     default: ""
   kilo-api-key:
-    description: "Kilo API key (falls back to env.KILO_API_KEY)"
     required: false
     default: ""
   kilo-org-id:
-    description: "Kilo organization ID (falls back to env.KILO_ORG_ID)"
     required: false
     default: ""
 
 runs:
   using: "composite"
   steps:
-    - name: Validate inputs
+    - name: Validate provider
       shell: bash
-      # TODO: simplify/shorten
       run: |
-        set -euo pipefail
-
         case "${{ inputs.provider }}" in
           claude|gemini|jules|opencode|kilo) ;;
-          *)
-            echo "::error::Unsupported provider '${{ inputs.provider }}'. Expected one of: claude, gemini, jules, opencode, kilo."
-            exit 1
-            ;;
+          *) echo "::error::Unsupported provider '${{ inputs.provider }}'. Expected: claude | gemini | jules | opencode | kilo"; exit 1 ;;
         esac
-
-        if [[ -n "${{ inputs.git-committer-name }}" && -z "${{ inputs.git-committer-email }}" ]] ||
-          [[ -z "${{ inputs.git-committer-name }}" && -n "${{ inputs.git-committer-email }}" ]]; then
-          echo "::error::git-committer-name and git-committer-email must either both be set or both be blank."
-          exit 1
-        fi
-
-    - name: Warn about unsupported Jules model override
-      if: ${{ inputs.provider == 'jules' && inputs.model != '' }}
-      shell: bash
-      run: echo "::warning::Jules does not expose a model override; the provided model input will be ignored."
+        [[ -n "${{ inputs.git-committer-name }}" && -z "${{ inputs.git-committer-email }}" ]] ||
+        [[ -z "${{ inputs.git-committer-name }}" && -n "${{ inputs.git-committer-email }}" ]] &&
+          { echo "::error::git-committer-name and git-committer-email must both be set or both be blank."; exit 1; } || true
 
     - name: Run Claude
       if: ${{ inputs.provider == 'claude' }}
@@ -138,33 +95,37 @@ runs:
     - name: Run Gemini
       if: ${{ inputs.provider == 'gemini' }}
       uses: google-github-actions/run-gemini-cli@v0.1.21
+      with:
+        gemini_api_key: ${{ inputs.gemini-api-key || env.GEMINI_API_KEY }}
+        gemini_model: ${{ inputs.model }}
+        prompt: ${{ inputs.prompt }}
       env:
         GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
         GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
         GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
         GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
-      with:
-        gemini_api_key: ${{ inputs.gemini-api-key || env.GEMINI_API_KEY }}
-        gemini_model: ${{ inputs.model }}
-        prompt: ${{ inputs.prompt }}
 
     - name: Run Jules
       if: ${{ inputs.provider == 'jules' }}
       uses: BeksOmega/jules-action@v1.0.0
+      with:
+        prompt: ${{ inputs.prompt }}
+        jules_api_key: ${{ inputs.jules-api-key || env.JULES_API_KEY }}
+        include_commit_log: true
       env:
         GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
         GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
         GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
         GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
-      with:
-        prompt: ${{ inputs.prompt }}
-        jules_api_key: ${{ inputs.jules-api-key || env.JULES_API_KEY }}
-        include_commit_log: true
 
     - name: Run OpenCode
       if: ${{ inputs.provider == 'opencode' }}
       uses: anomalyco/opencode/github@v1.3.3
+      with:
+        model: ${{ inputs.model != '' && inputs.model || 'opencode/minimax-m2.5-free' }}
+        prompt: ${{ inputs.prompt }}
+        use_github_token: true
       env:
         GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
         GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
@@ -173,50 +134,52 @@ runs:
         ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
         OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
+        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
+        OPENCODE_ENABLE_EXA: "1"
         OPENCODE_EXPERIMENTAL: "true"
+        OPENCODE_EXPERIMENTAL_LSP_TOOL: "true"
         OPENCODE_EXPERIMENTAL_MARKDOWN: "true"
         OPENCODE_ENABLE_EXPERIMENTAL_MODELS: "true"
         OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
         OPENCODE_EXPERIMENTAL_LAZY_TOOLS: "true"
         OPENCODE_PRUNE_SCALE_WITH_CONTEXT: "true"
         OPENCODE_DISABLE_FILETIME_CHECK: "true"
-        OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: "true"
+        OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: "1"
         OPENCODE_DISABLE_AUTOUPDATE: "true"
         OPENCODE_EXPERIMENTAL_OXFMT: "true"
         MORPH_TIMEOUT: "60000"
         MORPH_MODEL: morph-v3-fast
-        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
-      with:
-        model: ${{ inputs.model != '' && inputs.model || 'openrouter/auto:exacto:online' }}
-        prompt: ${{ inputs.prompt }}
-        use_github_token: true
 
     - name: Get Kilo version
-      id: version
+      if: ${{ inputs.provider == 'kilo' }}
+      id: kilo-version
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
       run: |
-        VERSION=$(curl -sf https://api.github.com/repos/Kilo-Org/kilocode/releases/latest | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
-        echo "version=${VERSION:-latest}" >> $GITHUB_OUTPUT
+        VERSION=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+          https://api.github.com/repos/Kilo-Org/kilocode/releases/latest |
+          python3 -c "import json,sys; print(json.load(sys.stdin)['tag_name'])")
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
     - name: Cache Kilo
-      id: cache
-      uses: actions/cache@v5.0.4
+      if: ${{ inputs.provider == 'kilo' }}
+      id: kilo-cache
+      uses: actions/cache@v5
       with:
         path: ~/.kilo/bin
-        key: kilo-${{ runner.os }}-${{ runner.arch }}-${{ steps.version.outputs.version }}
+        key: kilo-${{ runner.os }}-${{ runner.arch }}-${{ steps.kilo-version.outputs.version }}
     - name: Install Kilo
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: ${{ inputs.provider == 'kilo' && steps.kilo-cache.outputs.cache-hit != 'true' }}
       shell: bash
       run: curl -fsSL https://kilo.ai/cli/install | bash
-    - name: Add Kilo to PATH
-      if: ${{ inputs.provider == 'kilo' }}
-      shell: bash
-      run: echo "$HOME/.kilo/bin" >> "$GITHUB_PATH"
     - name: Run Kilo
       if: ${{ inputs.provider == 'kilo' }}
       shell: bash
-      run: kilo github run
+      run: |
+        echo "$HOME/.kilo/bin" >> "$GITHUB_PATH"
+        kilo github run
       env:
-        MODEL: ${{ inputs.model != '' && inputs.model || 'kilo/kilo-auto/frontier' }}
+        MODEL: ${{ inputs.model != '' && inputs.model || 'kilo/minimax/minimax-m2.5:free' }}
         PROMPT: ${{ inputs.prompt }}
         USE_GITHUB_TOKEN: "true"
         GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
@@ -224,19 +187,21 @@ runs:
         GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
         GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
-        OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
-        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
-        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
         KILO_API_KEY: ${{ inputs.kilo-api-key || env.KILO_API_KEY }}
         KILO_ORG_ID: ${{ inputs.kilo-org-id || env.KILO_ORG_ID }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
+        OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
+        OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
+        OPENCODE_ENABLE_EXA: "1"
         OPENCODE_EXPERIMENTAL: "true"
+        OPENCODE_EXPERIMENTAL_LSP_TOOL: "true"
         OPENCODE_EXPERIMENTAL_MARKDOWN: "true"
         OPENCODE_ENABLE_EXPERIMENTAL_MODELS: "true"
         OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS: "20000"
         OPENCODE_EXPERIMENTAL_LAZY_TOOLS: "true"
         OPENCODE_PRUNE_SCALE_WITH_CONTEXT: "true"
         OPENCODE_DISABLE_FILETIME_CHECK: "true"
-        OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: "true"
+        OPENCODE_DISABLE_CLAUDE_CODE_PROMPT: "1"
         OPENCODE_DISABLE_AUTOUPDATE: "true"
         OPENCODE_EXPERIMENTAL_OXFMT: "true"
         MORPH_TIMEOUT: "60000"
