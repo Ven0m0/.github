@@ -193,8 +193,6 @@ runs:
     - name: Install Kilo CLI
       if: ${{ inputs.provider == 'kilo' }}
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
       run: |
         set -euo pipefail
         curl -fsSL https://kilo.ai/cli/install | bash
