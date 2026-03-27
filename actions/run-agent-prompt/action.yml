@@ -161,24 +161,55 @@ runs:
         jules_api_key: ${{ inputs.jules-api-key || env.JULES_API_KEY }}
         include_commit_log: true
 
-    - name: Get OpenCode version
-      if: ${{ inputs.provider == 'opencode' }}
-      id: opencode-version
+    - name: Configure OpenCode/Kilo metadata
+      if: ${{ inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
+      id: provider-meta
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        case "${{ inputs.provider }}" in
+          opencode)
+            echo "tool_name=OpenCode" >> "$GITHUB_OUTPUT"
+            echo "repo_slug=anomalyco/opencode" >> "$GITHUB_OUTPUT"
+            echo "asset_prefix=opencode" >> "$GITHUB_OUTPUT"
+            echo "binary_name=opencode" >> "$GITHUB_OUTPUT"
+            echo "install_dir=~/.opencode/bin" >> "$GITHUB_OUTPUT"
+            ;;
+          kilo)
+            echo "tool_name=Kilo" >> "$GITHUB_OUTPUT"
+            echo "repo_slug=Kilo-Org/kilocode" >> "$GITHUB_OUTPUT"
+            echo "asset_prefix=kilo" >> "$GITHUB_OUTPUT"
+            echo "binary_name=kilo" >> "$GITHUB_OUTPUT"
+            echo "install_dir=~/.kilo/bin" >> "$GITHUB_OUTPUT"
+            ;;
+          *)
+            echo "::error::Unsupported provider '${{ inputs.provider }}' for shared CLI metadata."
+            exit 1
+            ;;
+        esac
+
+    - name: Get OpenCode/Kilo version
+      if: ${{ inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
+      id: cli-version
       shell: bash
       env:
+        ASSET_PREFIX: ${{ steps.provider-meta.outputs.asset_prefix }}
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
+        REPO_SLUG: ${{ steps.provider-meta.outputs.repo_slug }}
+        TOOL_NAME: ${{ steps.provider-meta.outputs.tool_name }}
       run: |
         set -euo pipefail
 
         case "${RUNNER_OS}/${RUNNER_ARCH}" in
-          Linux/X64) asset_name="opencode-linux-x64-baseline.tar.gz" ;;
-          Linux/ARM64) asset_name="opencode-linux-arm64.tar.gz" ;;
-          macOS/X64) asset_name="opencode-darwin-x64-baseline.zip" ;;
-          macOS/ARM64) asset_name="opencode-darwin-arm64.zip" ;;
-          Windows/X64) asset_name="opencode-windows-x64-baseline.zip" ;;
-          Windows/ARM64) asset_name="opencode-windows-arm64.zip" ;;
+          Linux/X64) asset_name="${ASSET_PREFIX}-linux-x64-baseline.tar.gz" ;;
+          Linux/ARM64) asset_name="${ASSET_PREFIX}-linux-arm64.tar.gz" ;;
+          macOS/X64) asset_name="${ASSET_PREFIX}-darwin-x64-baseline.zip" ;;
+          macOS/ARM64) asset_name="${ASSET_PREFIX}-darwin-arm64.zip" ;;
+          Windows/X64) asset_name="${ASSET_PREFIX}-windows-x64-baseline.zip" ;;
+          Windows/ARM64) asset_name="${ASSET_PREFIX}-windows-arm64.zip" ;;
           *)
-            echo "::error::Unsupported runner for OpenCode: ${RUNNER_OS}/${RUNNER_ARCH}"
+            echo "::error::Unsupported runner for ${TOOL_NAME}: ${RUNNER_OS}/${RUNNER_ARCH}"
             exit 1
             ;;
         esac
@@ -187,30 +218,32 @@ runs:
         curl -fsSL \
           -H "Authorization: Bearer $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/anomalyco/opencode/releases/latest \
+          "https://api.github.com/repos/${REPO_SLUG}/releases/latest" \
           -o "$release_json"
 
         python3 - "$release_json" "$asset_name" <<'PY' >> "$GITHUB_OUTPUT"
         import json
+        import os
         import sys
 
         release_path, asset_name = sys.argv[1:3]
+        tool_name = os.environ["TOOL_NAME"]
         with open(release_path, encoding="utf-8") as handle:
             data = json.load(handle)
 
         version = data.get("tag_name")
         if not version:
-            sys.stderr.write("Missing tag_name in OpenCode release response\n")
+            sys.stderr.write(f"Missing tag_name in {tool_name} release response\n")
             sys.exit(1)
 
         asset = next((item for item in data.get("assets", []) if item.get("name") == asset_name), None)
         if asset is None:
-            sys.stderr.write(f"Missing asset {asset_name} in OpenCode release {version}\n")
+            sys.stderr.write(f"Missing asset {asset_name} in {tool_name} release {version}\n")
             sys.exit(1)
 
         digest = asset.get("digest", "")
         if not digest.startswith("sha256:"):
-            sys.stderr.write(f"Missing sha256 digest for OpenCode asset {asset_name}\n")
+            sys.stderr.write(f"Missing sha256 digest for {tool_name} asset {asset_name}\n")
             sys.exit(1)
 
         print(f"version={version}")
@@ -219,21 +252,24 @@ runs:
         print(f"asset_sha256={digest.removeprefix('sha256:')}")
         PY
 
-    - name: Cache OpenCode
-      if: ${{ inputs.provider == 'opencode' }}
-      id: opencode-cache
+    - name: Cache OpenCode/Kilo CLI
+      if: ${{ inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
+      id: cli-cache
       uses: actions/cache@v5
       with:
-        path: ~/.opencode/bin
-        key: opencode-${{ runner.os }}-${{ runner.arch }}-${{ steps.opencode-version.outputs.version }}
+        path: ${{ steps.provider-meta.outputs.install_dir }}
+        key: ${{ steps.provider-meta.outputs.asset_prefix }}-${{ runner.os }}-${{ runner.arch }}-${{ steps.cli-version.outputs.version }}
 
-    - name: Install OpenCode CLI
-      if: ${{ inputs.provider == 'opencode' && steps.opencode-cache.outputs.cache-hit != 'true' }}
+    - name: Install OpenCode/Kilo CLI
+      if: ${{ (inputs.provider == 'opencode' || inputs.provider == 'kilo') && steps.cli-cache.outputs.cache-hit != 'true' }}
       shell: bash
       env:
-        ASSET_NAME: ${{ steps.opencode-version.outputs.asset_name }}
-        ASSET_SHA256: ${{ steps.opencode-version.outputs.asset_sha256 }}
-        ASSET_URL: ${{ steps.opencode-version.outputs.asset_url }}
+        ASSET_NAME: ${{ steps.cli-version.outputs.asset_name }}
+        ASSET_SHA256: ${{ steps.cli-version.outputs.asset_sha256 }}
+        ASSET_URL: ${{ steps.cli-version.outputs.asset_url }}
+        BINARY_NAME: ${{ steps.provider-meta.outputs.binary_name }}
+        DEST_DIR: ${{ steps.provider-meta.outputs.install_dir }}
+        TOOL_NAME: ${{ steps.provider-meta.outputs.tool_name }}
       run: |
         set -euo pipefail
 
@@ -241,8 +277,7 @@ runs:
         ASSET_PATH="$TMP_DIR/$ASSET_NAME"
         curl -fsSL "$ASSET_URL" -o "$ASSET_PATH"
 
-        DEST_DIR="$HOME/.opencode/bin"
-        export ASSET_PATH TMP_DIR DEST_DIR
+        export ASSET_PATH TMP_DIR DEST_DIR BINARY_NAME TOOL_NAME
         python3 - <<'PY'
         import hashlib
         import os
@@ -256,6 +291,15 @@ runs:
         extract_dir = pathlib.Path(os.environ["TMP_DIR"]) / "extract"
         dest_dir = pathlib.Path(os.environ["DEST_DIR"])
         expected_sha256 = os.environ["ASSET_SHA256"]
+        tool_name = os.environ["TOOL_NAME"]
+        binary_name = os.environ["BINARY_NAME"]
+        if not binary_name:
+            sys.stderr.write(
+                f"Internal error: BINARY_NAME is not set for {tool_name} CLI install.\n"
+            )
+            sys.exit(1)
+
+        binary_names = {binary_name, f"{binary_name}.exe"}
 
         actual_sha256 = hashlib.sha256(asset_path.read_bytes()).hexdigest()
         if actual_sha256 != expected_sha256:
@@ -272,17 +316,17 @@ runs:
             with zipfile.ZipFile(asset_path) as archive:
                 archive.extractall(extract_dir)
         else:
-            sys.stderr.write(f"Unsupported OpenCode asset format: {asset_path.name}\n")
+            sys.stderr.write(f"Unsupported {tool_name} asset format: {asset_path.name}\n")
             sys.exit(1)
 
         binary = None
         for candidate in extract_dir.rglob("*"):
-            if candidate.is_file() and candidate.name in {"opencode", "opencode.exe"}:
+            if candidate.is_file() and candidate.name in binary_names:
                 binary = candidate
                 break
 
         if binary is None:
-            sys.stderr.write("Unable to locate OpenCode binary in extracted archive\n")
+            sys.stderr.write(f"Unable to locate {tool_name} binary in extracted archive\n")
             sys.exit(1)
 
         dest_dir.mkdir(parents=True, exist_ok=True)
@@ -291,10 +335,10 @@ runs:
         destination.chmod(destination.stat().st_mode | 0o755)
         PY
 
-    - name: Add OpenCode to PATH
-      if: ${{ inputs.provider == 'opencode' }}
+    - name: Add OpenCode/Kilo to PATH
+      if: ${{ inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
       shell: bash
-      run: echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
+      run: echo "${{ steps.provider-meta.outputs.install_dir }}" >> "$GITHUB_PATH"
 
     - name: Run OpenCode
       if: ${{ inputs.provider == 'opencode' }}
@@ -331,141 +375,6 @@ runs:
         OPENCODE_EXPERIMENTAL_OXFMT: "true"
         MORPH_TIMEOUT: "60000"
         MORPH_MODEL: morph-v3-fast
-
-    - name: Get Kilo version
-      if: ${{ inputs.provider == 'kilo' }}
-      id: kilo-version
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
-      run: |
-        set -euo pipefail
-
-        case "${RUNNER_OS}/${RUNNER_ARCH}" in
-          Linux/X64) asset_name="kilo-linux-x64-baseline.tar.gz" ;;
-          Linux/ARM64) asset_name="kilo-linux-arm64.tar.gz" ;;
-          macOS/X64) asset_name="kilo-darwin-x64-baseline.zip" ;;
-          macOS/ARM64) asset_name="kilo-darwin-arm64.zip" ;;
-          Windows/X64) asset_name="kilo-windows-x64-baseline.zip" ;;
-          Windows/ARM64) asset_name="kilo-windows-arm64.zip" ;;
-          *)
-            echo "::error::Unsupported runner for Kilo: ${RUNNER_OS}/${RUNNER_ARCH}"
-            exit 1
-            ;;
-        esac
-
-        release_json="$(mktemp)"
-        curl -fsSL \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/Kilo-Org/kilocode/releases/latest \
-          -o "$release_json"
-
-        python3 - "$release_json" "$asset_name" <<'PY' >> "$GITHUB_OUTPUT"
-        import json
-        import sys
-
-        release_path, asset_name = sys.argv[1:3]
-        with open(release_path, encoding="utf-8") as handle:
-            data = json.load(handle)
-
-        version = data.get("tag_name")
-        if not version:
-            sys.stderr.write("Missing tag_name in Kilo release response\n")
-            sys.exit(1)
-
-        asset = next((item for item in data.get("assets", []) if item.get("name") == asset_name), None)
-        if asset is None:
-            sys.stderr.write(f"Missing asset {asset_name} in Kilo release {version}\n")
-            sys.exit(1)
-
-        digest = asset.get("digest", "")
-        if not digest.startswith("sha256:"):
-            sys.stderr.write(f"Missing sha256 digest for Kilo asset {asset_name}\n")
-            sys.exit(1)
-
-        print(f"version={version}")
-        print(f"asset_name={asset_name}")
-        print(f"asset_url={asset['browser_download_url']}")
-        print(f"asset_sha256={digest.removeprefix('sha256:')}")
-        PY
-
-    - name: Cache Kilo
-      if: ${{ inputs.provider == 'kilo' }}
-      id: kilo-cache
-      uses: actions/cache@v5
-      with:
-        path: ~/.kilo/bin
-        key: kilo-${{ runner.os }}-${{ runner.arch }}-${{ steps.kilo-version.outputs.version }}
-
-    - name: Install Kilo CLI
-      if: ${{ inputs.provider == 'kilo' && steps.kilo-cache.outputs.cache-hit != 'true' }}
-      shell: bash
-      env:
-        ASSET_NAME: ${{ steps.kilo-version.outputs.asset_name }}
-        ASSET_SHA256: ${{ steps.kilo-version.outputs.asset_sha256 }}
-        ASSET_URL: ${{ steps.kilo-version.outputs.asset_url }}
-      run: |
-        set -euo pipefail
-
-        TMP_DIR="$(mktemp -d)"
-        ASSET_PATH="$TMP_DIR/$ASSET_NAME"
-        curl -fsSL "$ASSET_URL" -o "$ASSET_PATH"
-
-        DEST_DIR="$HOME/.kilo/bin"
-        export ASSET_PATH TMP_DIR DEST_DIR
-        python3 - <<'PY'
-        import hashlib
-        import os
-        import pathlib
-        import shutil
-        import sys
-        import tarfile
-        import zipfile
-
-        asset_path = pathlib.Path(os.environ["ASSET_PATH"])
-        extract_dir = pathlib.Path(os.environ["TMP_DIR"]) / "extract"
-        dest_dir = pathlib.Path(os.environ["DEST_DIR"])
-        expected_sha256 = os.environ["ASSET_SHA256"]
-
-        actual_sha256 = hashlib.sha256(asset_path.read_bytes()).hexdigest()
-        if actual_sha256 != expected_sha256:
-            sys.stderr.write(
-                f"SHA256 mismatch for {asset_path.name}: expected {expected_sha256}, got {actual_sha256}\n"
-            )
-            sys.exit(1)
-
-        extract_dir.mkdir(parents=True, exist_ok=True)
-        if asset_path.name.endswith(".tar.gz"):
-            with tarfile.open(asset_path, "r:gz") as archive:
-                archive.extractall(extract_dir)
-        elif asset_path.name.endswith(".zip"):
-            with zipfile.ZipFile(asset_path) as archive:
-                archive.extractall(extract_dir)
-        else:
-            sys.stderr.write(f"Unsupported Kilo asset format: {asset_path.name}\n")
-            sys.exit(1)
-
-        binary = None
-        for candidate in extract_dir.rglob("*"):
-            if candidate.is_file() and candidate.name in {"kilo", "kilo.exe"}:
-                binary = candidate
-                break
-
-        if binary is None:
-            sys.stderr.write("Unable to locate Kilo binary in extracted archive\n")
-            sys.exit(1)
-
-        dest_dir.mkdir(parents=True, exist_ok=True)
-        destination = dest_dir / binary.name
-        shutil.copy2(binary, destination)
-        destination.chmod(destination.stat().st_mode | 0o755)
-        PY
-
-    - name: Add Kilo to PATH
-      if: ${{ inputs.provider == 'kilo' }}
-      shell: bash
-      run: echo "$HOME/.kilo/bin" >> "$GITHUB_PATH"
 
     - name: Run Kilo
       if: ${{ inputs.provider == 'kilo' }}
