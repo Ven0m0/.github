@@ -174,14 +174,14 @@ runs:
             echo "repo_slug=anomalyco/opencode" >> "$GITHUB_OUTPUT"
             echo "asset_prefix=opencode" >> "$GITHUB_OUTPUT"
             echo "binary_name=opencode" >> "$GITHUB_OUTPUT"
-            echo "install_dir=$HOME/.opencode/bin" >> "$GITHUB_OUTPUT"
+            echo "install_dir=~/.opencode/bin" >> "$GITHUB_OUTPUT"
             ;;
           kilo)
             echo "tool_name=Kilo" >> "$GITHUB_OUTPUT"
             echo "repo_slug=Kilo-Org/kilocode" >> "$GITHUB_OUTPUT"
             echo "asset_prefix=kilo" >> "$GITHUB_OUTPUT"
             echo "binary_name=kilo" >> "$GITHUB_OUTPUT"
-            echo "install_dir=$HOME/.kilo/bin" >> "$GITHUB_OUTPUT"
+            echo "install_dir=~/.kilo/bin" >> "$GITHUB_OUTPUT"
             ;;
           *)
             echo "::error::Unsupported provider '${{ inputs.provider }}' for shared CLI metadata."
