@@ -134,7 +134,7 @@ runs:
         ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key || env.ANTHROPIC_API_KEY }}
         OPENCODE_API_KEY: ${{ inputs.opencode-api-key || env.OPENCODE_API_KEY }}
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key || env.OPENROUTER_API_KEY }}
-        GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token || env.GH_TOKEN || env.GITHUB_TOKEN }}
         OPENCODE_ENABLE_EXA: "1"
         OPENCODE_EXPERIMENTAL: "true"
         OPENCODE_EXPERIMENTAL_LSP_TOOL: "true"
