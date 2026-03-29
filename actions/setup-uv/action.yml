@@ -52,7 +52,9 @@ runs:
       uses: astral-sh/setup-uv@v7
       with:
         enable-cache: true
-        cache-dependency-glob: "${{ inputs.working-directory }}/uv.lock"
+        cache-dependency-glob: |
+          ${{ inputs.working-directory }}/uv.lock
+          ${{ inputs.working-directory }}/pyproject.toml
     - name: Set up Python
       id: python
       shell: bash

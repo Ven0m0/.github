@@ -22,26 +22,33 @@ inputs:
     description: "Node.js version to install alongside Bun"
     required: false
     default: "24"
+  install-dependencies:
+    description: "Install dependencies after setup"
+    required: false
+    default: "true"
+  frozen-lockfile:
+    description: "Pass --frozen-lockfile when installing dependencies"
+    required: false
+    default: "false"
+  working-directory:
+    description: "Working directory for dependency installation and cache keys"
+    required: false
+    default: "."
 outputs:
   bun-version:
     description: "Installed Bun version"
     value: ${{ steps.bun-info.outputs.version }}
+  cache-hit:
+    description: "Whether the Bun dependency cache was restored"
+    value: ${{ steps.cache-deps.outputs.cache-hit }}
 runs:
   using: "composite"
   steps:
-    - name: Get baseline download URL
-      id: bun-url
-      shell: bash
-      run: |
-        if [ "$RUNNER_ARCH" = "X64" ]; then
-          V=$(node -p "require('./package.json').packageManager.split('@')[1]")
-          case "$RUNNER_OS" in
-            macOS)   OS=darwin ;;
-            Linux)   OS=linux ;;
-            Windows) OS=windows ;;
-          esac
-          echo "url=https://github.com/oven-sh/bun/releases/download/bun-v${V}/bun-${OS}-x64-baseline.zip" >> "$GITHUB_OUTPUT"
-        fi
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+
     - name: Enable Corepack
       shell: bash
       run: corepack enable
@@ -50,35 +57,47 @@ runs:
       uses: oven-sh/setup-bun@v2
       with:
         bun-version: ${{ inputs.bun-version }}
-        # bun-version-file: ${{ !steps.bun-url.outputs.url && 'package.json' || '' }}
-        # bun-download-url: ${{ steps.bun-url.outputs.url }}
 
     - name: Get cache directory
-      id: cache
+      id: cache-dir
       shell: bash
       run: echo "dir=$(bun pm cache)" >> "$GITHUB_OUTPUT"
+
     - name: Cache Bun dependencies
+      id: cache-deps
       uses: actions/cache@v5
       with:
-        path: ${{ steps.cache.outputs.dir }}
-        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+        path: |
+          ${{ steps.cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-bun-${{ inputs.bun-version }}-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
         restore-keys: |
+          ${{ runner.os }}-bun-${{ inputs.bun-version }}-
           ${{ runner.os }}-bun-
 
     - name: Install setuptools for distutils compatibility
+      if: runner.os != 'Windows'
       run: python3 -c "import setuptools" >/dev/null 2>&1 || python3 -m pip install setuptools || pip install setuptools || true
       shell: bash
 
     - name: Install dependencies
+      if: inputs.install-dependencies == 'true'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        FROZEN_LOCKFILE: ${{ inputs.frozen-lockfile }}
       run: |
         # Workaround for patched peer variants
         # e.g. ./patches/ for standard-openapi
         # https://github.com/oven-sh/bun/issues/28147
+        args=()
+        if [[ "$FROZEN_LOCKFILE" == "true" ]]; then
+          args+=(--frozen-lockfile)
+        fi
+
         if [[ "$RUNNER_OS" = "Windows" ]]; then
-          bun install --linker hoisted
+          bun install --linker hoisted "${args[@]}"
         else
-          bun install
+          bun install "${args[@]}"
         fi
 
     - name: Get Bun version

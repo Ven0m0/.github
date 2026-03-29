@@ -60,20 +60,28 @@ runs:
   steps:
     - name: Validate provider
       shell: bash
+      env:
+        PROVIDER: ${{ inputs.provider }}
+        GIT_COMMITTER_NAME: ${{ inputs.git-committer-name }}
+        GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email }}
       run: |
-        case "${{ inputs.provider }}" in
+        case "$PROVIDER" in
           claude|gemini|jules|opencode|kilo) ;;
-          *) echo "::error::Unsupported provider '${{ inputs.provider }}'. Expected: claude | gemini | jules | opencode | kilo"; exit 1 ;;
+          *) echo "::error::Unsupported provider '$PROVIDER'. Expected: claude | gemini | jules | opencode | kilo"; exit 1 ;;
         esac
-        [[ -n "${{ inputs.git-committer-name }}" && -z "${{ inputs.git-committer-email }}" ]] ||
-        [[ -z "${{ inputs.git-committer-name }}" && -n "${{ inputs.git-committer-email }}" ]] &&
-          { echo "::error::git-committer-name and git-committer-email must both be set or both be blank."; exit 1; } || true
+        if [[ (-n "$GIT_COMMITTER_NAME" && -z "$GIT_COMMITTER_EMAIL") || (-z "$GIT_COMMITTER_NAME" && -n "$GIT_COMMITTER_EMAIL") ]]; then
+          echo "::error::git-committer-name and git-committer-email must both be set or both be blank."
+          exit 1
+        fi
 
     - name: Configure git identity
       shell: bash
+      env:
+        GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
+        GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
       run: |
-        git config --local user.name "${{ inputs.git-author-name }}"
-        git config --local user.email "${{ inputs.git-author-email }}"
+        git config --local user.name "$GIT_AUTHOR_NAME"
+        git config --local user.email "$GIT_AUTHOR_EMAIL"
 
     - name: Set up Python
       if: ${{ inputs.provider != 'jules' }}
@@ -98,14 +106,26 @@ runs:
 
         if command -v apt-get >/dev/null 2>&1; then
           sudo apt-get update
-          sudo apt-get install -y gh
+            sudo apt-get install -y gh
         else
           echo "::warning::GitHub CLI (gh) is not installed and automatic installation is only supported on Debian/Ubuntu (apt-get not found). Skipping installation."
         fi
 
+    - name: Cache npm downloads
+      if: ${{ inputs.provider == 'claude' || inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
+      uses: actions/cache@v5
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-agent-lsp-npm-${{ hashFiles('actions/run-agent-prompt/action.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-agent-lsp-npm-
+
     - name: Install LSP servers
       if: ${{ inputs.provider == 'claude' || inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
       shell: bash
+      env:
+        NPM_CONFIG_AUDIT: "false"
+        NPM_CONFIG_FUND: "false"
       run: |
         uv tool install basedpyright
         npm install -g vscode-langservers-extracted yaml-language-server @vtsls/language-server bash-language-server
@@ -199,9 +219,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
       run: |
-        VERSION=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/Kilo-Org/kilocode/releases/latest |
-          python3 -c "import json,sys; print(json.load(sys.stdin)['tag_name'])")
+        VERSION=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/Kilo-Org/kilocode/releases/latest | grep '"tag_name":' | head -n 1 | sed -E 's/.*"tag_name":\s*"([^"]+)".*/\1/')
         echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
     - name: Cache Kilo
       if: ${{ inputs.provider == 'kilo' }}
