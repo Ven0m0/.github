@@ -148,7 +148,7 @@ For each phase (explore → plan → research → implement → review):
 | 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | github-mcp-server, fast-filesystem, octocode, ast-grep, repomix                                              |
 | 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | fast-filesystem, octocode, repomix, sequential-thinking, exa, ref-tools                                      |
 | 3. Research  | researcher | GPT-5.4           | 03-research.md       | github-mcp-server, fast-filesystem, octocode, sequential-thinking, exa, ref-tools                            |
-| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | github-mcp-server, fast-filesystem, octocode, ast-grep, eslint, sequential-thinking, exa, ref-tools          |
+| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | github-mcp-server, fast-filesystem, octocode, ast-grep, eslint, repomix, sequential-thinking, exa, ref-tools |
 | 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | github-mcp-server, fast-filesystem, octocode, ast-grep, eslint, repomix, sequential-thinking, exa, ref-tools |
 
 ## Supporting Agents

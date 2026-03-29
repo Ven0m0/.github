@@ -89,10 +89,13 @@ def test_all_agents_use_supported_primary_models():
         "agents/janitor.agent.md": "claude-sonnet-4.6",
     }
 
+    for path in (REPO_ROOT / "agents").glob("*.agent.md"):
+        model = read_model(path)
+        assert model in supported_models, f"unsupported model {model!r} in {path}"
+
     for relative_path, expected_model in expected_models.items():
         path = REPO_ROOT / relative_path
         model = read_model(path)
-        assert model in supported_models
         assert model == expected_model
 
 
