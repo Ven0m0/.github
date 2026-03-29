@@ -1,86 +1,53 @@
 ---
 name: codebase-maintainer
 description: "Codebase cleanup and indexing. Removes tech debt, dead code, bloat. Generates PROJECT_INDEX for token-efficient context."
-model: sonnet
+model: claude-sonnet-4.6
 modelParameters:
   temperature: 0.35
 mcp-servers:
-  context7:
-    type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
-    tools: ["get-library-docs", "resolve-library-id"]
-  serena:
-    type: local
-    command: uvx
-    args:
-      [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide",
-        "--project-from-cwd",
-      ]
-    tools: ["*"]
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
-    tools: ["*"]
   github-mcp-server:
     type: http
     url: "https://api.githubcopilot.com/mcp/insiders"
     headers:
       { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
-  eslint:
-    type: local
-    command: npx
-    args: ["-y", "@eslint/mcp@latest"]
-    tools: ["*"]
   fast-filesystem:
     type: local
     command: npx
-    args: ["-y", "fast-filesystem-mcp"]
+    args: ["-y", "fast-filesystem-mcp@latest"]
     env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  repomix:
-    type: local
-    command: npx
-    args:
-      ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
     tools: ["*"]
   octocode:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
+    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
     tools: ["*"]
   ast-grep:
     type: local
     command: npx
     args: ["-y", "@notprolands/ast-grep-mcp@latest"]
     tools: ["*"]
-  memory:
-    type: stdio
+  eslint:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-memory"]
+    args: ["-y", "@eslint/mcp@latest"]
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
+    args:
+      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
     tools: ["*"]
   exa:
     type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
     headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
-  morph-mcp:
-    type: local
-    command: npx
-    args: ["-y", "@morphllm/morphmcp@latest"]
-    env: { MORPH_API_KEY: "${{ secrets.COPILOT_MCP_MORPH_API_KEY }}" }
     tools: ["*"]
   sequential-thinking:
     type: stdio
@@ -90,6 +57,24 @@ mcp-servers:
 ---
 
 # Codebase Maintainer
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Always load `skills/code-maintenance/SKILL.md`, `skills/clean-code/SKILL.md`, and `skills/lint-and-validate/SKILL.md`. Add `skills/ai-tuning/SKILL.md` when cleaning agent, prompt, or instruction files.
+
+### MCP Playbook
+
+- Use **fast-filesystem**, **octocode**, and **ast-grep** to find dead code, duplication, and stale references.
+- Use **eslint** for JS/TS-aware cleanup and **repomix** when generating or refreshing compact repo indexes.
+- Use **github-mcp-server** for issue, PR, and code-security context that explains why a cleanup matters.
+- Use **exa** and **ref-tools** only when dependency, migration, or standards research is needed.
+- Use **sequential-thinking** to keep cleanup atomic and behavior-preserving.
+
+### Collaboration Contract
+
+When called by orchestrator or coder, return the smallest safe cleanup set plus validation steps. Prefer deletions and simplifications that downstream reviewer can verify quickly.
 
 <Goals>
 

@@ -5,14 +5,6 @@ model: GPT-5.4
 modelParameters:
   temperature: 0.25
 mcp-servers:
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
-    tools: ["*"]
-  gitmcp:
-    type: http
-    url: "https://gitmcp.io/docs"
-    tools: ["*"]
   github-mcp-server:
     type: http
     url: "https://api.githubcopilot.com/mcp/insiders"
@@ -22,58 +14,46 @@ mcp-servers:
   fast-filesystem:
     type: local
     command: npx
-    args: ["-y", "fast-filesystem-mcp"]
+    args: ["-y", "fast-filesystem-mcp@latest"]
     env: { MCP_SILENT_ERRORS: "true" }
-    tools:
-      [
-        "fast_read_file",
-        "fast_read_multiple_files",
-        "fast_write_file",
-        "fast_large_write_file",
-        "fast_search_files",
-        "fast_search_code",
-        "fast_edit_block",
-        "fast_extract_lines",
-        "fast_copy_file",
-        "fast_move_file",
-        "fast_delete_file",
-        "fast_batch_file_operations",
-      ]
-  repomix:
-    type: local
-    command: npx
-    args:
-      ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
-    tools: ["pack_codebase", "pack_remote_repository", "read_repomix_output", "grep_repomix_output"]
+    tools: ["*"]
   octocode:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
     env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools:
-      [
-        "githubSearchCode",
-        "githubGetFileContent",
-        "githubViewRepoStructure",
-        "githubSearchRepositories",
-        "lspGotoDefinition",
-        "lspFindReferences",
-        "lspCallHierarchy",
-      ]
+    tools: ["*"]
   ast-grep:
     type: local
     command: npx
     args: ["-y", "@notprolands/ast-grep-mcp@latest"]
     tools: ["*"]
-  morph-mcp:
+  repomix:
     type: local
     command: npx
-    args: ["-y", "@morphllm/morphmcp@latest"]
-    env: { MORPH_API_KEY: "${{ secrets.COPILOT_MCP_MORPH_API_KEY }}" }
+    args:
+      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
     tools: ["*"]
 ---
 
 # Explorer
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Load `skills/code-search/SKILL.md` for discovery patterns and `skills/agent-patterns/SKILL.md` for artifact discipline before exploring. Add `skills/ai-tuning/SKILL.md` when the task touches agents, prompts, instructions, or MCP config.
+
+### MCP Playbook
+
+- Start with **octocode** for repo structure, symbol lookup, and semantic navigation.
+- Use **ast-grep** for structural pattern matching and **fast-filesystem** for targeted local reads.
+- Use **repomix** only when the repo is too large to map with direct searches.
+- Use **github-mcp-server** for PR/issue/recent-run context that affects risk assessment.
+
+### Handoff Contract
+
+Return only the files, boundaries, conventions, and risks that downstream agents need. Flag missing context early so planner and researcher do not waste cycles rediscovering the same facts.
 
 Fast codebase scout for the orchestrator pipeline. Produces a compact exploration artifact that downstream agents (planner, researcher, coder, reviewer) use as their map of the codebase.
 
@@ -110,7 +90,7 @@ phase: "explore"
 status: "complete"
 timestamp: "{ISO-8601}"
 agent: "explorer"
-model: "claude-haiku-4-5"
+model: "GPT-5.4"
 ---
 ```
 

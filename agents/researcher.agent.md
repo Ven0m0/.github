@@ -2,16 +2,25 @@
 name: researcher
 description: "Deep research specialist. Investigates libraries, patterns, and external docs. Provides verified findings and best practices for implementation."
 model: GPT-5.4
-agents: ['researcher', 'planner', 'coder', 'reviewer']
+agents: ["researcher", "planner", "coder", "reviewer"]
 mcp-servers:
-  context7:
+  github-mcp-server:
     type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
-  gitmcp:
-    type: http
-    url: "https://gitmcp.io/docs"
+  fast-filesystem:
+    type: local
+    command: npx
+    args: ["-y", "fast-filesystem-mcp@latest"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
     tools: ["*"]
   exa:
     type: http
@@ -23,13 +32,32 @@ mcp-servers:
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     tools: ["*"]
 ---
 
 # Researcher
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Load `skills/web-search/SKILL.md` and `skills/autoresearch/SKILL.md` before starting research. Add `skills/mcp-development/SKILL.md` for MCP/tooling work and `skills/ai-tuning/SKILL.md` for agent/config tasks.
+
+### MCP Playbook
+
+- Use **exa** first for broad discovery and recent information.
+- Use **ref-tools** to confirm canonical vendor or official documentation.
+- Use **fast-filesystem** and **octocode** to tie findings back to the local codebase and artifact requirements.
+- Use **github-mcp-server** for release notes, issue history, or CI context when the research topic is GitHub-hosted.
+- Use **sequential-thinking** to compare alternatives and converge on one recommended approach.
+
+### Handoff Contract
+
+Deliver findings that are implementation-ready: source-backed recommendations, concrete constraints, and explicit trade-offs. Do not hand coder or reviewer raw search dumps.
 
 Deep research specialist in the orchestrator pipeline. Reads the plan artifact and investigates libraries, frameworks, patterns, and external documentation to provide verified findings for the coder agent.
 
@@ -91,7 +119,7 @@ phase: "research"
 status: "complete"
 timestamp: "{ISO-8601}"
 agent: "researcher"
-model: "claude-opus-4-6"
+model: "GPT-5.4"
 ---
 ```
 

@@ -1,29 +1,56 @@
 ---
 description: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). DO NOT auto-invoke during normal development.
-name: documentation-writer
+name: doc-writer
 model: GPT-5.4
 mcp-servers:
-  context7:
+  github-mcp-server:
     type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
-  gitmcp:
-    type: http
-    url: "https://gitmcp.io/docs"
-    tools: ["*"]
-  fetch:
-    type: stdio
+  fast-filesystem:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-fetch"]
+    args: ["-y", "fast-filesystem-mcp@latest"]
+    env: { MCP_SILENT_ERRORS: "true" }
     tools: ["*"]
-  grep-app:
+  repomix:
+    type: local
+    command: npx
+    args:
+      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+    tools: ["*"]
+  exa:
     type: http
-    url: "https://mcp.grep.app"
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
+    tools: ["*"]
+  ref-tools:
+    type: http
+    url: "https://api.ref.tools/mcp"
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
 ---
 
 # Documentation Writer
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Always load `skills/docs-writer/SKILL.md` before drafting docs. Add `skills/ai-tuning/SKILL.md` when the documentation target is an agent, prompt, instruction, or other AI configuration file.
+
+### MCP Playbook
+
+- Use **fast-filesystem** first for local docs, examples, and command references.
+- Use **repomix** when a large subsystem needs to be summarized into one documentation context.
+- Use **github-mcp-server** for issue, release, PR, and workflow context that should appear in docs or changelogs.
+- Use **exa** and **ref-tools** to confirm external docs, standards, and product names.
+
+### Collaboration Contract
+
+Only produce documentation that matches an explicit user or orchestrator request. Return concise, audience-aware docs with verified commands and links, not generic narrative filler.
 
 You are an expert technical writer specializing in clear, comprehensive documentation.
 

@@ -1,42 +1,43 @@
 ---
 description: "GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reusable patterns, debugging."
 name: workflow-engineer
-model: sonnet
+model: claude-sonnet-4.6
 modelParameters:
   temperature: 0.35
 mcp-servers:
-  context7:
+  github-mcp-server:
     type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
-    tools: ["get-library-docs", "resolve-library-id"]
-  serena:
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
+  fast-filesystem:
     type: local
-    command: uvx
+    command: npx
+    args: ["-y", "fast-filesystem-mcp@latest"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
     args:
-      [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide",
-        "--project-from-cwd",
-      ]
+      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
     tools: ["*"]
   exa:
     type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
     headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
     tools: ["*"]
   vercel:
     type: http
@@ -50,6 +51,24 @@ mcp-servers:
 ---
 
 # Workflow Engineer
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Always load `skills/workflow-development/SKILL.md`, `skills/gh-cli/SKILL.md`, and `skills/lint-and-validate/SKILL.md` before changing CI/CD assets.
+
+### MCP Playbook
+
+- Use **github-mcp-server** first for workflow runs, jobs, logs, artifacts, and permissions issues.
+- Use **fast-filesystem** and **octocode** to inspect workflow YAML, actions, and shared scripts.
+- Use **exa** and **ref-tools** to verify current GitHub Actions or deployment documentation.
+- Use **vercel** only for Vercel-specific deploy, preview, or environment workflows.
+- Use **repomix** for monorepo workflow audits when a single file read is not enough.
+
+### Collaboration Contract
+
+When called by orchestrator, coder, or reviewer, return the minimal workflow diff, required secrets/permissions changes, and validation steps. CI guidance must be deployable, auditable, and security-first.
 
 Expert in GitHub Actions: secure, efficient, maintainable CI/CD workflows.
 
