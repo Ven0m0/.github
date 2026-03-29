@@ -39,7 +39,7 @@ Senior architect in the orchestrator pipeline. Reads the exploration artifact an
 
 ## Standards Reference
 
-- `skills/prd/SKILL.md`
+- `skills/planning/SKILL.md`
 - `skills/agent-patterns/SKILL.md`
 - `instructions/quality-standards.instructions.md`
 
@@ -110,10 +110,10 @@ Tasks with no dependencies execute in parallel within a wave. Dependent tasks wa
 
 ### Wave 1 (parallel — no dependencies)
 
-| Task     | Description                          | Files            | Acceptance Criteria         |
-| -------- | ------------------------------------ | ---------------- | --------------------------- |
-| TASK-001 | [Action verb + specific file/function] | path/to/file.ts  | [Verifiable condition]       |
-| TASK-002 | ...                                  | ...              | ...                         |
+| Task     | Description                            | Files           | Acceptance Criteria    |
+| -------- | -------------------------------------- | --------------- | ---------------------- |
+| TASK-001 | [Action verb + specific file/function] | path/to/file.ts | [Verifiable condition] |
+| TASK-002 | ...                                    | ...             | ...                    |
 
 ### Wave 2 (after wave 1 completes)
 
@@ -129,16 +129,16 @@ Tasks with no dependencies execute in parallel within a wave. Dependent tasks wa
 
 ## Pre-Mortem (complex tasks only)
 
-| Failure Mode                  | Likelihood | Impact | Mitigation |
-| ----------------------------- | ---------- | ------ | ---------- |
+| Failure Mode                    | Likelihood | Impact              | Mitigation        |
+| ------------------------------- | ---------- | ------------------- | ----------------- |
 | [Scenario: what could go wrong] | low/med/hi | low/med/hi/critical | [Concrete action] |
 
 ## Plan Metrics
 
 ```yaml
-wave_1_task_count: N    # count of wave-1 tasks (higher = more parallel)
-total_dependencies: N   # total dependency references (lower = less blocking)
-risk_score: low|medium|high  # from pre-mortem overall risk
+wave_1_task_count: N # count of wave-1 tasks (higher = more parallel)
+total_dependencies: N # total dependency references (lower = less blocking)
+risk_score: low|medium|high # from pre-mortem overall risk
 ```
 
 ## Dependencies

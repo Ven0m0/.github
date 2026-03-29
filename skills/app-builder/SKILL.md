@@ -1,11 +1,11 @@
 ---
 name: app-builder
-description: Main application building orchestrator. Creates full-stack applications from natural language requests. Determines project type, selects tech stack, coordinates agents.
+description: Main application building and rapid prototyping orchestrator. Creates full-stack applications from natural language requests, selects stacks, scaffolds projects, and guides fast iteration.
 ---
 
 # App Builder - Application Building Orchestrator
 
-> Analyzes user's requests, determines tech stack, plans structure, and coordinates agents.
+> Analyzes user requests, determines the right stack, scaffolds projects, and supports rapid local prototyping.
 
 ## 🎯 Selective Reading Rule
 
@@ -72,3 +72,51 @@ App Builder Process:
 5. Report progress
 6. Start preview
 ```
+
+---
+
+## 🚀 Rapid Prototyping Mode
+
+Use this skill for fast, local-first web app iteration when the user wants to quickly create, prototype, or polish an application.
+
+### Inputs to Gather
+
+- **App description**: purpose, users, key flows
+- **Tech preferences**: framework, styling, data layer
+- **Design direction**: references, colors, layout expectations
+- **Deploy target**: Vercel, Netlify, self-hosted, desktop, etc.
+
+### Build Workflow
+
+1. **Research current setup commands** before scaffolding
+2. **Initialize the app** with the framework's official starter
+3. **Establish the design system**: tokens, spacing, typography, base UI
+4. **Build features incrementally** with loading, error, and empty states
+5. **Polish for accessibility and performance**
+6. **Document setup and deployment**
+
+### Conventions
+
+| Area         | Guidance                                                   |
+| ------------ | ---------------------------------------------------------- |
+| Architecture | Small reusable components, TypeScript by default           |
+| UX           | Mobile-first, semantic HTML, keyboard accessible           |
+| Styling      | Tailwind preferred for speed; use consistent design tokens |
+| Data         | Handle loading, error, and empty states everywhere         |
+| Backend      | Validate inputs at API boundaries; prefer type-safe ORMs   |
+| Public apps  | Include metadata, Open Graph, sitemap, and robots.txt      |
+
+### Verification
+
+Run the standard project lifecycle commands for the chosen stack:
+
+```bash
+npm install          # or bun install / pnpm install
+npm run type-check   # if available
+npm run lint
+npm test
+npm run build
+npm run dev
+```
+
+Completion means the app builds, runs locally, and covers the critical flows across the target screen sizes.

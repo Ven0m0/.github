@@ -337,7 +337,7 @@ Use newer/faster/better tools when possible. Always search for the available mcp
 When working on a task, read the relevant skill module(s) first:
 | Task Domain | Relevant Skills |
 |-------------|-----------------|
-| Feature building | `app-builder/`, `agent-patterns/` |
+| Feature building | `planning/`, `app-builder/`, `agent-patterns/` |
 | Code quality | `code-maintenance/`, `code-review/`, `clean-code/` |
 | Testing | `lint-and-validate/` |
 | Frontend/React | `nodejs-best-practices/`, `premium-frontend-ui/` |

@@ -11,7 +11,7 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 **Ven0m0** delivers practical developer tools for automation, platform engineering, and AI-assisted development. This `.github` repository provides:
 
 - **20 agents** (6 pipeline + 9 supporting + 5 standalone utilities) for planning, code optimization, CI/CD, documentation, debugging
-- **30 reusable skill modules** (patterns, best practices, templates)
+- **24 reusable skill modules** (patterns, best practices, templates)
 - **38 scoped instruction files** (language standards, CI/CD, quality, domain specialization)
 - **Reusable GitHub Actions workflows** for multi-language CI
 - **Copilot instruction files** (org-wide + file-type scoped)
@@ -23,7 +23,7 @@ Organization-wide defaults: community health files, Copilot instructions, AI age
 ```
 .github/
   agents/            # 20 AI agents (pipeline + supporting + standalone utilities)
-  skills/            # 30 reusable knowledge modules
+  skills/            # 24 reusable knowledge modules
   instructions/      # 37 language/domain standards
   hooks/             # Git pre-commit hooks
   prompts/           # Reusable prompt templates
@@ -122,10 +122,9 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 
 ### Architecture & Planning
 
-- `prd/` — Product requirements document best practices
+- `planning/` — Requirements clarification, dynamic questioning, and PRD drafting
 - `agent-patterns/` — Agent workflow patterns and templates
-- `app-builder/` — Full-stack app scaffolding with tech-stack detection
-- `brainstorming/` — Dynamic questioning for requirements elicitation
+- `app-builder/` — Full-stack app scaffolding, rapid prototyping, and tech-stack detection
 - `parallel-agents/` — Multi-agent coordination patterns
 
 ### Code Quality & Maintenance
@@ -147,7 +146,6 @@ Reusable knowledge modules in `skills/` directory. Select 1–3 relevant skills 
 - `docs-writer/` — Documentation templates and standards (includes reusable doc structures)
 - `gh-cli/` — GitHub CLI reference and workflows
 - `ai-tuning/` — AI config optimization, validation, and token efficiency
-- `vibe-coding/` — Fast local web app prototyping
 - `fix-issue/` — Issue diagnosis and resolution patterns
 - `pr-review/` — Pull request review templates and checklists
 - `workflow-development/` — GitHub Actions workflow patterns
