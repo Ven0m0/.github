@@ -39,7 +39,7 @@ Senior architect in the orchestrator pipeline. Reads the exploration artifact an
 
 ## Standards Reference
 
-- `skills/prd/SKILL.md`
+- `skills/planning/SKILL.md`
 - `skills/agent-patterns/SKILL.md`
 - `instructions/quality-standards.instructions.md`
 
