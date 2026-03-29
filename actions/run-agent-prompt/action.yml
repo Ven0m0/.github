@@ -219,7 +219,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
       run: |
-        VERSION=$(gh release view --repo Kilo-Org/kilocode --json tagName --jq '.tagName')
+        VERSION=$(curl -fsSL https://api.github.com/repos/Kilo-Org/kilocode/releases/latest | grep '"tag_name":' | head -n 1 | sed -E 's/.*"tag_name":\s*"([^"]+)".*/\1/')
         echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
     - name: Cache Kilo
       if: ${{ inputs.provider == 'kilo' }}
