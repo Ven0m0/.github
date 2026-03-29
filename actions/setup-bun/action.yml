@@ -69,7 +69,6 @@ runs:
       with:
         path: |
           ${{ steps.cache-dir.outputs.dir }}
-          ~/.npm
         key: ${{ runner.os }}-bun-${{ inputs.bun-version }}-${{ hashFiles(format('{0}/bun.lock', inputs.working-directory), format('{0}/bun.lockb', inputs.working-directory), format('{0}/package.json', inputs.working-directory)) }}
         restore-keys: |
           ${{ runner.os }}-bun-${{ inputs.bun-version }}-
