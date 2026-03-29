@@ -33,7 +33,7 @@ Use `claudelint` for projects primarily targeting Claude Code.
     ```
     Alternatively, install via npm/bun:
     ```bash
-    npm install -g claude-code-lint
+bun install -g claude-code-lint
     ```
 
 2.  **Initialization**:
