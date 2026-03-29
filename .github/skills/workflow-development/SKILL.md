@@ -143,7 +143,7 @@ jobs:
 name: Release
 on:
   push:
-    tags: ["v*"]
+    tags: ["v[0-9]*"]
 permissions:
   contents: write
 
