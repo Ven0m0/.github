@@ -2,6 +2,8 @@
 name: reviewer
 description: "Critical review specialist. Handles task review (full code audit), wave review (integration checks), and plan review (DAG + PRD alignment). OWASP-aware, depth-configurable, PRD-compliant."
 model: GPT-5.4
+modelParameters:
+  temperature: 0.25
 mcp-servers:
   github-mcp-server:
     type: http
