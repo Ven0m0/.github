@@ -2,6 +2,8 @@
 name: researcher
 description: "Deep research specialist. Investigates libraries, patterns, and external docs. Provides verified findings and best practices for implementation."
 model: GPT-5.4
+modelParameters:
+  temperature: 0.35
 agents: ["researcher", "planner", "coder", "reviewer"]
 mcp-servers:
   github-mcp-server:
