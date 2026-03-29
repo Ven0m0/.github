@@ -46,7 +46,7 @@ Ask at least 2-3 high-leverage questions before drafting or implementing:
 - Focus on blocking decisions first, then high-leverage decisions
 - If a question will not change implementation, do not ask it
 
-For the full questioning framework, read `dynamic-questioning.md`.
+For the full questioning framework, read [`./dynamic-questioning.md`](./dynamic-questioning.md).
 
 ## Phase 2: Analysis
 
