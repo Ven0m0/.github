@@ -1,7 +1,7 @@
 ---
 name: coder
 description: "Implementation specialist. Writes code following plan and research artifacts. Multi-language, TDD-driven, minimal focused changes."
-model: sonnet
+model: claude-sonnet-4.6
 modelParameters:
   temperature: 0.35
 hooks:
@@ -9,64 +9,49 @@ hooks:
     - type: command
       command: 'npx prettier --write "$TOOL_INPUT_FILE_PATH"'
 mcp-servers:
-  context7:
-    type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
-    tools: ["get-library-docs", "resolve-library-id"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
-    tools: ["*"]
   github-mcp-server:
     type: http
     url: "https://api.githubcopilot.com/mcp/insiders"
     headers:
       { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
-  eslint:
-    type: local
-    command: npx
-    args: ["-y", "@eslint/mcp@latest"]
-    tools: ["*"]
   fast-filesystem:
     type: local
     command: npx
-    args: ["-y", "fast-filesystem-mcp"]
+    args: ["-y", "fast-filesystem-mcp@latest"]
     env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  repomix:
-    type: local
-    command: npx
-    args:
-      ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
     tools: ["*"]
   octocode:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+    env:
+      { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
     tools: ["*"]
   ast-grep:
     type: local
     command: npx
     args: ["-y", "@notprolands/ast-grep-mcp@latest"]
     tools: ["*"]
-  morph-mcp:
+  eslint:
     type: local
     command: npx
-    args: ["-y", "@morphllm/morphmcp@latest"]
-    env: { MORPH_API_KEY: "${{ secrets.COPILOT_MCP_MORPH_API_KEY }}" }
+    args: ["-y", "@eslint/mcp@latest"]
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
+    args: ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+    tools: ["*"]
+  exa:
+    type: http
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
+    tools: ["*"]
+  ref-tools:
+    type: http
+    url: "https://api.ref.tools/mcp"
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   sequential-thinking:
     type: stdio
@@ -76,6 +61,24 @@ mcp-servers:
 ---
 
 # Coder
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Always load `skills/lint-and-validate/SKILL.md` plus the 1-2 domain skills that match the task: `skills/nodejs-best-practices/SKILL.md`, `skills/workflow-development/SKILL.md`, `skills/mcp-development/SKILL.md`, `skills/code-maintenance/SKILL.md`, `skills/docker-expert/SKILL.md`, or `skills/premium-frontend-ui/SKILL.md`.
+
+### MCP Playbook
+
+- Use **fast-filesystem** and **octocode** first for local code reads, symbol tracing, and change targeting.
+- Use **ast-grep** and **eslint** for structural edits and lint-aware verification.
+- Use **exa** and **ref-tools** only when the plan or research artifact leaves an API, framework, or standards gap.
+- Use **github-mcp-server** for CI failures, PR context, issues, or code-scanning feedback.
+- Use **repomix** only when a large subsystem must be compressed for safe review or handoff.
+
+### Handoff Contract
+
+Implement exactly what the plan requires, then hand reviewer a concise summary of files changed, tests run, and any deviations. If a blocker emerges, return it with evidence instead of silently widening scope.
 
 Implementation engineer in the orchestrator pipeline. Reads plan and research artifacts, implements changes following TDD, and produces a summary artifact for the reviewer.
 
@@ -135,7 +138,7 @@ phase: "implement"
 status: "complete"
 timestamp: "{ISO-8601}"
 agent: "coder"
-model: "claude-sonnet-4-6"
+model: "claude-sonnet-4.6"
 ---
 ```
 

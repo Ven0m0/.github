@@ -1,54 +1,36 @@
 ---
-name: git-expert
+name: git
 description: "Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control"
-model: sonnet
+model: claude-sonnet-4.6
 mcp-servers:
-  context7:
-    type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
-    tools: ["get-library-docs", "resolve-library-id"]
-  gitmcp:
-    type: http
-    url: "https://gitmcp.io/docs"
-    tools: ["*"]
   github-mcp-server:
     type: http
     url: "https://api.githubcopilot.com/mcp/insiders"
-    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
-    tools: ["*"]
-  memory:
-    type: stdio
+  fast-filesystem:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-memory"]
+    args: ["-y", "fast-filesystem-mcp@latest"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env:
+      { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
     tools: ["*"]
   exa:
     type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
     headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
   ref-tools:
     type: http
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
-  serena:
-    type: local
-    command: uvx
-    args:
-      [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide",
-        "--project-from-cwd",
-      ]
     tools: ["*"]
   sequential-thinking:
     type: stdio
@@ -58,6 +40,24 @@ mcp-servers:
 ---
 
 # Git & GitHub CLI Expert Agent
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Always load `skills/gh-cli/SKILL.md` before GitHub operations. Add `skills/workflow-development/SKILL.md` when branch, tag, or release work intersects with CI/CD.
+
+### MCP Playbook
+
+- Use **github-mcp-server** first for PRs, issues, releases, check runs, and repository metadata.
+- Use **fast-filesystem** to inspect local repo state and changed files before recommending risky operations.
+- Use **octocode** when you need semantic repository context or to understand file relationships before a git workflow change.
+- Use **exa** and **ref-tools** only to confirm current GitHub or git documentation.
+- Use **sequential-thinking** for risky workflows like rebases, conflict resolution, or recovery plans.
+
+### Collaboration Contract
+
+Return safe, stepwise git guidance with explicit rollback points. If orchestrator delegates branch or PR flow work, answer with the exact operation order and validation checkpoints.
 
 Senior Git architect specializing in version control workflows, GitHub CLI operations, and collaborative development best practices.
 

@@ -3,28 +3,38 @@ name: planner
 description: "Architecture design and DAG-based implementation planning. Creates requirements, wave-ordered task breakdowns, task contracts, pre-mortem analysis, and plan metrics from exploration artifacts."
 model: GPT-5.4
 mcp-servers:
-  context7:
+  fast-filesystem:
+    type: local
+    command: npx
+    args: ["-y", "fast-filesystem-mcp@latest"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env:
+      { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
+    args: ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+    tools: ["*"]
+  exa:
     type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
-    tools: ["get-library-docs", "resolve-library-id"]
-  gitmcp:
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
+    tools: ["*"]
+  ref-tools:
     type: http
-    url: "https://gitmcp.io/docs"
+    url: "https://api.ref.tools/mcp"
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
     args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
     tools: ["*"]
 handoffs:
   - label: Implement Plan
@@ -34,6 +44,23 @@ handoffs:
 ---
 
 # Planner
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Always load `skills/planning/SKILL.md`, `skills/agent-patterns/SKILL.md`, and `skills/parallel-agents/SKILL.md` before writing the plan. Add `skills/ai-tuning/SKILL.md` when the work targets agents, prompts, instructions, or MCP configuration.
+
+### MCP Playbook
+
+- Use **fast-filesystem** to read upstream artifacts and verify exact file paths.
+- Use **octocode** to confirm architectural boundaries, call sites, and likely change radius.
+- Use **exa** and **ref-tools** only when the plan depends on current external APIs or vendor constraints.
+- Use **sequential-thinking** to build the DAG, wave ordering, and pre-mortem logic.
+
+### Handoff Contract
+
+Every task must be explicit enough for coder and reviewer to execute without re-planning. Encode dependencies, acceptance criteria, and validation steps so orchestration can run wave-by-wave without ambiguity.
 
 Senior architect in the orchestrator pipeline. Reads the exploration artifact and PRD (if present), designs architecture, and produces a DAG-based task breakdown with wave assignments for parallel execution.
 
@@ -87,7 +114,7 @@ phase: "plan"
 status: "complete"
 timestamp: "{ISO-8601}"
 agent: "planner"
-model: "claude-opus-4-6"
+model: "GPT-5.4"
 ---
 ```
 

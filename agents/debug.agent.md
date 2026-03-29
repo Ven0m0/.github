@@ -1,40 +1,41 @@
 ---
 description: "Debug specialist: systematic bug finding, root cause analysis, and targeted fixes across all languages."
 name: debug
-model: sonnet
+model: claude-sonnet-4.6
 mcp-servers:
-  context7:
+  github-mcp-server:
     type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
-    tools: ["get-library-docs", "resolve-library-id"]
-  serena:
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
+  fast-filesystem:
     type: local
-    command: uvx
-    args:
-      [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide",
-        "--project-from-cwd",
-      ]
+    command: npx
+    args: ["-y", "fast-filesystem-mcp@latest"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env:
+      { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
+    tools: ["*"]
+  ast-grep:
+    type: local
+    command: npx
+    args: ["-y", "@notprolands/ast-grep-mcp@latest"]
     tools: ["*"]
   exa:
     type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
     headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
     tools: ["*"]
-  grep-app:
+  ref-tools:
     type: http
-    url: "https://mcp.grep.app"
-    tools: ["*"]
-  sequential-thinking:
-    type: stdio
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    url: "https://api.ref.tools/mcp"
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   chrome-devtools:
     type: local
@@ -51,9 +52,32 @@ mcp-servers:
     command: npx
     args: ["-y", "@playwright/mcp@latest", "--headless"]
     tools: ["browser_navigate", "browser_click", "browser_type", "browser_evaluate", "browser_take_screenshot"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
 ---
 
 # Debug Mode Instructions
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Load `skills/fix-issue/SKILL.md` and `skills/lint-and-validate/SKILL.md` before debugging. Add `skills/playwright-cli/SKILL.md` for browser repros and `skills/workflow-development/SKILL.md` when the failure originates in GitHub Actions.
+
+### MCP Playbook
+
+- Use **github-mcp-server** first for CI, build, test, and workflow failures.
+- Use **fast-filesystem**, **octocode**, and **ast-grep** to trace the failing path locally.
+- Use **chrome-devtools**, **next-devtools**, and **playwright** only when the bug requires browser/runtime confirmation.
+- Use **exa** and **ref-tools** to validate framework behavior or vendor-specific errors.
+- Use **sequential-thinking** to keep hypotheses, reproductions, and fixes ordered.
+
+### Collaboration Contract
+
+If orchestrator or coder hands you a failure, return: reproduction steps, root cause, minimal fix path, and validation proof. Keep the outcome actionable enough for coder or reviewer to continue without extra triage.
 
 You are in debug mode. Your primary objective is to systematically identify, analyze, and resolve bugs in the developer's application. Follow this structured debugging process:
 

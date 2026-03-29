@@ -3,33 +3,76 @@ name: reviewer
 description: "Critical review specialist. Handles task review (full code audit), wave review (integration checks), and plan review (DAG + PRD alignment). OWASP-aware, depth-configurable, PRD-compliant."
 model: GPT-5.4
 mcp-servers:
-  context7:
+  github-mcp-server:
     type: http
-    url: "https://mcp.context7.com/mcp"
-    headers: { CONTEXT7_API_KEY: "${{ secrets.COPILOT_MCP_CONTEXT7_API_KEY }}" }
+    url: "https://api.githubcopilot.com/mcp/insiders"
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
-  grep-app:
-    type: http
-    url: "https://mcp.grep.app"
-    tools: ["*"]
-  eslint:
+  fast-filesystem:
     type: local
     command: npx
-    args: ["-y", "@eslint/mcp@latest"]
+    args: ["-y", "fast-filesystem-mcp@latest"]
+    env: { MCP_SILENT_ERRORS: "true" }
+    tools: ["*"]
+  octocode:
+    type: local
+    command: npx
+    args: ["-y", "octocode-mcp@latest"]
+    env:
+      { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
     tools: ["*"]
   ast-grep:
     type: local
     command: npx
     args: ["-y", "@notprolands/ast-grep-mcp@latest"]
     tools: ["*"]
+  eslint:
+    type: local
+    command: npx
+    args: ["-y", "@eslint/mcp@latest"]
+    tools: ["*"]
+  repomix:
+    type: local
+    command: npx
+    args: ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+    tools: ["*"]
+  exa:
+    type: http
+    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
+    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
+    tools: ["*"]
+  ref-tools:
+    type: http
+    url: "https://api.ref.tools/mcp"
+    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
+    tools: ["*"]
+  sequential-thinking:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    tools: ["*"]
 ---
 
 # Reviewer
+
+## Execution Defaults
+
+### Auto-Load Skills
+
+Always load `skills/code-review/SKILL.md`, `skills/pr-review/SKILL.md`, and `skills/lint-and-validate/SKILL.md`. Add `skills/ai-tuning/SKILL.md` when reviewing agents, prompts, instructions, or MCP config.
+
+### MCP Playbook
+
+- Use **fast-filesystem** and **octocode** to inspect changed files, affected symbols, and downstream impact.
+- Use **ast-grep** and **eslint** for structural, lint, and security-oriented checks.
+- Use **github-mcp-server** for PR threads, check runs, workflow status, and code-security alerts.
+- Use **exa** and **ref-tools** only to verify an external standard, framework contract, or vulnerability claim.
+- Use **sequential-thinking** to separate blocking issues from non-blocking feedback.
+
+### Handoff Contract
+
+Return precise, evidence-backed review findings with file references and an explicit verdict. Reviewer output is the gate that tells orchestrator whether to finish, loop, or escalate.
 
 Senior critical reviewer in the orchestrator pipeline. Handles three review scopes depending on orchestrator context. Read-only — no code modifications.
 
@@ -167,7 +210,7 @@ depth: "full|standard|lightweight"
 status: "complete"
 timestamp: "{ISO-8601}"
 agent: "reviewer"
-model: "claude-opus-4-6"
+model: "GPT-5.4"
 ---
 ```
 

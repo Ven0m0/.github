@@ -13,6 +13,13 @@ def read_frontmatter(path: Path) -> str:
     return match.group(1)
 
 
+def read_model(path: Path) -> str:
+    """Return the configured primary model for an agent."""
+    match = re.search(r'^model:\s*["\']?([^"\']+)["\']?$', read_frontmatter(path), re.MULTILINE)
+    assert match is not None, f"missing model in {path}"
+    return match.group(1)
+
+
 def test_workspace_mcp_config_includes_selected_servers():
     """Workspace MCP config should expose the newly selected high-value servers."""
     mcp_config = json.loads((REPO_ROOT / ".vscode" / "mcp.json").read_text(encoding="utf-8"))
@@ -28,10 +35,16 @@ def test_workspace_mcp_config_includes_selected_servers():
 def test_code_agents_get_structural_and_linting_mcp_servers():
     """Coding-focused agents should expose ESLint and/or ast-grep where they add value."""
     expected_servers = {
-        "agents/coder.agent.md": ("eslint:", "ast-grep:"),
-        "agents/reviewer.agent.md": ("eslint:", "ast-grep:"),
-        "agents/codebase-maintainer.agent.md": ("eslint:", "ast-grep:"),
-        "agents/explorer.agent.md": ("ast-grep:",),
+        "agents/coder.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:"),
+        "agents/reviewer.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:"),
+        "agents/codebase-maintainer.agent.md": (
+            "github-mcp-server:",
+            "fast-filesystem:",
+            "octocode:",
+            "eslint:",
+            "ast-grep:",
+        ),
+        "agents/explorer.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "ast-grep:"),
     }
 
     for relative_path, server_names in expected_servers.items():
@@ -53,3 +66,41 @@ def test_frontend_and_platform_agents_get_browser_and_vercel_servers():
         frontmatter = read_frontmatter(REPO_ROOT / relative_path)
         for server_name in server_names:
             assert server_name in frontmatter
+
+
+def test_all_agents_use_supported_primary_models():
+    """Agents should use the repo-standard primary models only."""
+    supported_models = {"GPT-5.4", "claude-sonnet-4.6"}
+    expected_models = {
+        "agents/orchestrator.agent.md": "claude-sonnet-4.6",
+        "agents/explorer.agent.md": "GPT-5.4",
+        "agents/planner.agent.md": "GPT-5.4",
+        "agents/researcher.agent.md": "GPT-5.4",
+        "agents/coder.agent.md": "claude-sonnet-4.6",
+        "agents/reviewer.agent.md": "GPT-5.4",
+        "agents/debug.agent.md": "claude-sonnet-4.6",
+        "agents/workflow-engineer.agent.md": "claude-sonnet-4.6",
+        "agents/frontend-specialist.agent.md": "claude-sonnet-4.6",
+        "agents/git.agent.md": "claude-sonnet-4.6",
+        "agents/codebase-maintainer.agent.md": "claude-sonnet-4.6",
+        "agents/doc-writer.agent.md": "GPT-5.4",
+        "agents/repo-architect.agent.md": "GPT-5.4",
+        "agents/arch-linux-expert.agent.md": "claude-sonnet-4.6",
+        "agents/janitor.agent.md": "claude-sonnet-4.6",
+    }
+
+    for relative_path, expected_model in expected_models.items():
+        path = REPO_ROOT / relative_path
+        model = read_model(path)
+        assert model in supported_models
+        assert model == expected_model
+
+
+def test_primary_agents_drop_deprecated_mcp_servers():
+    """Optimized agents should use the shared MCP stack instead of deprecated server choices."""
+    deprecated_servers = ("context7:", "serena:", "gitmcp:", "grep-app:", "fetch:", "memory:", "morph-mcp:")
+
+    for path in (REPO_ROOT / "agents").glob("*.agent.md"):
+        frontmatter = read_frontmatter(path)
+        for server_name in deprecated_servers:
+            assert server_name not in frontmatter, f"unexpected {server_name} in {path}"
