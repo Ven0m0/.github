@@ -31,7 +31,7 @@ Use `claudelint` for projects primarily targeting Claude Code.
     ```bash
     uv tool install claudelint
     ```
-    Alternatively, install via npm/bun:
+    Alternatively, install via npm:
     ```bash
 bun install -g claude-code-lint
     ```
