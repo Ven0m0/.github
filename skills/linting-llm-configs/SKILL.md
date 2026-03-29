@@ -37,11 +37,8 @@ agnix --fix-safe .
 
 ## Install
 
-```bash
 bun install -g claude-code-lint
-npx claudelint init
 bun install -g agnix
-```
 
 </instructions>
 
