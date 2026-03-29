@@ -3,7 +3,7 @@ name: coder
 description: "Implementation specialist. Writes code following plan and research artifacts. Multi-language, TDD-driven, minimal focused changes."
 model: claude-sonnet-4.6
 modelParameters:
-  temperature: 0.35
+  temperature: 0.3
 hooks:
   PostToolUse:
     - type: command
