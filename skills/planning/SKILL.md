@@ -14,12 +14,12 @@ Unify discovery, requirements clarification, and PRD drafting before implementat
 
 ## Use This Skill When
 
-| Scenario | Action |
-| --- | --- |
-| Vague or underspecified request | Ask clarifying questions before implementation |
-| New feature or architectural change | Capture goals, constraints, and non-goals |
-| User asks for a PRD or feature plan | Draft a structured requirements document |
-| Scope changes mid-task | Reconfirm assumptions and update the plan |
+| Scenario                            | Action                                         |
+| ----------------------------------- | ---------------------------------------------- |
+| Vague or underspecified request     | Ask clarifying questions before implementation |
+| New feature or architectural change | Capture goals, constraints, and non-goals      |
+| User asks for a PRD or feature plan | Draft a structured requirements document       |
+| Scope changes mid-task              | Reconfirm assumptions and update the plan      |
 
 </when_to_use>
 
@@ -128,9 +128,9 @@ Acceptance Criteria:
 
 ## Example Risk Table
 
-| Risk | Probability | Impact | Mitigation |
-| --- | --- | --- | --- |
-| API rate limiting | Medium | High | Cache responses and batch requests |
-| Unclear scope | High | Medium | Lock non-goals and review with stakeholders |
+| Risk              | Probability | Impact | Mitigation                                  |
+| ----------------- | ----------- | ------ | ------------------------------------------- |
+| API rate limiting | Medium      | High   | Cache responses and batch requests          |
+| Unclear scope     | High        | Medium | Lock non-goals and review with stakeholders |
 
 </examples>

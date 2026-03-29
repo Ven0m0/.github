@@ -97,14 +97,14 @@ Use this skill for fast, local-first web app iteration when the user wants to qu
 
 ### Conventions
 
-| Area | Guidance |
-| --- | --- |
-| Architecture | Small reusable components, TypeScript by default |
-| UX | Mobile-first, semantic HTML, keyboard accessible |
-| Styling | Tailwind preferred for speed; use consistent design tokens |
-| Data | Handle loading, error, and empty states everywhere |
-| Backend | Validate inputs at API boundaries; prefer type-safe ORMs |
-| Public apps | Include metadata, Open Graph, sitemap, and robots.txt |
+| Area         | Guidance                                                   |
+| ------------ | ---------------------------------------------------------- |
+| Architecture | Small reusable components, TypeScript by default           |
+| UX           | Mobile-first, semantic HTML, keyboard accessible           |
+| Styling      | Tailwind preferred for speed; use consistent design tokens |
+| Data         | Handle loading, error, and empty states everywhere         |
+| Backend      | Validate inputs at API boundaries; prefer type-safe ORMs   |
+| Public apps  | Include metadata, Open Graph, sitemap, and robots.txt      |
 
 ### Verification
 
