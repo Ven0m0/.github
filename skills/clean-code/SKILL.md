@@ -5,19 +5,19 @@ description: Simplifies noisy implementations and improves maintainability durin
 
 # Clean code
 
-<overview>
 Use this skill to remove unnecessary complexity around the task in front of you. Favor small, behavior-preserving cleanups over broad style rewrites.
-</overview>
 
-<instructions>
+## Usage
 
-## When to Use
+Reach for this skill when the work is already in scope and the code can be made clearer without redesigning the subsystem.
 
-| Situation | Apply this skill |
-| --- | --- |
-| Refactoring noisy code | Remove dead abstractions, duplication, and indirection |
-| Reviewing maintainability | Tighten names, control flow, and file boundaries |
-| Finishing a feature or bug fix | Trim opportunistic complexity in touched code only |
+## When to use
+
+| Situation                      | Apply this skill                                       |
+| ------------------------------ | ------------------------------------------------------ |
+| Refactoring noisy code         | Remove dead abstractions, duplication, and indirection |
+| Reviewing maintainability      | Tighten names, control flow, and file boundaries       |
+| Finishing a feature or bug fix | Trim opportunistic complexity in touched code only     |
 
 ## Workflow
 
@@ -29,13 +29,13 @@ Use this skill to remove unnecessary complexity around the task in front of you.
 
 ## High-signal checks
 
-| Keep | Remove |
-| --- | --- |
-| Names that explain intent | Placeholder names and abbreviations |
-| Guard clauses and straight-line flow | Deep nesting and branching noise |
-| Shared abstractions with multiple callers | Helpers used once with no reuse value |
-| Comments that explain non-obvious intent | Comments that restate the code |
-| Small focused edits | Cleanup that changes unrelated behavior |
+| Keep                                      | Remove                                  |
+| ----------------------------------------- | --------------------------------------- |
+| Names that explain intent                 | Placeholder names and abbreviations     |
+| Guard clauses and straight-line flow      | Deep nesting and branching noise        |
+| Shared abstractions with multiple callers | Helpers used once with no reuse value   |
+| Comments that explain non-obvious intent  | Comments that restate the code          |
+| Small focused edits                       | Cleanup that changes unrelated behavior |
 
 ## Guardrails
 
@@ -43,9 +43,7 @@ Use this skill to remove unnecessary complexity around the task in front of you.
 - Update dependent files in the same task when signatures or shared types move.
 - Prefer the repository's existing lint/test commands over inventing new checks.
 
-</instructions>
-
-<examples>
+## Examples
 
 ### Good cleanup targets
 
@@ -59,5 +57,3 @@ Use this skill to remove unnecessary complexity around the task in front of you.
 - Rewriting an entire subsystem without a product requirement.
 - Introducing new patterns only because they are fashionable.
 - Splitting files or creating helpers when the current file is already clear.
-
-</examples>

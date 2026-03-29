@@ -1,26 +1,25 @@
 ---
 name: playwright-cli
 description: Runs repeatable browser flows with playwright-cli. Use when a task needs navigation, form entry, snapshots, debugging, or artifact capture in a real browser.
-allowed-tools: Bash(playwright-cli:*)
 ---
 
 # Browser automation with playwright-cli
 
-<overview>
 Use this skill for the workflow and decision points, not as a command encyclopedia. Prefer snapshots over screenshots for interaction, keep sessions short-lived unless persistence is required, and store artifacts only when the task asks for them.
-</overview>
 
-<instructions>
+## Usage
 
-## When to Use
+Reach for this skill when real browser state matters and command-line HTTP calls or static HTML inspection are not enough.
 
-| Situation | Primary commands |
-| --- | --- |
-| Start or resume a browser flow | `open`, `goto`, `snapshot`, `close` |
-| Interact with page elements | `click`, `fill`, `type`, `select`, `press` |
-| Inspect state | `snapshot`, `eval`, `console`, `network` |
-| Capture artifacts | `screenshot`, `pdf`, `tracing-start`, `tracing-stop` |
-| Manage state or tabs | `state-save`, `state-load`, `tab-*`, storage commands |
+## When to use
+
+| Situation                      | Primary commands                                      |
+| ------------------------------ | ----------------------------------------------------- |
+| Start or resume a browser flow | `open`, `goto`, `snapshot`, `close`                   |
+| Interact with page elements    | `click`, `fill`, `type`, `select`, `press`            |
+| Inspect state                  | `snapshot`, `eval`, `console`, `network`              |
+| Capture artifacts              | `screenshot`, `pdf`, `tracing-start`, `tracing-stop`  |
+| Manage state or tabs           | `state-save`, `state-load`, `tab-*`, storage commands |
 
 ## Workflow
 
@@ -38,9 +37,7 @@ Use this skill for the workflow and decision points, not as a command encycloped
 - Mock routes, tracing, and storage commands are opt-in; do not enable them without a task reason.
 - If the global binary is missing, fall back to `npx playwright-cli ...`.
 
-</instructions>
-
-<examples>
+## Examples
 
 ### Basic interaction loop
 
@@ -62,8 +59,6 @@ playwright-cli snapshot
 playwright-cli tracing-stop
 playwright-cli close
 ```
-
-</examples>
 
 ## Specific tasks
 

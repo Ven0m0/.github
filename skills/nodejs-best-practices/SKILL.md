@@ -5,19 +5,19 @@ description: Guides Node.js, Next.js, and NestJS work with stack-aware architect
 
 # Node.js, Next.js, and NestJS Best Practices
 
-<overview>
 Keep this skill focused on choices an agent still needs to make: fit the change to the existing stack, keep boundaries clean, and verify the repo-native lifecycle commands. Do not turn it into a framework textbook.
-</overview>
 
-<instructions>
+## Usage
 
-## When to Use
+Use this skill when the task needs stack selection or architecture judgment, not when repo-wide TypeScript rules already answer the question.
 
-| Situation | Focus |
-| --- | --- |
-| Existing Node.js service | Preserve the current framework and package manager first |
-| Next.js change | Server/client boundaries, route conventions, data fetching, cache behavior |
-| NestJS change | Feature modules, provider boundaries, DTO validation, controller thinness |
+## When to use
+
+| Situation                 | Focus                                                                      |
+| ------------------------- | -------------------------------------------------------------------------- |
+| Existing Node.js service  | Preserve the current framework and package manager first                   |
+| Next.js change            | Server/client boundaries, route conventions, data fetching, cache behavior |
+| NestJS change             | Feature modules, provider boundaries, DTO validation, controller thinness  |
 | Greenfield TypeScript app | Choose the smallest stack that fits the requirements and deployment target |
 
 ## Workflow
@@ -30,23 +30,23 @@ Keep this skill focused on choices an agent still needs to make: fit the change 
 
 ## Architecture defaults
 
-| Concern | Default |
-| --- | --- |
-| Type safety | Strict TypeScript, explicit boundary types, minimal `any` |
-| Request handling | Thin route/controller layer -> service/domain layer -> data layer |
-| Validation | Request params, bodies, env, and external responses validated early |
-| Errors | Central formatting/logging; do not leak internals to clients |
-| Async work | No sync I/O on hot paths; parallelize only independent work |
-| Security | Secrets in env, parameterized DB access, verified auth tokens, rate limits where exposed |
+| Concern          | Default                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| Type safety      | Strict TypeScript, explicit boundary types, minimal `any`                                |
+| Request handling | Thin route/controller layer -> service/domain layer -> data layer                        |
+| Validation       | Request params, bodies, env, and external responses validated early                      |
+| Errors           | Central formatting/logging; do not leak internals to clients                             |
+| Async work       | No sync I/O on hot paths; parallelize only independent work                              |
+| Security         | Secrets in env, parameterized DB access, verified auth tokens, rate limits where exposed |
 
 ## Framework-specific reminders
 
-| Stack | High-signal checks |
-| --- | --- |
-| Next.js | Server components by default; opt into client components only for interactivity |
-| Next.js | Use route handlers or server actions with validation and explicit caching choices |
-| NestJS | Group by feature, keep controllers thin, validate DTOs at the edge |
-| Shared contracts | Centralize schemas/types when UI and API evolve together |
+| Stack            | High-signal checks                                                                |
+| ---------------- | --------------------------------------------------------------------------------- |
+| Next.js          | Server components by default; opt into client components only for interactivity   |
+| Next.js          | Use route handlers or server actions with validation and explicit caching choices |
+| NestJS           | Group by feature, keep controllers thin, validate DTOs at the edge                |
+| Shared contracts | Centralize schemas/types when UI and API evolve together                          |
 
 ## Related skills
 
@@ -54,9 +54,7 @@ Keep this skill focused on choices an agent still needs to make: fit the change 
 - Use `workflow-development` for CI/CD and deployment wiring.
 - Use `docker-expert` when containerization or image hygiene is part of the task.
 
-</instructions>
-
-<examples>
+## Examples
 
 ### Good uses
 
@@ -69,5 +67,3 @@ Keep this skill focused on choices an agent still needs to make: fit the change 
 - Copying full framework tutorials into the skill.
 - Encoding version-by-version release notes or tool marketing.
 - Repeating generic TypeScript advice that already exists in repo-wide instructions.
-
-</examples>

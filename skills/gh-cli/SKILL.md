@@ -1,31 +1,28 @@
 ---
 name: gh-cli
 description: Routes GitHub tasks to the right `gh` or `git` command family. Use when working with repositories, issues, pull requests, Actions, releases, or GitHub search from the terminal.
-user-invocable: true
-disable-model-invocation: false
-context: fork
-agent: general-purpose
-allowed-tools: "Bash(gh *), Bash(git *)"
 ---
 
 # GitHub CLI (gh)
 
 Use this skill as a routing aid, not a full manual. Pick the smallest command family that matches the task, inspect flags with `--help` when needed, and prefer read-only commands before mutation.
 
-<instructions>
+## Usage
 
-## When to Use
+Use `gh` for GitHub-hosted state and `git` for local branch/history work.
 
-| Need | Command family |
-| --- | --- |
-| Inspect or edit a repository | `gh repo ...` |
-| Work with issues | `gh issue ...` |
-| Work with pull requests | `gh pr ...` |
+## When to use
+
+| Need                                | Command family                   |
+| ----------------------------------- | -------------------------------- |
+| Inspect or edit a repository        | `gh repo ...`                    |
+| Work with issues                    | `gh issue ...`                   |
+| Work with pull requests             | `gh pr ...`                      |
 | Investigate CI or trigger workflows | `gh run ...` / `gh workflow ...` |
-| Manage releases | `gh release ...` |
-| Search GitHub | `gh search ...` |
-| Fall back to raw APIs | `gh api ...` |
-| Local branch/history work | `git ...` |
+| Manage releases                     | `gh release ...`                 |
+| Search GitHub                       | `gh search ...`                  |
+| Fall back to raw APIs               | `gh api ...`                     |
+| Local branch/history work           | `git ...`                        |
 
 ## Workflow
 
@@ -36,13 +33,13 @@ Use this skill as a routing aid, not a full manual. Pick the smallest command fa
 
 ## Common paths
 
-| Task | Minimal command set |
-| --- | --- |
-| Inspect a PR | `gh pr view <number> --comments --json title,body,files` |
-| Check CI for a PR/branch | `gh run list` -> `gh run view <run-id> --log` |
-| Create or update an issue | `gh issue create ...` / `gh issue edit ...` |
-| Search across GitHub | `gh search code ...` / `gh search prs ...` |
-| Inspect local changes | `git status` -> `git diff` -> `git log --oneline` |
+| Task                      | Minimal command set                                      |
+| ------------------------- | -------------------------------------------------------- |
+| Inspect a PR              | `gh pr view <number> --comments --json title,body,files` |
+| Check CI for a PR/branch  | `gh run list` -> `gh run view <run-id> --log`            |
+| Create or update an issue | `gh issue create ...` / `gh issue edit ...`              |
+| Search across GitHub      | `gh search code ...` / `gh search prs ...`               |
+| Inspect local changes     | `git status` -> `git diff` -> `git log --oneline`        |
 
 ## Guardrails
 
@@ -50,9 +47,7 @@ Use this skill as a routing aid, not a full manual. Pick the smallest command fa
 - Use `gh api` only when higher-level commands do not expose the needed operation.
 - Prefer repo-local automation or MCP tools when the environment offers safer equivalents.
 
-</instructions>
-
-<examples>
+## Examples
 
 ### Inspect a pull request
 
@@ -73,8 +68,6 @@ gh run list --workflow ci.yml --limit 1 --json databaseId \
 ```bash
 gh search prs "is:open review:required label:bugfix"
 ```
-
-</examples>
 
 ## References
 

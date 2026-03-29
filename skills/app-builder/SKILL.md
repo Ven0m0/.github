@@ -5,11 +5,11 @@ description: Coordinates greenfield app scaffolding and rapid prototyping with o
 
 # App builder
 
-<overview>
 Use this skill for new-project work. Keep it centered on discovery, stack selection, official scaffolding tools, and the smallest viable workflow needed to ship a working prototype.
-</overview>
 
-<instructions>
+## Usage
+
+Use this skill for greenfield scaffolding first; for follow-up feature work, read only the narrow modules that match the request.
 
 ## Selective reading rule
 
@@ -20,15 +20,15 @@ Read only the modules that match the request:
 - `agent-coordination.md` for multi-agent execution
 - `scaffolding.md` for project structure
 - `feature-building.md` for follow-on feature work
-- [`templates/REFERENCE.md`](./templates/REFERENCE.md) for starter templates
+- [templates/REFERENCE.md](templates/REFERENCE.md) for starter templates
 
-## When to Use
+## When to use
 
-| Situation | Apply this skill |
-| --- | --- |
-| New app from a prompt | Choose stack, scaffold, and hand off implementation |
-| Local-first prototype | Optimize for fastest path to a working demo |
-| Existing app feature work | Use only the relevant feature/scaffolding modules |
+| Situation                 | Apply this skill                                     |
+| ------------------------- | ---------------------------------------------------- |
+| New app from a prompt     | Choose stack, scaffold, and hand off implementation  |
+| Local-first prototype     | Optimize for fastest path to a working demo          |
+| Existing app feature work | Use only the relevant feature or scaffolding modules |
 
 ## Workflow
 
@@ -45,9 +45,7 @@ Read only the modules that match the request:
 - Add polish only after the prototype runs end to end.
 - Route domain-specific follow-up work to dedicated skills instead of embedding full framework manuals here.
 
-</instructions>
-
-<examples>
+## Examples
 
 ### Example: greenfield web app
 
@@ -62,5 +60,3 @@ Read only the modules that match the request:
 1. Skip the greenfield templates.
 2. Read only `feature-building.md` plus the relevant stack module.
 3. Plan the smallest change that extends the current app cleanly.
-
-</examples>
