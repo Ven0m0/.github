@@ -77,9 +77,9 @@ runs:
 
     - name: Set up Python
       if: ${{ inputs.provider != 'jules' }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
-        python-version: "3.12"
+        python-version: "3.14"
 
     - name: Install uv
       if: ${{ inputs.provider != 'jules' }}
