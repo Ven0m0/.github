@@ -50,6 +50,12 @@ jobs:
           fetch-depth: ${{ github.event.inputs.provider == 'jules' && '0' || '1' }}
           persist-credentials: false
 
+      - name: Configure git identity
+        shell: bash
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Run agent
         uses: ./actions/run-agent-prompt
         with:
