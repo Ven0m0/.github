@@ -36,6 +36,16 @@ mcp-servers:
     command: npx
     args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     tools: ["*"]
+  chrome-devtools:
+    type: local
+    command: npx
+    args: ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
+    tools: ["*"]
+  next-devtools:
+    type: local
+    command: npx
+    args: ["-y", "next-devtools-mcp@latest"]
+    tools: ["*"]
   playwright:
     type: local
     command: npx

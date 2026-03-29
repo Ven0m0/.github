@@ -7,7 +7,8 @@ mcp-servers:
   github-mcp-server:
     type: http
     url: "https://api.githubcopilot.com/mcp/insiders"
-    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
   fast-filesystem:
     type: local
@@ -18,7 +19,8 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
+    args:
+      ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
     tools: ["*"]
   octocode:
     type: local
@@ -28,6 +30,10 @@ mcp-servers:
       GITHUB_TOKEN: "${GITHUB_TOKEN}"
       ENABLE_LOCAL: "${ENABLE_LOCAL}"
       LOG: "${LOG}"
+    tools: ["*"]
+  vercel:
+    type: http
+    url: "https://mcp.vercel.com"
     tools: ["*"]
 ---
 

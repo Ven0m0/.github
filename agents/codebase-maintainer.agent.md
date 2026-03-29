@@ -31,7 +31,13 @@ mcp-servers:
   github-mcp-server:
     type: http
     url: "https://api.githubcopilot.com/mcp/insiders"
-    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    tools: ["*"]
+  eslint:
+    type: local
+    command: npx
+    args: ["-y", "@eslint/mcp@latest"]
     tools: ["*"]
   fast-filesystem:
     type: local
@@ -42,12 +48,18 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
+    args:
+      ["-y", "repomix@latest", "--compress", "--remove-comments", "--remove-empty-lines", "--truncate-base64", "--mcp"]
     tools: ["*"]
   octocode:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
+    tools: ["*"]
+  ast-grep:
+    type: local
+    command: npx
+    args: ["-y", "@notprolands/ast-grep-mcp@latest"]
     tools: ["*"]
   memory:
     type: stdio

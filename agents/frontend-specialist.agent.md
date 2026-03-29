@@ -32,6 +32,20 @@ mcp-servers:
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
+  chrome-devtools:
+    type: local
+    command: npx
+    args: ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
+    tools: ["*"]
+  next-devtools:
+    type: local
+    command: npx
+    args: ["-y", "next-devtools-mcp@latest"]
+    tools: ["*"]
+  vercel:
+    type: http
+    url: "https://mcp.vercel.com"
+    tools: ["*"]
   playwright:
     type: local
     command: npx
