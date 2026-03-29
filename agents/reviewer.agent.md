@@ -19,8 +19,7 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "octocode-mcp@latest"]
-    env:
-      { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
+    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
     tools: ["*"]
   ast-grep:
     type: local
@@ -35,7 +34,8 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+    args:
+      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
     tools: ["*"]
   exa:
     type: http

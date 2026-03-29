@@ -19,14 +19,7 @@ mcp-servers:
     command: npx
     args: ["-y", "fast-filesystem-mcp@latest"]
     env: { MCP_SILENT_ERRORS: "true" }
-    tools:
-      [
-        "fast_read_file",
-        "fast_read_multiple_files",
-        "fast_search_files",
-        "fast_search_code",
-        "fast_extract_lines",
-      ]
+    tools: ["fast_read_file", "fast_read_multiple_files", "fast_search_files", "fast_search_code", "fast_extract_lines"]
   sequential-thinking:
     type: stdio
     command: npx

@@ -15,7 +15,7 @@ def read_frontmatter(path: Path) -> str:
 
 def read_model(path: Path) -> str:
     """Return the configured primary model for an agent."""
-    match = re.search(r'^model:\s*["\']?([^"\']+)["\']?$', read_frontmatter(path), re.MULTILINE)
+    match = re.search(r'^model:\s*["\']?([^\n"\']+)["\']?$', read_frontmatter(path), re.MULTILINE)
     assert match is not None, f"missing model in {path}"
     return match.group(1)
 
