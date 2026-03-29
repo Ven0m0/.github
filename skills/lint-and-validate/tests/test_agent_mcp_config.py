@@ -29,6 +29,8 @@ def test_workspace_mcp_config_includes_selected_servers():
     assert servers["chrome-devtools"]["args"] == ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
     assert servers["next-devtools"]["args"] == ["-y", "next-devtools-mcp@latest"]
     assert servers["vercel"]["url"] == "https://mcp.vercel.com"
+    assert servers["netlify"]["args"] == ["-y", "@netlify/mcp"]
+    assert servers["reddit"]["args"] == ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
     assert servers["ast-grep"]["args"] == ["-y", "@notprolands/ast-grep-mcp@latest"]
 
 
@@ -53,13 +55,14 @@ def test_code_agents_get_structural_and_linting_mcp_servers():
             assert server_name in frontmatter
 
 
-def test_frontend_and_platform_agents_get_browser_and_vercel_servers():
-    """Frontend/platform agents should expose the browser and hosting MCP servers they need."""
+def test_agents_include_specialized_mcp_servers_in_frontmatter():
+    """Agents should expose the specialized MCP servers they need in frontmatter."""
     expected_servers = {
-        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "next-devtools:", "vercel:"),
+        "agents/researcher.agent.md": ("reddit:",),
+        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "next-devtools:", "vercel:", "netlify:"),
         "agents/debug.agent.md": ("chrome-devtools:", "next-devtools:"),
-        "agents/workflow-engineer.agent.md": ("vercel:",),
-        "agents/repo-architect.agent.md": ("vercel:",),
+        "agents/workflow-engineer.agent.md": ("vercel:", "netlify:"),
+        "agents/repo-architect.agent.md": ("vercel:", "netlify:"),
     }
 
     for relative_path, server_names in expected_servers.items():

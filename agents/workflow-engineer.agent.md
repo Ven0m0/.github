@@ -43,6 +43,11 @@ mcp-servers:
     type: http
     url: "https://mcp.vercel.com"
     tools: ["*"]
+  netlify:
+    type: local
+    command: npx
+    args: ["-y", "@netlify/mcp"]
+    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -63,7 +68,7 @@ Always load `skills/workflow-development/SKILL.md`, `skills/gh-cli/SKILL.md`, an
 - Use **github-mcp-server** first for workflow runs, jobs, logs, artifacts, and permissions issues.
 - Use **fast-filesystem** and **octocode** to inspect workflow YAML, actions, and shared scripts.
 - Use **exa** and **ref-tools** to verify current GitHub Actions or deployment documentation.
-- Use **vercel** only for Vercel-specific deploy, preview, or environment workflows.
+- Use **vercel** or **netlify** only for platform-specific deploy, preview, hosting, or environment workflows.
 - Use **repomix** for monorepo workflow audits when a single file read is not enough.
 
 ### Collaboration Contract

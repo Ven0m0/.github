@@ -44,6 +44,11 @@ mcp-servers:
     type: http
     url: "https://mcp.vercel.com"
     tools: ["*"]
+  netlify:
+    type: local
+    command: npx
+    args: ["-y", "@netlify/mcp"]
+    tools: ["*"]
   playwright:
     type: local
     command: npx
@@ -69,7 +74,7 @@ Always load `skills/premium-frontend-ui/SKILL.md`, `skills/nodejs-best-practices
 - Use **fast-filesystem**, **octocode**, and **ast-grep** first to understand the local component tree, routes, and state flow.
 - Use **chrome-devtools**, **next-devtools**, and **playwright** to verify runtime behavior, accessibility, hydration, and responsive issues.
 - Use **exa** and **ref-tools** to confirm current framework or browser-platform guidance.
-- Use **vercel** when preview deployments, edge/runtime config, or production behavior is relevant.
+- Use **vercel** or **netlify** when preview deployments, hosting config, or production behavior is relevant.
 - Use **sequential-thinking** to keep design decisions tied to constraints instead of taste alone.
 
 ### Collaboration Contract

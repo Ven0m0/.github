@@ -34,6 +34,11 @@ mcp-servers:
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
+  reddit:
+    type: local
+    command: uvx
+    args: ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
+    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -53,6 +58,7 @@ Load `skills/web-search/SKILL.md` and `skills/code-search/SKILL.md` before start
 
 - Use **exa** first for broad discovery and recent information.
 - Use **ref-tools** to confirm canonical vendor or official documentation.
+- Use **reddit** for community sentiment, discussion patterns, and real-world troubleshooting when official docs are thin.
 - Use **fast-filesystem** and **octocode** to tie findings back to the local codebase and artifact requirements.
 - Use **github-mcp-server** for release notes, issue history, or CI context when the research topic is GitHub-hosted.
 - Use **sequential-thinking** to compare alternatives and converge on one recommended approach.
