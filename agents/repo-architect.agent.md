@@ -42,6 +42,11 @@ mcp-servers:
     type: http
     url: "https://mcp.vercel.com"
     tools: ["*"]
+  netlify:
+    type: local
+    command: npx
+    args: ["-y", "@netlify/mcp"]
+    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -63,7 +68,7 @@ Always load `skills/ai-tuning/SKILL.md`, `skills/linting-llm-configs/SKILL.md`, 
 - Use **octocode** to verify file references, symbol links, and generated examples against the repo.
 - Use **github-mcp-server** for repo/workflow context that affects agentic setup.
 - Use **exa** and **ref-tools** to confirm current MCP, GitHub Copilot, and OpenCode conventions.
-- Use **vercel** only when deployment templates or preview environments are part of the setup.
+- Use **vercel** or **netlify** only when deployment templates, hosting setup, or preview environments are part of the setup.
 - Use **sequential-thinking** to separate foundation rules, specialist agents, and capability layers.
 
 ### Collaboration Contract

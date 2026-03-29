@@ -35,6 +35,18 @@
       "url": "https://mcp.vercel.com",
       "tools": ["*"]
     },
+    "netlify": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@netlify/mcp"],
+      "tools": ["*"]
+    },
+    "reddit": {
+      "type": "local",
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"],
+      "tools": ["*"]
+    },
     "exa": {
       "type": "http",
       "tools": ["*"],
