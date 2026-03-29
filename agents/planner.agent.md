@@ -2,6 +2,8 @@
 name: planner
 description: "Architecture design and DAG-based implementation planning. Creates requirements, wave-ordered task breakdowns, task contracts, pre-mortem analysis, and plan metrics from exploration artifacts."
 model: GPT-5.4
+modelParameters:
+  temperature: 0.35
 mcp-servers:
   fast-filesystem:
     type: local
