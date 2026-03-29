@@ -40,7 +40,7 @@ agnix --fix-safe .
 ```bash
 bun install -g claude-code-lint
 npx claudelint init
-npm install -g agnix
+bun install -g agnix
 ```
 
 </instructions>
