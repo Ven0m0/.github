@@ -67,8 +67,8 @@ The orchestrator selects scope based on pipeline stage:
 
 ### 1. Requirements Met
 
-- Compare plan REQ-\* against implementation artifact
-- Verify every TASK-\* was addressed
+- Compare plan `REQ-*` against implementation artifact
+- Verify every `TASK-*` was addressed
 - Check acceptance criteria satisfied
 - If `docs/prd.yaml` exists: verify PRD acceptance criteria met; flag any scope creep; no conflicts with PRD decisions or state machines
 
