@@ -38,7 +38,7 @@ agnix --fix-safe .
 ## Install
 
 ```bash
-npm install -g claude-code-lint
+bun install -g claude-code-lint
 npx claudelint init
 npm install -g agnix
 ```
