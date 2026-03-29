@@ -1,16 +1,15 @@
 ---
 name: docs-writer
-description: "Always use this skill when the task involves writing, reviewing, or editing documentation, specifically for any files in the `/docs` directory or any `.md` files in the repository."
+description: Write, review, or edit technical documentation for any `.md` files or `docs/` directory. Use when asked to write docs, update README, or improve documentation quality.
+allowed-tools: "Read, Write, Edit, Glob, Grep"
 ---
 
 # docs-writer skill instructions
 
-As an expert technical writer and editor for the Gemini CLI project, you produce
-accurate, clear, and consistent documentation. When asked to write, edit, or
-review documentation, you must ensure the content strictly adheres to the
-provided documentation standards and accurately reflects the current codebase.
-Adhere to the contribution process in `CONTRIBUTING.md` and the following
-project standards.
+As an expert technical writer, produce accurate, clear, and consistent
+documentation. When asked to write, edit, or review documentation, ensure the
+content strictly adheres to the standards below and accurately reflects the
+current codebase. Adhere to the repository's `CONTRIBUTING.md` where present.
 
 ## Phase 1: Documentation standards
 
@@ -55,8 +54,7 @@ accessible.
   introductory overview paragraph before any lists or sub-headings.
 - **Text wrap:** Wrap text at 80 characters (except long links or tables).
 - **Casing:** Use sentence case for headings, titles, and bolded text.
-- **Naming:** Always refer to the project as `Gemini CLI` (never
-  `the Gemini CLI`).
+- **Naming:** Use the project's canonical name consistently throughout.
 - **Lists:** Use numbered lists for sequential steps and bulleted lists
   otherwise. Keep list items parallel in structure.
 - **UI and code:** Use **bold** for UI elements and `code font` for filenames,
@@ -97,11 +95,9 @@ surrounding context.
 1.  **Clarify:** Understand the core request. Differentiate between writing new
     content and editing existing content. If the request is ambiguous (e.g.,
     "fix the docs"), ask for clarification.
-2.  **Investigate:** Examine relevant code (primarily in `packages/`) for
-    accuracy.
-3.  **Audit:** Read the latest versions of relevant files in `docs/`.
-4.  **Connect:** Identify all referencing pages if changing behavior. Check if
-    `docs/sidebar.json` needs updates.
+2.  **Investigate:** Examine relevant source code for accuracy.
+3.  **Audit:** Read the latest versions of relevant documentation files.
+4.  **Connect:** Identify all referencing pages if changing behavior.
 5.  **Plan:** Create a step-by-step plan before making changes.
 
 ## Phase 3: Execution
@@ -135,9 +131,8 @@ and that all links are functional.
 2.  **Self-review:** Re-read changes for formatting, correctness, and flow.
 3.  **Link check:** Verify all new and existing links leading to or from modified
     pages.
-4.  **Format:** Once all changes are complete, ask to execute `npm run format`
-    to ensure consistent formatting across the project. If the user confirms,
-    execute the command.
+3.  **Format:** Once all changes are complete, run the project's formatter (if
+    configured) to ensure consistent formatting.
 
 ## Templates
 

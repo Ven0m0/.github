@@ -99,25 +99,25 @@ Agents: security-auditor → penetration-tester → synthesis
 
 ## Available Agents
 
-| Agent                   | Expertise        | Trigger Phrases                                    |
-| ----------------------- | ---------------- | -------------------------------------------------- |
-| `orchestrator`          | Coordination     | "comprehensive", "multi-perspective"               |
-| `security-auditor`      | Security         | "security", "auth", "vulnerabilities"              |
-| `penetration-tester`    | Security Testing | "pentest", "red team", "exploit"                   |
-| `backend-specialist`    | Backend          | "API", "server", "Node.js", "Express"              |
-| `frontend-specialist`   | Frontend         | "React", "UI", "components", "Next.js"             |
-| `test-engineer`         | Testing          | "tests", "coverage", "TDD"                         |
-| `devops-engineer`       | DevOps           | "deploy", "CI/CD", "infrastructure"                |
-| `database-architect`    | Database         | "schema", "Prisma", "migrations"                   |
-| `mobile-developer`      | Mobile           | "React Native", "Flutter", "mobile"                |
-| `api-designer`          | API Design       | "REST", "GraphQL", "OpenAPI"                       |
-| `debugger`              | Debugging        | "bug", "error", "not working"                      |
-| `explorer-agent`        | Discovery        | "explore", "map", "structure"                      |
-| `documentation-writer`  | Documentation    | "write docs", "create README", "generate API docs" |
-| `performance-optimizer` | Performance      | "slow", "optimize", "profiling"                    |
-| `project-planner`       | Planning         | "plan", "roadmap", "milestones"                    |
-| `seo-specialist`        | SEO              | "SEO", "meta tags", "search ranking"               |
-| `game-developer`        | Game Development | "game", "Unity", "Godot", "Phaser"                 |
+| Agent                    | Expertise          | Trigger Phrases                                         |
+| ------------------------ | ------------------ | ------------------------------------------------------- |
+| `orchestrator`           | Pipeline driver    | "comprehensive", "multi-phase", "end-to-end"            |
+| `explorer`               | Discovery          | "explore", "map", "structure", "find files"             |
+| `planner`                | Architecture/DAG   | "plan", "design", "roadmap", "wave"                     |
+| `researcher`             | Deep investigation | "research", "investigate", "best practices"             |
+| `coder`                  | Implementation     | "implement", "build", "code", "write"                   |
+| `reviewer`               | Code/plan review   | "review", "audit", "check", "OWASP"                     |
+| `frontend-specialist`    | UI/React/Next.js   | "React", "UI", "components", "Next.js", "CSS"           |
+| `debug`                  | Bug fixing         | "bug", "error", "not working", "fix"                    |
+| `workflow-engineer`      | GitHub Actions     | "CI/CD", "workflow", "actions", "deploy"                |
+| `doc-writer`             | Documentation      | "write docs", "README", "API docs"                      |
+| `codebase-maintainer`    | Cleanup/tech debt  | "cleanup", "refactor", "dead code", "tech debt"         |
+| `git`                    | Version control    | "git", "branch", "PR", "commit"                         |
+| `arch-linux-expert`      | Arch Linux         | "arch", "pacman", "systemd", "AUR"                      |
+| `repo-architect`         | Repo structure     | "repo setup", "AI config", "AGENTS.md", "Copilot"      |
+| `janitor`                | Dead code removal  | "janitor", "clean", "remove unused", "bloat"            |
+| `swe`                    | General engineering | "senior engineer", "direct task", "implement for me"   |
+| `qa`                     | Test planning      | "QA", "test plan", "bug hunt", "test coverage"          |
 
 ---
 
@@ -170,7 +170,7 @@ After all agents complete, synthesize:
 
 ## Best Practices
 
-1. **Available agents** - 17 specialized agents can be orchestrated
+1. **Available agents** - 17 specialized agents can be orchestrated (see table above)
 2. **Logical order** - Discovery → Analysis → Implementation → Testing
 3. **Share context** - Pass relevant findings to subsequent agents
 4. **Single synthesis** - One unified report, not separate outputs
