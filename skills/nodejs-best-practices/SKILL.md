@@ -1,387 +1,69 @@
 ---
 name: nodejs-best-practices
-description: Node.js, Next.js, and NestJS development principles. Framework selection, architecture, validation, security, and testing guidance for modern TypeScript web stacks.
+description: Guides Node.js, Next.js, and NestJS work with stack-aware architecture and verification checkpoints. Use when building, reviewing, or refactoring TypeScript services and web apps.
 ---
 
 # Node.js, Next.js, and NestJS Best Practices
 
-> Principles and decision-making for modern TypeScript web stacks in 2025.
-> **Learn to THINK, not memorize code patterns.**
-
----
-
-## ⚠️ How to Use This Skill
-
-This skill teaches **decision-making principles**, not fixed code to copy.
-
-- ASK user for preferences when unclear
-- Choose framework/pattern based on CONTEXT
-- Don't default to same solution every time
-
----
-
-## 1. Framework Selection (2025)
-
-### Decision Tree
-
-```
-What are you building?
-│
-├── Edge/Serverless (Cloudflare, Vercel)
-│   └── Hono (zero-dependency, ultra-fast cold starts)
-│
-├── High Performance API
-│   └── Fastify (2-3x faster than Express)
-│
-├── Enterprise/Team familiarity
-│   └── NestJS (structured, DI, decorators)
-│
-├── Legacy/Stable/Maximum ecosystem
-│   └── Express (mature, most middleware)
-│
-└── Full-stack with frontend
-    └── Next.js API Routes or tRPC
-```
-
-### Comparison Principles
-
-| Factor             | Hono             | Fastify     | Express          |
-| ------------------ | ---------------- | ----------- | ---------------- |
-| **Best for**       | Edge, serverless | Performance | Legacy, learning |
-| **Cold start**     | Fastest          | Fast        | Moderate         |
-| **Ecosystem**      | Growing          | Good        | Largest          |
-| **TypeScript**     | Native           | Excellent   | Good             |
-| **Learning curve** | Low              | Medium      | Low              |
-
-### Selection Questions to Ask:
-
-1. What's the deployment target?
-2. Is cold start time critical?
-3. Does team have existing experience?
-4. Is there legacy code to maintain?
-
----
-
-## 2. Runtime Considerations (2025)
-
-### Native TypeScript
-
-```
-Node.js 22+: --experimental-strip-types
-├── Run .ts files directly
-├── No build step needed for simple projects
-└── Consider for: scripts, simple APIs
-```
-
-### Module System Decision
-
-```
-ESM (import/export)
-├── Modern standard
-├── Better tree-shaking
-├── Async module loading
-└── Use for: new projects
-
-CommonJS (require)
-├── Legacy compatibility
-├── More npm packages support
-└── Use for: existing codebases, some edge cases
-```
-
-### Runtime Selection
-
-| Runtime     | Best For                            |
-| ----------- | ----------------------------------- |
-| **Node.js** | General purpose, largest ecosystem  |
-| **Bun**     | Performance, built-in bundler       |
-| **Deno**    | Security-first, built-in TypeScript |
-
----
-
-## 3. Architecture Principles
-
-### Layered Structure Concept
-
-```
-Request Flow:
-│
-├── Controller/Route Layer
-│   ├── Handles HTTP specifics
-│   ├── Input validation at boundary
-│   └── Calls service layer
-│
-├── Service Layer
-│   ├── Business logic
-│   ├── Framework-agnostic
-│   └── Calls repository layer
-│
-└── Repository Layer
-    ├── Data access only
-    ├── Database queries
-    └── ORM interactions
-```
-
-### Why This Matters:
-
-- **Testability**: Mock layers independently
-- **Flexibility**: Swap database without touching business logic
-- **Clarity**: Each layer has single responsibility
-
-### When to Simplify:
-
-- Small scripts → Single file OK
-- Prototypes → Less structure acceptable
-- Always ask: "Will this grow?"
-
----
-
-## 4. Error Handling Principles
-
-### Centralized Error Handling
-
-```
-Pattern:
-├── Create custom error classes
-├── Throw from any layer
-├── Catch at top level (middleware)
-└── Format consistent response
-```
-
-### Error Response Philosophy
-
-```
-Client gets:
-├── Appropriate HTTP status
-├── Error code for programmatic handling
-├── User-friendly message
-└── NO internal details (security!)
-
-Logs get:
-├── Full stack trace
-├── Request context
-├── User ID (if applicable)
-└── Timestamp
-```
-
-### Status Code Selection
-
-| Situation     | Status | When                                 |
-| ------------- | ------ | ------------------------------------ |
-| Bad input     | 400    | Client sent invalid data             |
-| No auth       | 401    | Missing or invalid credentials       |
-| No permission | 403    | Valid auth, but not allowed          |
-| Not found     | 404    | Resource doesn't exist               |
-| Conflict      | 409    | Duplicate or state conflict          |
-| Validation    | 422    | Schema valid but business rules fail |
-| Server error  | 500    | Our fault, log everything            |
-
----
-
-## 5. Async Patterns Principles
-
-### When to Use Each
-
-| Pattern              | Use When                        |
-| -------------------- | ------------------------------- |
-| `async/await`        | Sequential async operations     |
-| `Promise.all`        | Parallel independent operations |
-| `Promise.allSettled` | Parallel where some can fail    |
-| `Promise.race`       | Timeout or first response wins  |
-
-### Event Loop Awareness
-
-```
-I/O-bound (async helps):
-├── Database queries
-├── HTTP requests
-├── File system
-└── Network operations
-
-CPU-bound (async doesn't help):
-├── Crypto operations
-├── Image processing
-├── Complex calculations
-└── → Use worker threads or offload
-```
-
-### Avoiding Event Loop Blocking
-
-- Never use sync methods in production (fs.readFileSync, etc.)
-- Offload CPU-intensive work
-- Use streaming for large data
-
----
-
-## 6. Validation Principles
-
-### Validate at Boundaries
-
-```
-Where to validate:
-├── API entry point (request body/params)
-├── Before database operations
-├── External data (API responses, file uploads)
-└── Environment variables (startup)
-```
-
-### Validation Library Selection
-
-| Library     | Best For                        |
-| ----------- | ------------------------------- |
-| **Zod**     | TypeScript first, inference     |
-| **Valibot** | Smaller bundle (tree-shakeable) |
-| **ArkType** | Performance critical            |
-| **Yup**     | Existing React Form usage       |
-
-### Validation Philosophy
-
-- Fail fast: Validate early
-- Be specific: Clear error messages
-- Don't trust: Even "internal" data
-
----
-
-## 7. Security Principles
-
-### Security Checklist (Not Code)
-
-- [ ] **Input validation**: All inputs validated
-- [ ] **Parameterized queries**: No string concatenation for SQL
-- [ ] **Password hashing**: bcrypt or argon2
-- [ ] **JWT verification**: Always verify signature and expiry
-- [ ] **Rate limiting**: Protect from abuse
-- [ ] **Security headers**: Helmet.js or equivalent
-- [ ] **HTTPS**: Everywhere in production
-- [ ] **CORS**: Properly configured
-- [ ] **Secrets**: Environment variables only
-- [ ] **Dependencies**: Regularly audited
-
-### Security Mindset
-
-```
-Trust nothing:
-├── Query params → validate
-├── Request body → validate
-├── Headers → verify
-├── Cookies → validate
-├── File uploads → scan
-└── External APIs → validate response
-```
-
----
-
-## 8. Testing Principles
-
-### Test Strategy Selection
-
-| Type            | Purpose        | Tools             |
-| --------------- | -------------- | ----------------- |
-| **Unit**        | Business logic | node:test, Vitest |
-| **Integration** | API endpoints  | Supertest         |
-| **E2E**         | Full flows     | Playwright        |
-
-### What to Test (Priorities)
-
-1. **Critical paths**: Auth, payments, core business
-2. **Edge cases**: Empty inputs, boundaries
-3. **Error handling**: What happens when things fail?
-4. **Not worth testing**: Framework code, trivial getters
-
-### Built-in Test Runner (Node.js 22+)
-
-```
-node --test src/**/*.test.ts
-├── No external dependency
-├── Good coverage reporting
-└── Watch mode available
-```
-
----
-
-## 9. Framework Tracks
-
-### Choose the Right Track
-
-| Need | Choose | Why |
-| ---- | ------ | --- |
-| Full-stack React app, SSR/ISR, App Router | **Next.js** | Frontend + backend in one deployment model |
-| Structured backend API, modules, DI, guards | **NestJS** | Strong architecture for larger teams/services |
-| Separate UI and API, clear deployment boundaries | **Next.js + NestJS** | Best when frontend and backend lifecycles differ |
-
-### Shared Rules Across Both
-
-- Keep business rules outside route/controller glue
-- Validate at the boundary, not deep in the call stack
-- Centralize auth, error formatting, and logging policies
-- Prefer typed contracts for server/client and service/module boundaries
-
-### Next.js Focus Areas
-
-| Topic | Rule of Thumb |
-| ----- | ------------- |
-| Server vs Client Components | Server by default; add client only for interactivity |
-| Data fetching | Fetch on the server first; use client fetch only when UI state demands it |
-| Routing | Use `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx` consistently |
-| Mutations | Prefer server actions or route handlers with validation |
-| Caching | Choose explicit `revalidate`, tags, or `no-store` per route |
-| Metadata | Define static metadata unless route data must drive it |
-
-### NestJS Focus Areas
-
-| Topic | Rule of Thumb |
-| ----- | ------------- |
-| Module boundaries | Group by feature; export providers intentionally |
-| Dependency injection | Prefer explicit providers/tokens; treat `forwardRef()` as a last resort |
-| Request pipeline | Middleware -> guards -> interceptors -> pipes -> handler |
-| Controllers | Keep HTTP concerns thin; move domain logic into services |
-| Validation | Validate DTOs at the controller boundary before service logic |
-| Testing | Validate in order: typecheck -> unit -> integration/e2e |
-
-### When Running Both Together
-
-| Concern | Recommended Split |
-| ------- | ----------------- |
-| UI rendering, forms, route-level UX | Next.js |
-| Domain services, async jobs, complex authz | NestJS |
-| Shared types/schemas | Separate package or generated contract layer |
-| Caching and invalidation | Next.js owns UI cache, NestJS owns data consistency |
-
----
-
-## 10. Anti-Patterns to Avoid
-
-### ❌ DON'T:
-
-- Use Express for new edge projects (use Hono)
-- Use sync methods in production code
-- Put business logic in controllers
-- Skip input validation
-- Hardcode secrets
-- Trust external data without validation
-- Block event loop with CPU work
-
-### ✅ DO:
-
-- Choose framework based on context
-- Ask user for preferences when unclear
-- Use layered architecture for growing projects
-- Validate all inputs
-- Use environment variables for secrets
-- Profile before optimizing
-
----
-
-## 11. Decision Checklist
-
-Before implementing:
-
-- [ ] **Asked user about stack preference?**
-- [ ] **Chosen framework for THIS context?** (not just default)
-- [ ] **Considered deployment target?**
-- [ ] **Planned error handling strategy?**
-- [ ] **Identified validation points?**
-- [ ] **Considered security requirements?**
-
----
-
-> **Remember**: Node.js best practices are about decision-making, not memorizing patterns. Every project deserves fresh consideration based on its requirements.
+Keep this skill focused on choices an agent still needs to make: fit the change to the existing stack, keep boundaries clean, and verify the repo-native lifecycle commands. Do not turn it into a framework textbook.
+
+## Usage
+
+Use this skill when the task needs stack selection or architecture judgment, not when repo-wide TypeScript rules already answer the question.
+
+## When to use
+
+| Situation                 | Focus                                                                      |
+| ------------------------- | -------------------------------------------------------------------------- |
+| Existing Node.js service  | Preserve the current framework and package manager first                   |
+| Next.js change            | Server/client boundaries, route conventions, data fetching, cache behavior |
+| NestJS change             | Feature modules, provider boundaries, DTO validation, controller thinness  |
+| Greenfield TypeScript app | Choose the smallest stack that fits the requirements and deployment target |
+
+## Workflow
+
+1. Identify the current stack, runtime, package manager, and deployment target.
+2. Extend the existing framework unless the user explicitly wants a migration.
+3. Keep business rules outside routes, controllers, and framework glue.
+4. Validate inputs, environment, and external data at boundaries.
+5. Re-run the stack's lint, typecheck, test, and build commands before finishing.
+
+## Architecture defaults
+
+| Concern          | Default                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| Type safety      | Strict TypeScript, explicit boundary types, minimal `any`                                |
+| Request handling | Thin route/controller layer -> service/domain layer -> data layer                        |
+| Validation       | Request params, bodies, env, and external responses validated early                      |
+| Errors           | Central formatting/logging; do not leak internals to clients                             |
+| Async work       | No sync I/O on hot paths; parallelize only independent work                              |
+| Security         | Secrets in env, parameterized DB access, verified auth tokens, rate limits where exposed |
+
+## Framework-specific reminders
+
+| Stack            | High-signal checks                                                                |
+| ---------------- | --------------------------------------------------------------------------------- |
+| Next.js          | Server components by default; opt into client components only for interactivity   |
+| Next.js          | Use route handlers or server actions with validation and explicit caching choices |
+| NestJS           | Group by feature, keep controllers thin, validate DTOs at the edge                |
+| Shared contracts | Centralize schemas/types when UI and API evolve together                          |
+
+## Related skills
+
+- Use `premium-frontend-ui` for UI/UX and component polish.
+- Use `workflow-development` for CI/CD and deployment wiring.
+- Use `docker-expert` when containerization or image hygiene is part of the task.
+
+## Examples
+
+### Good uses
+
+- Deciding whether a change belongs in a Next.js route handler, a server action, or a shared service.
+- Pulling validation out of a NestJS service and moving it to DTO/controller boundaries.
+- Reviewing a Node.js API for sync I/O, weak typing, or controller-heavy business logic.
+
+### Out of scope
+
+- Copying full framework tutorials into the skill.
+- Encoding version-by-version release notes or tool marketing.
+- Repeating generic TypeScript advice that already exists in repo-wide instructions.
