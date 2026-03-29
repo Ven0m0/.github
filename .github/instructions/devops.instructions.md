@@ -1,13 +1,12 @@
 ---
 applyTo: "**/*.{yml,yaml}"
-description: "CI/CD and DevOps standards - Auto-Orchestrator"
 ---
 
 # CI/CD & DevOps Standards
 
 ## 🎯 Before Any DevOps Work
 
-**READ**: `.github/skills/deployment-procedures/SKILL.md`
+**READ**: `.github/skills/workflow-development/SKILL.md`
 
 ## 📋 GitHub Actions Best Practices
 
@@ -26,7 +25,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

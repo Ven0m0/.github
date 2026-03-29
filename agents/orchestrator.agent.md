@@ -40,7 +40,7 @@ mcp-servers:
 
 ### Skill Routing
 
-Always auto-load the 1-3 most relevant skills before dispatching work. Default stack: `skills/planning/SKILL.md`, `skills/parallel-agents/SKILL.md`, `skills/agent-patterns/SKILL.md`. Add `skills/ai-tuning/SKILL.md` for agent/config work, `skills/workflow-development/SKILL.md` for CI/CD work, and `skills/docs-writer/SKILL.md` for docs-only tasks.
+Always auto-load the 1-3 most relevant skills before dispatching work. Default stack: `skills/planning/SKILL.md` and `skills/parallel-agents/SKILL.md`. Add `skills/ai-tuning/SKILL.md` for agent/config work, `skills/workflow-development/SKILL.md` for CI/CD work, and `skills/docs-writer/SKILL.md` for docs-only tasks.
 
 ### MCP Playbook
 

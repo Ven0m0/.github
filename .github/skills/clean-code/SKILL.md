@@ -1,6 +1,6 @@
 ---
 name: clean-code
-description: Pragmatic coding standards - concise, direct, no over-engineering, no unnecessary comments
+description: Applies pragmatic cleanup rules to keep code concise, direct, and maintainable. Use when refactoring, trimming duplication, or tightening readability without redesigning the subsystem.
 ---
 
 # Clean Code - Pragmatic AI Coding Standards

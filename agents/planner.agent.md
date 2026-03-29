@@ -51,7 +51,7 @@ handoffs:
 
 ### Auto-Load Skills
 
-Always load `skills/planning/SKILL.md`, `skills/agent-patterns/SKILL.md`, and `skills/parallel-agents/SKILL.md` before writing the plan. Add `skills/ai-tuning/SKILL.md` when the work targets agents, prompts, instructions, or MCP configuration.
+Always load `skills/planning/SKILL.md` and `skills/parallel-agents/SKILL.md` before writing the plan. Add `skills/ai-tuning/SKILL.md` when the work targets agents, prompts, instructions, or MCP configuration.
 
 ### MCP Playbook
 
@@ -69,7 +69,7 @@ Senior architect in the orchestrator pipeline. Reads the exploration artifact an
 ## Standards Reference
 
 - `skills/planning/SKILL.md`
-- `skills/agent-patterns/SKILL.md`
+- `skills/parallel-agents/SKILL.md`
 - `instructions/quality-standards.instructions.md`
 
 ## Input

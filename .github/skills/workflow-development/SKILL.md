@@ -1,7 +1,7 @@
 ---
 name: workflow-development
 description: Create, debug, and optimize GitHub Actions workflows with security best practices. Use when asked to "create workflow", "fix workflow", "add CI", or needs help with GitHub Actions.
-allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
+allowed-tools: "Bash(actionlint *), Bash(gh *), Bash(git *), Bash(prettier *), Read, Write, Edit, Glob, Grep"
 ---
 
 # Workflow Development
@@ -34,7 +34,7 @@ permissions:
   contents: read
 
 steps:
-  - uses: actions/checkout@v4 # Always pin to major version tag
+  - uses: actions/checkout@v6 # Always pin to major version tag
 ```
 
 - Pin all actions to version tags (never `@main` or `@master`)
@@ -130,8 +130,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync
       - run: uv run ruff check .
       - run: uv run pytest -x
@@ -143,7 +143,7 @@ jobs:
 name: Release
 on:
   push:
-  tags: "'v*'"
+    tags: ["v[0-9]*"]
 permissions:
   contents: write
 
@@ -151,7 +151,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: gh release create ${{ github.ref_name }} --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
