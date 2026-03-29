@@ -47,7 +47,7 @@ mcp-servers:
 
 ### Auto-Load Skills
 
-Load `skills/web-search/SKILL.md` and `skills/autoresearch/SKILL.md` before starting research. Add `skills/mcp-development/SKILL.md` for MCP/tooling work and `skills/ai-tuning/SKILL.md` for agent/config tasks.
+Load `skills/web-search/SKILL.md` and `skills/code-search/SKILL.md` before starting research. Add `skills/mcp-development/SKILL.md` for MCP/tooling work and `skills/ai-tuning/SKILL.md` for agent/config tasks.
 
 ### MCP Playbook
 

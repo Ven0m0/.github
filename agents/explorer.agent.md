@@ -42,7 +42,7 @@ mcp-servers:
 
 ### Auto-Load Skills
 
-Load `skills/code-search/SKILL.md` for discovery patterns and `skills/agent-patterns/SKILL.md` for artifact discipline before exploring. Add `skills/ai-tuning/SKILL.md` when the task touches agents, prompts, instructions, or MCP config.
+Load `skills/code-search/SKILL.md` before exploring. Add `skills/parallel-agents/SKILL.md` when the exploration plan needs staged or parallel follow-up, and add `skills/ai-tuning/SKILL.md` when the task touches agents, prompts, instructions, or MCP config.
 
 ### MCP Playbook
 

@@ -1,9 +1,7 @@
 ---
 name: gh-cli
 description: GitHub CLI (gh) reference for repositories, issues, PRs, Actions, releases, and all GitHub operations from the command line. Use when working with GitHub API, automating workflows, or managing repos.
-context: fork
-agent: orchestrator, git-expert
-allowed-tools: "Bash(gh *), Bash(git *)"
+allowed-tools: "Bash(gh *), Bash(git *), Read, Glob, Grep"
 ---
 
 # GitHub CLI (gh)

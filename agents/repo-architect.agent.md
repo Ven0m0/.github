@@ -55,7 +55,7 @@ mcp-servers:
 
 ### Auto-Load Skills
 
-Always load `skills/ai-tuning/SKILL.md`, `skills/agent-patterns/SKILL.md`, and `skills/mcp-development/SKILL.md` before changing agentic project structure or guidance files.
+Always load `skills/ai-tuning/SKILL.md`, `skills/linting-llm-configs/SKILL.md`, and `skills/mcp-development/SKILL.md` before changing agentic project structure or guidance files.
 
 ### MCP Playbook
 
