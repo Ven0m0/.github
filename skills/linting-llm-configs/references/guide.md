@@ -75,12 +75,12 @@ hooks.json:
   3:12  error  script path './non-existent.sh' does not exist
 ```
 
-### Example 3: CLAUDE.md Validation (claudelint)
+### Example 3: CLAUDE.md Optimization (claudelint)
 
 **Command:**
 
 ```bash
-claudelint validate-cc-md
+claudelint optimize-cc-md --dry-run
 ```
 
 **Output:**
