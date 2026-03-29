@@ -16,7 +16,8 @@ mcp-servers:
   github-mcp-server:
     type: http
     url: "https://api.githubcopilot.com/mcp/insiders"
-    headers: { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
+    headers:
+      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     tools: ["*"]
   fast-filesystem:
     type: local
@@ -59,6 +60,11 @@ mcp-servers:
         "lspFindReferences",
         "lspCallHierarchy",
       ]
+  ast-grep:
+    type: local
+    command: npx
+    args: ["-y", "@notprolands/ast-grep-mcp@latest"]
+    tools: ["*"]
   morph-mcp:
     type: local
     command: npx

@@ -17,6 +17,16 @@ mcp-servers:
     type: http
     url: "https://mcp.grep.app"
     tools: ["*"]
+  eslint:
+    type: local
+    command: npx
+    args: ["-y", "@eslint/mcp@latest"]
+    tools: ["*"]
+  ast-grep:
+    type: local
+    command: npx
+    args: ["-y", "@notprolands/ast-grep-mcp@latest"]
+    tools: ["*"]
 ---
 
 # Reviewer
@@ -35,21 +45,21 @@ Senior critical reviewer in the orchestrator pipeline. Handles three review scop
 
 The orchestrator selects scope based on pipeline stage:
 
-| Scope    | When Invoked                        | Focus |
-| -------- | ----------------------------------- | ----- |
-| **task** | End-of-pipeline (phase 5)           | Full code + requirements audit |
-| **wave** | After each implementation wave      | Integration: build, lint, typecheck, tests |
-| **plan** | Before implementation (optional)    | DAG validity, PRD alignment, coverage |
+| Scope    | When Invoked                     | Focus                                      |
+| -------- | -------------------------------- | ------------------------------------------ |
+| **task** | End-of-pipeline (phase 5)        | Full code + requirements audit             |
+| **wave** | After each implementation wave   | Integration: build, lint, typecheck, tests |
+| **plan** | Before implementation (optional) | DAG validity, PRD alignment, coverage      |
 
 ---
 
 ## Depth (task scope only)
 
-| Depth           | Use When                              | Checks |
-| --------------- | ------------------------------------- | ------ |
-| **full**        | Security-sensitive, critical paths    | All 8 categories |
-| **standard**    | Normal feature work (default)         | Categories 1–6 |
-| **lightweight** | Low-risk style/docs changes           | Categories 1, 4 (basics only) |
+| Depth           | Use When                           | Checks                        |
+| --------------- | ---------------------------------- | ----------------------------- |
+| **full**        | Security-sensitive, critical paths | All 8 categories              |
+| **standard**    | Normal feature work (default)      | Categories 1–6                |
+| **lightweight** | Low-risk style/docs changes        | Categories 1, 4 (basics only) |
 
 ---
 
@@ -57,8 +67,8 @@ The orchestrator selects scope based on pipeline stage:
 
 ### 1. Requirements Met
 
-- Compare plan REQ-* against implementation artifact
-- Verify every TASK-* was addressed
+- Compare plan REQ-\* against implementation artifact
+- Verify every TASK-\* was addressed
 - Check acceptance criteria satisfied
 - If `docs/prd.yaml` exists: verify PRD acceptance criteria met; flag any scope creep; no conflicts with PRD decisions or state machines
 
@@ -115,12 +125,12 @@ The orchestrator selects scope based on pipeline stage:
 
 Run integration checks across all files changed in the wave:
 
-| Check      | Tool / Command                   | Pass Condition |
-| ---------- | -------------------------------- | -------------- |
-| Build      | Language-appropriate build step  | Zero errors |
-| Lint       | biome / ruff / shellcheck        | Zero new violations |
-| Typecheck  | tsc --noEmit / mypy / cargo check | Zero errors |
-| Tests      | vitest / pytest / cargo test     | All pass |
+| Check     | Tool / Command                    | Pass Condition      |
+| --------- | --------------------------------- | ------------------- |
+| Build     | Language-appropriate build step   | Zero errors         |
+| Lint      | biome / ruff / shellcheck         | Zero new violations |
+| Typecheck | tsc --noEmit / mypy / cargo check | Zero errors         |
+| Tests     | vitest / pytest / cargo test      | All pass            |
 
 On failure: identify which tasks caused the failure, re-run them (max 3 retries per wave), then re-run integration checks.
 
@@ -191,11 +201,11 @@ model: "claude-opus-4-6"
 
 ## Verdict Types
 
-| Verdict       | Meaning | Orchestrator Action |
-| ------------- | ------- | ------------------- |
-| **pass**      | All requirements met, no blocking issues | Workflow ends |
-| **fail**      | Blocking issues found | Loop back to coder with feedback (max 2 retries) |
-| **conditional** | Non-blocking suggestions only | Human decides |
+| Verdict         | Meaning                                  | Orchestrator Action                              |
+| --------------- | ---------------------------------------- | ------------------------------------------------ |
+| **pass**        | All requirements met, no blocking issues | Workflow ends                                    |
+| **fail**        | Blocking issues found                    | Loop back to coder with feedback (max 2 retries) |
+| **conditional** | Non-blocking suggestions only            | Human decides                                    |
 
 ## Rules
 

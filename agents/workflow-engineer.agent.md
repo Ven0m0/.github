@@ -38,6 +38,10 @@ mcp-servers:
     type: http
     url: "https://mcp.grep.app"
     tools: ["*"]
+  vercel:
+    type: http
+    url: "https://mcp.vercel.com"
+    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
