@@ -36,10 +36,10 @@ agnix --fix-safe .
 ```
 
 ## Install
-
+```bash
 bun install -g claude-code-lint
 bun install -g agnix
-
+```
 </instructions>
 
 ## References
