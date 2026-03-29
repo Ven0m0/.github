@@ -69,6 +69,33 @@ runs:
         [[ -z "${{ inputs.git-committer-name }}" && -n "${{ inputs.git-committer-email }}" ]] &&
           { echo "::error::git-committer-name and git-committer-email must both be set or both be blank."; exit 1; } || true
 
+    - name: Set up Python
+      if: ${{ inputs.provider != 'jules' }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install uv
+      if: ${{ inputs.provider != 'jules' }}
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+
+    - name: Install GitHub CLI
+      if: ${{ inputs.provider != 'jules' }}
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gh
+
+    - name: Install LSP servers
+      if: ${{ inputs.provider == 'claude' || inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
+      shell: bash
+      run: |
+        uv tool install basedpyright
+        bun i -g vscode-langservers-extracted yaml-language-server @vtsls/language-server bash-language-server
+        bun i -g tombi 2>/dev/null || true
+
     - name: Run Claude
       if: ${{ inputs.provider == 'claude' }}
       uses: anthropics/claude-code-action@v1
