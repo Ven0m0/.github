@@ -1,122 +1,66 @@
 ---
 name: app-builder
-description: Main application building and rapid prototyping orchestrator. Creates full-stack applications from natural language requests, selects stacks, scaffolds projects, and guides fast iteration.
+description: Coordinates greenfield app scaffolding and rapid prototyping with official starters and focused sub-agents. Use when creating a new application or shaping a fast prototype.
 ---
 
-# App Builder - Application Building Orchestrator
+# App builder
 
-> Analyzes user requests, determines the right stack, scaffolds projects, and supports rapid local prototyping.
+<overview>
+Use this skill for new-project work. Keep it centered on discovery, stack selection, official scaffolding tools, and the smallest viable workflow needed to ship a working prototype.
+</overview>
 
-## 🎯 Selective Reading Rule
+<instructions>
 
-**Read ONLY files relevant to the request!** Check the content map, find what you need.
+## Selective reading rule
 
-| File                                               | Description                            | When to Read                        |
-| -------------------------------------------------- | -------------------------------------- | ----------------------------------- |
-| `project-detection.md`                             | Keyword matrix, project type detection | Starting new project                |
-| `tech-stack.md`                                    | 2025 default stack, alternatives       | Choosing technologies               |
-| `agent-coordination.md`                            | Agent pipeline, execution order        | Coordinating multi-agent work       |
-| `scaffolding.md`                                   | Directory structure, core files        | Creating project structure          |
-| `feature-building.md`                              | Feature analysis, error handling       | Adding features to existing project |
-| [templates/REFERENCE.md](./templates/REFERENCE.md) | **Project templates index**            | Scaffolding new project             |
+Read only the modules that match the request:
 
----
+- `project-detection.md` for project type and platform clues
+- `tech-stack.md` for stack selection
+- `agent-coordination.md` for multi-agent execution
+- `scaffolding.md` for project structure
+- `feature-building.md` for follow-on feature work
+- [`templates/REFERENCE.md`](./templates/REFERENCE.md) for starter templates
 
-## 📦 Templates (13)
+## When to Use
 
-Quick-start scaffolding for new projects. **Read the matching template only!**
+| Situation | Apply this skill |
+| --- | --- |
+| New app from a prompt | Choose stack, scaffold, and hand off implementation |
+| Local-first prototype | Optimize for fastest path to a working demo |
+| Existing app feature work | Use only the relevant feature/scaffolding modules |
 
-| Template                                                       | Tech Stack          | When to Use           |
-| -------------------------------------------------------------- | ------------------- | --------------------- |
-| [nextjs-fullstack](templates/nextjs-fullstack/TEMPLATE.md)     | Next.js + Prisma    | Full-stack web app    |
-| [nextjs-saas](templates/nextjs-saas/TEMPLATE.md)               | Next.js + Stripe    | SaaS product          |
-| [nextjs-static](templates/nextjs-static/TEMPLATE.md)           | Next.js + Framer    | Landing page          |
-| [nuxt-app](templates/nuxt-app/TEMPLATE.md)                     | Nuxt 3 + Pinia      | Vue full-stack app    |
-| [express-api](templates/express-api/TEMPLATE.md)               | Express + JWT       | REST API              |
-| [python-fastapi](templates/python-fastapi/TEMPLATE.md)         | FastAPI             | Python API            |
-| [react-native-app](templates/react-native-app/TEMPLATE.md)     | Expo + Zustand      | Mobile app            |
-| [flutter-app](templates/flutter-app/TEMPLATE.md)               | Flutter + Riverpod  | Cross-platform mobile |
-| [electron-desktop](templates/electron-desktop/TEMPLATE.md)     | Electron + React    | Desktop app           |
-| [chrome-extension](templates/chrome-extension/TEMPLATE.md)     | Chrome MV3          | Browser extension     |
-| [cli-tool](templates/cli-tool/TEMPLATE.md)                     | Node.js + Commander | CLI app               |
-| [monorepo-turborepo](templates/monorepo-turborepo/TEMPLATE.md) | Turborepo + pnpm    | Monorepo              |
+## Workflow
 
----
+1. Clarify product goal, target users, core flows, platform, and deployment target.
+2. Reuse the repo's existing stack when extending an app; for new apps, choose the smallest viable starter.
+3. Scaffold with the framework's official generator or the closest maintained template.
+4. Hand off specialized work to the right agent (`planner`, `coder`, `frontend-specialist`, `workflow-engineer`, `reviewer`).
+5. Verify the starter runs with the stack-native install, lint, test, build, and dev commands.
 
-## 🔗 Related Agents
+## Guardrails
 
-| Agent                 | Role                             |
-| --------------------- | -------------------------------- |
-| `project-planner`     | Task breakdown, dependency graph |
-| `frontend-specialist` | UI components, pages             |
-| `backend-specialist`  | API, business logic              |
-| `database-architect`  | Schema, migrations               |
-| `devops-engineer`     | Deployment, preview              |
+- Prefer official starters and generators over hand-written scaffolds.
+- Keep the first iteration narrow: one clear happy path beats a half-finished platform.
+- Add polish only after the prototype runs end to end.
+- Route domain-specific follow-up work to dedicated skills instead of embedding full framework manuals here.
 
----
+</instructions>
 
-## Usage Example
+<examples>
 
-```
-User: "Make an Instagram clone with photo sharing and likes"
+### Example: greenfield web app
 
-App Builder Process:
-1. Project type: Social Media App
-2. Tech stack: Next.js + Prisma + Cloudinary + Clerk
-3. Create plan:
-   ├─ Database schema (users, posts, likes, follows)
-   ├─ API routes (12 endpoints)
-   ├─ Pages (feed, profile, upload)
-   └─ Components (PostCard, Feed, LikeButton)
-4. Coordinate agents
-5. Report progress
-6. Start preview
-```
+1. Detect app type from the prompt.
+2. Read the matching template or stack module.
+3. Scaffold with the official starter.
+4. Delegate implementation details to `coder` or `frontend-specialist`.
+5. Verify the generated app builds and runs locally.
 
----
+### Example: existing app enhancement
 
-## 🚀 Rapid Prototyping Mode
+1. Skip the greenfield templates.
+2. Read only `feature-building.md` plus the relevant stack module.
+3. Plan the smallest change that extends the current app cleanly.
 
-Use this skill for fast, local-first web app iteration when the user wants to quickly create, prototype, or polish an application.
-
-### Inputs to Gather
-
-- **App description**: purpose, users, key flows
-- **Tech preferences**: framework, styling, data layer
-- **Design direction**: references, colors, layout expectations
-- **Deploy target**: Vercel, Netlify, self-hosted, desktop, etc.
-
-### Build Workflow
-
-1. **Research current setup commands** before scaffolding
-2. **Initialize the app** with the framework's official starter
-3. **Establish the design system**: tokens, spacing, typography, base UI
-4. **Build features incrementally** with loading, error, and empty states
-5. **Polish for accessibility and performance**
-6. **Document setup and deployment**
-
-### Conventions
-
-| Area         | Guidance                                                   |
-| ------------ | ---------------------------------------------------------- |
-| Architecture | Small reusable components, TypeScript by default           |
-| UX           | Mobile-first, semantic HTML, keyboard accessible           |
-| Styling      | Tailwind preferred for speed; use consistent design tokens |
-| Data         | Handle loading, error, and empty states everywhere         |
-| Backend      | Validate inputs at API boundaries; prefer type-safe ORMs   |
-| Public apps  | Include metadata, Open Graph, sitemap, and robots.txt      |
-
-### Verification
-
-Run the standard project lifecycle commands for the chosen stack:
-
-```bash
-npm install          # or bun install / pnpm install
-npm run type-check   # if available
-npm run lint
-npm test
-npm run build
-npm run dev
-```
-
-Completion means the app builds, runs locally, and covers the critical flows across the target screen sizes.
+</examples>

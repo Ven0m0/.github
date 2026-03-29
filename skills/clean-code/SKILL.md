@@ -1,142 +1,63 @@
 ---
 name: clean-code
-description: Pragmatic coding standards - concise, direct, no over-engineering, no unnecessary comments
+description: Simplifies noisy implementations and improves maintainability during code changes. Use when refactoring, trimming duplication, or tightening readability.
 ---
 
-# Clean Code - Pragmatic AI Coding Standards
+# Clean code
 
-> **CRITICAL SKILL** - Be **concise, direct, and solution-focused**.
+<overview>
+Use this skill to remove unnecessary complexity around the task in front of you. Favor small, behavior-preserving cleanups over broad style rewrites.
+</overview>
 
----
+<instructions>
 
-## Core Principles
+## When to Use
 
-| Principle     | Rule                                                       |
-| ------------- | ---------------------------------------------------------- |
-| **SRP**       | Single Responsibility - each function/class does ONE thing |
-| **DRY**       | Don't Repeat Yourself - extract duplicates, reuse          |
-| **KISS**      | Keep It Simple - simplest solution that works              |
-| **YAGNI**     | You Aren't Gonna Need It - don't build unused features     |
-| **Boy Scout** | Leave code cleaner than you found it                       |
+| Situation | Apply this skill |
+| --- | --- |
+| Refactoring noisy code | Remove dead abstractions, duplication, and indirection |
+| Reviewing maintainability | Tighten names, control flow, and file boundaries |
+| Finishing a feature or bug fix | Trim opportunistic complexity in touched code only |
 
----
+## Workflow
 
-## Naming Rules
+1. Map the impact surface: callers, imports, tests, and shared interfaces.
+2. Simplify only what is coupled to the task; avoid unrelated rewrites.
+3. Prefer clearer names, flatter control flow, and colocated logic over extra layers.
+4. Delete redundant comments, one-off helpers, and unused branches when safe.
+5. Re-run the relevant validation commands before finishing.
 
-| Element       | Convention                                            |
-| ------------- | ----------------------------------------------------- |
-| **Variables** | Reveal intent: `userCount` not `n`                    |
-| **Functions** | Verb + noun: `getUserById()` not `user()`             |
-| **Booleans**  | Question form: `isActive`, `hasPermission`, `canEdit` |
-| **Constants** | SCREAMING_SNAKE: `MAX_RETRY_COUNT`                    |
+## High-signal checks
 
-> **Rule:** If you need a comment to explain a name, rename it.
+| Keep | Remove |
+| --- | --- |
+| Names that explain intent | Placeholder names and abbreviations |
+| Guard clauses and straight-line flow | Deep nesting and branching noise |
+| Shared abstractions with multiple callers | Helpers used once with no reuse value |
+| Comments that explain non-obvious intent | Comments that restate the code |
+| Small focused edits | Cleanup that changes unrelated behavior |
 
----
+## Guardrails
 
-## Function Rules
+- Preserve behavior first; cleanup is not a license to redesign the module.
+- Update dependent files in the same task when signatures or shared types move.
+- Prefer the repository's existing lint/test commands over inventing new checks.
 
-| Rule                | Description                           |
-| ------------------- | ------------------------------------- |
-| **Small**           | Max 20 lines, ideally 5-10            |
-| **One Thing**       | Does one thing, does it well          |
-| **One Level**       | One level of abstraction per function |
-| **Few Args**        | Max 3 arguments, prefer 0-2           |
-| **No Side Effects** | Don't mutate inputs unexpectedly      |
+</instructions>
 
----
+<examples>
 
-## Code Structure
+### Good cleanup targets
 
-| Pattern           | Apply                             |
-| ----------------- | --------------------------------- |
-| **Guard Clauses** | Early returns for edge cases      |
-| **Flat > Nested** | Avoid deep nesting (max 2 levels) |
-| **Composition**   | Small functions composed together |
-| **Colocation**    | Keep related code close           |
+- Inline a helper that only wraps a single expression.
+- Replace nested `if` trees with early returns.
+- Rename `data`/`item`/`temp` variables to domain-specific names.
+- Remove dead branches or stale debug logging in touched code.
 
----
+### Out of scope
 
-## AI Coding Style
+- Rewriting an entire subsystem without a product requirement.
+- Introducing new patterns only because they are fashionable.
+- Splitting files or creating helpers when the current file is already clear.
 
-| Situation             | Action                |
-| --------------------- | --------------------- |
-| User asks for feature | Write it directly     |
-| User reports bug      | Fix it, don't explain |
-| No clear requirement  | Ask, don't assume     |
-
----
-
-## Anti-Patterns (DON'T)
-
-| ❌ Pattern               | ✅ Fix                  |
-| ------------------------ | ----------------------- |
-| Comment every line       | Delete obvious comments |
-| Helper for one-liner     | Inline the code         |
-| Factory for 2 objects    | Direct instantiation    |
-| utils.ts with 1 function | Put code where used     |
-| "First we import..."     | Just write code         |
-| Deep nesting             | Guard clauses           |
-| Magic numbers            | Named constants         |
-| God functions            | Split by responsibility |
-
----
-
-## 🔴 Before Editing ANY File (THINK FIRST!)
-
-**Before changing a file, ask yourself:**
-
-| Question                        | Why                      |
-| ------------------------------- | ------------------------ |
-| **What imports this file?**     | They might break         |
-| **What does this file import?** | Interface changes        |
-| **What tests cover this?**      | Tests might fail         |
-| **Is this a shared component?** | Multiple places affected |
-
-**Quick Check:**
-
-```
-File to edit: UserService.ts
-└── Who imports this? → UserController.ts, AuthController.ts
-└── Do they need changes too? → Check function signatures
-```
-
-> 🔴 **Rule:** Edit the file + all dependent files in the SAME task.
-> 🔴 **Never leave broken imports or missing updates.**
-
----
-
-## Summary
-
-| Do                     | Don't                     |
-| ---------------------- | ------------------------- |
-| Write code directly    | Write tutorials           |
-| Let code self-document | Add obvious comments      |
-| Fix bugs immediately   | Explain the fix first     |
-| Inline small things    | Create unnecessary files  |
-| Name things clearly    | Use abbreviations         |
-| Keep functions small   | Write 100+ line functions |
-
-> **Remember: The user wants working code, not a programming lesson.**
-
----
-
-## 🔴 Self-Check Before Completing (MANDATORY)
-
-**Before saying "task complete", verify:**
-
-| Check                     | Question                          |
-| ------------------------- | --------------------------------- |
-| ✅ **Goal met?**          | Did I do exactly what user asked? |
-| ✅ **Files edited?**      | Did I modify all necessary files? |
-| ✅ **Code works?**        | Did I test/verify the change?     |
-| ✅ **No errors?**         | Lint and TypeScript pass?         |
-| ✅ **Nothing forgotten?** | Any edge cases missed?            |
-
-> 🔴 **Rule:** If ANY check fails, fix it before completing.
-
----
-
-## Verification
-
-Use the repository's local linting and test commands after changes. Prefer repo-native checks over references to external per-agent scripts, and summarize any validation output before deciding on follow-up fixes.
+</examples>
