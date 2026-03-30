@@ -37,8 +37,8 @@ def test_workspace_mcp_config_includes_selected_servers():
 def test_code_agents_get_structural_and_linting_mcp_servers():
     """Coding-focused agents should expose ESLint and/or ast-grep where they add value."""
     expected_servers = {
-        "agents/coder.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:"),
-        "agents/reviewer.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:"),
+        "agents/coder.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:", "semgrep:"),
+        "agents/reviewer.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:", "semgrep:"),
         "agents/codebase-maintainer.agent.md": (
             "github-mcp-server:",
             "fast-filesystem:",
@@ -60,7 +60,7 @@ def test_agents_include_specialized_mcp_servers_in_frontmatter():
     expected_servers = {
         "agents/researcher.agent.md": ("reddit:",),
         "agents/frontend-specialist.agent.md": ("chrome-devtools:", "next-devtools:", "vercel:", "netlify:"),
-        "agents/debug.agent.md": ("chrome-devtools:", "next-devtools:"),
+        "agents/debug.agent.md": ("chrome-devtools:", "next-devtools:", "semgrep:"),
         "agents/workflow-engineer.agent.md": ("vercel:", "netlify:"),
         "agents/repo-architect.agent.md": ("vercel:", "netlify:"),
     }

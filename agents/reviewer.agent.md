@@ -49,6 +49,10 @@ mcp-servers:
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
+  semgrep:
+    type: http
+    url: "https://mcp.semgrep.ai/mcp"
+    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -67,7 +71,7 @@ Always load `skills/code-review/SKILL.md`, `skills/pr-review/SKILL.md`, and `ski
 ### MCP Playbook
 
 - Use **fast-filesystem** and **octocode** to inspect changed files, affected symbols, and downstream impact.
-- Use **ast-grep** and **eslint** for structural, lint, and security-oriented checks.
+- Use **ast-grep**, **eslint**, and **semgrep** for structural, lint, and security-oriented checks.
 - Use **github-mcp-server** for PR threads, check runs, workflow status, and code-security alerts.
 - Use **exa** and **ref-tools** only to verify an external standard, framework contract, or vulnerability claim.
 - Use **sequential-thinking** to separate blocking issues from non-blocking feedback.
