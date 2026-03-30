@@ -36,6 +36,10 @@ mcp-servers:
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
+  semgrep:
+    type: http
+    url: "https://mcp.semgrep.ai/mcp"
+    tools: ["*"]
   chrome-devtools:
     type: local
     command: npx
@@ -70,6 +74,7 @@ Load `skills/fix-issue/SKILL.md` and `skills/lint-and-validate/SKILL.md` before 
 
 - Use **github-mcp-server** first for CI, build, test, and workflow failures.
 - Use **fast-filesystem**, **octocode**, and **ast-grep** to trace the failing path locally.
+- Use **semgrep** when the failure points to insecure patterns, taint flow, or risky configuration.
 - Use **chrome-devtools**, **next-devtools**, and **playwright** only when the bug requires browser/runtime confirmation.
 - Use **exa** and **ref-tools** to validate framework behavior or vendor-specific errors.
 - Use **sequential-thinking** to keep hypotheses, reproductions, and fixes ordered.

@@ -53,6 +53,10 @@ mcp-servers:
     url: "https://api.ref.tools/mcp"
     headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
+  semgrep:
+    type: http
+    url: "https://mcp.semgrep.ai/mcp"
+    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -71,7 +75,7 @@ Always load `skills/lint-and-validate/SKILL.md` plus the 1-2 domain skills that 
 ### MCP Playbook
 
 - Use **fast-filesystem** and **octocode** first for local code reads, symbol tracing, and change targeting.
-- Use **ast-grep** and **eslint** for structural edits and lint-aware verification.
+- Use **ast-grep**, **eslint**, and **semgrep** for structural edits plus security-aware verification.
 - Use **exa** and **ref-tools** only when the plan or research artifact leaves an API, framework, or standards gap.
 - Use **github-mcp-server** for CI failures, PR context, issues, or code-scanning feedback.
 - Use **repomix** only when a large subsystem must be compressed for safe review or handoff.
