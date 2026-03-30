@@ -27,18 +27,16 @@ Use MCP servers and MCP tools first. Prefer MCP-native search, analysis, and edi
 
 ## Tool Selection
 
-| Need                   | Prefer                                       | Avoid when MCP covers it                 |
-| ---------------------- | -------------------------------------------- | ---------------------------------------- |
-| Structural code search | `ast-grep/find_code`                         | plain text `grep`/`rg` only              |
-| Structural refactor    | `ast-grep/rewrite_code`                      | manual `sed`/search-replace              |
-| Static issue scan      | `ast-grep/scan-code`                         | ad-hoc manual review                     |
-| GitHub code research   | `octocode/githubSearchCode`                  | broad web search or raw `gh search code` |
-| Read repo files        | `fast-filesystem/fast_read_file`             | `cat`, `sed`, large raw reads            |
-| Write new files        | `fast-filesystem/fast_write_file`            | shell heredocs for tracked files         |
-| Precise edits          | `fast-filesystem/fast_edit_block`            | fragile manual replace                   |
-| Batch file ops         | `fast-filesystem/fast_batch_file_operations` | repeated `cp`/`mv`/`rm` commands         |
-| Complex reasoning      | `sequential-thinking/sequentialthinking`     | jumping straight into edits              |
-| Web research           | `exa/web_search_advanced_exa`                | generic search first                     |
+- **Structural code search**: prefer `ast-grep/find_code` over plain text `grep`/`rg`-only searches.
+- **Structural refactor**: prefer `ast-grep/rewrite_code` over manual `sed`/search-replace.
+- **Static issue scan**: prefer `ast-grep/scan-code` over manual spot checks.
+- **GitHub code research**: prefer `octocode/githubSearchCode` over broad web search or raw `gh search code`.
+- **Read repo files**: prefer `fast-filesystem/fast_read_file` over `cat`, `sed`, or large raw reads.
+- **Write new files**: prefer `fast-filesystem/fast_write_file` over shell heredocs for tracked files.
+- **Precise edits**: prefer `fast-filesystem/fast_edit_block` over fragile manual replace flows.
+- **Batch file ops**: prefer `fast-filesystem/fast_batch_file_operations` over repeated `cp`/`mv`/`rm` commands.
+- **Complex reasoning**: prefer `sequential-thinking/sequentialthinking` over jumping straight into edits.
+- **Web research**: prefer `exa/web_search_advanced_exa` over generic search first.
 
 ## Workflows
 

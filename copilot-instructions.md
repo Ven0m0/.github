@@ -275,8 +275,13 @@ refactor(skills): consolidate code-maintenance patterns
 | **Bash**                  | -              | -           | `shellcheck` | `shfmt`       | -                     | -            |
 | **Rust**                  | `cargo`        | `cargo`     | `clippy`     | `cargo fmt`   | -                     | `cargo test` |
 
-Use newer/faster/better tools when possible. Always search for the available MCP servers and MCP tools before starting work. Prefer MCP tools over native tools when they cover the task. Auto-activate and preload `.github/skills/mcp-use/SKILL.md` for search, file editing, refactoring, planning, and research work. Use tools and skills whenever you can.
-</tooling>
+Use newer/faster/better tools when possible.
+
+- Always search for the available MCP servers and MCP tools before starting work.
+- Prefer MCP tools over native tools when they cover the task.
+- Auto-activate and preload `.github/skills/mcp-use/SKILL.md` for search, file editing, refactoring, planning, and research work.
+- Use tools and skills whenever you can.
+  </tooling>
 
 ---
 
