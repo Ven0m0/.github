@@ -27,18 +27,18 @@ Use MCP servers and MCP tools first. Prefer MCP-native search, analysis, and edi
 
 ## Tool Selection
 
-| Need | Prefer | Avoid when MCP covers it |
-| --- | --- | --- |
-| Structural code search | `ast-grep/find_code` | plain text `grep`/`rg` only |
-| Structural refactor | `ast-grep/rewrite_code` | manual `sed`/search-replace |
-| Static issue scan | `ast-grep/scan-code` | ad-hoc manual review |
-| GitHub code research | `octocode/githubSearchCode` | broad web search or raw `gh search code` |
-| Read repo files | `fast-filesystem/fast_read_file` | `cat`, `sed`, large raw reads |
-| Write new files | `fast-filesystem/fast_write_file` | shell heredocs for tracked files |
-| Precise edits | `fast-filesystem/fast_edit_block` | fragile manual replace |
-| Batch file ops | `fast-filesystem/fast_batch_file_operations` | repeated `cp`/`mv`/`rm` commands |
-| Complex reasoning | `sequential-thinking/sequentialthinking` | jumping straight into edits |
-| Web research | `exa/web_search_advanced_exa` | generic search first |
+| Need                   | Prefer                                       | Avoid when MCP covers it                 |
+| ---------------------- | -------------------------------------------- | ---------------------------------------- |
+| Structural code search | `ast-grep/find_code`                         | plain text `grep`/`rg` only              |
+| Structural refactor    | `ast-grep/rewrite_code`                      | manual `sed`/search-replace              |
+| Static issue scan      | `ast-grep/scan-code`                         | ad-hoc manual review                     |
+| GitHub code research   | `octocode/githubSearchCode`                  | broad web search or raw `gh search code` |
+| Read repo files        | `fast-filesystem/fast_read_file`             | `cat`, `sed`, large raw reads            |
+| Write new files        | `fast-filesystem/fast_write_file`            | shell heredocs for tracked files         |
+| Precise edits          | `fast-filesystem/fast_edit_block`            | fragile manual replace                   |
+| Batch file ops         | `fast-filesystem/fast_batch_file_operations` | repeated `cp`/`mv`/`rm` commands         |
+| Complex reasoning      | `sequential-thinking/sequentialthinking`     | jumping straight into edits              |
+| Web research           | `exa/web_search_advanced_exa`                | generic search first                     |
 
 ## Workflows
 
