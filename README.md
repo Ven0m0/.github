@@ -1,5 +1,7 @@
 # .github
 
+[![Maintainability](https://qlty.sh/gh/Ven0m0/projects/.github/maintainability.svg)](https://qlty.sh/gh/Ven0m0/projects/.github)
+
 Default community health files and Copilot instructions for all Ven0m0 repositories.
 
 ## What This Provides
