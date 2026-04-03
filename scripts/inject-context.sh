@@ -2,18 +2,24 @@
 
 get_project_info() {
   if [[ -f package.json ]]; then
-    jq -r '.name + " v" + .version' package.json 2>/dev/null && return
+    local package_info
+    package_info=$(jq -r 'if .name and .version then .name + " v" + .version elif .name then .name else empty end' package.json 2>/dev/null)
+    if [[ -n ${package_info} ]]; then
+      printf '%s\n' "${package_info}"
+      return 0
+    fi
   fi
 
   if [[ -f pyproject.toml ]] && command -v python3 >/dev/null 2>&1; then
-    python3 - <<'PY'
+    local python_project_info
+    python_project_info=$(python3 - <<'PY'
 from pathlib import Path
 import sys
 
 try:
     import tomllib
 except ModuleNotFoundError:
-    print("Python 3.11 or higher is required to read pyproject.toml", file=sys.stderr)
+    print("Python 3.11 or higher is required to read pyproject.toml; falling back to other project markers.", file=sys.stderr)
     raise SystemExit(1)
 
 pyproject = Path("pyproject.toml")
@@ -30,15 +36,19 @@ if name and version:
 elif name:
     print(name)
 else:
-    print("No project name found in pyproject.toml (checked [project.name] and [tool.poetry.name])", file=sys.stderr)
+    print("No project name found in pyproject.toml (checked project.name and tool.poetry.name); falling back to other project markers.", file=sys.stderr)
     raise SystemExit(1)
 PY
-    return
+)
+    if [[ -n ${python_project_info} ]]; then
+      printf '%s\n' "${python_project_info}"
+      return 0
+    fi
   fi
 
   if [[ -f mise.toml ]]; then
     basename "${PWD}"
-    return
+    return 0
   fi
 }
 
