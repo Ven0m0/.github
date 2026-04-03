@@ -37,7 +37,7 @@ PY
   fi
 
   if [[ -f mise.toml ]]; then
-    basename "$PWD"
+    basename "${PWD}"
     return
   fi
 }
