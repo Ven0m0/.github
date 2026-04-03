@@ -76,7 +76,7 @@ Standards: See `instructions/cicd-standards.instructions.md`
 
 ## Debugging
 
-Use `get_job_logs` and `actions_list` MCP tools to retrieve workflow run logs and status:
+Use the available GitHub Actions logs, checks, and local validation tools to retrieve workflow run status:
 
 - Examine job logs for failure patterns
 - Check action versions and compatibility
