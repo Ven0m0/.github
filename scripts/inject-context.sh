@@ -8,6 +8,7 @@ get_project_info() {
   if [[ -f pyproject.toml ]] && command -v python3 >/dev/null 2>&1; then
     python3 - <<'PY'
 from pathlib import Path
+import sys
 import tomllib
 
 pyproject = Path("pyproject.toml")
@@ -24,6 +25,7 @@ if name and version:
 elif name:
     print(name)
 else:
+    print("No project name found in pyproject.toml", file=sys.stderr)
     raise SystemExit(1)
 PY
     return
@@ -32,7 +34,7 @@ PY
   echo "Unknown project"
 }
 
-PROJECT_INFO=$(get_project_info 2>/dev/null || echo "Unknown project")
+PROJECT_INFO=$(get_project_info || echo "Unknown project")
 BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 NODE_VERSION=$(node -v 2>/dev/null || echo 'not installed')
 PYTHON_VERSION=$(python3 -V 2>/dev/null || true)
