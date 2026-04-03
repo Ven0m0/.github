@@ -35,10 +35,12 @@ PY
 PROJECT_INFO=$(get_project_info 2>/dev/null || echo "Unknown project")
 BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 NODE_VERSION=$(node -v 2>/dev/null || echo 'not installed')
-PYTHON_VERSION=$(python3 -V 2>/dev/null | awk '{print $2}' || echo 'not installed')
-ADDITIONAL_CONTEXT="Project: $PROJECT_INFO | Branch: $BRANCH | Node: $NODE_VERSION | Python: $PYTHON_VERSION"
+PYTHON_VERSION=$(python3 -V 2>/dev/null || true)
+PYTHON_VERSION=${PYTHON_VERSION#Python }
+PYTHON_VERSION=${PYTHON_VERSION:-not installed}
+ADDITIONAL_CONTEXT="Project: ${PROJECT_INFO} | Branch: ${BRANCH} | Node: ${NODE_VERSION} | Python: ${PYTHON_VERSION}"
 
-jq -n --arg additional_context "$ADDITIONAL_CONTEXT" '{
+jq -n --arg additional_context "${ADDITIONAL_CONTEXT}" '{
   hookSpecificOutput: {
     hookEventName: "SessionStart",
     additionalContext: $additional_context
