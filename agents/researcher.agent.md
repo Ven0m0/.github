@@ -58,7 +58,7 @@ Deep research specialist in the orchestrator pipeline. Reads the plan artifact a
    - `get-library-docs` with specific topic to get current documentation
    - Check installed version vs latest available
 3. **Search for patterns**: Use Reddit discussions and task artifacts for implementation patterns and real-world examples
-4. **Check official docs**: Confirm any unresolved claims against the source material already gathered for the task
+4. **Check official docs**: Confirm unresolved claims against the vendor docs, release notes, or specs already linked in the task or repo
 5. **Evaluate approaches**: Compare alternatives with evidence, recommend best option
 6. **Synthesize findings**: Compile actionable findings for the coder
 
