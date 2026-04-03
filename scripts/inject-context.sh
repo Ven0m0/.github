@@ -19,7 +19,7 @@ import sys
 try:
     import tomllib
 except ModuleNotFoundError:
-    print("Python 3.11 or higher is required to read pyproject.toml; falling back to other project markers.", file=sys.stderr)
+    print("Python 3.11 or higher is required to read pyproject.toml; falling back to mise.toml or Unknown project.", file=sys.stderr)
     raise SystemExit(1)
 
 pyproject = Path("pyproject.toml")
@@ -36,7 +36,7 @@ if name and version:
 elif name:
     print(name)
 else:
-    print("No project name found in pyproject.toml (checked project.name and tool.poetry.name); falling back to other project markers.", file=sys.stderr)
+    print("No project name found in pyproject.toml (checked project.name and tool.poetry.name); falling back to mise.toml or Unknown project.", file=sys.stderr)
     raise SystemExit(1)
 PY
 )
