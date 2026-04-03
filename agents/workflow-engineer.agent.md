@@ -76,7 +76,7 @@ Standards: See `instructions/cicd-standards.instructions.md`
 
 ## Debugging
 
-Use built-in GitHub Actions run/log views plus local validation commands to retrieve workflow run status:
+Use built-in GitHub Actions run/log views plus local validation commands like `actionlint` and `yamllint` to retrieve workflow run status:
 
 - Examine job logs for failure patterns
 - Check action versions and compatibility
