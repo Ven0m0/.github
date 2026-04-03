@@ -20,8 +20,8 @@ pyproject = Path("pyproject.toml")
 with pyproject.open("rb") as file:
     data = tomllib.load(file)
 
-project = data.get("project") or {}
-poetry = data.get("tool", {}).get("poetry") or {}
+project = data.get("project", {})
+poetry = data.get("tool", {}).get("poetry", {})
 name = project.get("name") or poetry.get("name")
 version = project.get("version") or poetry.get("version")
 
@@ -35,8 +35,6 @@ else:
 PY
     return
   fi
-
-  echo "Unknown project"
 }
 
 PROJECT_INFO=$(get_project_info)
