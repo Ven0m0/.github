@@ -4,39 +4,11 @@ name: repo-architect
 model: GPT-5.4
 tools: ["changes", "codebase", "editFiles", "fetch", "new", "problems", "runCommands", "search", "terminalLastCommand"]
 mcp-servers:
-  github-mcp-server:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/insiders"
-    headers:
-      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
   repomix:
     type: local
     command: npx
     args:
       ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   vercel:
     type: http
@@ -64,10 +36,7 @@ Always load `skills/ai-tuning/SKILL.md`, `skills/linting-llm-configs/SKILL.md`, 
 
 ### MCP Playbook
 
-- Use **fast-filesystem** and **repomix** first to audit local structure, guidance density, and duplication.
-- Use **octocode** to verify file references, symbol links, and generated examples against the repo.
-- Use **github-mcp-server** for repo/workflow context that affects agentic setup.
-- Use **exa** and **ref-tools** to confirm current MCP, GitHub Copilot, and OpenCode conventions.
+- Use **repomix** first to audit local structure, guidance density, and duplication.
 - Use **vercel** or **netlify** only when deployment templates, hosting setup, or preview environments are part of the setup.
 - Use **sequential-thinking** to separate foundation rules, specialist agents, and capability layers.
 

@@ -5,24 +5,6 @@ model: GPT-5.4
 modelParameters:
   temperature: 0.25
 mcp-servers:
-  github-mcp-server:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/insiders"
-    headers:
-      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
   ast-grep:
     type: local
     command: npx
@@ -38,16 +20,6 @@ mcp-servers:
     command: npx
     args:
       ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   semgrep:
     type: http
@@ -70,10 +42,8 @@ Always load `skills/code-review/SKILL.md`, `skills/pr-review/SKILL.md`, and `ski
 
 ### MCP Playbook
 
-- Use **fast-filesystem** and **octocode** to inspect changed files, affected symbols, and downstream impact.
 - Use **ast-grep**, **eslint**, and **semgrep** for structural, lint, and security-oriented checks.
-- Use **github-mcp-server** for PR threads, check runs, workflow status, and code-security alerts.
-- Use **exa** and **ref-tools** only to verify an external standard, framework contract, or vulnerability claim.
+- Use **repomix** when review context must be compressed before inspection.
 - Use **sequential-thinking** to separate blocking issues from non-blocking feedback.
 
 ### Handoff Contract

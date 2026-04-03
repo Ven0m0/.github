@@ -6,34 +6,6 @@ modelParameters:
   temperature: 0.35
 agents: ["researcher", "planner", "coder", "reviewer"]
 mcp-servers:
-  github-mcp-server:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/insiders"
-    headers:
-      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
   reddit:
     type: local
     command: uvx
@@ -56,11 +28,7 @@ Load `skills/web-search/SKILL.md` and `skills/code-search/SKILL.md` before start
 
 ### MCP Playbook
 
-- Use **exa** first for broad discovery and recent information.
-- Use **ref-tools** to confirm canonical vendor or official documentation.
 - Use **reddit** for community sentiment, discussion patterns, and real-world troubleshooting when official docs are thin.
-- Use **fast-filesystem** and **octocode** to tie findings back to the local codebase and artifact requirements.
-- Use **github-mcp-server** for release notes, issue history, or CI context when the research topic is GitHub-hosted.
 - Use **sequential-thinking** to compare alternatives and converge on one recommended approach.
 
 ### Handoff Contract
@@ -89,19 +57,18 @@ Deep research specialist in the orchestrator pipeline. Reads the plan artifact a
    - `resolve-library-id` to find the library
    - `get-library-docs` with specific topic to get current documentation
    - Check installed version vs latest available
-3. **Search for patterns**: Use Exa and grep-app for implementation patterns and examples
-4. **Check official docs**: Use ref-tools for authoritative documentation
+3. **Search for patterns**: Use Reddit discussions and task artifacts for implementation patterns and real-world examples
+4. **Check official docs**: Confirm unresolved claims against the vendor docs, release notes, or specs already linked in the task or repo
 5. **Evaluate approaches**: Compare alternatives with evidence, recommend best option
 6. **Synthesize findings**: Compile actionable findings for the coder
 
 ## Research Tools
 
-| Tool          | Use For                                                      |
-| ------------- | ------------------------------------------------------------ |
-| **Context7**  | Library docs, API signatures, version info, best practices   |
-| **Exa**       | Web search, code context, current information, deep research |
-| **ref-tools** | Official documentation, specifications                       |
-| **grep-app**  | GitHub code patterns, real-world usage examples              |
+| Tool                    | Use For                                                    |
+| ----------------------- | ---------------------------------------------------------- |
+| **Context7**            | Library docs, API signatures, version info, best practices |
+| **reddit**              | Community sentiment, troubleshooting patterns, edge cases  |
+| **sequential-thinking** | Compare options, sequence trade-offs, converge on a choice |
 
 ## Context7 Workflow (Mandatory for Library Questions)
 
