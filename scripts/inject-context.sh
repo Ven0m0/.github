@@ -9,7 +9,12 @@ get_project_info() {
     python3 - <<'PY'
 from pathlib import Path
 import sys
-import tomllib
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    print("Python 3.11+ is required to read pyproject.toml", file=sys.stderr)
+    raise SystemExit(1)
 
 pyproject = Path("pyproject.toml")
 with pyproject.open("rb") as file:
@@ -34,7 +39,8 @@ PY
   echo "Unknown project"
 }
 
-PROJECT_INFO=$(get_project_info || echo "Unknown project")
+PROJECT_INFO=$(get_project_info)
+PROJECT_INFO=${PROJECT_INFO:-Unknown project}
 BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 NODE_VERSION=$(node -v 2>/dev/null || echo 'not installed')
 PYTHON_VERSION=$(python3 -V 2>/dev/null || true)
