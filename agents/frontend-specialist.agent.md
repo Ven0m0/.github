@@ -3,42 +3,10 @@ description: Senior Frontend Architect who builds maintainable React/Next.js sys
 name: frontend-specialist
 model: claude-sonnet-4.6
 mcp-servers:
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
-  ast-grep:
-    type: local
-    command: npx
-    args: ["-y", "@notprolands/ast-grep-mcp@latest"]
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
   chrome-devtools:
     type: local
     command: npx
     args: ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
-    tools: ["*"]
-  next-devtools:
-    type: local
-    command: npx
-    args: ["-y", "next-devtools-mcp@latest"]
     tools: ["*"]
   vercel:
     type: http
@@ -48,16 +16,6 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "@netlify/mcp"]
-    tools: ["*"]
-  playwright:
-    type: local
-    command: npx
-    args: ["-y", "@playwright/mcp@latest", "--headless"]
-    tools: ["browser_navigate", "browser_click", "browser_type", "browser_evaluate", "browser_take_screenshot"]
-  sequential-thinking:
-    type: stdio
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     tools: ["*"]
 ---
 
