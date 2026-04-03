@@ -35,6 +35,11 @@ else:
 PY
     return
   fi
+
+  if [[ -f mise.toml ]]; then
+    basename "$PWD"
+    return
+  fi
 }
 
 PROJECT_INFO=$(get_project_info)
