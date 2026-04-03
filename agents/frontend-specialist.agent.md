@@ -30,7 +30,6 @@ Always load `skills/premium-frontend-ui/SKILL.md`, `skills/nodejs-best-practices
 ### MCP Playbook
 
 - Use **chrome-devtools** to verify runtime behavior, accessibility, hydration, and responsive issues.
-- Use built-in code search/read tools plus the task brief and existing UI patterns to map component boundaries and keep design decisions tied to real constraints.
 - Use **vercel** or **netlify** when preview deployments, hosting config, or production behavior is relevant.
 
 ### Collaboration Contract
