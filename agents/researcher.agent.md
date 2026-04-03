@@ -64,11 +64,11 @@ Deep research specialist in the orchestrator pipeline. Reads the plan artifact a
 
 ## Research Tools
 
-| Tool          | Use For                                                      |
-| ------------- | ------------------------------------------------------------ |
-| **Context7**             | Library docs, API signatures, version info, best practices |
-| **reddit**               | Community sentiment, troubleshooting patterns, edge cases  |
-| **sequential-thinking**  | Compare options, sequence trade-offs, converge on a choice |
+| Tool                    | Use For                                                    |
+| ----------------------- | ---------------------------------------------------------- |
+| **Context7**            | Library docs, API signatures, version info, best practices |
+| **reddit**              | Community sentiment, troubleshooting patterns, edge cases  |
+| **sequential-thinking** | Compare options, sequence trade-offs, converge on a choice |
 
 ## Context7 Workflow (Mandatory for Library Questions)
 

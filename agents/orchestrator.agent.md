@@ -129,13 +129,13 @@ For each phase (explore → plan → research → implement → review):
 
 ## Phase Agent Dispatch Table
 
-| Phase        | Agent      | Model             | Artifact             | MCP Servers                                                                                                  |
-| ------------ | ---------- | ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | ast-grep, repomix                                                           |
-| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | repomix, sequential-thinking                                                |
-| 3. Research  | researcher | GPT-5.4           | 03-research.md       | reddit, sequential-thinking                                                 |
-| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | ast-grep, eslint, repomix, semgrep, sequential-thinking                     |
-| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | ast-grep, eslint, repomix, semgrep, sequential-thinking                     |
+| Phase        | Agent      | Model             | Artifact             | MCP Servers                                             |
+| ------------ | ---------- | ----------------- | -------------------- | ------------------------------------------------------- |
+| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | ast-grep, repomix                                       |
+| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | repomix, sequential-thinking                            |
+| 3. Research  | researcher | GPT-5.4           | 03-research.md       | reddit, sequential-thinking                             |
+| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | ast-grep, eslint, repomix, semgrep, sequential-thinking |
+| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | ast-grep, eslint, repomix, semgrep, sequential-thinking |
 
 ## Supporting Agents
 
