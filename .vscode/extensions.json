@@ -2,6 +2,7 @@
   "recommendations": [
     "biomejs.biome", 
     "oxc.oxc-vscode",
+    "detachhead.basedpyright",
     "davidanson.vscode-markdownlint",
     "github.vscode-github-actions"
   ]
