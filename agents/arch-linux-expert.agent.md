@@ -4,22 +4,6 @@ description: "Arch Linux specialist: pacman workflows, rolling-release maintenan
 model: claude-sonnet-4.6
 user-invocable: true
 mcp-servers:
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["fast_read_file", "fast_read_multiple_files", "fast_search_files", "fast_search_code", "fast_extract_lines"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -37,9 +21,6 @@ Always load `skills/arch-linux-triage/SKILL.md` before diagnosing or advising on
 
 ### MCP Playbook
 
-- Use **exa** first for current Arch Wiki, release, and package ecosystem information.
-- Use **ref-tools** for official documentation that needs careful citation.
-- Use **fast-filesystem** only for targeted local config/log inspection when a repository or system snapshot is available.
 - Use **sequential-thinking** to keep incident triage, rollback options, and verification steps ordered.
 
 ### Collaboration Contract

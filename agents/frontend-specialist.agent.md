@@ -29,11 +29,8 @@ Always load `skills/premium-frontend-ui/SKILL.md`, `skills/nodejs-best-practices
 
 ### MCP Playbook
 
-- Use **fast-filesystem**, **octocode**, and **ast-grep** first to understand the local component tree, routes, and state flow.
-- Use **chrome-devtools**, **next-devtools**, and **playwright** to verify runtime behavior, accessibility, hydration, and responsive issues.
-- Use **exa** and **ref-tools** to confirm current framework or browser-platform guidance.
+- Use **chrome-devtools** to verify runtime behavior, accessibility, hydration, and responsive issues.
 - Use **vercel** or **netlify** when preview deployments, hosting config, or production behavior is relevant.
-- Use **sequential-thinking** to keep design decisions tied to constraints instead of taste alone.
 
 ### Collaboration Contract
 

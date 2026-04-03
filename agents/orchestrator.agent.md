@@ -9,18 +9,6 @@ hooks:
     - type: command
       command: "./scripts/inject-context.sh"
 mcp-servers:
-  github-mcp-server:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/insiders"
-    headers:
-      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["fast_read_file", "fast_read_multiple_files", "fast_search_files", "fast_search_code", "fast_extract_lines"]
   repomix:
     type: local
     command: npx
@@ -45,9 +33,7 @@ Always auto-load the 1-3 most relevant skills before dispatching work. Default s
 ### MCP Playbook
 
 - Use **sequential-thinking** to choose complexity, retries, and support-agent routing.
-- Use **fast-filesystem** to validate artifact paths, frontmatter, and required sections.
 - Use **repomix** only when downstream context is too large for direct reads.
-- Use **github-mcp-server** for PR, issue, Actions, and code-security context; do not inspect CI manually when GitHub logs are available.
 
 ### Orchestration Contract
 
@@ -145,11 +131,11 @@ For each phase (explore → plan → research → implement → review):
 
 | Phase        | Agent      | Model             | Artifact             | MCP Servers                                                                                                  |
 | ------------ | ---------- | ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | github-mcp-server, fast-filesystem, octocode, ast-grep, repomix                                              |
-| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | fast-filesystem, octocode, repomix, sequential-thinking, exa, ref-tools                                      |
-| 3. Research  | researcher | GPT-5.4           | 03-research.md       | github-mcp-server, fast-filesystem, octocode, sequential-thinking, exa, ref-tools                            |
-| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | github-mcp-server, fast-filesystem, octocode, ast-grep, eslint, repomix, sequential-thinking, exa, ref-tools |
-| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | github-mcp-server, fast-filesystem, octocode, ast-grep, eslint, repomix, sequential-thinking, exa, ref-tools |
+| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | ast-grep, repomix                                                           |
+| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | repomix, sequential-thinking                                                |
+| 3. Research  | researcher | GPT-5.4           | 03-research.md       | reddit, sequential-thinking                                                 |
+| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | ast-grep, eslint, repomix, semgrep, sequential-thinking                     |
+| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | ast-grep, eslint, repomix, semgrep, sequential-thinking                     |
 
 ## Supporting Agents
 

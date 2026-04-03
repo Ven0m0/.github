@@ -5,33 +5,11 @@ model: GPT-5.4
 modelParameters:
   temperature: 0.35
 mcp-servers:
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
   repomix:
     type: local
     command: npx
     args:
       ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   sequential-thinking:
     type: stdio
@@ -55,9 +33,7 @@ Always load `skills/planning/SKILL.md` and `skills/parallel-agents/SKILL.md` bef
 
 ### MCP Playbook
 
-- Use **fast-filesystem** to read upstream artifacts and verify exact file paths.
-- Use **octocode** to confirm architectural boundaries, call sites, and likely change radius.
-- Use **exa** and **ref-tools** only when the plan depends on current external APIs or vendor constraints.
+- Use **repomix** when upstream artifacts or repo context are too large for direct planning reads.
 - Use **sequential-thinking** to build the DAG, wave ordering, and pre-mortem logic.
 
 ### Handoff Contract

@@ -3,34 +3,6 @@ name: git
 description: "Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control"
 model: claude-sonnet-4.6
 mcp-servers:
-  github-mcp-server:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/insiders"
-    headers:
-      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
-    tools: ["*"]
   sequential-thinking:
     type: stdio
     command: npx
@@ -48,10 +20,6 @@ Always load `skills/gh-cli/SKILL.md` before GitHub operations. Add `skills/workf
 
 ### MCP Playbook
 
-- Use **github-mcp-server** first for PRs, issues, releases, check runs, and repository metadata.
-- Use **fast-filesystem** to inspect local repo state and changed files before recommending risky operations.
-- Use **octocode** when you need semantic repository context or to understand file relationships before a git workflow change.
-- Use **exa** and **ref-tools** only to confirm current GitHub or git documentation.
 - Use **sequential-thinking** for risky workflows like rebases, conflict resolution, or recovery plans.
 
 ### Collaboration Contract

@@ -34,19 +34,13 @@ def test_workspace_mcp_config_includes_selected_servers():
     assert servers["ast-grep"]["args"] == ["-y", "@notprolands/ast-grep-mcp@latest"]
 
 
-def test_code_agents_get_structural_and_linting_mcp_servers():
-    """Coding-focused agents should expose ESLint and/or ast-grep where they add value."""
+def test_code_agents_keep_only_specialized_structural_mcp_servers():
+    """Coding-focused agents should keep only the specialized MCP servers they still need."""
     expected_servers = {
-        "agents/coder.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:", "semgrep:"),
-        "agents/reviewer.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "eslint:", "ast-grep:", "semgrep:"),
-        "agents/codebase-maintainer.agent.md": (
-            "github-mcp-server:",
-            "fast-filesystem:",
-            "octocode:",
-            "eslint:",
-            "ast-grep:",
-        ),
-        "agents/explorer.agent.md": ("github-mcp-server:", "fast-filesystem:", "octocode:", "ast-grep:"),
+        "agents/coder.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "sequential-thinking:"),
+        "agents/reviewer.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "sequential-thinking:"),
+        "agents/codebase-maintainer.agent.md": ("eslint:", "ast-grep:", "repomix:", "sequential-thinking:"),
+        "agents/explorer.agent.md": ("ast-grep:", "repomix:"),
     }
 
     for relative_path, server_names in expected_servers.items():
@@ -59,8 +53,8 @@ def test_agents_include_specialized_mcp_servers_in_frontmatter():
     """Agents should expose the specialized MCP servers they need in frontmatter."""
     expected_servers = {
         "agents/researcher.agent.md": ("reddit:",),
-        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "next-devtools:", "vercel:", "netlify:"),
-        "agents/debug.agent.md": ("chrome-devtools:", "next-devtools:", "semgrep:"),
+        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "vercel:", "netlify:"),
+        "agents/debug.agent.md": ("chrome-devtools:", "semgrep:", "sequential-thinking:"),
         "agents/workflow-engineer.agent.md": ("vercel:", "netlify:"),
         "agents/repo-architect.agent.md": ("vercel:", "netlify:"),
     }
@@ -103,8 +97,23 @@ def test_all_agents_use_supported_primary_models():
 
 
 def test_primary_agents_drop_deprecated_mcp_servers():
-    """Optimized agents should use the shared MCP stack instead of deprecated server choices."""
-    deprecated_servers = ("context7:", "serena:", "gitmcp:", "grep-app:", "fetch:", "memory:", "morph-mcp:")
+    """Optimized agents should avoid deprecated or now-default MCP server choices."""
+    deprecated_servers = (
+        "context7:",
+        "serena:",
+        "gitmcp:",
+        "grep-app:",
+        "fetch:",
+        "memory:",
+        "morph-mcp:",
+        "github-mcp-server:",
+        "fast-filesystem:",
+        "octocode:",
+        "exa:",
+        "ref-tools:",
+        "next-devtools:",
+        "playwright:",
+    )
 
     for path in (REPO_ROOT / "agents").glob("*.agent.md"):
         frontmatter = read_frontmatter(path)

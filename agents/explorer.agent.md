@@ -5,24 +5,6 @@ model: GPT-5.4
 modelParameters:
   temperature: 0.2
 mcp-servers:
-  github-mcp-server:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/insiders"
-    headers:
-      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
   ast-grep:
     type: local
     command: npx
@@ -46,10 +28,8 @@ Load `skills/code-search/SKILL.md` before exploring. Add `skills/parallel-agents
 
 ### MCP Playbook
 
-- Start with **octocode** for repo structure, symbol lookup, and semantic navigation.
-- Use **ast-grep** for structural pattern matching and **fast-filesystem** for targeted local reads.
+- Use **ast-grep** for structural pattern matching.
 - Use **repomix** only when the repo is too large to map with direct searches.
-- Use **github-mcp-server** for PR/issue/recent-run context that affects risk assessment.
 
 ### Handoff Contract
 

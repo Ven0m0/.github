@@ -5,39 +5,11 @@ model: claude-sonnet-4.6
 modelParameters:
   temperature: 0.35
 mcp-servers:
-  github-mcp-server:
-    type: http
-    url: "https://api.githubcopilot.com/mcp/insiders"
-    headers:
-      { X-MCP-Toolsets: "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
-    tools: ["*"]
-  fast-filesystem:
-    type: local
-    command: npx
-    args: ["-y", "fast-filesystem-mcp@latest"]
-    env: { MCP_SILENT_ERRORS: "true" }
-    tools: ["*"]
-  octocode:
-    type: local
-    command: npx
-    args: ["-y", "octocode-mcp@latest"]
-    env: { GITHUB_TOKEN: "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}", ENABLE_LOCAL: "true", LOG: "false" }
-    tools: ["*"]
   repomix:
     type: local
     command: npx
     args:
       ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
-    tools: ["*"]
-  exa:
-    type: http
-    url: "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
-    headers: { EXA_API_KEY: "${{ secrets.COPILOT_MCP_EXA_API_KEY }}" }
-    tools: ["*"]
-  ref-tools:
-    type: http
-    url: "https://api.ref.tools/mcp"
-    headers: { x-ref-api-key: "${{ secrets.COPILOT_MCP_REF_API_KEY }}" }
     tools: ["*"]
   vercel:
     type: http
@@ -65,11 +37,9 @@ Always load `skills/workflow-development/SKILL.md`, `skills/gh-cli/SKILL.md`, an
 
 ### MCP Playbook
 
-- Use **github-mcp-server** first for workflow runs, jobs, logs, artifacts, and permissions issues.
-- Use **fast-filesystem** and **octocode** to inspect workflow YAML, actions, and shared scripts.
-- Use **exa** and **ref-tools** to verify current GitHub Actions or deployment documentation.
-- Use **vercel** or **netlify** only for platform-specific deploy, preview, hosting, or environment workflows.
 - Use **repomix** for monorepo workflow audits when a single file read is not enough.
+- Use **vercel** or **netlify** only for platform-specific deploy, preview, hosting, or environment workflows.
+- Use **sequential-thinking** to separate permissions, trigger, and validation changes before editing.
 
 ### Collaboration Contract
 
