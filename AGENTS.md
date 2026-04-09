@@ -178,9 +178,8 @@ Scoped by language and domain in `instructions/`. Copilot automatically applies 
 | Topic               | File                             | Applies To                             |
 | ------------------- | -------------------------------- | -------------------------------------- |
 | **Makefile**        | `makefile.instructions.md`       | `Makefile`, `*.mk`                     |
-| **CI/CD Standards** | `cicd-standards.instructions.md` | `.github/workflows/*.yml`              |
+| **CI/CD Standards** | `cicd-standards.instructions.md` | YAML workflows, CI/CD, and deployment  |
 | **Docker**          | `docker.instructions.md`         | `Dockerfile`, `docker-compose.yml`     |
-| **DevOps**          | `devops.instructions.md`         | Infrastructure, deployment, monitoring |
 
 ### Code Quality & Standards
 

@@ -24,7 +24,7 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 | Module             | Scope                             | File Types                   |
 | ------------------ | --------------------------------- | ---------------------------- |
 | **makefile**       | Makefile and cross-shell patterns | `Makefile`, `*.mk`, `*.make` |
-| **cicd-standards** | GitHub Actions, CI/CD patterns    | `.github/workflows/*.yml`    |
+| **cicd-standards** | CI/CD, GitHub Actions, deployment | `*.yml`, `*.yaml`            |
 
 ## Quality & Review
 
@@ -72,7 +72,7 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 | Bash scripts                      | `bash`                      | -                        |
 | PowerShell                        | `powershell`                | -                        |
 | Makefiles                         | `makefile`                  | -                        |
-| GitHub Actions                    | `cicd-standards`            | -                        |
+| GitHub Actions and deployment YAML | `cicd-standards`            | -                        |
 | Code review                       | `quality-standards`         | Language-specific module |
 | Agent/skill/instruction authoring | `meta-authoring`            | `ai-tuning`              |
 | Agent authoring                   | `agent-constraints`     | `meta-authoring`         |
