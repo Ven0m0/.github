@@ -1,6 +1,6 @@
 ---
-applyTo: "**/*.{yml,yaml}"
-description: "CI/CD, GitHub Actions, and deployment standards for workflow and automation YAML"
+applyTo: ".github/workflows/*.yml,.github/workflows/*.yaml"
+description: "CI/CD, GitHub Actions, and deployment standards for workflow YAML"
 ---
 
 # CI/CD and DevOps Standards
@@ -232,14 +232,14 @@ deploy:
 
 ## Debugging
 
-| Error                   | Cause               | Fix                                   |
-| ----------------------- | ------------------- | ------------------------------------- |
-| Resource not accessible | Missing permissions | Add the required scope to `permissions:` |
-| Cache never hits        | Wrong key format    | Check `hashFiles()` paths and restore keys |
+| Error                   | Cause               | Fix                                                    |
+| ----------------------- | ------------------- | ------------------------------------------------------ |
+| Resource not accessible | Missing permissions | Add the required scope to `permissions:`               |
+| Cache never hits        | Wrong key format    | Check `hashFiles()` paths and restore keys             |
 | Secrets undefined       | Wrong context       | Use `secrets: inherit` or define workflow-call secrets |
-| Workflow not triggered  | Event config wrong  | Verify `on:` filters, branches, and paths |
-| Timeout                 | Inefficient steps   | Profile, split jobs, or improve caching |
-| Flaky tests             | Race conditions     | Add explicit waits and stabilize the test environment |
+| Workflow not triggered  | Event config wrong  | Verify `on:` filters, branches, and paths              |
+| Timeout                 | Inefficient steps   | Profile, split jobs, or improve caching                |
+| Flaky tests             | Race conditions     | Add explicit waits and stabilize the test environment  |
 
 ```yaml
 # Debug context

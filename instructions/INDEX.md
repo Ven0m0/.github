@@ -24,7 +24,7 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 | Module             | Scope                             | File Types                   |
 | ------------------ | --------------------------------- | ---------------------------- |
 | **makefile**       | Makefile and cross-shell patterns | `Makefile`, `*.mk`, `*.make` |
-| **cicd-standards** | CI/CD, GitHub Actions, deployment | `*.yml`, `*.yaml`            |
+| **cicd-standards** | CI/CD, GitHub Actions, deployment | `.github/workflows/*.yml`    |
 
 ## Quality & Review
 
@@ -35,12 +35,12 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 
 ## AI & Tooling
 
-| Module                        | Scope                                                                     |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| **meta-authoring**            | Agents, skills, instructions, prompts                                     |
-| **ai-tuning**                 | AI assistant configs, guard rails, output compression                     |
-| **file-reading-optimization** | Tiered file reading strategy, token budget awareness                      |
-| **agent-constraints**     | Shared constraints for all pipeline agents; applied via applyTo             |
+| Module                        | Scope                                                           |
+| ----------------------------- | --------------------------------------------------------------- |
+| **meta-authoring**            | Agents, skills, instructions, prompts                           |
+| **ai-tuning**                 | AI assistant configs, guard rails, output compression           |
+| **file-reading-optimization** | Tiered file reading strategy, token budget awareness            |
+| **agent-constraints**         | Shared constraints for all pipeline agents; applied via applyTo |
 
 ## Documentation & Process
 
@@ -59,24 +59,24 @@ Navigation guide for the Ven0m0 `.github` repository's instruction modules.
 
 ## Navigation by File Type
 
-| Working On                        | Primary                     | Secondary                |
-| --------------------------------- | --------------------------- | ------------------------ |
-| Python                            | `python`                    | `quality-standards`      |
-| JS/TS                             | `javascript`                | `quality-standards`      |
-| Rust                              | `rust`                      | `quality-standards`      |
-| Go                                | `go`                        | `quality-standards`      |
-| Java                              | `java`                      | `quality-standards`      |
-| Kotlin                            | `kotlin`                    | `quality-standards`      |
-| C++                               | `cpp`                       | `quality-standards`      |
-| Flutter/Dart                      | `flutter`                   | `quality-standards`      |
-| Bash scripts                      | `bash`                      | -                        |
-| PowerShell                        | `powershell`                | -                        |
-| Makefiles                         | `makefile`                  | -                        |
+| Working On                         | Primary                     | Secondary                |
+| ---------------------------------- | --------------------------- | ------------------------ |
+| Python                             | `python`                    | `quality-standards`      |
+| JS/TS                              | `javascript`                | `quality-standards`      |
+| Rust                               | `rust`                      | `quality-standards`      |
+| Go                                 | `go`                        | `quality-standards`      |
+| Java                               | `java`                      | `quality-standards`      |
+| Kotlin                             | `kotlin`                    | `quality-standards`      |
+| C++                                | `cpp`                       | `quality-standards`      |
+| Flutter/Dart                       | `flutter`                   | `quality-standards`      |
+| Bash scripts                       | `bash`                      | -                        |
+| PowerShell                         | `powershell`                | -                        |
+| Makefiles                          | `makefile`                  | -                        |
 | GitHub Actions and deployment YAML | `cicd-standards`            | -                        |
-| Code review                       | `quality-standards`         | Language-specific module |
-| Agent/skill/instruction authoring | `meta-authoring`            | `ai-tuning`              |
-| Agent authoring                   | `agent-constraints`     | `meta-authoring`         |
-| Token efficiency                  | `file-reading-optimization` | `ai-tuning`              |
+| Code review                        | `quality-standards`         | Language-specific module |
+| Agent/skill/instruction authoring  | `meta-authoring`            | `ai-tuning`              |
+| Agent authoring                    | `agent-constraints`         | `meta-authoring`         |
+| Token efficiency                   | `file-reading-optimization` | `ai-tuning`              |
 
 ## XML Tag Convention
 
