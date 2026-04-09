@@ -30,7 +30,7 @@ Scoped by file type in `instructions/`:
 | `python.instructions.md`         | `*.py`                           |
 | `javascript.instructions.md`     | `*.js`, `*.ts`, `*.jsx`, `*.tsx` |
 | `rust.instructions.md`           | `*.rs`                           |
-| `cicd-standards.instructions.md` | `.github/workflows/*.yml`       |
+| `cicd-standards.instructions.md` | `.github/workflows/*.yml`        |
 | `markdown.instructions.md`       | `*.md`                           |
 
 See `instructions/INDEX.md` for the full list.
