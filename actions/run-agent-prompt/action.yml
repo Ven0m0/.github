@@ -183,7 +183,7 @@ runs:
 
     - name: Run OpenCode
       if: ${{ inputs.provider == 'opencode' }}
-      uses: anomalyco/opencode/github@v1.3.15
+      uses: anomalyco/opencode/github@v1.4.2
       with:
         model: ${{ inputs.model != '' && inputs.model || 'opencode/minimax-m2.5-free' }}
         prompt: ${{ inputs.prompt }}
