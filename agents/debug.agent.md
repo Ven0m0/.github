@@ -10,34 +10,34 @@ mcp-servers:
   chrome-devtools:
     type: local
     command: npx
-    args:
-      [
+    args: [
         "-y",
         "chrome-devtools-mcp@latest",
         "--headless",
         "--no-usage-statistics",
       ]
-    tools:
-      - "new_page"
-      - "close_page"
-      - "list_pages"
-      - "select_page"
-      - "navigate_page"
-      - "click"
-      - "hover"
-      - "fill"
-      - "fill_form"
-      - "type_text"
-      - "press_key"
-      - "wait_for"
-      - "evaluate_script"
-      - "take_snapshot"
-      - "take_screenshot"
-      - "list_console_messages"
-      - "get_console_message"
-      - "list_network_requests"
-      - "get_network_request"
-      - "handle_dialog"
+    tools: [
+        "new_page",
+        "close_page",
+        "list_pages",
+        "select_page",
+        "navigate_page",
+        "click",
+        "hover",
+        "fill",
+        "fill_form",
+        "type_text",
+        "press_key",
+        "wait_for",
+        "evaluate_script",
+        "take_snapshot",
+        "take_screenshot",
+        "list_console_messages",
+        "get_console_message",
+        "list_network_requests",
+        "get_network_request",
+        "handle_dialog",
+      ]
   yggdrasil:
     type: local
     command: npx

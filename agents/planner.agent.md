@@ -8,8 +8,7 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args:
-      [
+    args: [
         "-y",
         "repomix@latest",
         "--compress",
@@ -23,8 +22,7 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "yggdrasil-mcp"]
-    tools:
-      [
+    tools: [
         "sequential_thinking",
         "deep_planning",
         "list_plans",

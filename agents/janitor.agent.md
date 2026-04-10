@@ -16,8 +16,7 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args:
-      [
+    args: [
         "-y",
         "repomix@latest",
         "--compress",
