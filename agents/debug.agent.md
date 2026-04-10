@@ -11,10 +11,12 @@ mcp-servers:
     type: local
     command: npx
     args:
-      - "-y"
-      - "chrome-devtools-mcp@latest"
-      - "--headless"
-      - "--no-usage-statistics"
+      [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--headless",
+        "--no-usage-statistics",
+      ]
     tools:
       - "new_page"
       - "close_page"

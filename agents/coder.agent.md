@@ -23,13 +23,15 @@ mcp-servers:
     type: local
     command: npx
     args:
-      - "-y"
-      - "repomix@latest"
-      - "--compress"
-      - "--remove-empty-lines"
-      - "--remove-comments"
-      - "--truncate-base64"
-      - "--mcp"
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   semgrep:
     type: http
