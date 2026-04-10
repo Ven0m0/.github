@@ -15,7 +15,7 @@ mcp-servers:
         "-y",
         "chrome-devtools-mcp@latest",
         "--headless",
-        "--no-usage-statistics",
+        "--no-usage-statistics"
       ]
     tools:
       [
@@ -38,7 +38,7 @@ mcp-servers:
         "get_console_message",
         "list_network_requests",
         "get_network_request",
-        "handle_dialog",
+        "handle_dialog"
       ]
   yggdrasil:
     type: local

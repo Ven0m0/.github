@@ -20,7 +20,7 @@ mcp-servers:
         "--remove-empty-lines",
         "--remove-comments",
         "--truncate-base64",
-        "--mcp",
+        "--mcp"
       ]
     tools: ["*"]
   yggdrasil:
@@ -33,7 +33,7 @@ mcp-servers:
         "deep_planning",
         "list_plans",
         "get_plan",
-        "promote_plan",
+        "promote_plan"
       ]
 ---
 

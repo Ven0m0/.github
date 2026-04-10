@@ -1,5 +1,6 @@
 import json
 import re
+import yaml
 from pathlib import Path
 
 
@@ -99,6 +100,16 @@ def test_all_agents_use_supported_primary_models():
         path = REPO_ROOT / relative_path
         model = read_model(path)
         assert model == expected_model
+
+
+def test_all_agent_frontmatter_is_valid_yaml():
+    """All agent frontmatter blocks must parse as valid YAML."""
+    for path in (REPO_ROOT / "agents").glob("*.agent.md"):
+        frontmatter = read_frontmatter(path)
+        try:
+            yaml.safe_load(frontmatter)
+        except yaml.YAMLError as exc:
+            raise AssertionError(f"invalid YAML frontmatter in {path}: {exc}") from exc
 
 
 def test_agents_replace_sequential_thinking_with_yggdrasil():

@@ -12,7 +12,7 @@ tools:
     "problems",
     "runCommands",
     "search",
-    "terminalLastCommand",
+    "terminalLastCommand"
   ]
 mcp-servers:
   repomix:
@@ -48,7 +48,7 @@ mcp-servers:
         "deep_planning",
         "list_plans",
         "get_plan",
-        "promote_plan",
+        "promote_plan"
       ]
   mslearn:
     type: http
