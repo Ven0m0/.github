@@ -59,8 +59,7 @@ Load `skills/fix-issue/SKILL.md` and `skills/lint-and-validate/SKILL.md` before 
 
 - Use **ast-grep** to trace failing paths and **semgrep** when the issue may involve risky patterns or taint flow.
 - Use **chrome-devtools** only when the bug requires browser/runtime confirmation.
-- Keep **chrome-devtools** scoped to navigation, input, console/network inspection, script evaluation, and snapshot capture unless the task explicitly needs more.
-- The selected **chrome-devtools** subset intentionally omits performance, memory, emulation, drag/upload, and other broader-scope actions until the repro proves they are necessary.
+- Keep **chrome-devtools** scoped to navigation, input, console/network inspection, script evaluation, and snapshot capture, intentionally omitting performance, memory, emulation, drag/upload, and other broader-scope actions until the repro proves they are necessary.
 - Use **yggdrasil** to keep hypotheses, reproductions, and fixes ordered.
 - Keep **yggdrasil** limited to `sequential_thinking`; debugging needs ordered hypotheses, not saved-plan management.
 
