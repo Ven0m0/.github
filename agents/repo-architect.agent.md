@@ -3,17 +3,15 @@ description: "Bootstraps, tunes, and validates agentic project structures and AI
 name: repo-architect
 model: GPT-5.4
 tools:
-  [
-    "changes",
-    "codebase",
-    "editFiles",
-    "fetch",
-    "new",
-    "problems",
-    "runCommands",
-    "search",
-    "terminalLastCommand"
-  ]
+  - "changes"
+  - "codebase"
+  - "editFiles"
+  - "fetch"
+  - "new"
+  - "problems"
+  - "runCommands"
+  - "search"
+  - "terminalLastCommand"
 mcp-servers:
   repomix:
     type: local
@@ -41,13 +39,11 @@ mcp-servers:
     command: npx
     args: ["-y", "yggdrasil-mcp"]
     tools:
-      [
-        "sequential_thinking",
-        "deep_planning",
-        "list_plans",
-        "get_plan",
-        "promote_plan"
-      ]
+      - "sequential_thinking"
+      - "deep_planning"
+      - "list_plans"
+      - "get_plan"
+      - "promote_plan"
   mslearn:
     type: http
     url: "https://learn.microsoft.com/api/mcp"
