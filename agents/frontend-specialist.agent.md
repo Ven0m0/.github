@@ -12,11 +12,6 @@ mcp-servers:
     type: http
     url: "https://mcp.vercel.com"
     tools: ["*"]
-  netlify:
-    type: local
-    command: npx
-    args: ["-y", "@netlify/mcp"]
-    tools: ["*"]
 ---
 
 # Senior Frontend Architect
