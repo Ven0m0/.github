@@ -16,14 +16,7 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "yggdrasil-mcp"]
-    tools:
-      [
-        "sequential_thinking",
-        "deep_planning",
-        "list_plans",
-        "get_plan",
-        "promote_plan",
-      ]
+    tools: ["sequential_thinking"]
   mslearn:
     type: http
     url: "https://learn.microsoft.com/api/mcp"
@@ -42,6 +35,7 @@ Load `skills/web-search/SKILL.md` and `skills/code-search/SKILL.md` before start
 
 - Use **reddit** for community sentiment, discussion patterns, and real-world troubleshooting when official docs are thin.
 - Use **yggdrasil** for ordered reasoning when comparing alternatives or shaping a recommendation.
+- Keep **yggdrasil** limited to `sequential_thinking`; research should evaluate options, not author or mutate saved plans.
 - Use **mslearn** when Microsoft or Azure platform docs are authoritative for the task.
 
 ### Handoff Contract

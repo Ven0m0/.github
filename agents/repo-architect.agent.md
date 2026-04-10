@@ -69,6 +69,7 @@ Always load `skills/ai-tuning/SKILL.md`, `skills/linting-llm-configs/SKILL.md`, 
 - Use **repomix** first to audit local structure, guidance density, and duplication.
 - Use **vercel** or **netlify** only when deployment templates, hosting setup, or preview environments are part of the setup.
 - Use **yggdrasil** to separate foundation rules, specialist agents, and capability layers.
+- Use the full **yggdrasil** toolset when migration work needs saved plans, reusable plan retrieval, or promoted plan artifacts.
 - Use **mslearn** when GitHub Copilot, VS Code, or Microsoft platform guidance needs official confirmation.
 
 ### Collaboration Contract

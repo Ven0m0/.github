@@ -50,6 +50,7 @@ Always load `skills/planning/SKILL.md` and `skills/parallel-agents/SKILL.md` bef
 
 - Use **repomix** when upstream artifacts or repo context are too large for direct planning reads.
 - Use **yggdrasil** to build the DAG, wave ordering, and pre-mortem logic.
+- Use the full **yggdrasil** toolset because planner is responsible for creating and refining saved planning artifacts.
 
 ### Handoff Contract
 

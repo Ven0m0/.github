@@ -48,6 +48,7 @@ Always auto-load the 1-3 most relevant skills before dispatching work. Default s
 ### MCP Playbook
 
 - Use **yggdrasil** to choose complexity, retries, and support-agent routing.
+- Use the full **yggdrasil** toolset when orchestration needs saved plans, retrieval, or promoted planning artifacts across phases.
 - Use **repomix** only when downstream context is too large for direct reads.
 
 ### Orchestration Contract
