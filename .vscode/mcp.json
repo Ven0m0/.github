@@ -42,18 +42,6 @@
       "args": ["-y", "octocode-mcp@latest"],
       "env": { "GITHUB_TOKEN": "$COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN", "ENABLE_LOCAL": "true", "LOG": "false" },
       "tools": ["githubSearchCode", "githubGetFileContent", "githubViewRepoStructure", "githubSearchRepositories", "lspGotoDefinition", "lspFindReferences", "lspCallHierarchy"]
-    },
-    "ast-grep": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "@notprolands/ast-grep-mcp@latest"],
-      "tools": ["*"]
-    },
-    "repomix": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"],
-      "tools": ["pack_codebase", "pack_remote_repository", "read_repomix_output", "grep_repomix_output"]
     }
   }
 }
