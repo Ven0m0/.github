@@ -1,16 +1,21 @@
 ---
 applyTo: ".github/workflows/*.yml,.github/workflows/*.yaml"
+description: "CI/CD, GitHub Actions, and deployment standards for workflow YAML"
 ---
 
-# CI/CD and GitHub Actions Standards
+# CI/CD and DevOps Standards
 
 <Goals>
 
-- Security-first: SHA-pinned actions, least-privilege permissions, OIDC auth
-- Performance: caching, matrix builds, path filtering, concurrency control
-- Maintainability: reusable workflows, clear naming, timeouts on all jobs
+- Security-first: explicit action versions, least-privilege permissions, OIDC auth
+- Reliability: path filtering, concurrency, timeouts, staged deployments, rollback planning
+- Maintainability: reusable workflows, clear naming, predictable job structure
 
 </Goals>
+
+## Before Any CI/CD or Deployment Work
+
+**READ**: `.github/skills/workflow-development/SKILL.md`
 
 ## Workflow Structure
 
@@ -30,15 +35,30 @@ concurrency:
 
 permissions:
   contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "npm"
+      - run: npm ci
+      - run: npm test
 ```
 
 <Standards>
 
-**Triggers**: Use path filtering to skip irrelevant runs. `workflow_dispatch` for manual triggers. `schedule` for nightly/weekly. Set `cancel-in-progress: false` for deployments.
+**Triggers**: Use path filtering to skip irrelevant runs. Add `workflow_dispatch` for manual recovery or one-off tasks. Use `schedule` for recurring maintenance. Set `cancel-in-progress: false` for deployments.
 
-**Jobs**: Clear names representing distinct phases. Use `needs` for dependencies, `outputs` for inter-job data, `if` for conditional execution, `timeout-minutes` on all jobs.
+**Jobs**: Use clear phase-oriented names. Model dependencies with `needs`, share data with `outputs`, guard optional work with `if`, and set `timeout-minutes` on every job.
 
-**Matrix**: `fail-fast: false` for comprehensive reporting. Use `exclude` to skip unsupported combinations.
+**Matrix**: Use `fail-fast: false` for broader failure visibility. Use `include` and `exclude` to keep the matrix intentional.
+
+**Deployments**: Gate production with `environment`, required reviewers, smoke tests, and documented rollback steps.
 
 </Standards>
 
@@ -48,39 +68,48 @@ permissions:
 
 <Security>
 
-### Action Pinning
+### Action References
 
 ```yaml
-# CORRECT: Version tag
-- uses: actions/checkout@v4
+# CORRECT: explicit major version tag
+- uses: actions/checkout@v6
 
-# WRONG: SHA pinning (harder to maintain, less readable)
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+# ALSO VALID WHEN POLICY REQUIRES IMMUTABLE PINS
+- uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-# WRONG: branch reference (vulnerable to compromise)
+# WRONG: moving branch reference
 - uses: actions/checkout@main
+
+# WRONG: floating latest tag
+- uses: owner/action@latest
 ```
+
+- Prefer maintained major-version tags for first-party and trusted actions
+- Use full SHAs when repository or organization policy requires immutable third-party pinning
+- Never use branch refs such as `@main` or floating refs such as `@latest`
 
 ### Permissions (Least Privilege)
 
 ```yaml
 permissions:
-  contents: read # Default, safe starting point
+  contents: read
 # Add only when needed:
-# contents: write, pull-requests: write, packages: write, checks: write
+# pull-requests: write
+# packages: write
+# checks: write
 ```
 
-### Secrets
+### Secrets and Auth
 
-- Access via `${{ secrets.NAME }}` only, never hardcode
-- Use environment-specific secrets for deployment
-- OIDC preferred over long-lived credentials for cloud auth
+- Access secrets via `${{ secrets.NAME }}` only; never hardcode or echo them
+- Prefer OIDC over long-lived cloud credentials
+- Use environment-scoped secrets for deployment jobs
 
 ### Scanning
 
-- CodeQL for SAST, Dependabot for dependency review
-- Enable secret scanning with push protection
-- `dependency-review-action` on PRs
+- Run CodeQL for SAST where supported
+- Use dependency review on pull requests
+- Enable secret scanning and push protection
 
 </Security>
 
@@ -91,7 +120,7 @@ permissions:
 ### Caching
 
 ```yaml
-- uses: actions/cache@v4
+- uses: actions/cache@v5
   with:
     path: ~/.npm
     key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
@@ -106,15 +135,15 @@ strategy:
   fail-fast: false
   matrix:
     os: [ubuntu-latest, macos-latest]
-    node-version: ["20", "22"]
+    node-version: ["22", "24"]
 ```
 
 ### Fast Checkout
 
 ```yaml
-- uses: actions/checkout@v4
+- uses: actions/checkout@v6
   with:
-    fetch-depth: 1 # Shallow clone unless full history needed
+    fetch-depth: 1
 ```
 
 ---
@@ -152,9 +181,9 @@ on:
 <HighLevelDetails>
 
 - **Manual Approval**: Use `environment` with required reviewers for production
-- **Blue-Green**: Deploy green, smoke test, switch traffic
-- **Canary**: Route small % of traffic, monitor, expand
-- **Rollback**: Keep previous artifacts, automate revert on health check failure
+- **Blue-Green**: Deploy green, smoke test, then shift traffic
+- **Canary**: Route a small percentage first, monitor, then expand
+- **Rollback**: Keep previous artifacts and automate revert on health check failure
 
 </HighLevelDetails>
 
@@ -166,6 +195,22 @@ deploy:
   runs-on: ubuntu-latest
   needs: [build, test]
 ```
+
+### Pre-Deployment Checklist
+
+- [ ] All tests passing
+- [ ] Code reviewed
+- [ ] Environment variables and secrets verified
+- [ ] Backup or restore point ready
+- [ ] Rollback path documented
+
+### Deployment Order
+
+1. **Prepare**: Verify build artifacts, inputs, and environment configuration
+2. **Deploy**: Release with monitoring enabled
+3. **Verify**: Run health checks and critical smoke tests
+4. **Confirm**: Watch metrics and logs for a stabilization window
+5. **Rollback**: Revert immediately if health checks or key metrics fail
 
 ## Testing Strategy
 
@@ -187,14 +232,14 @@ deploy:
 
 ## Debugging
 
-| Error                   | Cause               | Fix                                   |
-| ----------------------- | ------------------- | ------------------------------------- |
-| Resource not accessible | Missing permissions | Add to `permissions:`                 |
-| Cache never hits        | Wrong key format    | Check `hashFiles()` paths             |
-| Secrets undefined       | Wrong context       | Use `secrets: inherit`                |
-| Workflow not triggered  | Event config wrong  | Verify `on:` block                    |
-| Timeout                 | Inefficient steps   | Profile, add matrix, optimize caching |
-| Flaky tests             | Race conditions     | Explicit waits, standardize env       |
+| Error                   | Cause               | Fix                                                    |
+| ----------------------- | ------------------- | ------------------------------------------------------ |
+| Resource not accessible | Missing permissions | Add the required scope to `permissions:`               |
+| Cache never hits        | Wrong key format    | Check `hashFiles()` paths and restore keys             |
+| Secrets undefined       | Wrong context       | Use `secrets: inherit` or define workflow-call secrets |
+| Workflow not triggered  | Event config wrong  | Verify `on:` filters, branches, and paths              |
+| Timeout                 | Inefficient steps   | Profile, split jobs, or improve caching                |
+| Flaky tests             | Race conditions     | Add explicit waits and stabilize the test environment  |
 
 ```yaml
 # Debug context
@@ -204,13 +249,19 @@ deploy:
     echo "SHA: ${{ github.sha }}"
 ```
 
+## Anti-Patterns
+
+- Do not use `@main`, `@master`, or `@latest` for actions
+- Do not deploy without a rollback path
+- Do not combine unrelated infrastructure changes in one release
+- Do not skip staging or smoke validation for risky production changes
+
 <Limitations>
 
-- All workflows must use SHA-pinned actions
 - Permissions must be explicit and minimal
 - Secrets must never be logged or exposed
-- All jobs must have `timeout-minutes`
+- Every job needs `timeout-minutes`
 - Tests must pass before deployment
-- Production requires manual approval
+- Production deployments require approval or an equivalent protection rule
 
 </Limitations>
