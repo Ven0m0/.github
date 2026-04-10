@@ -57,6 +57,7 @@ Always load `skills/lint-and-validate/SKILL.md` plus the 1-2 domain skills that 
 - Use **ast-grep**, **eslint**, and **semgrep** for precise code changes, lint-aware checks, and security validation.
 - Use **repomix** only when a large subsystem must be compressed for safe review or handoff.
 - Use **yggdrasil** to break implementation into safe, ordered steps.
+- Keep **yggdrasil** limited to `sequential_thinking`; implementation work should consume plans, not author or mutate saved ones.
 
 ### Handoff Contract
 

@@ -47,6 +47,7 @@ Always load `skills/code-maintenance/SKILL.md`, `skills/clean-code/SKILL.md`, an
 - Use **ast-grep** to find dead code, duplication, stale tests, and unused assets.
 - Use **eslint** for JS/TS-aware simplification and **repomix** when a large subtree must be summarized before cleanup.
 - Use **yggdrasil** to keep deletions incremental and reversible.
+- Keep **yggdrasil** limited to `sequential_thinking`; janitorial passes need ordered execution, not saved-plan management.
 
 ### Collaboration Contract
 

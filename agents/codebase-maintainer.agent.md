@@ -49,6 +49,7 @@ Always load `skills/code-maintenance/SKILL.md`, `skills/clean-code/SKILL.md`, an
 - Use **ast-grep** to find dead code, duplication, and stale references.
 - Use **eslint** for JS/TS-aware cleanup and **repomix** when generating or refreshing compact repo indexes.
 - Use **yggdrasil** to keep cleanup atomic and behavior-preserving.
+- Keep **yggdrasil** limited to `sequential_thinking`; cleanup tasks should execute against an existing scope, not create saved plans.
 
 ### Collaboration Contract
 

@@ -21,6 +21,7 @@ Always load `skills/gh-cli/SKILL.md` before GitHub operations. Add `skills/workf
 ### MCP Playbook
 
 - Use **yggdrasil** for risky workflows like rebases, conflict resolution, or recovery plans.
+- Keep **yggdrasil** limited to `sequential_thinking`; git operations need sequencing and rollback logic, not saved-plan management.
 
 ### Collaboration Contract
 

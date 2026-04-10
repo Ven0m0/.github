@@ -22,6 +22,7 @@ Always load `skills/arch-linux-triage/SKILL.md` before diagnosing or advising on
 ### MCP Playbook
 
 - Use **yggdrasil** to keep incident triage, rollback options, and verification steps ordered.
+- Keep **yggdrasil** limited to `sequential_thinking`; incident response needs ordered steps, not saved-plan management.
 
 ### Collaboration Contract
 
