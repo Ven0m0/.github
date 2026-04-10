@@ -3,11 +3,6 @@ description: "Debug specialist: systematic bug finding, root cause analysis, and
 name: debug
 model: claude-sonnet-4.6
 mcp-servers:
-  ast-grep:
-    type: local
-    command: npx
-    args: ["-y", "@notprolands/ast-grep-mcp@latest"]
-    tools: ["*"]
   semgrep:
     type: http
     url: "https://mcp.semgrep.ai/mcp"
@@ -16,11 +11,6 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
-    tools: ["*"]
-  sequential-thinking:
-    type: stdio
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     tools: ["*"]
 ---
 
