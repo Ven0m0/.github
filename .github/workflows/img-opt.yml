@@ -159,7 +159,7 @@ jobs:
           file_pattern: "*.png *.jpg *.jpeg *.gif *.svg *.webp *.avif"
       - name: Comment on Pull Request
         if: steps.compress.outputs.changes_detected == 'true' && github.event_name == 'pull_request' && steps.stats.outputs.pct != ''
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |-
             github.rest.issues.createComment({
