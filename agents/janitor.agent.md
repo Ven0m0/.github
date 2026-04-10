@@ -19,11 +19,11 @@ mcp-servers:
     args:
       ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
 ---
 
 # Universal Janitor
@@ -38,7 +38,7 @@ Always load `skills/code-maintenance/SKILL.md`, `skills/clean-code/SKILL.md`, an
 
 - Use **ast-grep** to find dead code, duplication, stale tests, and unused assets.
 - Use **eslint** for JS/TS-aware simplification and **repomix** when a large subtree must be summarized before cleanup.
-- Use **sequential-thinking** to keep deletions incremental and reversible.
+- Use **yggdrasil** to keep deletions incremental and reversible.
 
 ### Collaboration Contract
 
@@ -106,7 +106,7 @@ Use MCP servers in this order:
 
 - **ast-grep** for local code and dependency evidence
 - **eslint / repomix** for JS-aware cleanup and condensed subtree context
-- **sequential-thinking** for ordered, reversible cleanup passes
+- **yggdrasil** for ordered, reversible cleanup passes
 
 ## Execution Strategy
 

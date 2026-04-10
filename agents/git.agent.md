@@ -3,11 +3,11 @@ name: git
 description: "Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control"
 model: claude-sonnet-4.6
 mcp-servers:
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
 ---
 
 # Git & GitHub CLI Expert Agent
@@ -20,7 +20,7 @@ Always load `skills/gh-cli/SKILL.md` before GitHub operations. Add `skills/workf
 
 ### MCP Playbook
 
-- Use **sequential-thinking** for risky workflows like rebases, conflict resolution, or recovery plans.
+- Use **yggdrasil** for risky workflows like rebases, conflict resolution, or recovery plans.
 
 ### Collaboration Contract
 

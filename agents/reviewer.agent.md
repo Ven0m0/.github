@@ -25,11 +25,11 @@ mcp-servers:
     type: http
     url: "https://mcp.semgrep.ai/mcp"
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
 ---
 
 # Reviewer
@@ -44,7 +44,7 @@ Always load `skills/code-review/SKILL.md`, `skills/pr-review/SKILL.md`, and `ski
 
 - Use **ast-grep**, **eslint**, and **semgrep** for structural, lint, and security-oriented checks.
 - Use **repomix** when review context must be compressed before inspection.
-- Use **sequential-thinking** to separate blocking issues from non-blocking feedback.
+- Use **yggdrasil** to separate blocking issues from non-blocking feedback.
 
 ### Handoff Contract
 

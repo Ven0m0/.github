@@ -37,9 +37,9 @@ def test_workspace_mcp_config_includes_selected_servers():
 def test_code_agents_keep_only_specialized_structural_mcp_servers():
     """Coding-focused agents should keep only the specialized MCP servers they still need."""
     expected_servers = {
-        "agents/coder.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "sequential-thinking:"),
-        "agents/reviewer.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "sequential-thinking:"),
-        "agents/codebase-maintainer.agent.md": ("eslint:", "ast-grep:", "repomix:", "sequential-thinking:"),
+        "agents/coder.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "yggdrasil:"),
+        "agents/reviewer.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "yggdrasil:"),
+        "agents/codebase-maintainer.agent.md": ("eslint:", "ast-grep:", "repomix:", "yggdrasil:"),
         "agents/explorer.agent.md": ("ast-grep:", "repomix:"),
     }
 
@@ -52,11 +52,16 @@ def test_code_agents_keep_only_specialized_structural_mcp_servers():
 def test_agents_include_specialized_mcp_servers_in_frontmatter():
     """Agents should expose the specialized MCP servers they need in frontmatter."""
     expected_servers = {
-        "agents/researcher.agent.md": ("reddit:",),
+        "agents/researcher.agent.md": ("reddit:", "yggdrasil:", "mslearn:"),
         "agents/frontend-specialist.agent.md": ("chrome-devtools:", "vercel:", "netlify:"),
-        "agents/debug.agent.md": ("chrome-devtools:", "semgrep:", "sequential-thinking:"),
-        "agents/workflow-engineer.agent.md": ("vercel:", "netlify:"),
-        "agents/repo-architect.agent.md": ("vercel:", "netlify:"),
+        "agents/debug.agent.md": ("chrome-devtools:", "semgrep:", "yggdrasil:"),
+        "agents/workflow-engineer.agent.md": ("vercel:", "netlify:", "yggdrasil:", "mslearn:"),
+        "agents/repo-architect.agent.md": ("vercel:", "netlify:", "yggdrasil:", "mslearn:"),
+        "agents/orchestrator.agent.md": ("repomix:", "yggdrasil:"),
+        "agents/planner.agent.md": ("repomix:", "yggdrasil:"),
+        "agents/git.agent.md": ("yggdrasil:",),
+        "agents/arch-linux-expert.agent.md": ("yggdrasil:",),
+        "agents/janitor.agent.md": ("ast-grep:", "eslint:", "repomix:", "yggdrasil:"),
     }
 
     for relative_path, server_names in expected_servers.items():
@@ -113,6 +118,7 @@ def test_primary_agents_drop_deprecated_mcp_servers():
         "ref-tools:",
         "next-devtools:",
         "playwright:",
+        "sequential-thinking:",
     )
 
     for path in (REPO_ROOT / "agents").glob("*.agent.md"):

@@ -4,11 +4,11 @@ description: "Arch Linux specialist: pacman workflows, rolling-release maintenan
 model: claude-sonnet-4.6
 user-invocable: true
 mcp-servers:
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
 ---
 
 # Arch Linux Expert
@@ -21,7 +21,7 @@ Always load `skills/arch-linux-triage/SKILL.md` before diagnosing or advising on
 
 ### MCP Playbook
 
-- Use **sequential-thinking** to keep incident triage, rollback options, and verification steps ordered.
+- Use **yggdrasil** to keep incident triage, rollback options, and verification steps ordered.
 
 ### Collaboration Contract
 

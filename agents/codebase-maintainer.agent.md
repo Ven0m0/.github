@@ -21,11 +21,11 @@ mcp-servers:
     args:
       ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
 ---
 
 # Codebase Maintainer
@@ -40,7 +40,7 @@ Always load `skills/code-maintenance/SKILL.md`, `skills/clean-code/SKILL.md`, an
 
 - Use **ast-grep** to find dead code, duplication, and stale references.
 - Use **eslint** for JS/TS-aware cleanup and **repomix** when generating or refreshing compact repo indexes.
-- Use **sequential-thinking** to keep cleanup atomic and behavior-preserving.
+- Use **yggdrasil** to keep cleanup atomic and behavior-preserving.
 
 ### Collaboration Contract
 

@@ -11,7 +11,34 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
-    tools: ["*"]
+    tools:
+      [
+        "new_page",
+        "close_page",
+        "list_pages",
+        "select_page",
+        "navigate_page",
+        "click",
+        "hover",
+        "fill",
+        "fill_form",
+        "type_text",
+        "press_key",
+        "wait_for",
+        "evaluate_script",
+        "take_snapshot",
+        "take_screenshot",
+        "list_console_messages",
+        "get_console_message",
+        "list_network_requests",
+        "get_network_request",
+        "handle_dialog",
+      ]
+  yggdrasil:
+    type: local
+    command: npx
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
 ---
 
 # Debug Mode Instructions
@@ -26,7 +53,7 @@ Load `skills/fix-issue/SKILL.md` and `skills/lint-and-validate/SKILL.md` before 
 
 - Use **ast-grep** to trace failing paths and **semgrep** when the issue may involve risky patterns or taint flow.
 - Use **chrome-devtools** only when the bug requires browser/runtime confirmation.
-- Use **sequential-thinking** to keep hypotheses, reproductions, and fixes ordered.
+- Use **yggdrasil** to keep hypotheses, reproductions, and fixes ordered.
 
 ### Collaboration Contract
 
