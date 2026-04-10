@@ -6,45 +6,15 @@
       "url": "https://api.githubcopilot.com/mcp/insiders",
       "headers": { "X-MCP-Toolsets": "default,actions,code_security,copilot,git,github_support_docs_search,stargazers,dependabot" }
     },
-    "eslint": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "@eslint/mcp@latest"],
-      "tools": ["*"]
-    },
     "playwright": {
       "type": "local",
       "command": "npx",
       "args": ["-y", "@playwright/mcp@latest", "--headless"],
       "tools": ["browser_navigate", "browser_click", "browser_type", "browser_evaluate", "browser_take_screenshot"]
     },
-    "chrome-devtools": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"],
-      "tools": ["*"]
-    },
-    "next-devtools": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "next-devtools-mcp@latest"],
-      "tools": ["*"]
-    },
     "vercel": {
       "type": "http",
       "url": "https://mcp.vercel.com",
-      "tools": ["*"]
-    },
-    "netlify": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "@netlify/mcp"],
-      "tools": ["*"]
-    },
-    "reddit": {
-      "type": "local",
-      "command": "uvx",
-      "args": ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"],
       "tools": ["*"]
     },
     "exa": {
