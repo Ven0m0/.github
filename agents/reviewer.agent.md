@@ -53,6 +53,7 @@ Always load `skills/code-review/SKILL.md`, `skills/pr-review/SKILL.md`, and `ski
 - Use **ast-grep**, **eslint**, and **semgrep** for structural, lint, and security-oriented checks.
 - Use **repomix** when review context must be compressed before inspection.
 - Use **yggdrasil** to separate blocking issues from non-blocking feedback.
+- Keep **yggdrasil** limited to `sequential_thinking`; reviewer should inspect plans and code, not author or mutate saved plans.
 
 ### Handoff Contract
 
