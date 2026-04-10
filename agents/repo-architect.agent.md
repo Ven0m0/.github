@@ -16,16 +16,15 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args:
-      [
-        "-y",
-        "repomix@latest",
-        "--compress",
-        "--remove-empty-lines",
-        "--remove-comments",
-        "--truncate-base64",
-        "--mcp",
-      ]
+    args: [
+      "-y",
+      "repomix@latest",
+      "--compress",
+      "--remove-empty-lines",
+      "--remove-comments",
+      "--truncate-base64",
+      "--mcp",
+    ]
     tools: ["*"]
   vercel:
     type: http
@@ -40,14 +39,7 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "yggdrasil-mcp"]
-    tools:
-      [
-        "sequential_thinking",
-        "deep_planning",
-        "list_plans",
-        "get_plan",
-        "promote_plan",
-      ]
+    tools: ["sequential_thinking", "deep_planning", "list_plans", "get_plan", "promote_plan"]
   mslearn:
     type: http
     url: "https://learn.microsoft.com/api/mcp"
