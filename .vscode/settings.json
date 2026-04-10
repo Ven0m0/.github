@@ -24,6 +24,14 @@
     "https://json-schema.org/": true,
     "https://biomejs.dev": true
   },
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  },
   "[scss]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
@@ -90,9 +98,11 @@
   "git.enableSmartCommit": true,
   "git.fetchOnPull": true,
   "git.ignoreLegacyWarning": true,
+  "mise.configureExtensionsAutomatically": true,
   "npm.packageManager": "bun",
   "npm.runSilent": true,
   "npm.scriptRunner": "bun",
+  "python.terminal.activateEnvInCurrentTerminal": true,
   "[toml]": {
     "editor.defaultFormatter": "tombi-toml.tombi"
   }
