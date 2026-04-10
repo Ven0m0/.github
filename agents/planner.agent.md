@@ -9,13 +9,24 @@ mcp-servers:
     type: local
     command: npx
     args:
-      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+      - "-y"
+      - "repomix@latest"
+      - "--compress"
+      - "--remove-empty-lines"
+      - "--remove-comments"
+      - "--truncate-base64"
+      - "--mcp"
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools:
+      - "sequential_thinking"
+      - "deep_planning"
+      - "list_plans"
+      - "get_plan"
+      - "promote_plan"
 handoffs:
   - label: Implement Plan
     agent: coder
@@ -34,7 +45,8 @@ Always load `skills/planning/SKILL.md` and `skills/parallel-agents/SKILL.md` bef
 ### MCP Playbook
 
 - Use **repomix** when upstream artifacts or repo context are too large for direct planning reads.
-- Use **sequential-thinking** to build the DAG, wave ordering, and pre-mortem logic.
+- Use **yggdrasil** to build the DAG, wave ordering, and pre-mortem logic.
+- Use the full **yggdrasil** toolset because planner is responsible for creating and refining saved planning artifacts.
 
 ### Handoff Contract
 

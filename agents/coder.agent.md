@@ -23,17 +23,23 @@ mcp-servers:
     type: local
     command: npx
     args:
-      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+      - "-y"
+      - "repomix@latest"
+      - "--compress"
+      - "--remove-empty-lines"
+      - "--remove-comments"
+      - "--truncate-base64"
+      - "--mcp"
     tools: ["*"]
   semgrep:
     type: http
     url: "https://mcp.semgrep.ai/mcp"
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
 ---
 
 # Coder
@@ -48,7 +54,8 @@ Always load `skills/lint-and-validate/SKILL.md` plus the 1-2 domain skills that 
 
 - Use **ast-grep**, **eslint**, and **semgrep** for precise code changes, lint-aware checks, and security validation.
 - Use **repomix** only when a large subsystem must be compressed for safe review or handoff.
-- Use **sequential-thinking** to break implementation into safe, ordered steps.
+- Use **yggdrasil** to break implementation into safe, ordered steps.
+- Keep **yggdrasil** limited to `sequential_thinking`; implementation work should consume plans, not author or mutate saved ones.
 
 ### Handoff Contract
 

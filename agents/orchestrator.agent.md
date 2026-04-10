@@ -13,13 +13,24 @@ mcp-servers:
     type: local
     command: npx
     args:
-      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+      - "-y"
+      - "repomix@latest"
+      - "--compress"
+      - "--remove-empty-lines"
+      - "--remove-comments"
+      - "--truncate-base64"
+      - "--mcp"
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools:
+      - "sequential_thinking"
+      - "deep_planning"
+      - "list_plans"
+      - "get_plan"
+      - "promote_plan"
 ---
 
 # Orchestrator
@@ -32,7 +43,8 @@ Always auto-load the 1-3 most relevant skills before dispatching work. Default s
 
 ### MCP Playbook
 
-- Use **sequential-thinking** to choose complexity, retries, and support-agent routing.
+- Use **yggdrasil** to choose complexity, retries, and support-agent routing.
+- Use the full **yggdrasil** toolset when orchestration needs saved plans, retrieval, or promoted planning artifacts across phases.
 - Use **repomix** only when downstream context is too large for direct reads.
 
 ### Orchestration Contract
@@ -129,13 +141,13 @@ For each phase (explore → plan → research → implement → review):
 
 ## Phase Agent Dispatch Table
 
-| Phase        | Agent      | Model             | Artifact             | MCP Servers                                             |
-| ------------ | ---------- | ----------------- | -------------------- | ------------------------------------------------------- |
-| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | ast-grep, repomix                                       |
-| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | repomix, sequential-thinking                            |
-| 3. Research  | researcher | GPT-5.4           | 03-research.md       | reddit, sequential-thinking                             |
-| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | ast-grep, eslint, repomix, semgrep, sequential-thinking |
-| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | ast-grep, eslint, repomix, semgrep, sequential-thinking |
+| Phase        | Agent      | Model             | Artifact             | MCP Servers                                   |
+| ------------ | ---------- | ----------------- | -------------------- | --------------------------------------------- |
+| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | ast-grep, repomix                             |
+| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | repomix, yggdrasil                            |
+| 3. Research  | researcher | GPT-5.4           | 03-research.md       | reddit, yggdrasil, mslearn                    |
+| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | ast-grep, eslint, repomix, semgrep, yggdrasil |
+| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | ast-grep, eslint, repomix, semgrep, yggdrasil |
 
 ## Supporting Agents
 

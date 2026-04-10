@@ -9,7 +9,13 @@ mcp-servers:
     type: local
     command: npx
     args:
-      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+      - "-y"
+      - "repomix@latest"
+      - "--compress"
+      - "--remove-empty-lines"
+      - "--remove-comments"
+      - "--truncate-base64"
+      - "--mcp"
     tools: ["*"]
   vercel:
     type: http
@@ -20,11 +26,15 @@ mcp-servers:
     command: npx
     args: ["-y", "@netlify/mcp"]
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
+  mslearn:
+    type: http
+    url: "https://learn.microsoft.com/api/mcp"
+    tools: ["microsoft_docs_search", "microsoft_docs_fetch"]
 ---
 
 # Workflow Engineer
@@ -39,7 +49,9 @@ Always load `skills/workflow-development/SKILL.md`, `skills/gh-cli/SKILL.md`, an
 
 - Use **repomix** for monorepo workflow audits when a single file read is not enough.
 - Use **vercel** or **netlify** only for platform-specific deploy, preview, hosting, or environment workflows.
-- Use **sequential-thinking** to separate permissions, trigger, and validation changes before editing.
+- Use **yggdrasil** to separate permissions, trigger, and validation changes before editing.
+- Keep **yggdrasil** limited to `sequential_thinking`; workflow changes need ordered reasoning, not saved-plan management.
+- Use **mslearn** when Azure, Entra, OIDC, or Microsoft-hosted platform docs are the source of truth.
 
 ### Collaboration Contract
 

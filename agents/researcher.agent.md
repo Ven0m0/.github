@@ -9,13 +9,18 @@ mcp-servers:
   reddit:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
+    args:
+      ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools: ["sequential_thinking"]
+  mslearn:
+    type: http
+    url: "https://learn.microsoft.com/api/mcp"
+    tools: ["microsoft_docs_search", "microsoft_docs_fetch"]
 ---
 
 # Researcher
@@ -29,7 +34,9 @@ Load `skills/web-search/SKILL.md` and `skills/code-search/SKILL.md` before start
 ### MCP Playbook
 
 - Use **reddit** for community sentiment, discussion patterns, and real-world troubleshooting when official docs are thin.
-- Use **sequential-thinking** to compare alternatives and converge on one recommended approach.
+- Use **yggdrasil** for ordered reasoning when comparing alternatives or shaping a recommendation.
+- Keep **yggdrasil** limited to `sequential_thinking`; research should evaluate options, not author or mutate saved plans.
+- Use **mslearn** when Microsoft or Azure platform docs are authoritative for the task.
 
 ### Handoff Contract
 
@@ -58,17 +65,18 @@ Deep research specialist in the orchestrator pipeline. Reads the plan artifact a
    - `get-library-docs` with specific topic to get current documentation
    - Check installed version vs latest available
 3. **Search for patterns**: Use Reddit discussions and task artifacts for implementation patterns and real-world examples
-4. **Check official docs**: Confirm unresolved claims against the vendor docs, release notes, or specs already linked in the task or repo
+4. **Check official docs**: Confirm unresolved claims against the vendor docs, release notes, specs, or Microsoft docs already linked in the task or repo
 5. **Evaluate approaches**: Compare alternatives with evidence, recommend best option
 6. **Synthesize findings**: Compile actionable findings for the coder
 
 ## Research Tools
 
-| Tool                    | Use For                                                    |
-| ----------------------- | ---------------------------------------------------------- |
-| **Context7**            | Library docs, API signatures, version info, best practices |
-| **reddit**              | Community sentiment, troubleshooting patterns, edge cases  |
-| **sequential-thinking** | Compare options, sequence trade-offs, converge on a choice |
+| Tool          | Use For                                                                |
+| ------------- | ---------------------------------------------------------------------- |
+| **Context7**  | Library docs, API signatures, version info, best practices             |
+| **reddit**    | Community sentiment, troubleshooting patterns, edge cases              |
+| **yggdrasil** | Compare options, sequence trade-offs, converge on a choice             |
+| **mslearn**   | Microsoft and Azure platform docs, Copilot guidance, official examples |
 
 ## Context7 Workflow (Mandatory for Library Questions)
 

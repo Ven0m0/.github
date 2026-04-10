@@ -1,5 +1,6 @@
 import json
 import re
+import yaml
 from pathlib import Path
 
 
@@ -25,21 +26,21 @@ def test_workspace_mcp_config_includes_selected_servers():
     mcp_config = json.loads((REPO_ROOT / ".vscode" / "mcp.json").read_text(encoding="utf-8"))
     servers = mcp_config["mcpServers"]
 
-    assert servers["eslint"]["args"] == ["-y", "@eslint/mcp@latest"]
-    assert servers["chrome-devtools"]["args"] == ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
-    assert servers["next-devtools"]["args"] == ["-y", "next-devtools-mcp@latest"]
+    assert servers["github-mcp-server"]["url"] == "https://api.githubcopilot.com/mcp/insiders"
+    assert servers["playwright"]["args"] == ["-y", "@playwright/mcp@latest", "--headless"]
     assert servers["vercel"]["url"] == "https://mcp.vercel.com"
-    assert servers["netlify"]["args"] == ["-y", "@netlify/mcp"]
-    assert servers["reddit"]["args"] == ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
-    assert servers["ast-grep"]["args"] == ["-y", "@notprolands/ast-grep-mcp@latest"]
+    assert servers["exa"]["url"] == "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
+    assert servers["ref-tools"]["url"] == "https://api.ref.tools/mcp"
+    assert servers["fast-filesystem"]["args"] == ["-y", "fast-filesystem-mcp@latest"]
+    assert servers["octocode"]["args"] == ["-y", "octocode-mcp@latest"]
 
 
 def test_code_agents_keep_only_specialized_structural_mcp_servers():
     """Coding-focused agents should keep only the specialized MCP servers they still need."""
     expected_servers = {
-        "agents/coder.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "sequential-thinking:"),
-        "agents/reviewer.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "sequential-thinking:"),
-        "agents/codebase-maintainer.agent.md": ("eslint:", "ast-grep:", "repomix:", "sequential-thinking:"),
+        "agents/coder.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "yggdrasil:"),
+        "agents/reviewer.agent.md": ("eslint:", "ast-grep:", "repomix:", "semgrep:", "yggdrasil:"),
+        "agents/codebase-maintainer.agent.md": ("eslint:", "ast-grep:", "repomix:", "yggdrasil:"),
         "agents/explorer.agent.md": ("ast-grep:", "repomix:"),
     }
 
@@ -52,11 +53,16 @@ def test_code_agents_keep_only_specialized_structural_mcp_servers():
 def test_agents_include_specialized_mcp_servers_in_frontmatter():
     """Agents should expose the specialized MCP servers they need in frontmatter."""
     expected_servers = {
-        "agents/researcher.agent.md": ("reddit:",),
-        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "vercel:", "netlify:"),
-        "agents/debug.agent.md": ("chrome-devtools:", "semgrep:", "sequential-thinking:"),
-        "agents/workflow-engineer.agent.md": ("vercel:", "netlify:"),
-        "agents/repo-architect.agent.md": ("vercel:", "netlify:"),
+        "agents/researcher.agent.md": ("reddit:", "yggdrasil:", "mslearn:"),
+        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "vercel:"),
+        "agents/debug.agent.md": ("chrome-devtools:", "semgrep:", "yggdrasil:"),
+        "agents/workflow-engineer.agent.md": ("vercel:", "netlify:", "yggdrasil:", "mslearn:"),
+        "agents/repo-architect.agent.md": ("vercel:", "netlify:", "yggdrasil:", "mslearn:"),
+        "agents/orchestrator.agent.md": ("repomix:", "yggdrasil:"),
+        "agents/planner.agent.md": ("repomix:", "yggdrasil:"),
+        "agents/git.agent.md": ("yggdrasil:",),
+        "agents/arch-linux-expert.agent.md": ("yggdrasil:",),
+        "agents/janitor.agent.md": ("ast-grep:", "eslint:", "repomix:", "yggdrasil:"),
     }
 
     for relative_path, server_names in expected_servers.items():
@@ -94,6 +100,23 @@ def test_all_agents_use_supported_primary_models():
         path = REPO_ROOT / relative_path
         model = read_model(path)
         assert model == expected_model
+
+
+def test_all_agent_frontmatter_is_valid_yaml():
+    """All agent frontmatter blocks must parse as valid YAML."""
+    for path in (REPO_ROOT / "agents").glob("*.agent.md"):
+        frontmatter = read_frontmatter(path)
+        try:
+            yaml.safe_load(frontmatter)
+        except yaml.YAMLError as exc:
+            raise AssertionError(f"invalid YAML frontmatter in {path}: {exc}") from exc
+
+
+def test_agents_replace_sequential_thinking_with_yggdrasil():
+    """Agents should no longer reference the deprecated sequential-thinking server."""
+    for path in (REPO_ROOT / "agents").glob("*.agent.md"):
+        frontmatter = read_frontmatter(path)
+        assert "sequential-thinking:" not in frontmatter, f"unexpected sequential-thinking in {path}"
 
 
 def test_primary_agents_drop_deprecated_mcp_servers():

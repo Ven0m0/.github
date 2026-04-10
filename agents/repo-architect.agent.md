@@ -2,13 +2,28 @@
 description: "Bootstraps, tunes, and validates agentic project structures and AI configs for GitHub Copilot (VS Code) and OpenCode CLI workflows. Run after `opencode /init`, when refining Copilot/CLAUDE guidance, or when migrating agentic repos."
 name: repo-architect
 model: GPT-5.4
-tools: ["changes", "codebase", "editFiles", "fetch", "new", "problems", "runCommands", "search", "terminalLastCommand"]
+tools:
+  - "changes"
+  - "codebase"
+  - "editFiles"
+  - "fetch"
+  - "new"
+  - "problems"
+  - "runCommands"
+  - "search"
+  - "terminalLastCommand"
 mcp-servers:
   repomix:
     type: local
     command: npx
     args:
-      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+      - "-y"
+      - "repomix@latest"
+      - "--compress"
+      - "--remove-empty-lines"
+      - "--remove-comments"
+      - "--truncate-base64"
+      - "--mcp"
     tools: ["*"]
   vercel:
     type: http
@@ -19,11 +34,20 @@ mcp-servers:
     command: npx
     args: ["-y", "@netlify/mcp"]
     tools: ["*"]
-  sequential-thinking:
-    type: stdio
+  yggdrasil:
+    type: local
     command: npx
-    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    tools: ["*"]
+    args: ["-y", "yggdrasil-mcp"]
+    tools:
+      - "sequential_thinking"
+      - "deep_planning"
+      - "list_plans"
+      - "get_plan"
+      - "promote_plan"
+  mslearn:
+    type: http
+    url: "https://learn.microsoft.com/api/mcp"
+    tools: ["microsoft_docs_search", "microsoft_docs_fetch"]
 ---
 
 # Repo Architect Agent
@@ -38,7 +62,9 @@ Always load `skills/ai-tuning/SKILL.md`, `skills/linting-llm-configs/SKILL.md`, 
 
 - Use **repomix** first to audit local structure, guidance density, and duplication.
 - Use **vercel** or **netlify** only when deployment templates, hosting setup, or preview environments are part of the setup.
-- Use **sequential-thinking** to separate foundation rules, specialist agents, and capability layers.
+- Use **yggdrasil** to separate foundation rules, specialist agents, and capability layers.
+- Use the full **yggdrasil** toolset when migration work needs saved plans, reusable plan retrieval, or promoted plan artifacts.
+- Use **mslearn** when GitHub Copilot, VS Code, or Microsoft platform guidance needs official confirmation.
 
 ### Collaboration Contract
 
