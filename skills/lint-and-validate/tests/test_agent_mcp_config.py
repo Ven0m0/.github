@@ -101,6 +101,13 @@ def test_all_agents_use_supported_primary_models():
         assert model == expected_model
 
 
+def test_agents_replace_sequential_thinking_with_yggdrasil():
+    """Agents should no longer reference the deprecated sequential-thinking server."""
+    for path in (REPO_ROOT / "agents").glob("*.agent.md"):
+        frontmatter = read_frontmatter(path)
+        assert "sequential-thinking:" not in frontmatter, f"unexpected sequential-thinking in {path}"
+
+
 def test_primary_agents_drop_deprecated_mcp_servers():
     """Optimized agents should avoid deprecated or now-default MCP server choices."""
     deprecated_servers = (
@@ -118,7 +125,6 @@ def test_primary_agents_drop_deprecated_mcp_servers():
         "ref-tools:",
         "next-devtools:",
         "playwright:",
-        "sequential-thinking:",
     )
 
     for path in (REPO_ROOT / "agents").glob("*.agent.md"):
