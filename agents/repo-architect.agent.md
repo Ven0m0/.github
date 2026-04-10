@@ -2,13 +2,32 @@
 description: "Bootstraps, tunes, and validates agentic project structures and AI configs for GitHub Copilot (VS Code) and OpenCode CLI workflows. Run after `opencode /init`, when refining Copilot/CLAUDE guidance, or when migrating agentic repos."
 name: repo-architect
 model: GPT-5.4
-tools: ["changes", "codebase", "editFiles", "fetch", "new", "problems", "runCommands", "search", "terminalLastCommand"]
+tools:
+  [
+    "changes",
+    "codebase",
+    "editFiles",
+    "fetch",
+    "new",
+    "problems",
+    "runCommands",
+    "search",
+    "terminalLastCommand",
+  ]
 mcp-servers:
   repomix:
     type: local
     command: npx
     args:
-      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   vercel:
     type: http
@@ -23,7 +42,14 @@ mcp-servers:
     type: local
     command: npx
     args: ["-y", "yggdrasil-mcp"]
-    tools: ["sequential_thinking", "deep_planning", "list_plans", "get_plan", "promote_plan"]
+    tools:
+      [
+        "sequential_thinking",
+        "deep_planning",
+        "list_plans",
+        "get_plan",
+        "promote_plan",
+      ]
   mslearn:
     type: http
     url: "https://learn.microsoft.com/api/mcp"

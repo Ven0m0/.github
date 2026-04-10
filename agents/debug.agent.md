@@ -10,7 +10,13 @@ mcp-servers:
   chrome-devtools:
     type: local
     command: npx
-    args: ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
+    args:
+      [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--headless",
+        "--no-usage-statistics",
+      ]
     tools:
       [
         "new_page",
@@ -53,6 +59,7 @@ Load `skills/fix-issue/SKILL.md` and `skills/lint-and-validate/SKILL.md` before 
 
 - Use **ast-grep** to trace failing paths and **semgrep** when the issue may involve risky patterns or taint flow.
 - Use **chrome-devtools** only when the bug requires browser/runtime confirmation.
+- Keep **chrome-devtools** scoped to page, input, console, network, and snapshot actions unless the task explicitly needs more.
 - Use **yggdrasil** to keep hypotheses, reproductions, and fixes ordered.
 
 ### Collaboration Contract

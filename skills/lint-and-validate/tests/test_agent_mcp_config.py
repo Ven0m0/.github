@@ -25,13 +25,13 @@ def test_workspace_mcp_config_includes_selected_servers():
     mcp_config = json.loads((REPO_ROOT / ".vscode" / "mcp.json").read_text(encoding="utf-8"))
     servers = mcp_config["mcpServers"]
 
-    assert servers["eslint"]["args"] == ["-y", "@eslint/mcp@latest"]
-    assert servers["chrome-devtools"]["args"] == ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
-    assert servers["next-devtools"]["args"] == ["-y", "next-devtools-mcp@latest"]
+    assert servers["github-mcp-server"]["url"] == "https://api.githubcopilot.com/mcp/insiders"
+    assert servers["playwright"]["args"] == ["-y", "@playwright/mcp@latest", "--headless"]
     assert servers["vercel"]["url"] == "https://mcp.vercel.com"
-    assert servers["netlify"]["args"] == ["-y", "@netlify/mcp"]
-    assert servers["reddit"]["args"] == ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
-    assert servers["ast-grep"]["args"] == ["-y", "@notprolands/ast-grep-mcp@latest"]
+    assert servers["exa"]["url"] == "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
+    assert servers["ref-tools"]["url"] == "https://api.ref.tools/mcp"
+    assert servers["fast-filesystem"]["args"] == ["-y", "fast-filesystem-mcp@latest"]
+    assert servers["octocode"]["args"] == ["-y", "octocode-mcp@latest"]
 
 
 def test_code_agents_keep_only_specialized_structural_mcp_servers():
@@ -53,7 +53,7 @@ def test_agents_include_specialized_mcp_servers_in_frontmatter():
     """Agents should expose the specialized MCP servers they need in frontmatter."""
     expected_servers = {
         "agents/researcher.agent.md": ("reddit:", "yggdrasil:", "mslearn:"),
-        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "vercel:", "netlify:"),
+        "agents/frontend-specialist.agent.md": ("chrome-devtools:", "vercel:"),
         "agents/debug.agent.md": ("chrome-devtools:", "semgrep:", "yggdrasil:"),
         "agents/workflow-engineer.agent.md": ("vercel:", "netlify:", "yggdrasil:", "mslearn:"),
         "agents/repo-architect.agent.md": ("vercel:", "netlify:", "yggdrasil:", "mslearn:"),

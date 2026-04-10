@@ -9,13 +9,21 @@ mcp-servers:
   reddit:
     type: local
     command: uvx
-    args: ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
+    args:
+      ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
     tools: ["*"]
   yggdrasil:
     type: local
     command: npx
     args: ["-y", "yggdrasil-mcp"]
-    tools: ["sequential_thinking", "deep_planning", "list_plans", "get_plan", "promote_plan"]
+    tools:
+      [
+        "sequential_thinking",
+        "deep_planning",
+        "list_plans",
+        "get_plan",
+        "promote_plan",
+      ]
   mslearn:
     type: http
     url: "https://learn.microsoft.com/api/mcp"
@@ -69,12 +77,12 @@ Deep research specialist in the orchestrator pipeline. Reads the plan artifact a
 
 ## Research Tools
 
-| Tool                    | Use For                                                    |
-| ----------------------- | ---------------------------------------------------------- |
-| **Context7** | Library docs, API signatures, version info, best practices |
-| **reddit**   | Community sentiment, troubleshooting patterns, edge cases  |
-| **yggdrasil** | Compare options, sequence trade-offs, converge on a choice |
-| **mslearn** | Microsoft and Azure platform docs, Copilot guidance, official examples |
+| Tool          | Use For                                                                |
+| ------------- | ---------------------------------------------------------------------- |
+| **Context7**  | Library docs, API signatures, version info, best practices             |
+| **reddit**    | Community sentiment, troubleshooting patterns, edge cases              |
+| **yggdrasil** | Compare options, sequence trade-offs, converge on a choice             |
+| **mslearn**   | Microsoft and Azure platform docs, Copilot guidance, official examples |
 
 ## Context7 Workflow (Mandatory for Library Questions)
 

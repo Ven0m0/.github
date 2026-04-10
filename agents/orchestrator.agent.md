@@ -13,13 +13,28 @@ mcp-servers:
     type: local
     command: npx
     args:
-      ["-y", "repomix@latest", "--compress", "--remove-empty-lines", "--remove-comments", "--truncate-base64", "--mcp"]
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   yggdrasil:
     type: local
     command: npx
     args: ["-y", "yggdrasil-mcp"]
-    tools: ["sequential_thinking", "deep_planning", "list_plans", "get_plan", "promote_plan"]
+    tools:
+      [
+        "sequential_thinking",
+        "deep_planning",
+        "list_plans",
+        "get_plan",
+        "promote_plan",
+      ]
 ---
 
 # Orchestrator
@@ -129,13 +144,13 @@ For each phase (explore → plan → research → implement → review):
 
 ## Phase Agent Dispatch Table
 
-| Phase        | Agent      | Model             | Artifact             | MCP Servers                                             |
-| ------------ | ---------- | ----------------- | -------------------- | ------------------------------------------------------- |
-| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | ast-grep, repomix                                       |
-| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | repomix, yggdrasil                                      |
-| 3. Research  | researcher | GPT-5.4           | 03-research.md       | reddit, yggdrasil, mslearn                              |
-| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | ast-grep, eslint, repomix, semgrep, yggdrasil           |
-| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | ast-grep, eslint, repomix, semgrep, yggdrasil           |
+| Phase        | Agent      | Model             | Artifact             | MCP Servers                                   |
+| ------------ | ---------- | ----------------- | -------------------- | --------------------------------------------- |
+| 1. Explore   | explorer   | GPT-5.4           | 01-exploration.md    | ast-grep, repomix                             |
+| 2. Plan      | planner    | GPT-5.4           | 02-plan.md           | repomix, yggdrasil                            |
+| 3. Research  | researcher | GPT-5.4           | 03-research.md       | reddit, yggdrasil, mslearn                    |
+| 4. Implement | coder      | claude-sonnet-4.6 | 04-implementation.md | ast-grep, eslint, repomix, semgrep, yggdrasil |
+| 5. Review    | reviewer   | GPT-5.4           | 05-review.md         | ast-grep, eslint, repomix, semgrep, yggdrasil |
 
 ## Supporting Agents
 
