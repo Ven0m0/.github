@@ -24,7 +24,7 @@ mcp-servers:
         "--remove-empty-lines",
         "--remove-comments",
         "--truncate-base64",
-        "--mcp",
+        "--mcp"
       ]
     tools: ["*"]
   yggdrasil:
