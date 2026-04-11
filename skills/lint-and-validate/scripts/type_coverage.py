@@ -107,6 +107,34 @@ def _format_typescript_results(stats: dict, file_count: int) -> tuple[list[str],
     return passed, issues
 
 
+def analyze_python_file(content: str) -> dict:
+    """Analyze a Python file for type coverage."""
+    # Count 'Any' usage
+    any_count = len(RE_PY_ANY.findall(content))
+
+    # Find unique functions by start position
+    all_indices = {m.start() for m in RE_PY_ALL_FUNC.finditer(content)}
+
+    # Identify typed functions (either parameters or return type)
+    typed_indices = {
+        m.start()
+        for m in chain(
+            RE_PY_TYPED_FUNC_PARAMS.finditer(content),
+            RE_PY_TYPED_FUNC_RETURN.finditer(content),
+        )
+    }
+
+    # Use set operations to avoid double-counting and efficiently find untyped
+    typed_count = len(typed_indices & all_indices)
+    untyped_count = len(all_indices - typed_indices)
+
+    return {
+        "any_count": any_count,
+        "typed_functions": typed_count,
+        "untyped_functions": untyped_count,
+    }
+
+
 def check_typescript_coverage(
     project_path: Path,
     max_files: Optional[int] = 30,
