@@ -10,11 +10,6 @@ mcp-servers:
     command: npx
     args: ["-y", "@notprolands/ast-grep-mcp@latest"]
     tools: ["*"]
-  eslint:
-    type: local
-    command: npx
-    args: ["-y", "@eslint/mcp@latest"]
-    tools: ["*"]
   repomix:
     type: local
     command: npx
