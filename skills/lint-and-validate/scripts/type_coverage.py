@@ -141,6 +141,35 @@ def check_typescript_coverage(
         "issues": issues,
         "stats": stats,
     }
+
+
+def analyze_python_file(content: str) -> dict:
+    """Analyze Python content for type hint coverage."""
+    any_count = len(RE_PY_ANY.findall(content))
+
+    # Find all function definitions
+    all_indices = {m.start() for m in RE_PY_ALL_FUNC.finditer(content)}
+
+    # Find typed functions (parameters or return type)
+    typed_indices = {
+        m.start()
+        for m in chain(
+            RE_PY_TYPED_FUNC_PARAMS.finditer(content),
+            RE_PY_TYPED_FUNC_RETURN.finditer(content),
+        )
+    }
+
+    # Ensure we only count actual functions and avoid double counting
+    typed_count = len(typed_indices.intersection(all_indices))
+    untyped_count = len(all_indices - typed_indices)
+
+    return {
+        "any_count": any_count,
+        "typed_functions": typed_count,
+        "untyped_functions": untyped_count,
+    }
+
+
 def check_python_coverage(
     project_path: Path,
     max_files: Optional[int] = 30,
