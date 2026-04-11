@@ -2,7 +2,6 @@
 name: arch-linux-expert
 description: "Arch Linux specialist: pacman workflows, rolling-release maintenance, systemd administration."
 model: claude-sonnet-4.6
-user-invocable: true
 mcp-servers:
   yggdrasil:
     type: local
