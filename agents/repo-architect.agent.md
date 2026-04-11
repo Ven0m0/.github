@@ -2,16 +2,6 @@
 description: "Bootstraps, tunes, and validates agentic project structures and AI configs for GitHub Copilot (VS Code) and OpenCode CLI workflows. Run after `opencode /init`, when refining Copilot/CLAUDE guidance, or when migrating agentic repos."
 name: repo-architect
 model: GPT-5.4
-tools:
-  - "changes"
-  - "codebase"
-  - "editFiles"
-  - "fetch"
-  - "new"
-  - "problems"
-  - "runCommands"
-  - "search"
-  - "terminalLastCommand"
 mcp-servers:
   repomix:
     type: local
@@ -29,11 +19,6 @@ mcp-servers:
   vercel:
     type: http
     url: "https://mcp.vercel.com"
-    tools: ["*"]
-  netlify:
-    type: local
-    command: npx
-    args: ["-y", "@netlify/mcp"]
     tools: ["*"]
   yggdrasil:
     type: local
