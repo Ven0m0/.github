@@ -6,11 +6,6 @@ modelParameters:
   temperature: 0.35
 agents: ["researcher", "planner", "coder", "reviewer"]
 mcp-servers:
-  reddit:
-    type: local
-    command: uvx
-    args: ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"]
-    tools: ["*"]
   yggdrasil:
     type: local
     command: npx
