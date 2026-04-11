@@ -164,6 +164,33 @@ def test_check_python_coverage_multiple_files(tmp_path):
     assert result["files"] == 2
     assert result["stats"]["typed_functions"] == 2
 
+
+def test_check_python_coverage_oserror(tmp_path):
+    """Test handling of OSError when reading a file."""
+    from unittest.mock import patch
+
+    (tmp_path / "good.py").write_text("def foo(x: int): pass")
+    bad_file = tmp_path / "bad.py"
+    bad_file.write_text("def bar(x): pass")
+
+    # Mock Path.read_text to raise OSError for 'bad.py'
+    original_read_text = Path.read_text
+
+    def mocked_read_text(self, *args, **kwargs):
+        if self.name == "bad.py":
+            raise OSError("Inaccessible file")
+        return original_read_text(self, *args, **kwargs)
+
+    with patch.object(Path, "read_text", autospec=True, side_effect=mocked_read_text):
+        result = check_python_coverage(tmp_path)
+
+    # Should have analyzed 2 files but only 1 successfully
+    assert result["files"] == 2
+    # Only good.py stats should be counted
+    assert result["stats"]["typed_functions"] == 1
+    assert result["stats"]["untyped_functions"] == 0
+
+
 def test_analyze_python_file():
     """Test analyze_python_file directly."""
     from type_coverage import analyze_python_file
