@@ -510,27 +510,27 @@ jobs:
 
 ### Adding a New Agent
 
-1. Create `agents/new-agent.agent.md` with YAML frontmatter
+1. Create `agents/debug.agent.md` with YAML frontmatter
 2. Define role, reference standards, describe workflow
 3. Document in this AGENTS.md file (add row to appropriate table)
 
 ### Adding a New Skill
 
 1. Create `skills/skill-name/` directory
-2. Create `skills/skill-name/SKILL.md` with metadata
+2. Create `skills/ai-tuning/SKILL.md` with metadata
 3. Add prerequisites, workflows, examples
 4. Update instructions/INDEX.md
 
 ### Adding Instructions
 
-1. Create `instructions/domain.instructions.md`
+1. Create `instructions/kotlin.instructions.md`
 2. Set `applyTo` glob pattern in YAML frontmatter
 3. Add applicable standards and patterns
 4. Update instructions/INDEX.md
 
 ### Reusable Workflows
 
-1. Create `.github/workflows/reusable-xyz.yml`
+1. Create `.github/workflows/reusable-ci-go.yml`
 2. Use `on: workflow_call:` trigger
 3. Document in README.md
 4. Version tag for stability
