@@ -1,5 +1,6 @@
 ---
 description: "Add GraalVM native image support to Java applications with iterative build-fix cycles"
+mode: agent
 model: claude-sonnet-4-6
 tools: ["read", "edit", "search", "execute"]
 ---

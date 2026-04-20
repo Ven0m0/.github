@@ -1,4 +1,5 @@
 ---
+description: "Memory Bank system for maintaining project context across AI sessions"
 applyTo: "**"
 ---
 

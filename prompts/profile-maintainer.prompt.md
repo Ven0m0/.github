@@ -1,5 +1,6 @@
 ---
 description: "Maintain GitHub profile README with activity insights - analyze repos, score significance, generate markdown sections"
+mode: agent
 ---
 
 # Profile Maintainer

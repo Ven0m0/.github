@@ -124,4 +124,3 @@ Manage them with GitHub secrets tooling, for example:
 ```bash
 gh secret set ANTHROPIC_API_KEY
 ```
-

@@ -1,6 +1,7 @@
 ---
 description: "Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation."
 name: janitor
+model: claude-sonnet-4.6
 mcp-servers:
   ast-grep:
     type: local

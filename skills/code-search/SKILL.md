@@ -1,6 +1,8 @@
 ---
 name: code-search
 description: Code context using Exa. Finds real snippets and docs from GitHub, StackOverflow, and technical docs. Use when searching for code examples, API syntax, library documentation, or debugging help.
+context: fork
+agent: general-purpose
 ---
 
 # Code Context (Exa)

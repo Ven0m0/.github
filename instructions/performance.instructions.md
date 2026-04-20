@@ -1,4 +1,5 @@
 ---
+description: "Practical performance optimization guidance across frontend, backend, and databases."
 applyTo: "**"
 ---
 

@@ -1,4 +1,5 @@
 ---
+description: "Auto-update documentation when application code changes require doc updates"
 applyTo: "**/*.{md,js,mjs,cjs,ts,tsx,jsx,py,java,cs,go,rb,php,rs,cpp,c,h,hpp}"
 ---
 

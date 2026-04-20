@@ -1,5 +1,6 @@
 ---
 applyTo: "**/{*.kt,*.kts,build.gradle.kts}"
+description: "Kotlin 2.0+: coroutines, null safety, data classes"
 ---
 
 # Kotlin Standards

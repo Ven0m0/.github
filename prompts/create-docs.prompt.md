@@ -1,5 +1,6 @@
 ---
 description: "Create structured knowledge repositories and memory systems that make AI collaboration more effective and project-aware"
+mode: agent
 ---
 
 # Context Engineering Master

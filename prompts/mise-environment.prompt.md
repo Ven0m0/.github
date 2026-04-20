@@ -1,5 +1,6 @@
 ---
 description: "Mise (mise-en-place) dev environment setup - tool versions, tasks, env vars, CI/CD, Docker integration"
+mode: agent
 ---
 
 # Mise Environment Setup
