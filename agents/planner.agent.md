@@ -1,9 +1,6 @@
 ---
 name: planner
 description: "Architecture design and DAG-based implementation planning. Creates requirements, wave-ordered task breakdowns, task contracts, pre-mortem analysis, and plan metrics from exploration artifacts."
-model: GPT-5.4
-modelParameters:
-  temperature: 0.35
 mcp-servers:
   repomix:
     type: local
@@ -23,11 +20,6 @@ mcp-servers:
     command: npx
     args: ["-y", "yggdrasil-mcp"]
     tools: ["sequential_thinking", "deep_planning", "list_plans", "get_plan", "promote_plan"]
-handoffs:
-  - label: Implement Plan
-    agent: coder
-    prompt: Implement the plan outlined above.
-    send: false
 ---
 
 # Planner

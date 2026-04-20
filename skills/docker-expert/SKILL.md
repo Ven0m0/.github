@@ -1,6 +1,6 @@
 ---
 name: docker-expert
-description: Docker containerization expert - multi-stage builds, image optimization, security hardening, Compose orchestration, and production deployment. Use for Dockerfile issues, image size, security, networking, and container orchestration.
+description: Docker containerization expert - multi-stage builds, image optimization, security hardening, Compose orchestration, and production deployment. Use when working on Dockerfiles, image size, security, networking, or container orchestration.
 ---
 
 # Docker Expert

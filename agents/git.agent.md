@@ -1,7 +1,6 @@
 ---
 name: git
 description: "Git & GitHub CLI optimization: workflows, best practices, advanced operations. Safe and efficient version control"
-model: claude-sonnet-4.6
 mcp-servers:
   yggdrasil:
     type: local

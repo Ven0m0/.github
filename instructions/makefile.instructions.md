@@ -1,5 +1,4 @@
 ---
-description: "Best practices for authoring GNU Make Makefiles"
 applyTo: "**/{Makefile,makefile,*.mk,GNUmakefile}"
 ---
 

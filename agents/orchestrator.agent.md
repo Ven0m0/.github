@@ -1,13 +1,6 @@
 ---
 name: orchestrator
 description: "Drives the 5-phase development pipeline: explorer -> planner -> researcher -> coder -> reviewer. Supports auto/gated modes, optional pre-planning (discuss + PRD), complexity-adaptive multi-plan selection, and wave-based execution with integration checks."
-model: claude-sonnet-4.6
-modelParameters:
-  temperature: 0.35
-hooks:
-  SessionStart:
-    - type: command
-      command: "./scripts/inject-context.sh"
 mcp-servers:
   repomix:
     type: local
