@@ -10,15 +10,16 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   semgrep:
     type: http

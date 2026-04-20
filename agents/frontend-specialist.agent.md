@@ -5,7 +5,13 @@ mcp-servers:
   chrome-devtools:
     type: local
     command: npx
-    args: ["-y", "chrome-devtools-mcp@latest", "--headless", "--no-usage-statistics"]
+    args:
+      [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--headless",
+        "--no-usage-statistics",
+      ]
     tools: ["*"]
   vercel:
     type: http

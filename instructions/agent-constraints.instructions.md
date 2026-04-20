@@ -29,7 +29,7 @@ Canonical constraints for pipeline and supporting agents. Applied automatically 
 ## Output
 
 - Return ONLY the requested deliverable; zero explanation, preamble, or commentary
-- All output must be raw JSON — no markdown code fences (```` ```json ````)
+- All output must be raw JSON — no markdown code fences (` ```json `)
 - Failures: write YAML logs to `docs/plan/{plan_id}/logs/{agent}_{task_id}_{timestamp}.yaml` only on `status=failed`
 - Never create summary files
 

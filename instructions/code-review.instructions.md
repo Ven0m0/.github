@@ -80,7 +80,9 @@ const PREMIUM_DISCOUNT_RATE = 0.15;
 const STANDARD_DISCOUNT_RATE = 0.1;
 function calculateDiscount(orderTotal, itemPrice) {
   const isPremiumOrder = orderTotal > PREMIUM_THRESHOLD;
-  const discountRate = isPremiumOrder ? PREMIUM_DISCOUNT_RATE : STANDARD_DISCOUNT_RATE;
+  const discountRate = isPremiumOrder
+    ? PREMIUM_DISCOUNT_RATE
+    : STANDARD_DISCOUNT_RATE;
   return itemPrice * discountRate;
 }
 ```
