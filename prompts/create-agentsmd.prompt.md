@@ -1,6 +1,5 @@
 ---
 description: "Generate AGENTS.md for a repository"
-mode: agent
 tools: ["read", "edit", "search", "execute"]
 ---
 

@@ -1,124 +1,115 @@
 # Ven0m0 `.github` Agent Guide
 
-Repository defaults for community health files, reusable workflows and actions, agents, skills, and organization-wide AI guidance.
+Repository defaults for community health files, reusable workflows and actions, custom agents, skills, and organization-wide AI guidance.
 
 ## Canonical files
 
-| File | Role |
-| --- | --- |
-| `/home/runner/work/.github/.github/AGENTS.md` | Canonical repo guide for Claude Code and other agents |
-| `/home/runner/work/.github/.github/CLAUDE.md` | Symlink to `AGENTS.md`; keep it that way |
-| `/home/runner/work/.github/.github/copilot-instructions.md` | Canonical Copilot guidance |
-| `/home/runner/work/.github/.github/.github/copilot-instructions.md` | Symlink to `../copilot-instructions.md` |
+| File                              | Role                                          |
+| --------------------------------- | --------------------------------------------- |
+| `AGENTS.md`                       | Canonical repo guide                          |
+| `CLAUDE.md`                       | Symlink to `AGENTS.md`; keep it that way      |
+| `copilot-instructions.md`         | Canonical Copilot guidance                    |
+| `.github/copilot-instructions.md` | Symlink to the root `copilot-instructions.md` |
 
-## What this repository ships
+## What this repository owns
 
-- Default community health files for Ven0m0 repositories
-- Reusable GitHub Actions workflows in `/home/runner/work/.github/.github/.github/workflows`
-- Custom reusable actions in `/home/runner/work/.github/.github/actions`
-- Agent definitions in `/home/runner/work/.github/.github/agents`
-- Skill modules in `/home/runner/work/.github/.github/skills`
-- Scoped instruction files in `/home/runner/work/.github/.github/instructions`
+- Default community health files and templates in `.github/`
+- Reusable workflows in `.github/workflows/`
+- Reusable actions in `actions/`
+- Custom agent definitions in `agents/`
+- Reusable skills in `skills/`
+- Scoped instruction files in `instructions/`
 
 ## Repository map
 
-| Path | Purpose |
-| --- | --- |
-| `/home/runner/work/.github/.github/.github` | GitHub default files, workflow templates, issue and PR templates |
-| `/home/runner/work/.github/.github/agents` | Custom GitHub Copilot agents |
-| `/home/runner/work/.github/.github/skills` | Reusable skill modules |
-| `/home/runner/work/.github/.github/instructions` | File-pattern scoped guidance |
-| `/home/runner/work/.github/.github/actions` | Composite and JavaScript actions |
-| `/home/runner/work/.github/.github/.githooks` | Tracked Git hooks |
-| `/home/runner/work/.github/.github/.vscode` | Editor and MCP configuration |
-| `/home/runner/work/.github/.github/README.md` | Consumer-facing overview |
-| `/home/runner/work/.github/.github/mise.toml` | Toolchain and task definitions |
+| Path            | Purpose                                                 |
+| --------------- | ------------------------------------------------------- |
+| `.github/`      | Default GitHub files, templates, and reusable workflows |
+| `agents/`       | Custom GitHub Copilot agents                            |
+| `skills/`       | Reusable skill modules                                  |
+| `instructions/` | File-pattern scoped guidance                            |
+| `actions/`      | Composite and JavaScript actions                        |
+| `.githooks/`    | Tracked Git hooks                                       |
+| `.vscode/`      | Editor and MCP configuration                            |
+| `README.md`     | Consumer-facing overview                                |
+| `mise.toml`     | Toolchain and task definitions                          |
 
 ## Guidance hierarchy
 
 Use the smallest layer that can hold the rule.
 
 1. `copilot-instructions.md` for short, always-loaded behavior
-2. `AGENTS.md` for repo-level operating context
-3. `instructions/*.instructions.md` for file-type or domain rules
-4. `skills/*/SKILL.md` for task-specific workflows
-5. Agent files in `agents/*.agent.md` for specialized execution roles
+2. `AGENTS.md` for repo operating context
+3. `instructions/*.instructions.md` for file-type and domain rules
+4. `skills/*/SKILL.md` for task workflows and examples
+5. `agents/*.agent.md` for specialized execution roles
 
-## Preferred skills
+## Skills to load first
 
-Load the matching skill before making non-trivial changes.
-
-| Task | Skill |
-| --- | --- |
-| MCP-first search, reading, editing | `/home/runner/work/.github/.github/.github/skills/mcp-use/SKILL.md` |
-| AI guidance tuning and deduplication | `/home/runner/work/.github/.github/.github/skills/ai-tuning/SKILL.md` |
-| AI config linting | `/home/runner/work/.github/.github/.github/skills/linting-llm-configs/SKILL.md` |
-| Workflow authoring and debugging | `/home/runner/work/.github/.github/.github/skills/workflow-development/SKILL.md` |
-| Code cleanup | `/home/runner/work/.github/.github/.github/skills/code-maintenance/SKILL.md` |
-| Readability and focused refactors | `/home/runner/work/.github/.github/.github/skills/clean-code/SKILL.md` |
-| Bash, Python, and Rust optimization | `/home/runner/work/.github/.github/.github/skills/language-optimization/SKILL.md` |
+- `mcp-use` for MCP-first search, reading, and edits
+- `language-optimization` for Bash, Python, and Rust changes
+- `ai-tuning` for AGENTS, CLAUDE, Copilot, prompts, skills, and instructions
+- `linting-llm-configs` when validating agent configuration files
+- `workflow-development` for `.github/workflows/` changes
 
 ## Development commands
 
-Prefer the task runner in `/home/runner/work/.github/.github/mise.toml`.
+Prefer the task runner declared in `mise.toml`.
 
-| Task | Command |
-| --- | --- |
-| Install toolchain | `mise install` |
-| Lint | `mise run lint` |
-| Test | `mise run test` |
-| Full check | `mise run check` |
-| Format | `mise run format` |
+| Task              | Command           |
+| ----------------- | ----------------- |
+| Install toolchain | `mise install`    |
+| Lint              | `mise run lint`   |
+| Test              | `mise run test`   |
+| Full check        | `mise run check`  |
+| Format            | `mise run format` |
 
-### Direct validation commands
+### Focused validation commands
 
-Use these when editing AI guidance or when you need focused checks.
-
-| Scope | Command |
-| --- | --- |
-| AI context files | `npx -y @yawlabs/ctxlint --depth 3 --mcp --strict --fix --yes` |
-| AI config linting | `npx -y agnix --fix-safe .` |
-| Markdown, YAML, JSON formatting | `npx -y prettier --check .` |
-| YAML lint | `uvx --from yamllint yamllint .` |
-| Workflow lint | `actionlint` |
-| Hook lint | `shellcheck .githooks/pre-commit` |
-| Hook format check | `shfmt -d .githooks/pre-commit` |
+| Scope             | Command                                        |
+| ----------------- | ---------------------------------------------- |
+| AI context files  | `ctxlint --depth 3 --mcp --strict --fix --yes` |
+| AI config linting | `agnix --fix-safe .`                           |
+| Formatting check  | `npx -y prettier --check .`                    |
+| YAML lint         | `uvx --from yamllint yamllint .`               |
+| Workflow lint     | `actionlint`                                   |
+| Hook lint         | `shellcheck .githooks/pre-commit`              |
+| Hook format check | `shfmt -d .githooks/pre-commit`                |
 
 ## Change rules
 
 - Use `rg` for discovery before editing.
-- Prefer MCP tools over raw shell when an MCP tool can search, read, or edit more precisely.
+- Prefer MCP tools when they can search, read, or edit more precisely than raw shell.
 - Keep root guidance concise; move deep procedures into `skills/` or `instructions/`.
-- If a repo path is mentioned in guidance, it must exist in this repository.
-- Update related docs when changing workflows, skills, agents, actions, or default templates.
-- Preserve symlinks for `CLAUDE.md` and `.github/copilot-instructions.md`.
-- Use conventional commits: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`.
+- If a repo path, command, workflow, skill, or agent is mentioned in guidance, verify that it exists.
+- Update related docs when changing workflows, skills, agents, actions, or templates.
+- Preserve the `CLAUDE.md` and `.github/copilot-instructions.md` symlinks.
+- Use conventional commit types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`.
 - Keep branch names lowercase, descriptive, and hyphenated.
 
-## Workflow authoring rules
+## Workflow rules
 
-When touching files in `/home/runner/work/.github/.github/.github/workflows`:
+When editing `.github/workflows/`:
 
-- Read `/home/runner/work/.github/.github/.github/skills/workflow-development/SKILL.md` first.
-- Pin trusted actions to explicit major versions such as `actions/checkout@v6`.
+- Read `.github/skills/workflow-development/SKILL.md` first.
+- Use explicit action versions such as `actions/checkout@v6`.
 - Add an explicit `permissions:` block.
 - Set `timeout-minutes` on each job.
-- Use path filters and concurrency when they reduce wasted runs.
-- Prefer reusable workflows over duplicate inline job definitions.
+- Prefer reusable workflows over duplicate inline jobs.
 
-## AI guidance authoring rules
+## AI guidance rules
 
-When touching `AGENTS.md`, `CLAUDE.md`, `copilot-instructions.md`, skills, prompts, or instruction files:
+When editing `AGENTS.md`, `CLAUDE.md`, `copilot-instructions.md`, skills, prompts, or instruction files:
 
-- Keep the always-loaded files short and high-signal.
+- Keep always-loaded files short and high-signal.
 - Put stable repo facts here; put procedures and examples in skills.
-- Remove duplicated rules instead of restating them in multiple files.
+- Remove duplicated rules instead of restating them.
 - Validate with `ctxlint` and `agnix` after edits.
-- Do not invent directories, branches, commands, or workflow names.
+- Use only verified directories, commands, workflow names, and repo-specific examples.
 
-## Critical secrets used by repository workflows
+## Workflow secrets
 
-The workflow `/home/runner/work/.github/.github/.github/workflows/one-off-agent-prompt.yml` expects these repository secrets when the related providers are used:
+`.github/workflows/one-off-agent-prompt.yml` may require these repository secrets:
 
 - `ANTHROPIC_API_KEY`
 - `GEMINI_API_KEY`
@@ -128,22 +119,9 @@ The workflow `/home/runner/work/.github/.github/.github/workflows/one-off-agent-
 - `KILO_API_KEY`
 - `KILO_ORG_ID`
 
-Set them with GitHub secrets management, for example:
+Manage them with GitHub secrets tooling, for example:
 
 ```bash
 gh secret set ANTHROPIC_API_KEY
 ```
 
-## Before opening a PR
-
-- Run the smallest relevant validation set first, then `mise run check` when the change is broad.
-- Review diffs for accidental generated churn.
-- Confirm symlinks still resolve correctly.
-- Update documentation that consumers rely on.
-
-## References
-
-- `/home/runner/work/.github/.github/README.md`
-- `/home/runner/work/.github/.github/copilot-instructions.md`
-- `/home/runner/work/.github/.github/instructions/INDEX.md`
-- `/home/runner/work/.github/.github/.github/skills/ai-tuning/references/guide.md`

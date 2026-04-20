@@ -1,6 +1,5 @@
 ---
 applyTo: ".github/workflows/*.yml,.github/workflows/*.yaml"
-description: "CI/CD, GitHub Actions, and deployment standards for workflow YAML"
 ---
 
 # CI/CD and DevOps Standards

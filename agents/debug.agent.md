@@ -1,7 +1,6 @@
 ---
 description: "Debug specialist: systematic bug finding, root cause analysis, and targeted fixes across all languages."
 name: debug
-model: claude-sonnet-4.6
 mcp-servers:
   semgrep:
     type: http

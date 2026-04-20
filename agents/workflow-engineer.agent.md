@@ -1,8 +1,6 @@
 ---
 description: "GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reusable patterns, debugging."
 name: workflow-engineer
-model: claude-sonnet-4.6
-modelParameters:
   temperature: 0.35
 mcp-servers:
   repomix:
