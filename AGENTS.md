@@ -81,7 +81,7 @@ Prefer the task runner declared in `mise.toml`.
 - Use `rg` for discovery before editing.
 - Prefer MCP tools when they can search, read, or edit more precisely than raw shell.
 - Keep root guidance concise; move deep procedures into `skills/` or `instructions/`.
-- If a repo path, command, workflow, skill, or agent is mentioned in guidance, verify that it exists.
+- If guidance mentions a repo path, command, workflow, skill, or agent, verify it with `rg`, `ctxlint`, or `agnix` before you finish.
 - Update related docs when changing workflows, skills, agents, actions, or templates.
 - Preserve the `CLAUDE.md` and `.github/copilot-instructions.md` symlinks.
 - Use conventional commit types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`.

@@ -43,7 +43,7 @@ Prefer the task runner declared in `mise.toml`.
 
 ## Required validation for AI guidance changes
 
-Use `ctxlint` for context-file quality and `agnix` for agent-config linting after editing `AGENTS.md`, `CLAUDE.md`, `copilot-instructions.md`, skills, prompts, or instruction files.
+Use `ctxlint` for context-file quality and `agnix` for agent-config linting after editing `AGENTS.md`, `CLAUDE.md`, `copilot-instructions.md`, `skills/*/SKILL.md`, `prompts/*.prompt.md`, or `instructions/*.instructions.md`.
 
 | Task              | Command                                        |
 | ----------------- | ---------------------------------------------- |
@@ -56,7 +56,7 @@ Use `ctxlint` for context-file quality and `agnix` for agent-config linting afte
 - Use `rg` for file discovery.
 - Prefer MCP tools when an MCP tool can do the job more precisely.
 - Keep changes small, specific, and repo-accurate.
-- Verify every referenced path, command, workflow, skill, and agent.
+- Verify every referenced path, command, workflow, skill, and agent with `rg`, `ctxlint`, or `agnix` before finishing the change.
 - Keep this file concise; move deeper guidance into `AGENTS.md`, `skills/`, or `instructions/`.
 - Update nearby documentation when changing reusable workflows, actions, skills, or agents.
 - Preserve the `CLAUDE.md` and `.github/copilot-instructions.md` symlinks.
