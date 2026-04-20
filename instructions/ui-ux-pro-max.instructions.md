@@ -1,6 +1,5 @@
 ---
 applyTo: "**/*.{css,scss,tsx,jsx,vue,svelte}"
-description: "UI/UX Design Intelligence - Auto-applied for frontend files"
 ---
 
 # UI/UX Pro Max - Design Intelligence

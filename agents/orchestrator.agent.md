@@ -1,32 +1,33 @@
 ---
 name: orchestrator
 description: "Drives the 5-phase development pipeline: explorer -> planner -> researcher -> coder -> reviewer. Supports auto/gated modes, optional pre-planning (discuss + PRD), complexity-adaptive multi-plan selection, and wave-based execution with integration checks."
-model: claude-sonnet-4.6
-modelParameters:
-  temperature: 0.35
-hooks:
-  SessionStart:
-    - type: command
-      command: "./scripts/inject-context.sh"
 mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   yggdrasil:
     type: local
     command: npx
     args: ["-y", "yggdrasil-mcp"]
-    tools: ["sequential_thinking", "deep_planning", "list_plans", "get_plan", "promote_plan"]
+    tools:
+      [
+        "sequential_thinking",
+        "deep_planning",
+        "list_plans",
+        "get_plan",
+        "promote_plan",
+      ]
 ---
 
 # Orchestrator

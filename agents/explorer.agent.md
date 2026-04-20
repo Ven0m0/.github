@@ -1,9 +1,6 @@
 ---
 name: explorer
 description: "Fast codebase exploration and mapping. Scans structure, identifies patterns, surfaces relevant files and risks for downstream pipeline agents."
-model: GPT-5.4
-modelParameters:
-  temperature: 0.2
 mcp-servers:
   ast-grep:
     type: local
@@ -13,15 +10,16 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
 ---
 

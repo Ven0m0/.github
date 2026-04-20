@@ -1,8 +1,6 @@
 ---
 name: fix-issue
 description: Fix a GitHub issue end-to-end - from reading the issue, understanding requirements, implementing the fix, writing tests, and creating a commit. Use when given a GitHub issue number or URL to resolve.
-user-invocable: true
-disable-model-invocation: true
 allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
 ---
 

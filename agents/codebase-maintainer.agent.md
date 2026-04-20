@@ -1,9 +1,6 @@
 ---
 name: codebase-maintainer
 description: "Codebase cleanup and indexing. Removes tech debt, dead code, bloat. Generates PROJECT_INDEX for token-efficient context."
-model: claude-sonnet-4.6
-modelParameters:
-  temperature: 0.35
 mcp-servers:
   ast-grep:
     type: local
@@ -13,15 +10,16 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   yggdrasil:
     type: local

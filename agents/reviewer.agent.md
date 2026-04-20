@@ -1,9 +1,6 @@
 ---
 name: reviewer
 description: "Critical review specialist. Handles task review (full code audit), wave review (integration checks), and plan review (DAG + PRD alignment). OWASP-aware, depth-configurable, PRD-compliant."
-model: GPT-5.4
-modelParameters:
-  temperature: 0.25
 mcp-servers:
   ast-grep:
     type: local
@@ -13,15 +10,16 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   semgrep:
     type: http

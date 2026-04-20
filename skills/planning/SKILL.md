@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Clarify requirements, ask high-leverage questions, and produce scoped PRDs with measurable acceptance criteria. Use for vague requests, new features, or explicit planning/PRD tasks.
+description: Clarify requirements, ask high-leverage questions, and produce scoped PRDs with measurable acceptance criteria. Use when handling vague requests, new features, or explicit planning/PRD tasks.
 allowed-tools: "Read, Write, Edit, Glob, Grep"
 ---
 

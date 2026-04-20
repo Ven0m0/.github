@@ -1,22 +1,20 @@
 ---
 description: "GitHub Actions specialist: secure CI/CD workflows, OIDC auth, reusable patterns, debugging."
 name: workflow-engineer
-model: claude-sonnet-4.6
-modelParameters:
-  temperature: 0.35
 mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   vercel:
     type: http

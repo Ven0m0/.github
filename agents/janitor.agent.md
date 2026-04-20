@@ -1,7 +1,6 @@
 ---
 description: "Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation."
 name: janitor
-model: claude-sonnet-4.6
 mcp-servers:
   ast-grep:
     type: local
@@ -11,15 +10,16 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   yggdrasil:
     type: local

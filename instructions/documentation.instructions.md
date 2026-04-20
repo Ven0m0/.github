@@ -1,6 +1,5 @@
 ---
 applyTo: "**/*.md"
-description: "Documentation standards - Auto-Orchestrator"
 ---
 
 # Documentation Standards

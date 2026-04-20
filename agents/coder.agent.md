@@ -1,13 +1,6 @@
 ---
 name: coder
 description: "Implementation specialist. Writes code following plan and research artifacts. Multi-language, TDD-driven, minimal focused changes."
-model: claude-sonnet-4.6
-modelParameters:
-  temperature: 0.3
-hooks:
-  PostToolUse:
-    - type: command
-      command: 'npx prettier --write "$TOOL_INPUT_FILE_PATH"'
 mcp-servers:
   ast-grep:
     type: local
@@ -17,15 +10,16 @@ mcp-servers:
   repomix:
     type: local
     command: npx
-    args: [
-      "-y",
-      "repomix@latest",
-      "--compress",
-      "--remove-empty-lines",
-      "--remove-comments",
-      "--truncate-base64",
-      "--mcp",
-    ]
+    args:
+      [
+        "-y",
+        "repomix@latest",
+        "--compress",
+        "--remove-empty-lines",
+        "--remove-comments",
+        "--truncate-base64",
+        "--mcp",
+      ]
     tools: ["*"]
   semgrep:
     type: http

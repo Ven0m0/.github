@@ -1,6 +1,6 @@
 ---
 name: docker-expert
-description: Docker containerization expert - multi-stage builds, image optimization, security hardening, Compose orchestration, and production deployment. Use for Dockerfile issues, image size, security, networking, and container orchestration.
+description: Docker containerization expert - multi-stage builds, image optimization, security hardening, Compose orchestration, and production deployment. Use when working on Dockerfiles, image size, security, networking, or container orchestration.
 ---
 
 # Docker Expert
@@ -328,20 +328,20 @@ When reviewing Docker configurations, focus on:
 
 ## Common Issue Diagnostics
 
-| Symptom                              | Root Cause                                        | Solution                                         |
-| ------------------------------------ | ------------------------------------------------- | ------------------------------------------------ |
-| Slow builds (10+ min), frequent miss | Poor layer ordering, large build context          | Multi-stage, .dockerignore, dependency caching   |
-| Security scan failures, root user    | Outdated images, hardcoded secrets, default user  | Non-root user, secrets management, image updates |
-| Images over 1 GB, slow deploys       | Build tools in prod, unnecessary files            | Distroless/multi-stage, artifact selection       |
-| Service DNS / communication failures | Missing networks, port conflicts, naming errors   | Custom networks, health checks, service naming   |
-| Hot reload failures, slow iteration  | Volume mount issues, port config, env mismatch    | Dev-specific targets, volume strategy, debug cfg |
+| Symptom                              | Root Cause                                       | Solution                                         |
+| ------------------------------------ | ------------------------------------------------ | ------------------------------------------------ |
+| Slow builds (10+ min), frequent miss | Poor layer ordering, large build context         | Multi-stage, .dockerignore, dependency caching   |
+| Security scan failures, root user    | Outdated images, hardcoded secrets, default user | Non-root user, secrets management, image updates |
+| Images over 1 GB, slow deploys       | Build tools in prod, unnecessary files           | Distroless/multi-stage, artifact selection       |
+| Service DNS / communication failures | Missing networks, port conflicts, naming errors  | Custom networks, health checks, service naming   |
+| Hot reload failures, slow iteration  | Volume mount issues, port config, env mismatch   | Dev-specific targets, volume strategy, debug cfg |
 
 ## Handoff
 
-| Scope beyond Docker              | Use instead                                    |
-| -------------------------------- | ---------------------------------------------- |
-| Kubernetes pods, services, mesh  | kubernetes-expert (future)                     |
-| GitHub Actions CI/CD             | `skills/workflow-development/`                 |
-| AWS ECS/Fargate, cloud services  | devops-expert                                  |
-| Database persistence strategies  | database-expert                                |
-| Application-level code perf      | language-specific skills                       |
+| Scope beyond Docker             | Use instead                    |
+| ------------------------------- | ------------------------------ |
+| Kubernetes pods, services, mesh | kubernetes-expert (future)     |
+| GitHub Actions CI/CD            | `skills/workflow-development/` |
+| AWS ECS/Fargate, cloud services | devops-expert                  |
+| Database persistence strategies | database-expert                |
+| Application-level code perf     | language-specific skills       |
