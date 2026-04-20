@@ -69,6 +69,6 @@ jobs:
         run: ruff format
       - name: Run Autofix
         if: steps.check_files.outputs.has_files == 'true'
-        uses: autofix-ci/action@v1.3.3
+        uses: autofix-ci/action@v1.3.4
         with:
           github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
