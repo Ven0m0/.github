@@ -17,7 +17,7 @@ jobs:
       - name: Dependabot metadata
         if: github.actor == 'dependabot[bot]'
         id: meta
-        uses: dependabot/fetch-metadata@v3
+        uses: dependabot/fetch-metadata@v3.1.0
         with:
           github-token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
       - name: Auto-approve
