@@ -156,7 +156,7 @@ runs:
 
     - name: Run Gemini
       if: ${{ inputs.provider == 'gemini' }}
-      uses: google-github-actions/run-gemini-cli@v0.1.21
+      uses: google-github-actions/run-gemini-cli@v0.1.22
       with:
         gemini_api_key: ${{ inputs.gemini-api-key || env.GEMINI_API_KEY }}
         gemini_model: ${{ inputs.model }}
@@ -183,7 +183,7 @@ runs:
 
     - name: Run OpenCode
       if: ${{ inputs.provider == 'opencode' }}
-      uses: anomalyco/opencode/github@v1.14.22
+      uses: anomalyco/opencode/github@v1.14.25
       with:
         model: ${{ inputs.model != '' && inputs.model || 'opencode/minimax-m2.5-free' }}
         prompt: ${{ inputs.prompt }}
