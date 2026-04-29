@@ -28,6 +28,21 @@ mcp-servers:
         "get_plan",
         "promote_plan",
       ]
+  memory:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-memory"]
+    tools: ["*"]
+  time:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-time"]
+    tools: ["*"]
+  git:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-git"]
+    tools: ["*"]
 ---
 
 # Orchestrator

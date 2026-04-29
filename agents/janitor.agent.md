@@ -26,6 +26,11 @@ mcp-servers:
     command: npx
     args: ["-y", "yggdrasil-mcp"]
     tools: ["sequential_thinking"]
+  filesystem:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    tools: ["*"]
 ---
 
 # Universal Janitor

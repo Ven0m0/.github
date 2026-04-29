@@ -7,6 +7,11 @@ mcp-servers:
     command: npx
     args: ["-y", "yggdrasil-mcp"]
     tools: ["sequential_thinking"]
+  git:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-git"]
+    tools: ["*"]
 ---
 
 # Git & GitHub CLI Expert Agent
