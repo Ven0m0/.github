@@ -36,6 +36,16 @@ mcp-servers:
     type: http
     url: "https://learn.microsoft.com/api/mcp"
     tools: ["microsoft_docs_search", "microsoft_docs_fetch"]
+  filesystem:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    tools: ["*"]
+  memory:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-memory"]
+    tools: ["*"]
 ---
 
 # Repo Architect Agent
