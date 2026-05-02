@@ -128,7 +128,7 @@ runs:
         mapfile -t files < <({
           find . -name "*.sh" -type f
           find . -name "*.bash" -type f -exec grep -l "^#!" {} +
-        } | grep -vE "$EXCLUDE" | sort -u)
+        } | { [[ -n "$EXCLUDE" ]] && grep -vE -- "$EXCLUDE" || cat; } | sort -u)
 
         if [[ ${#files[@]} -eq 0 ]]; then
           echo "No shell files found"
