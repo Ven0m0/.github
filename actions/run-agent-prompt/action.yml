@@ -8,7 +8,7 @@ branding:
 
 inputs:
   provider:
-    description: "claude | gemini | jules | opencode | kilo"
+    description: "claude | gemini | opencode | kilo"
     required: true
   prompt:
     description: "Prompt to send to the agent"
@@ -37,9 +37,6 @@ inputs:
     required: false
     default: ""
   gemini-api-key:
-    required: false
-    default: ""
-  jules-api-key:
     required: false
     default: ""
   opencode-api-key:
@@ -94,6 +91,9 @@ runs:
       uses: astral-sh/setup-uv@v8.1.0
       with:
         enable-cache: true
+        activate-environment: true
+        ignore-nothing-to-cache: true
+        ignore-empty-workdir: true
 
     - name: Install GitHub CLI
       if: ${{ inputs.provider != 'jules' && runner.os == 'Linux' }}
@@ -103,10 +103,9 @@ runs:
           echo "GitHub CLI (gh) is already installed."
           exit 0
         fi
-
         if command -v apt-get >/dev/null 2>&1; then
           sudo apt-get update
-            sudo apt-get install -y gh
+            sudo apt-get install -yq gh
         else
           echo "::warning::GitHub CLI (gh) is not installed and automatic installation is only supported on Debian/Ubuntu (apt-get not found). Skipping installation."
         fi
@@ -167,19 +166,6 @@ runs:
         GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
         GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
         GITHUB_TOKEN: ${{ inputs.github-token || env.GITHUB_TOKEN }}
-
-    - name: Run Jules
-      if: ${{ inputs.provider == 'jules' }}
-      uses: BeksOmega/jules-action@v1.0.0
-      with:
-        prompt: ${{ inputs.prompt }}
-        jules_api_key: ${{ inputs.jules-api-key || env.JULES_API_KEY }}
-        include_commit_log: true
-      env:
-        GIT_AUTHOR_NAME: ${{ inputs.git-author-name }}
-        GIT_AUTHOR_EMAIL: ${{ inputs.git-author-email }}
-        GIT_COMMITTER_NAME: ${{ inputs.git-committer-name || inputs.git-author-name }}
-        GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email || inputs.git-author-email }}
 
     - name: Run OpenCode
       if: ${{ inputs.provider == 'opencode' }}

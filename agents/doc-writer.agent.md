@@ -16,6 +16,11 @@ mcp-servers:
         "--mcp",
       ]
     tools: ["*"]
+  fetch:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-fetch"]
+    tools: ["*"]
 ---
 
 # Documentation Writer

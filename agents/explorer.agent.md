@@ -21,6 +21,11 @@ mcp-servers:
         "--mcp",
       ]
     tools: ["*"]
+  filesystem:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    tools: ["*"]
 ---
 
 # Explorer
