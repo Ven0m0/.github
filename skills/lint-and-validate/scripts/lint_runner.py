@@ -21,7 +21,7 @@ from typing import Any
 
 from utils import fix_windows_console_encoding
 
-# Fix Windows console encoding
+# Apply Windows console encoding fix
 # Swallow any errors here to preserve previous behavior where reconfigure() failures were non-fatal.
 try:
     fix_windows_console_encoding()
