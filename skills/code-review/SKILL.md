@@ -1,7 +1,7 @@
 ---
 name: code-review
 description: Review code changes (diffs, PRs, patches) and provide structured, actionable feedback on correctness, maintainability, and test coverage. Use when the user asks for a code review, requests feedback on a patch/PR, or wants an assessment of changes.
-allowed-tools: "Bash, Read, Glob, Grep"
+allowed-tools: "Bash(git:*), Read, Glob, Grep"
 ---
 
 # Code Review

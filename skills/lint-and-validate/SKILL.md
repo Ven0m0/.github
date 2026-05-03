@@ -44,5 +44,5 @@ description: "Automatic quality control, linting, and static analysis procedures
 
 | Script                     | Purpose                | Command                                          |
 | -------------------------- | ---------------------- | ------------------------------------------------ |
-| `scripts/lint_runner.py`   | Unified lint check     | `python scripts/lint_runner.py <project_path>`   |
-| `scripts/type_coverage.py` | Type coverage analysis | `python scripts/type_coverage.py <project_path>` |
+| [scripts/lint_runner.py](./scripts/lint_runner.py)   | Unified lint check     | `python skills/lint-and-validate/scripts/lint_runner.py <project_path>`   |
+| [scripts/type_coverage.py](./scripts/type_coverage.py) | Type coverage analysis | `python skills/lint-and-validate/scripts/type_coverage.py <project_path>` |

@@ -1,7 +1,7 @@
 ---
 name: fix-issue
 description: Fix a GitHub issue end-to-end - from reading the issue, understanding requirements, implementing the fix, writing tests, and creating a commit. Use when given a GitHub issue number or URL to resolve.
-allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
+allowed-tools: "Bash(git:*), Bash(gh:*), Bash(npm:*), Bash(npx:*), Bash(uv:*), Bash(pytest:*), Bash(ruff:*), Read, Write, Edit, Glob, Grep"
 ---
 
 # Fix GitHub Issue
