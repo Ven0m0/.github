@@ -1,6 +1,6 @@
 {
-  "name": "Opencode Kilocode Jules App",
-  "description": "Custom GitHub App for opencode/kilocode/claude/jules workflows - AI-powered coding assistant for GitHub",
+  "name": "OpenCode Kilocode App",
+  "description": "Custom GitHub App for opencode/kilocode workflows - AI-powered coding assistant for GitHub",
   "url": "https://github.com/anthropics/claude-code-action",
   "hook_attributes": {
     "url": "https://example.com/github/webhook",

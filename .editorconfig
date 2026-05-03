@@ -97,3 +97,13 @@ insert_final_newline = true
 
 [*.svg]
 insert_final_newline = false
+
+[.kilo/kilo.json]
+indent_style = space
+indent_size = 2
+tab_width = 2
+
+[.kilo/kilo.jsonc]
+indent_style = space
+indent_size = 2
+tab_width = 2
