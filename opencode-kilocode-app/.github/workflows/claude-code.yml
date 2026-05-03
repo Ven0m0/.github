@@ -39,7 +39,10 @@ jobs:
     if: |
       (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '@claude') || contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo') || contains(github.event.comment.body, '/jules'))) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo') || contains(github.event.issue.body, '/jules'))) ||
-      (github.event_name == 'pull_request') ||
+    if: |
+      (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '@claude') || contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo') || contains(github.event.comment.body, '/jules'))) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo') || contains(github.event.issue.body, '/jules'))) ||
+      (github.event_name == 'workflow_dispatch')
       (github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 30
