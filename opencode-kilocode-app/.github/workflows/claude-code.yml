@@ -1,0 +1,125 @@
+name: Claude Code Action
+
+on:
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened, synchronize]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: "Provider (claude, opencode, kilo, jules)"
+        required: true
+        default: "claude"
+        type: choice
+        options:
+          - claude
+          - opencode
+          - kilo
+          - jules
+      prompt:
+        description: "Prompt for the agent"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+  pull_requests: write
+  actions: read
+
+jobs:
+  claude-code:
+    if: |
+      (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '@claude') || contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo') || contains(github.event.comment.body, '/jules'))) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo') || contains(github.event.issue.body, '/jules'))) ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine Provider and Prompt
+        id: config
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PROVIDER: ${{ github.event.inputs.provider }}
+          INPUT_PROMPT: ${{ github.event.inputs.prompt }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          PROVIDER="claude"
+          PROMPT=""
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            PROVIDER="$INPUT_PROVIDER"
+            PROMPT="$INPUT_PROMPT"
+          elif [[ "$EVENT_NAME" == "issue_comment" ]]; then
+            PROMPT="$COMMENT_BODY"
+            if [[ "$PROMPT" == *"/opencode"* ]]; then PROVIDER="opencode"; fi
+            if [[ "$PROMPT" == *"/kilo"* ]]; then PROVIDER="kilo"; fi
+            if [[ "$PROMPT" == *"/jules"* ]]; then PROVIDER="jules"; fi
+          elif [[ "$EVENT_NAME" == "issues" ]]; then
+            PROMPT="$ISSUE_BODY"
+            if [[ "$PROMPT" == *"/opencode"* ]]; then PROVIDER="opencode"; fi
+            if [[ "$PROMPT" == *"/kilo"* ]]; then PROVIDER="kilo"; fi
+            if [[ "$PROMPT" == *"/jules"* ]]; then PROVIDER="jules"; fi
+          fi
+
+          echo "provider=$PROVIDER" >> $GITHUB_OUTPUT
+          # Escape prompt for safe usage in output if necessary, but here we'll use it in env vars later
+          echo "prompt=$PROMPT" >> $GITHUB_OUTPUT
+
+      - name: Run Claude
+        if: steps.config.outputs.provider == 'claude'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: ${{ steps.config.outputs.prompt }}
+
+      - name: Run OpenCode
+        if: steps.config.outputs.provider == 'opencode'
+        uses: anomalyco/opencode/github@v1.14.33
+        with:
+          prompt: ${{ steps.config.outputs.prompt }}
+          use_github_token: true
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Kilocode
+        if: steps.config.outputs.provider == 'kilo'
+        shell: bash
+        run: |
+          curl -fsSL https://kilo.ai/cli/install | bash
+          echo "$HOME/.kilo/bin" >> "$GITHUB_PATH"
+
+      - name: Run Kilocode
+        if: steps.config.outputs.provider == 'kilo'
+        shell: bash
+        run: kilo github run
+        env:
+          PROMPT: ${{ steps.config.outputs.prompt }}
+          USE_GITHUB_TOKEN: "true"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KILO_API_KEY: ${{ secrets.KILO_API_KEY }}
+
+      - name: Run Jules
+        if: steps.config.outputs.provider == 'jules'
+        uses: Ven0m0/.github/actions/run-agent-prompt@main
+        with:
+          provider: "jules"
+          prompt: ${{ steps.config.outputs.prompt }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          jules-api-key: ${{ secrets.JULES_API_KEY }}
