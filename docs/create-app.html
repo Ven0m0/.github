@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Claude Code GitHub App</title>
+    <title>Create GitHub AI Apps</title>
     <style>
       * {
         box-sizing: border-box;
@@ -12,7 +12,6 @@
       }
 
       :root {
-        /* Claude Brand Colors */
         --primary-dark: #0e0e0e;
         --primary-light: #d4a27f;
         --background-light: rgb(253, 253, 247);
@@ -24,16 +23,12 @@
         --hover-bg: rgba(0, 0, 0, 0.02);
         --success: #2ea44f;
         --warning: #e3b341;
-        --card-shadow:
-          0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-        --card-shadow-hover:
-          0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+        --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        --card-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
       }
 
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         background: var(--background-light);
         color: var(--text-primary);
         line-height: 1.6;
@@ -69,8 +64,8 @@
         line-height: 1.5;
       }
 
-      /* Cards */
-      .card {
+      /* Provider selector */
+      .provider-section {
         background: white;
         border: 1px solid var(--border-color);
         border-radius: 12px;
@@ -80,18 +75,14 @@
         transition: all 0.2s ease;
       }
 
-      .card:hover {
-        box-shadow: var(--card-shadow-hover);
-      }
-
-      .card-header {
+      .provider-header {
         display: flex;
         align-items: center;
         gap: 12px;
         margin-bottom: 20px;
       }
 
-      .card-icon {
+      .provider-icon {
         font-size: 24px;
         line-height: 1;
       }
@@ -104,21 +95,61 @@
         letter-spacing: -0.01em;
       }
 
-      .card-description {
+      .provider-description {
         color: var(--text-secondary);
         margin-bottom: 24px;
         font-size: 15px;
         line-height: 1.6;
       }
 
-      /* Buttons */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 6px;
+      }
+
+      select {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-family: inherit;
+        background: white;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 40px;
+      }
+
+      select:focus {
+        outline: none;
+        border-color: var(--primary-dark);
+        box-shadow: 0 0 0 3px rgba(14, 14, 14, 0.1);
+      }
+
       .button-group {
         display: flex;
+        gap: 12px;
         flex-direction: column;
-        gap: 16px;
+      }
+
+      @media (min-width: 640px) {
+        .button-group {
+          flex-direction: row;
+        }
       }
 
       .btn {
+        flex: 1;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -132,7 +163,6 @@
         transition: all 0.2s ease;
         text-decoration: none;
         font-family: inherit;
-        width: 100%;
       }
 
       .btn-primary {
@@ -157,17 +187,6 @@
         box-shadow: 0 4px 12px rgba(212, 162, 127, 0.3);
       }
 
-      .btn-outline {
-        background: white;
-        color: var(--text-primary);
-        border: 1px solid var(--border-color);
-      }
-
-      .btn-outline:hover {
-        background: var(--hover-bg);
-        border-color: var(--text-secondary);
-      }
-
       .btn:active {
         transform: translateY(0);
       }
@@ -177,23 +196,15 @@
         color: white;
       }
 
-      /* Form */
+      /* Form row */
       .form-row {
         display: flex;
         gap: 12px;
         align-items: flex-end;
       }
 
-      .form-group {
+      .form-row .form-group {
         flex: 1;
-      }
-
-      label {
-        display: block;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-primary);
-        margin-bottom: 6px;
       }
 
       input[type="text"] {
@@ -213,7 +224,7 @@
         box-shadow: 0 0 0 3px rgba(14, 14, 14, 0.1);
       }
 
-      /* Code Block */
+      /* Code container */
       .code-container {
         position: relative;
         background: #fafafa;
@@ -261,16 +272,14 @@
       .code-block {
         padding: 16px;
         overflow-x: auto;
-        font-family:
-          "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
-          "Courier New", monospace;
+        font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
         font-size: 13px;
         line-height: 1.6;
         color: var(--text-primary);
         white-space: pre;
       }
 
-      /* Permissions List */
+      /* Permissions grid */
       .permissions-grid {
         display: grid;
         gap: 12px;
@@ -345,7 +354,7 @@
         font-weight: 500;
       }
 
-      /* Alert Box */
+      /* Alert */
       .alert {
         display: flex;
         gap: 12px;
@@ -373,116 +382,70 @@
         font-weight: 600;
       }
 
-      /* Responsive */
-      @media (min-width: 640px) {
-        .button-group {
-          flex-direction: row;
-        }
-
-        .btn {
-          width: auto;
-        }
-
-        .permissions-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (max-width: 640px) {
-        h1 {
-          font-size: 28px;
-        }
-
-        .subtitle {
-          font-size: 16px;
-        }
-
-        .card {
-          padding: 24px 20px;
-        }
-
-        .container {
-          padding: 24px 16px;
-        }
-      }
-
-      /* Hidden form elements */
-      .hidden-form {
+      /* Hidden */
+      .hidden {
         display: none;
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        h1 { font-size: 28px; }
+        .subtitle { font-size: 16px; }
+        .provider-section, .card { padding: 24px 20px; }
+        .container { padding: 24px 16px; }
+        .button-group { flex-direction: column; }
+        .btn { width: 100%; }
       }
     </style>
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>Create Your Custom GitHub App</h1>
+        <h1>Create AI GitHub Apps</h1>
         <p class="subtitle">
-          Set up a custom GitHub App for Claude Code Action with all required
-          permissions automatically configured.
+          Configure a GitHub App for your preferred AI coding assistant.
+          Select a provider below and generate the manifest.
         </p>
       </header>
 
-      <!-- Quick Setup Card -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">🚀</span>
-          <h2>Quick Setup</h2>
+      <!-- Provider Selection & Action -->
+      <div class="provider-section">
+        <div class="provider-header">
+          <span class="provider-icon">🤖</span>
+          <h2>Select Provider</h2>
         </div>
-        <p class="card-description">
-          Create your GitHub App with one click. All permissions will be
-          automatically configured for Claude Code Action.
+        <p class="provider-description">
+          Choose which AI provider you want to configure. OpenCode and Kilo are
+          maintained in this repository; Claude and Jules are provided for documentation.
         </p>
 
+        <div class="form-group">
+          <label for="provider-select">Provider</label>
+          <select id="provider-select">
+            <option value="opencode">OpenCode (anomalyco)</option>
+            <option value="kilo">Kilocode (Kilo AI)</option>
+            <option value="claude">Claude Code (Anthropic)</option>
+            <option value="jules">Jules (Ven0m0)</option>
+          </select>
+        </div>
+
         <div class="button-group">
-          <!-- Personal Account Button -->
-          <form
-            action="https://github.com/settings/apps/new"
-            method="post"
-            class="hidden-form"
-            id="personal-form"
-          >
+          <form id="personal-form" method="post" class="hidden-form">
             <input type="hidden" name="manifest" id="personal-manifest" />
           </form>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="submitPersonalForm()"
-          >
+          <button type="button" class="btn btn-primary" onclick="submitPersonalForm()">
             <span>👤</span>
             <span>Create for Personal Account</span>
           </button>
 
-          <!-- Organization Form -->
           <form id="org-form" method="post" class="hidden-form">
             <input type="hidden" name="manifest" id="org-manifest" />
           </form>
-        </div>
-
-        <!-- Organization Input -->
-        <div
-          style="
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
-          "
-        >
-          <label for="org-name" style="margin-bottom: 8px"
-            >Or create for an organization:</label
-          >
           <div class="form-row">
             <div class="form-group">
-              <input
-                type="text"
-                id="org-name"
-                placeholder="Enter organization name (e.g., my-org)"
-              />
+              <input type="text" id="org-name" placeholder="Organization (e.g., my-org)" />
             </div>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              onclick="submitOrgForm()"
-              style="flex-shrink: 0"
-            >
+            <button type="button" class="btn btn-secondary" onclick="submitOrgForm()" style="flex-shrink: 0">
               <span>🏢</span>
               <span>Create for Org</span>
             </button>
@@ -491,94 +454,43 @@
       </div>
 
       <!-- Permissions Card -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">✅</span>
+      <div class="provider-section">
+        <div class="provider-header">
+          <span class="provider-icon">✅</span>
           <h2>Configured Permissions</h2>
         </div>
-        <p class="card-description">
+        <p class="provider-description">
           Your GitHub App will be created with these permissions:
         </p>
 
-        <div class="permissions-grid">
-          <div class="permission-item">
-            <span class="permission-icon">✓</span>
-            <span class="permission-name">Contents</span>
-            <span class="permission-value">Read & Write</span>
-          </div>
-          <div class="permission-item">
-            <span class="permission-icon">✓</span>
-            <span class="permission-name">Issues</span>
-            <span class="permission-value">Read & Write</span>
-          </div>
-          <div class="permission-item">
-            <span class="permission-icon">✓</span>
-            <span class="permission-name">Pull Requests</span>
-            <span class="permission-value">Read & Write</span>
-          </div>
-          <div class="permission-item">
-            <span class="permission-icon">✓</span>
-            <span class="permission-name">Actions</span>
-            <span class="permission-value">Read</span>
-          </div>
-          <div class="permission-item">
-            <span class="permission-icon">✓</span>
-            <span class="permission-name">Metadata</span>
-            <span class="permission-value">Read</span>
-          </div>
+        <div class="permissions-grid" id="permissions-grid">
+          <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- Next Steps Card -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">📋</span>
-          <h2>Next Steps</h2>
+      <!-- Secrets Card -->
+      <div class="provider-section">
+        <div class="provider-header">
+          <span class="provider-icon">🔑</span>
+          <h2>Required Secrets</h2>
         </div>
-        <p class="card-description">
-          After creating your app, complete these steps:
+        <p class="provider-description">
+          Add these secrets to your repository after creating the app:
         </p>
 
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-content">
-              <p>
-                <strong>Generate a private key:</strong> In your app settings,
-                scroll to "Private keys" and click "Generate a private key"
-              </p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-              <p>
-                <strong>Install the app:</strong> Click "Install App" and select
-                the repositories where you want to use Claude
-              </p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-              <p>
-                <strong>Configure your workflow:</strong> Add your app's ID and
-                private key to your repository secrets
-              </p>
-            </div>
-          </div>
+        <div class="permissions-grid" id="secrets-grid">
+          <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- Manual Setup Card -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">⚙️</span>
-          <h2>Manual Setup</h2>
+      <!-- Manifest Card -->
+      <div class="provider-section">
+        <div class="provider-header">
+          <span class="provider-icon">📋</span>
+          <h2>App Manifest</h2>
         </div>
-        <p class="card-description">
-          If the buttons above don't work, you can manually create the app by
-          copying the manifest JSON below:
+        <p class="provider-description">
+          Copy this JSON or use the button above to create the app directly.
         </p>
 
         <div class="code-container">
@@ -588,39 +500,9 @@
           </div>
           <div class="code-block" id="manifest-json"></div>
         </div>
-
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-content">
-              <p>Copy the manifest JSON above</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-              <p>
-                Go to
-                <a
-                  href="https://github.com/settings/apps/new"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style="color: var(--primary-dark); text-decoration: underline"
-                  >GitHub App Settings</a
-                >
-              </p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-              <p>Look for "Create from manifest" option and paste the JSON</p>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <!-- Warning Alert -->
+      <!-- Alert -->
       <div class="alert">
         <span class="alert-icon">⚠️</span>
         <div class="alert-content">
@@ -632,54 +514,120 @@
     </div>
 
     <script>
-      // Manifest configuration
-      const manifest = {
-        name: "Claude Code Custom App",
-        description:
-          "Custom GitHub App for Claude Code Action - AI-powered coding assistant for GitHub workflows",
-        url: "https://github.com/anthropics/claude-code-action",
-        hook_attributes: {
-          url: "https://example.com/github/webhook",
-          active: false,
+      // Provider configurations
+      const providers = {
+        opencode: {
+          name: "OpenCode GitHub App",
+          description: "GitHub App for OpenCode (Anomaly) - AI-powered coding assistant",
+          url: "https://github.com/anomalyco/opencode",
+          hookUrl: "https://example.com/github/webhook",
+          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
+          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
+          secretKeys: ["OPENCODE_API_KEY"],
+          secretLabels: { OPENCODE_API_KEY: "OpenCode API Key" }
         },
-        redirect_url: "https://github.com/settings/apps/new",
-        callback_urls: [],
-        setup_url:
-          "https://github.com/anthropics/claude-code-action/blob/main/docs/setup.md",
-        public: false,
-        default_permissions: {
-          contents: "write",
-          issues: "write",
-          pull_requests: "write",
-          actions: "read",
-          metadata: "read",
+        kilo: {
+          name: "Kilocode GitHub App",
+          description: "GitHub App for Kilo AI - Autonomous coding agent",
+          url: "https://github.com/Kilo-Org/kilocode",
+          hookUrl: "https://example.com/github/webhook",
+          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
+          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
+          secretKeys: ["KILO_API_KEY", "KILO_ORG_ID"],
+          secretLabels: { KILO_API_KEY: "Kilo API Key", KILO_ORG_ID: "Kilo Org ID" }
         },
-        default_events: [
-          "issue_comment",
-          "issues",
-          "pull_request",
-          "pull_request_review",
-          "pull_request_review_comment",
-        ],
+        claude: {
+          name: "Claude Code GitHub App",
+          description: "GitHub App for Claude Code (Anthropic) - AI coding assistant",
+          url: "https://github.com/anthropics/claude-code-action",
+          hookUrl: "https://example.com/github/webhook",
+          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
+          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
+          secretKeys: ["ANTHROPIC_API_KEY"],
+          secretLabels: { ANTHROPIC_API_KEY: "Anthropic API Key" }
+        },
+        jules: {
+          name: "Jules GitHub App",
+          description: "GitHub App for Jules (Ven0m0) - AI-powered workflows",
+          url: "https://github.com/Ven0m0/.github",
+          hookUrl: "https://example.com/github/webhook",
+          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
+          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
+          secretKeys: ["JULES_API_KEY"],
+          secretLabels: { JULES_API_KEY: "Jules API Key" }
+        }
       };
 
-      // Populate manifest fields
-      const manifestJson = JSON.stringify(manifest);
-      const manifestJsonPretty = JSON.stringify(manifest, null, 2);
+      let currentProvider = "opencode";
 
-      document.getElementById("personal-manifest").value = manifestJson;
-      document.getElementById("org-manifest").value = manifestJson;
+      function buildManifest(providerKey) {
+        const p = providers[providerKey];
+        return {
+          name: p.name,
+          description: p.description,
+          url: p.url,
+          hook_attributes: { url: p.hookUrl, active: false },
+          redirect_url: "https://github.com/settings/apps/new",
+          callback_urls: [],
+          setup_url: p.url + "/blob/main/docs/setup.md",
+          public: false,
+          default_permissions: p.permissions,
+          default_events: p.events
+        };
+      }
 
-      // Display formatted JSON
-      const manifestDisplay = document.getElementById("manifest-json");
-      manifestDisplay.textContent = manifestJsonPretty;
+      function updatePage() {
+        const p = providers[currentProvider];
 
-      // Submit personal form
+        // Update permissions grid
+        const permGrid = document.getElementById("permissions-grid");
+        permGrid.innerHTML = Object.entries(p.permissions)
+          .map(([key, val]) => `
+            <div class="permission-item">
+              <span class="permission-icon">✓</span>
+              <span class="permission-name">${key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}</span>
+              <span class="permission-value">${val.charAt(0).toUpperCase() + val.slice(1)}</span>
+            </div>
+          `).join("");
+
+        // Update secrets grid
+        const secGrid = document.getElementById("secrets-grid");
+        let secretHtml = "";
+        // Note: GH_TOKEN is optional for all; include it but mark optional
+        secretHtml += `
+          <div class="permission-item">
+            <span class="permission-icon">⚪</span>
+            <span class="permission-name">GH_TOKEN</span>
+            <span class="permission-value">GitHub PAT (optional)</span>
+          </div>`;
+        for (const key of p.secretKeys) {
+          secretHtml += `
+            <div class="permission-item">
+              <span class="permission-icon">✓</span>
+              <span class="permission-name">${key}</span>
+              <span class="permission-value">${p.secretLabels[key]}</span>
+            </div>`;
+        }
+        secGrid.innerHTML = secretHtml;
+
+        // Update manifest JSON (display and hidden fields)
+        const manifest = buildManifest(currentProvider);
+        const pretty = JSON.stringify(manifest, null, 2);
+        document.getElementById("manifest-json").textContent = pretty;
+        document.getElementById("personal-manifest").value = JSON.stringify(manifest);
+        document.getElementById("org-manifest").value = JSON.stringify(manifest);
+      }
+
+      // Event handlers
+      document.getElementById("provider-select").addEventListener("change", (e) => {
+        currentProvider = e.target.value;
+        updatePage();
+      });
+
       function submitPersonalForm() {
         document.getElementById("personal-form").submit();
       }
 
-      // Submit organization form
       function submitOrgForm() {
         const orgName = document.getElementById("org-name").value.trim();
         const form = document.getElementById("org-form");
@@ -697,54 +645,50 @@
         form.submit();
       }
 
-      // Allow Enter key to submit org form
-      document
-        .getElementById("org-name")
-        .addEventListener("keypress", function (e) {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            submitOrgForm();
-          }
-        });
+      document.getElementById("org-name").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submitOrgForm();
+        }
+      });
 
-      // Copy manifest to clipboard
       function copyManifest() {
-        navigator.clipboard
-          .writeText(manifestJsonPretty)
-          .then(() => {
-            const button = document.querySelector(".copy-btn");
-            const originalText = button.textContent;
-            button.textContent = "Copied!";
-            button.classList.add("copied");
+        const text = document.getElementById("manifest-json").textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = document.querySelector(".copy-btn");
+          const orig = btn.textContent;
+          btn.textContent = "Copied!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = orig;
+            btn.classList.remove("copied");
+          }, 2000);
+        }).catch(() => {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand("copy");
+            const btn = document.querySelector(".copy-btn");
+            const orig = btn.textContent;
+            btn.textContent = "Copied!";
+            btn.classList.add("copied");
             setTimeout(() => {
-              button.textContent = originalText;
-              button.classList.remove("copied");
+              btn.textContent = orig;
+              btn.classList.remove("copied");
             }, 2000);
-          })
-          .catch(() => {
-            // Fallback for older browsers
-            const textArea = document.createElement("textarea");
-            textArea.value = manifestJsonPretty;
-            textArea.style.position = "fixed";
-            textArea.style.opacity = "0";
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-              document.execCommand("copy");
-              const button = document.querySelector(".copy-btn");
-              const originalText = button.textContent;
-              button.textContent = "Copied!";
-              button.classList.add("copied");
-              setTimeout(() => {
-                button.textContent = originalText;
-                button.classList.remove("copied");
-              }, 2000);
-            } catch (err) {
-              alert("Failed to copy. Please copy manually.");
-            }
-            document.body.removeChild(textArea);
-          });
+          } catch (err) {
+            alert("Failed to copy. Please copy manually.");
+          }
+          document.body.removeChild(ta);
+        });
       }
+
+      // Initial render
+      updatePage();
     </script>
   </body>
 </html>
