@@ -1,7 +1,7 @@
 ---
 name: premium-frontend-ui
 description: Craft immersive, high-performance premium web experiences with advanced motion, typography, and architectural craftsmanship. Use when building award-level landing pages, interactive portfolios, or components requiring top-tier visual polish.
-allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
+allowed-tools: "Bash(git:*), Read, Write, Edit, Glob, Grep"
 ---
 
 # Premium Frontend UI

@@ -1,5 +1,5 @@
 {
-  "mcpServers": {
+  "servers": {
     "github-mcp-server": {
       "type": "http",
       "tools": ["*"],

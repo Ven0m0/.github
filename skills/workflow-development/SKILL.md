@@ -1,7 +1,7 @@
 ---
 name: workflow-development
 description: Create, debug, and optimize GitHub Actions workflows with security best practices. Use when asked to "create workflow", "fix workflow", "add CI", or needs help with GitHub Actions.
-allowed-tools: "Bash, Read, Write, Edit, Glob, Grep"
+allowed-tools: "Bash(git:*), Read, Write, Edit, Glob, Grep"
 ---
 
 # Workflow Development
