@@ -14,7 +14,7 @@ inputs:
     description: "Prompt to send to the agent"
     required: true
   model:
-    description: "Model override (ignored for jules)"
+    description: "Model override"
     required: false
     default: ""
   github-token:
@@ -63,8 +63,8 @@ runs:
         GIT_COMMITTER_EMAIL: ${{ inputs.git-committer-email }}
       run: |
         case "$PROVIDER" in
-          claude|gemini|jules|opencode|kilo) ;;
-          *) echo "::error::Unsupported provider '$PROVIDER'. Expected: claude | gemini | jules | opencode | kilo"; exit 1 ;;
+          claude|gemini|opencode|kilo) ;;
+          *) echo "::error::Unsupported provider '$PROVIDER'. Expected: claude | gemini | opencode | kilo"; exit 1 ;;
         esac
         if [[ (-n "$GIT_COMMITTER_NAME" && -z "$GIT_COMMITTER_EMAIL") || (-z "$GIT_COMMITTER_NAME" && -n "$GIT_COMMITTER_EMAIL") ]]; then
           echo "::error::git-committer-name and git-committer-email must both be set or both be blank."
@@ -79,15 +79,11 @@ runs:
       run: |
         git config --local user.name "$GIT_AUTHOR_NAME"
         git config --local user.email "$GIT_AUTHOR_EMAIL"
-
     - name: Set up Python
-      if: ${{ inputs.provider != 'jules' }}
       uses: actions/setup-python@v6
       with:
         python-version: "3.14"
-
     - name: Install uv
-      if: ${{ inputs.provider != 'jules' }}
       uses: astral-sh/setup-uv@v8.1.0
       with:
         enable-cache: true
@@ -96,7 +92,7 @@ runs:
         ignore-empty-workdir: true
 
     - name: Install GitHub CLI
-      if: ${{ inputs.provider != 'jules' && runner.os == 'Linux' }}
+      if: ${{ runner.os == 'Linux' }}
       shell: bash
       run: |
         if command -v gh >/dev/null 2>&1; then
@@ -105,11 +101,10 @@ runs:
         fi
         if command -v apt-get >/dev/null 2>&1; then
           sudo apt-get update
-            sudo apt-get install -yq gh
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends gh
         else
           echo "::warning::GitHub CLI (gh) is not installed and automatic installation is only supported on Debian/Ubuntu (apt-get not found). Skipping installation."
         fi
-
     - name: Cache npm downloads
       if: ${{ inputs.provider == 'claude' || inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
       uses: actions/cache@v5
@@ -118,7 +113,6 @@ runs:
         key: ${{ runner.os }}-agent-lsp-npm-${{ hashFiles('actions/run-agent-prompt/action.yml') }}
         restore-keys: |
           ${{ runner.os }}-agent-lsp-npm-
-
     - name: Install LSP servers
       if: ${{ inputs.provider == 'claude' || inputs.provider == 'opencode' || inputs.provider == 'kilo' }}
       shell: bash
@@ -127,8 +121,7 @@ runs:
         NPM_CONFIG_FUND: "false"
       run: |
         uv tool install basedpyright
-        npm install -g vscode-langservers-extracted yaml-language-server @vtsls/language-server bash-language-server
-        npm install -g tombi 2>/dev/null || true
+        npm install -g @zed-industries/vscode-langservers-extracted yaml-language-server @vtsls/language-server typescript bash-language-server tombi 2>/dev/null || true 
 
     - name: Run Claude
       if: ${{ inputs.provider == 'claude' }}
@@ -217,13 +210,13 @@ runs:
     - name: Install Kilo
       if: ${{ inputs.provider == 'kilo' && steps.kilo-cache.outputs.cache-hit != 'true' }}
       shell: bash
-      run: curl -fsSL https://kilo.ai/cli/install | bash
+      run: |
+        curl -fsSL https://kilo.ai/cli/install | bash
+        echo "$HOME/.kilo/bin" >> $GITHUB_PATH
     - name: Run Kilo
       if: ${{ inputs.provider == 'kilo' }}
       shell: bash
-      run: |
-        echo "$HOME/.kilo/bin" >> "$GITHUB_PATH"
-        kilo github run
+      run: kilo github run
       env:
         MODEL: ${{ inputs.model != '' && inputs.model || 'kilo/minimax/minimax-m2.5:free' }}
         PROMPT: ${{ inputs.prompt }}

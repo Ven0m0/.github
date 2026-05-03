@@ -1,1 +1,1 @@
-look into adding mcps from https://github.com/modelcontextprotocol/servers/tree/main/src to agents/
+merge "https://github.com/Kilo-Org/kilocode/blob/main/.github/actions/setup-bun/action.yml" into "actions/setup-bun/action.yml" and analyze "https://github.com/Kilo-Org/kilocode/blob/main/.github/workflows/disabled/kilo.yml.disabled"
