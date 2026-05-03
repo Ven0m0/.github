@@ -81,7 +81,7 @@ jobs:
 
           echo "provider=$PROVIDER" >> $GITHUB_OUTPUT
           # Escape prompt for safe usage in output if necessary, but here we'll use it in env vars later
-          echo "prompt=$PROMPT" >> $GITHUB_OUTPUT
+          printf 'prompt=%s\n' "$PROMPT" >> "$GITHUB_OUTPUT"
 
       - name: Run Claude
         if: steps.config.outputs.provider == 'claude'
