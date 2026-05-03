@@ -28,7 +28,7 @@ RE_PY_ALL_FUNC = re.compile(r"def\s+\w+\s*\(")
 
 EXCLUDE_DIRS = {"venv", ".venv", "__pycache__", ".git", "node_modules"}
 
-# Fix Windows console encoding for Unicode output
+# Configure Windows console encoding for Unicode output
 fix_windows_console_encoding()
 
 
