@@ -23,6 +23,7 @@
 | [cli-tool](cli-tool/TEMPLATE.md) | Node.js + Commander | CLI app |
 | [monorepo-turborepo](monorepo-turborepo/TEMPLATE.md) | Turborepo + pnpm | Monorepo |
 | [astro-static](astro-static/TEMPLATE.md) | Astro + MDX | Blog / Docs |
+| [claude-code-app](claude-code-app/TEMPLATE.md) | GitHub App | Claude Code Action |
 
 ---
 
