@@ -5,8 +5,6 @@ on:
     types: [created]
   issues:
     types: [opened]
-  pull_request:
-    types: [opened, synchronize]
   workflow_dispatch:
     inputs:
       provider:
@@ -27,26 +25,19 @@ on:
 permissions:
   contents: write
   issues: write
-  pull_requests: write
+  pull-requests: write
   actions: read
 
 jobs:
   claude-code:
-    if: |
+    if: >-
       (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '@claude') || contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo') || contains(github.event.comment.body, '/jules'))) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo') || contains(github.event.issue.body, '/jules'))) ||
-    if: |
-      (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '@claude') || contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo') || contains(github.event.comment.body, '/jules'))) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo') || contains(github.event.issue.body, '/jules'))) ||
-      (github.event_name == 'workflow_dispatch')
-      (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '@claude') || contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo') || contains(github.event.comment.body, '/jules'))) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo') || contains(github.event.issue.body, '/jules'))) ||
-      (github.event_name == 'workflow_dispatch')
-      (github.event_name == 'workflow_dispatch')
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -78,9 +69,12 @@ jobs:
             if [[ "$PROMPT" == *"/jules"* ]]; then PROVIDER="jules"; fi
           fi
 
-          echo "provider=$PROVIDER" >> $GITHUB_OUTPUT
-          # Escape prompt for safe usage in output if necessary, but here we'll use it in env vars later
-          printf 'prompt=%s\n' "$PROMPT" >> "$GITHUB_OUTPUT"
+          {
+            echo "provider=$PROVIDER"
+            echo "prompt<<EOF"
+            echo "$PROMPT"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Run Claude
         if: steps.config.outputs.provider == 'claude'

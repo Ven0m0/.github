@@ -24,7 +24,7 @@ This repository contains the configuration for a custom GitHub App designed to w
    - Go to the repository where you want to use the app.
    - Go to **Settings > Secrets and variables > Actions**.
    - Add the following secrets:
-     - `GITHUB_TOKEN`: A GitHub PAT (optional, `secrets.GITHUB_TOKEN` is used by default).
+     - `GH_TOKEN` *(optional)*: A GitHub PAT with additional scopes if the built-in `GITHUB_TOKEN` lacks required permissions.
      - `ANTHROPIC_API_KEY`: Required for Claude provider.
      - `OPENCODE_API_KEY`: Required for OpenCode provider.
      - `KILO_API_KEY`: Required for Kilocode provider.

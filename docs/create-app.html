@@ -682,22 +682,18 @@
       // Submit organization form
       function submitOrgForm() {
         const orgName = document.getElementById("org-name").value.trim();
+        const form = document.getElementById("org-form");
         if (!orgName) {
           alert("Please enter an organization name");
           document.getElementById("org-name").focus();
           return;
         }
-        const form = document.getElementById("org-form");
-        const form = document.getElementById("org-form");
-        form.action = `https://github.com/organizations/${orgName}/settings/apps/new`;
         if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(orgName)) {
           alert("Invalid organization name");
           document.getElementById("org-name").focus();
           return;
         }
-        form.action = `https://github.com/organizations/${orgName}/settings/apps/new`;
-        form.submit();
-        form.action = "https://github.com/organizations/" + encodeURIComponent(orgName) + "/settings/apps/new";
+        form.action = `https://github.com/organizations/${encodeURIComponent(orgName)}/settings/apps/new`;
         form.submit();
       }
 
