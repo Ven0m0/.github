@@ -114,7 +114,7 @@ Smallest layer wins. Place rules as low as possible.
 When editing `.github/workflows/`:
 
 - Read `skills/workflow-development/SKILL.md` first.
-- Use explicit action versions (e.g. `actions/checkout@v4`).
+- Use explicit action versions (e.g. `actions/checkout@v6`).
 - Add a least-privilege `permissions:` block.
 - Set `timeout-minutes` on each job.
 - Prefer reusable workflows over duplicate inline jobs.

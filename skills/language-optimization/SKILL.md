@@ -1,7 +1,7 @@
 ---
 name: language-optimization
 description: Optimize code for readability, performance, maintainability, and security across Bash, Python, and Rust. Use when asked to improve code quality, optimize performance, add type safety, or refactor for idioms.
-allowed-tools: "Bash(git:*), Read, Write, Edit, Glob, Grep"
+allowed-tools: "Bash(git:*), Bash(ruff:*), Bash(mypy:*), Bash(pytest:*), Bash(shellcheck:*), Bash(shfmt:*), Bash(clippy:*), Bash(cargo:*), Read, Write, Edit, Glob, Grep"
 ---
 
 # Language Optimization

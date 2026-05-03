@@ -1,7 +1,7 @@
 ---
 name: code-maintenance
 description: Refactoring and cleanup - improving code structure, removing dead code, eliminating duplication, or pre-merge cleanup. Use when code is hard to maintain, has dead code or debug artifacts, or needs pre-merge polishing.
-allowed-tools: "Bash(git:*), Read, Write, Edit, Glob, Grep"
+allowed-tools: "Bash(git:*), Bash(rg:*), Bash(ruff:*), Bash(npx:*), Read, Write, Edit, Glob, Grep"
 ---
 
 # Code Maintenance
