@@ -28,8 +28,20 @@ RE_PY_ALL_FUNC = re.compile(r"def\s+\w+\s*\(")
 
 EXCLUDE_DIRS = {"venv", ".venv", "__pycache__", ".git", "node_modules"}
 
-# Apply Windows console encoding fix for Unicode output
-fix_windows_console_encoding()
+
+def _configure_console_encoding() -> None:
+    """Best-effort console encoding setup that must not break module import."""
+    try:
+        fix_windows_console_encoding()
+    except (AttributeError, OSError, ValueError):
+        # Some redirected or wrapped stdout/stderr implementations do not
+        # support console reconfiguration. Importing this module should
+        # continue even when console encoding cannot be adjusted.
+        pass
+
+
+# Configure Windows console encoding for Unicode output
+_configure_console_encoding()
 
 
 def find_project_files(project_path: Path) -> tuple[list[Path], list[Path]]:

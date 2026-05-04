@@ -4,9 +4,10 @@ import sys
 
 
 def fix_windows_console_encoding() -> None:
-    """Fix Windows console encoding for Unicode output."""
-    try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
-    except AttributeError:
-        pass  # Python < 3.7
+    """Configure Windows console encoding for Unicode output."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            if hasattr(stream, "reconfigure"):
+                getattr(stream, "reconfigure")(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
