@@ -16,10 +16,6 @@ mcp-servers:
         "--mcp",
       ]
     tools: ["*"]
-  vercel:
-    type: http
-    url: "https://mcp.vercel.com"
-    tools: ["*"]
   yggdrasil:
     type: local
     command: npx
