@@ -1,4 +1,4 @@
-name: Claude Code Action
+name: OpenCode Kilocode Action
 
 on:
   issue_comment:
@@ -8,15 +8,13 @@ on:
   workflow_dispatch:
     inputs:
       provider:
-        description: "Provider (claude, opencode, kilo, jules)"
+        description: "Provider (opencode, kilo)"
         required: true
-        default: "claude"
+        default: "opencode"
         type: choice
         options:
-          - claude
           - opencode
           - kilo
-          - jules
       prompt:
         description: "Prompt for the agent"
         required: false
@@ -31,8 +29,8 @@ permissions:
 jobs:
   claude-code:
     if: >-
-      (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '@claude') || contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo') || contains(github.event.comment.body, '/jules'))) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo') || contains(github.event.issue.body, '/jules'))) ||
+      (github.event_name == 'issue_comment' && (contains(github.event.comment.body, '/opencode') || contains(github.event.comment.body, '/kilo'))) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '/opencode') || contains(github.event.issue.body, '/kilo'))) ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -50,24 +48,22 @@ jobs:
           INPUT_PROMPT: ${{ github.event.inputs.prompt }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           ISSUE_BODY: ${{ github.event.issue.body }}
-        run: |
-          PROVIDER="claude"
-          PROMPT=""
+         run: |
+           PROVIDER="opencode"
+           PROMPT=""
 
-          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            PROVIDER="$INPUT_PROVIDER"
-            PROMPT="$INPUT_PROMPT"
-          elif [[ "$EVENT_NAME" == "issue_comment" ]]; then
-            PROMPT="$COMMENT_BODY"
-            if [[ "$PROMPT" == *"/opencode"* ]]; then PROVIDER="opencode"; fi
-            if [[ "$PROMPT" == *"/kilo"* ]]; then PROVIDER="kilo"; fi
-            if [[ "$PROMPT" == *"/jules"* ]]; then PROVIDER="jules"; fi
-          elif [[ "$EVENT_NAME" == "issues" ]]; then
-            PROMPT="$ISSUE_BODY"
-            if [[ "$PROMPT" == *"/opencode"* ]]; then PROVIDER="opencode"; fi
-            if [[ "$PROMPT" == *"/kilo"* ]]; then PROVIDER="kilo"; fi
-            if [[ "$PROMPT" == *"/jules"* ]]; then PROVIDER="jules"; fi
-          fi
+           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+             PROVIDER="$INPUT_PROVIDER"
+             PROMPT="$INPUT_PROMPT"
+           elif [[ "$EVENT_NAME" == "issue_comment" ]]; then
+             PROMPT="$COMMENT_BODY"
+             if [[ "$PROMPT" == *"/opencode"* ]]; then PROVIDER="opencode"; fi
+             if [[ "$PROMPT" == *"/kilo"* ]]; then PROVIDER="kilo"; fi
+           elif [[ "$EVENT_NAME" == "issues" ]]; then
+             PROMPT="$ISSUE_BODY"
+             if [[ "$PROMPT" == *"/opencode"* ]]; then PROVIDER="opencode"; fi
+             if [[ "$PROMPT" == *"/kilo"* ]]; then PROVIDER="kilo"; fi
+           fi
 
           {
             echo "provider=$PROVIDER"
@@ -76,13 +72,7 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Run Claude
-        if: steps.config.outputs.provider == 'claude'
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: ${{ steps.config.outputs.prompt }}
+
 
       - name: Run OpenCode
         if: steps.config.outputs.provider == 'opencode'
@@ -111,11 +101,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           KILO_API_KEY: ${{ secrets.KILO_API_KEY }}
 
-      - name: Run Jules
-        if: steps.config.outputs.provider == 'jules'
-        uses: Ven0m0/.github/actions/run-agent-prompt@main
-        with:
-          provider: "jules"
-          prompt: ${{ steps.config.outputs.prompt }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          jules-api-key: ${{ secrets.JULES_API_KEY }}
+
