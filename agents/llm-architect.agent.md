@@ -1,6 +1,6 @@
 ---
 description: "Bootstraps, tunes, and validates agentic project structures and AI configs for GitHub Copilot (VS Code) and OpenCode CLI workflows. Run after `opencode /init`, when refining Copilot/CLAUDE guidance, or when migrating agentic repos."
-name: repo-architect
+name: llm-architect
 mcp-servers:
   repomix:
     type: local
