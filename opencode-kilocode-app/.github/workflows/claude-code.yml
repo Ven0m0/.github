@@ -76,7 +76,7 @@ jobs:
 
       - name: Run OpenCode
         if: steps.config.outputs.provider == 'opencode'
-        uses: anomalyco/opencode/github@v1.14.40
+        uses: anomalyco/opencode/github@v1.14.46
         with:
           prompt: ${{ steps.config.outputs.prompt }}
           use_github_token: true
