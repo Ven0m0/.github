@@ -713,7 +713,7 @@
                     document.getElementById("org-name").focus();
                     return;
                 }
-                if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(orgName)) {
+                if (!/^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(orgName)) {
                     alert("Invalid organization name");
                     document.getElementById("org-name").focus();
                     return;
