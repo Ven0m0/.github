@@ -1,694 +1,774 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create GitHub AI Apps</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Create GitHub AI Apps</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-      :root {
-        --primary-dark: #0e0e0e;
-        --primary-light: #d4a27f;
-        --background-light: rgb(253, 253, 247);
-        --background-dark: rgb(9, 9, 11);
-        --text-primary: #1a1a1a;
-        --text-secondary: #525252;
-        --text-tertiary: #737373;
-        --border-color: rgba(0, 0, 0, 0.08);
-        --hover-bg: rgba(0, 0, 0, 0.02);
-        --success: #2ea44f;
-        --warning: #e3b341;
-        --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-        --card-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
-      }
+            :root {
+                --primary-dark: #0e0e0e;
+                --primary-light: #d4a27f;
+                --background-light: rgb(253, 253, 247);
+                --background-dark: rgb(9, 9, 11);
+                --text-primary: #1a1a1a;
+                --text-secondary: #525252;
+                --text-tertiary: #737373;
+                --border-color: rgba(0, 0, 0, 0.08);
+                --hover-bg: rgba(0, 0, 0, 0.02);
+                --success: #2ea44f;
+                --warning: #e3b341;
+                --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+                --card-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
 
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        background: var(--background-light);
-        color: var(--text-primary);
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                background: var(--background-light);
+                color: var(--text-primary);
+                line-height: 1.6;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
 
-      .container {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 40px 24px;
-      }
+            .container {
+                max-width: 960px;
+                margin: 0 auto;
+                padding: 40px 24px;
+            }
 
-      /* Header */
-      header {
-        text-align: center;
-        margin-bottom: 48px;
-      }
+            /* Header */
+            header {
+                text-align: center;
+                margin-bottom: 48px;
+            }
 
-      h1 {
-        font-size: 36px;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 12px;
-        letter-spacing: -0.02em;
-      }
+            h1 {
+                font-size: 36px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 12px;
+                letter-spacing: -0.02em;
+            }
 
-      .subtitle {
-        font-size: 18px;
-        color: var(--text-secondary);
-        max-width: 640px;
-        margin: 0 auto;
-        line-height: 1.5;
-      }
+            .subtitle {
+                font-size: 18px;
+                color: var(--text-secondary);
+                max-width: 640px;
+                margin: 0 auto;
+                line-height: 1.5;
+            }
 
-      /* Provider selector */
-      .provider-section {
-        background: white;
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 32px;
-        margin-bottom: 24px;
-        box-shadow: var(--card-shadow);
-        transition: all 0.2s ease;
-      }
+            /* Provider selector */
+            .provider-section {
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 32px;
+                margin-bottom: 24px;
+                box-shadow: var(--card-shadow);
+                transition: all 0.2s ease;
+            }
 
-      .provider-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-      }
+            .provider-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
 
-      .provider-icon {
-        font-size: 24px;
-        line-height: 1;
-      }
+            .provider-icon {
+                font-size: 24px;
+                line-height: 1;
+            }
 
-      h2 {
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin: 0;
-        letter-spacing: -0.01em;
-      }
+            h2 {
+                font-size: 20px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin: 0;
+                letter-spacing: -0.01em;
+            }
 
-      .provider-description {
-        color: var(--text-secondary);
-        margin-bottom: 24px;
-        font-size: 15px;
-        line-height: 1.6;
-      }
+            .provider-description {
+                color: var(--text-secondary);
+                margin-bottom: 24px;
+                font-size: 15px;
+                line-height: 1.6;
+            }
 
-      .form-group {
-        margin-bottom: 20px;
-      }
+            .form-group {
+                margin-bottom: 20px;
+            }
 
-      label {
-        display: block;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-primary);
-        margin-bottom: 6px;
-      }
+            label {
+                display: block;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--text-primary);
+                margin-bottom: 6px;
+            }
 
-      select {
-        width: 100%;
-        padding: 10px 14px;
-        font-size: 15px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-family: inherit;
-        background: white;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        background-size: 16px;
-        padding-right: 40px;
-      }
+            select {
+                width: 100%;
+                padding: 10px 14px;
+                font-size: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                font-family: inherit;
+                background: white;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                background-size: 16px;
+                padding-right: 40px;
+            }
 
-      select:focus {
-        outline: none;
-        border-color: var(--primary-dark);
-        box-shadow: 0 0 0 3px rgba(14, 14, 14, 0.1);
-      }
+            select:focus {
+                outline: none;
+                border-color: var(--primary-dark);
+                box-shadow: 0 0 0 3px rgba(14, 14, 14, 0.1);
+            }
 
-      .button-group {
-        display: flex;
-        gap: 12px;
-        flex-direction: column;
-      }
+            .button-group {
+                display: flex;
+                gap: 12px;
+                flex-direction: column;
+            }
 
-      @media (min-width: 640px) {
-        .button-group {
-          flex-direction: row;
-        }
-      }
+            @media (min-width: 640px) {
+                .button-group {
+                    flex-direction: row;
+                }
+            }
 
-      .btn {
-        flex: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 12px 24px;
-        font-size: 15px;
-        font-weight: 500;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-        font-family: inherit;
-      }
+            .btn {
+                flex: 1;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 12px 24px;
+                font-size: 15px;
+                font-weight: 500;
+                border-radius: 8px;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-decoration: none;
+                font-family: inherit;
+            }
 
-      .btn-primary {
-        background: var(--primary-dark);
-        color: white;
-      }
+            .btn-primary {
+                background: var(--primary-dark);
+                color: white;
+            }
 
-      .btn-primary:hover {
-        background: #1a1a1a;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
+            .btn-primary:hover {
+                background: #1a1a1a;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
 
-      .btn-secondary {
-        background: var(--primary-light);
-        color: var(--primary-dark);
-      }
+            .btn-secondary {
+                background: var(--primary-light);
+                color: var(--primary-dark);
+            }
 
-      .btn-secondary:hover {
-        background: #c99a70;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(212, 162, 127, 0.3);
-      }
+            .btn-secondary:hover {
+                background: #c99a70;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(212, 162, 127, 0.3);
+            }
 
-      .btn:active {
-        transform: translateY(0);
-      }
+            .btn:active {
+                transform: translateY(0);
+            }
 
-      .btn.copied {
-        background: var(--success);
-        color: white;
-      }
+            .btn.copied {
+                background: var(--success);
+                color: white;
+            }
 
-      /* Form row */
-      .form-row {
-        display: flex;
-        gap: 12px;
-        align-items: flex-end;
-      }
+            /* Form row */
+            .form-row {
+                display: flex;
+                gap: 12px;
+                align-items: flex-end;
+            }
 
-      .form-row .form-group {
-        flex: 1;
-      }
+            .form-row .form-group {
+                flex: 1;
+            }
 
-      input[type="text"] {
-        width: 100%;
-        padding: 10px 14px;
-        font-size: 15px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-family: inherit;
-        transition: all 0.2s ease;
-        background: white;
-      }
+            input[type="text"] {
+                width: 100%;
+                padding: 10px 14px;
+                font-size: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                font-family: inherit;
+                transition: all 0.2s ease;
+                background: white;
+            }
 
-      input[type="text"]:focus {
-        outline: none;
-        border-color: var(--primary-dark);
-        box-shadow: 0 0 0 3px rgba(14, 14, 14, 0.1);
-      }
+            input[type="text"]:focus {
+                outline: none;
+                border-color: var(--primary-dark);
+                box-shadow: 0 0 0 3px rgba(14, 14, 14, 0.1);
+            }
 
-      /* Code container */
-      .code-container {
-        position: relative;
-        background: #fafafa;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        margin: 20px 0;
-      }
+            /* Code container */
+            .code-container {
+                position: relative;
+                background: #fafafa;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                margin: 20px 0;
+            }
 
-      .code-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 16px;
-        border-bottom: 1px solid var(--border-color);
-      }
+            .code-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                border-bottom: 1px solid var(--border-color);
+            }
 
-      .code-label {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text-secondary);
-      }
+            .code-label {
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text-secondary);
+            }
 
-      .copy-btn {
-        padding: 6px 12px;
-        font-size: 13px;
-        font-weight: 500;
-        background: white;
-        color: var(--text-primary);
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
+            .copy-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+                font-weight: 500;
+                background: white;
+                color: var(--text-primary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
 
-      .copy-btn:hover {
-        background: var(--hover-bg);
-      }
+            .copy-btn:hover {
+                background: var(--hover-bg);
+            }
 
-      .copy-btn.copied {
-        background: var(--success);
-        color: white;
-        border-color: var(--success);
-      }
+            .copy-btn.copied {
+                background: var(--success);
+                color: white;
+                border-color: var(--success);
+            }
 
-      .code-block {
-        padding: 16px;
-        overflow-x: auto;
-        font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
-        font-size: 13px;
-        line-height: 1.6;
-        color: var(--text-primary);
-        white-space: pre;
-      }
+            .code-block {
+                padding: 16px;
+                overflow-x: auto;
+                font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+                font-size: 13px;
+                line-height: 1.6;
+                color: var(--text-primary);
+                white-space: pre;
+            }
 
-      /* Permissions grid */
-      .permissions-grid {
-        display: grid;
-        gap: 12px;
-        margin-top: 16px;
-      }
+            /* Permissions grid */
+            .permissions-grid {
+                display: grid;
+                gap: 12px;
+                margin-top: 16px;
+            }
 
-      .permission-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        background: #fafafa;
-        border-radius: 8px;
-        font-size: 14px;
-      }
+            .permission-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 14px;
+                background: #fafafa;
+                border-radius: 8px;
+                font-size: 14px;
+            }
 
-      .permission-icon {
-        color: var(--success);
-        font-size: 16px;
-        line-height: 1;
-      }
+            .permission-icon {
+                color: var(--success);
+                font-size: 16px;
+                line-height: 1;
+            }
 
-      .permission-name {
-        font-weight: 500;
-        color: var(--text-primary);
-      }
+            .permission-name {
+                font-weight: 500;
+                color: var(--text-primary);
+            }
 
-      .permission-value {
-        margin-left: auto;
-        color: var(--text-secondary);
-        font-size: 13px;
-      }
+            .permission-value {
+                margin-left: auto;
+                color: var(--text-secondary);
+                font-size: 13px;
+            }
 
-      /* Steps */
-      .steps {
-        margin: 24px 0;
-      }
+            /* Steps */
+            .steps {
+                margin: 24px 0;
+            }
 
-      .step {
-        display: flex;
-        gap: 16px;
-        margin-bottom: 20px;
-      }
+            .step {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 20px;
+            }
 
-      .step-number {
-        flex-shrink: 0;
-        width: 28px;
-        height: 28px;
-        background: var(--primary-dark);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 600;
-      }
+            .step-number {
+                flex-shrink: 0;
+                width: 28px;
+                height: 28px;
+                background: var(--primary-dark);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                font-weight: 600;
+            }
 
-      .step-content {
-        flex: 1;
-        padding-top: 2px;
-      }
+            .step-content {
+                flex: 1;
+                padding-top: 2px;
+            }
 
-      .step-content p {
-        color: var(--text-secondary);
-        font-size: 15px;
-        line-height: 1.6;
-      }
+            .step-content p {
+                color: var(--text-secondary);
+                font-size: 15px;
+                line-height: 1.6;
+            }
 
-      .step-content strong {
-        color: var(--text-primary);
-        font-weight: 500;
-      }
+            .step-content strong {
+                color: var(--text-primary);
+                font-weight: 500;
+            }
 
-      /* Alert */
-      .alert {
-        display: flex;
-        gap: 12px;
-        padding: 16px;
-        background: #fffbf0;
-        border: 1px solid #f5e7c3;
-        border-radius: 8px;
-        margin-top: 32px;
-      }
+            /* Alert */
+            .alert {
+                display: flex;
+                gap: 12px;
+                padding: 16px;
+                background: #fffbf0;
+                border: 1px solid #f5e7c3;
+                border-radius: 8px;
+                margin-top: 32px;
+            }
 
-      .alert-icon {
-        font-size: 18px;
-        line-height: 1;
-        flex-shrink: 0;
-      }
+            .alert-icon {
+                font-size: 18px;
+                line-height: 1;
+                flex-shrink: 0;
+            }
 
-      .alert-content {
-        flex: 1;
-        font-size: 14px;
-        line-height: 1.6;
-      }
+            .alert-content {
+                flex: 1;
+                font-size: 14px;
+                line-height: 1.6;
+            }
 
-      .alert-content strong {
-        color: var(--text-primary);
-        font-weight: 600;
-      }
+            .alert-content strong {
+                color: var(--text-primary);
+                font-weight: 600;
+            }
 
-      /* Hidden */
-      .hidden {
-        display: none;
-      }
+            /* Hidden */
+            .hidden {
+                display: none;
+            }
 
-      /* Responsive */
-      @media (max-width: 640px) {
-        h1 { font-size: 28px; }
-        .subtitle { font-size: 16px; }
-        .provider-section, .card { padding: 24px 20px; }
-        .container { padding: 24px 16px; }
-        .button-group { flex-direction: column; }
-        .btn { width: 100%; }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h1>Create AI GitHub Apps</h1>
-        <p class="subtitle">
-          Configure a GitHub App for your preferred AI coding assistant.
-          Select a provider below and generate the manifest.
-        </p>
-      </header>
+            /* Responsive */
+            @media (max-width: 640px) {
+                h1 {
+                    font-size: 28px;
+                }
+                .subtitle {
+                    font-size: 16px;
+                }
+                .provider-section,
+                .card {
+                    padding: 24px 20px;
+                }
+                .container {
+                    padding: 24px 16px;
+                }
+                .button-group {
+                    flex-direction: column;
+                }
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Create AI GitHub Apps</h1>
+                <p class="subtitle">
+                    Configure a GitHub App for your preferred AI coding assistant. Select a provider below and generate
+                    the manifest.
+                </p>
+            </header>
 
-      <!-- Provider Selection & Action -->
-      <div class="provider-section">
-        <div class="provider-header">
-          <span class="provider-icon">🤖</span>
-          <h2>Select Provider</h2>
-        </div>
-        <p class="provider-description">
-          Choose which AI provider you want to configure. OpenCode and Kilo are
-          maintained in this repository; Claude and Jules are provided for documentation.
-        </p>
+            <!-- Provider Selection & Action -->
+            <div class="provider-section">
+                <div class="provider-header">
+                    <span class="provider-icon">🤖</span>
+                    <h2>Select Provider</h2>
+                </div>
+                <p class="provider-description">
+                    Choose which AI provider you want to configure. OpenCode and Kilo are maintained in this repository;
+                    Claude and Jules are provided for documentation.
+                </p>
 
-        <div class="form-group">
-          <label for="provider-select">Provider</label>
-          <select id="provider-select">
-            <option value="opencode">OpenCode (anomalyco)</option>
-            <option value="kilo">Kilocode (Kilo AI)</option>
-            <option value="claude">Claude Code (Anthropic)</option>
-            <option value="jules">Jules (Ven0m0)</option>
-          </select>
-        </div>
+                <div class="form-group">
+                    <label for="provider-select">Provider</label>
+                    <select id="provider-select">
+                        <option value="opencode">OpenCode (anomalyco)</option>
+                        <option value="kilo">Kilocode (Kilo AI)</option>
+                        <option value="claude">Claude Code (Anthropic)</option>
+                        <option value="jules">Jules (Ven0m0)</option>
+                    </select>
+                </div>
 
-        <div class="button-group">
-          <form id="personal-form" method="post" action="https://github.com/settings/apps/new" class="hidden-form">
-            <input type="hidden" name="manifest" id="personal-manifest" />
-          </form>
-          <button type="button" class="btn btn-primary" onclick="submitPersonalForm()">
-            <span>👤</span>
-            <span>Create for Personal Account</span>
-          </button>
+                <div class="button-group">
+                    <form
+                        id="personal-form"
+                        method="post"
+                        action="https://github.com/settings/apps/new"
+                        class="hidden-form"
+                    >
+                        <input type="hidden" name="manifest" id="personal-manifest" />
+                    </form>
+                    <button type="button" class="btn btn-primary" onclick="submitPersonalForm()">
+                        <span>👤</span>
+                        <span>Create for Personal Account</span>
+                    </button>
 
-          <form id="org-form" method="post" class="hidden-form">
-            <input type="hidden" name="manifest" id="org-manifest" />
-          </form>
-          <div class="form-row">
-            <div class="form-group">
-              <input type="text" id="org-name" placeholder="Organization (e.g., my-org)" />
+                    <form id="org-form" method="post" class="hidden-form">
+                        <input type="hidden" name="manifest" id="org-manifest" />
+                    </form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="text" id="org-name" placeholder="Organization (e.g., my-org)" />
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="submitOrgForm()"
+                            style="flex-shrink: 0"
+                        >
+                            <span>🏢</span>
+                            <span>Create for Org</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <button type="button" class="btn btn-secondary" onclick="submitOrgForm()" style="flex-shrink: 0">
-              <span>🏢</span>
-              <span>Create for Org</span>
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <!-- Permissions Card -->
-      <div class="provider-section">
-        <div class="provider-header">
-          <span class="provider-icon">✅</span>
-          <h2>Configured Permissions</h2>
-        </div>
-        <p class="provider-description">
-          Your GitHub App will be created with these permissions:
-        </p>
+            <!-- Permissions Card -->
+            <div class="provider-section">
+                <div class="provider-header">
+                    <span class="provider-icon">✅</span>
+                    <h2>Configured Permissions</h2>
+                </div>
+                <p class="provider-description">Your GitHub App will be created with these permissions:</p>
 
-        <div class="permissions-grid" id="permissions-grid">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- Secrets Card -->
-      <div class="provider-section">
-        <div class="provider-header">
-          <span class="provider-icon">🔑</span>
-          <h2>Required Secrets</h2>
-        </div>
-        <p class="provider-description">
-          Add these secrets to your repository after creating the app:
-        </p>
-
-        <div class="permissions-grid" id="secrets-grid">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- Manifest Card -->
-      <div class="provider-section">
-        <div class="provider-header">
-          <span class="provider-icon">📋</span>
-          <h2>App Manifest</h2>
-        </div>
-        <p class="provider-description">
-          Copy this JSON or use the button above to create the app directly.
-        </p>
-
-        <div class="code-container">
-          <div class="code-header">
-            <span class="code-label">github-app-manifest.json</span>
-            <button class="copy-btn" onclick="copyManifest()">Copy</button>
-          </div>
-          <div class="code-block" id="manifest-json"></div>
-        </div>
-      </div>
-
-      <!-- Alert -->
-      <div class="alert">
-        <span class="alert-icon">⚠️</span>
-        <div class="alert-content">
-          <strong>Important:</strong> Keep your private key secure! Never commit
-          it to your repository. Always use GitHub secrets to store sensitive
-          credentials.
-        </div>
-      </div>
-    </div>
-
-    <script>
-      // Provider configurations
-      const providers = {
-        opencode: {
-          name: "OpenCode GitHub App",
-          description: "GitHub App for OpenCode (Anomaly) - AI-powered coding assistant",
-          url: "https://github.com/anomalyco/opencode",
-          hookUrl: "https://example.com/github/webhook",
-          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
-          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
-          secretKeys: ["OPENCODE_API_KEY"],
-          secretLabels: { OPENCODE_API_KEY: "OpenCode API Key" }
-        },
-        kilo: {
-          name: "Kilocode GitHub App",
-          description: "GitHub App for Kilo AI - Autonomous coding agent",
-          url: "https://github.com/Kilo-Org/kilocode",
-          hookUrl: "https://example.com/github/webhook",
-          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
-          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
-          secretKeys: ["KILO_API_KEY", "KILO_ORG_ID"],
-          secretLabels: { KILO_API_KEY: "Kilo API Key", KILO_ORG_ID: "Kilo Org ID" }
-        },
-        claude: {
-          name: "Claude Code GitHub App",
-          description: "GitHub App for Claude Code (Anthropic) - AI coding assistant",
-          url: "https://github.com/anthropics/claude-code-action",
-          hookUrl: "https://example.com/github/webhook",
-          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
-          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
-          secretKeys: ["ANTHROPIC_API_KEY"],
-          secretLabels: { ANTHROPIC_API_KEY: "Anthropic API Key" }
-        },
-        jules: {
-          name: "Jules GitHub App",
-          description: "GitHub App for Jules (Ven0m0) - AI-powered workflows",
-          url: "https://github.com/Ven0m0/.github",
-          hookUrl: "https://example.com/github/webhook",
-          permissions: { contents: "write", issues: "write", pull_requests: "write", actions: "read", metadata: "read" },
-          events: ["issue_comment", "issues", "pull_request", "pull_request_review", "pull_request_review_comment"],
-          secretKeys: ["JULES_API_KEY"],
-          secretLabels: { JULES_API_KEY: "Jules API Key" }
-        }
-      };
-
-      let currentProvider = "opencode";
-
-      function buildManifest(providerKey) {
-        const p = providers[providerKey];
-        return {
-          name: p.name,
-          description: p.description,
-          url: p.url,
-          hook_attributes: { url: p.hookUrl, active: false },
-          redirect_url: "https://github.com/settings/apps/new",
-          callback_urls: [],
-          setup_url: p.url + "/blob/main/docs/setup.md",
-          public: false,
-          default_permissions: p.permissions,
-          default_events: p.events
-        };
-      }
-
-      function updatePage() {
-        const p = providers[currentProvider];
-
-        // Update permissions grid
-        const permGrid = document.getElementById("permissions-grid");
-        permGrid.innerHTML = Object.entries(p.permissions)
-          .map(([key, val]) => `
-            <div class="permission-item">
-              <span class="permission-icon">✓</span>
-              <span class="permission-name">${key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}</span>
-              <span class="permission-value">${val.charAt(0).toUpperCase() + val.slice(1)}</span>
+                <div class="permissions-grid" id="permissions-grid">
+                    <!-- Populated by JS -->
+                </div>
             </div>
-          `).join("");
 
-        // Update secrets grid
-        const secGrid = document.getElementById("secrets-grid");
-        let secretHtml = "";
-        // Note: GH_TOKEN is optional for all; include it but mark optional
-        secretHtml += `
-          <div class="permission-item">
-            <span class="permission-icon">⚪</span>
-            <span class="permission-name">GH_TOKEN</span>
-            <span class="permission-value">GitHub PAT (optional)</span>
-          </div>`;
-        for (const key of p.secretKeys) {
-          secretHtml += `
-            <div class="permission-item">
-              <span class="permission-icon">✓</span>
-              <span class="permission-name">${key}</span>
-              <span class="permission-value">${p.secretLabels[key]}</span>
-            </div>`;
-        }
-        secGrid.innerHTML = secretHtml;
+            <!-- Secrets Card -->
+            <div class="provider-section">
+                <div class="provider-header">
+                    <span class="provider-icon">🔑</span>
+                    <h2>Required Secrets</h2>
+                </div>
+                <p class="provider-description">Add these secrets to your repository after creating the app:</p>
 
-        // Update manifest JSON (display and hidden fields)
-        const manifest = buildManifest(currentProvider);
-        const pretty = JSON.stringify(manifest, null, 2);
-        document.getElementById("manifest-json").textContent = pretty;
-        document.getElementById("personal-manifest").value = JSON.stringify(manifest);
-        document.getElementById("org-manifest").value = JSON.stringify(manifest);
-      }
+                <div class="permissions-grid" id="secrets-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
 
-      // Event handlers
-      document.getElementById("provider-select").addEventListener("change", (e) => {
-        currentProvider = e.target.value;
-        updatePage();
-      });
+            <!-- Manifest Card -->
+            <div class="provider-section">
+                <div class="provider-header">
+                    <span class="provider-icon">📋</span>
+                    <h2>App Manifest</h2>
+                </div>
+                <p class="provider-description">Copy this JSON or use the button above to create the app directly.</p>
 
-      function submitPersonalForm() {
-        document.getElementById("personal-form").submit();
-      }
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-label">github-app-manifest.json</span>
+                        <button class="copy-btn" onclick="copyManifest()">Copy</button>
+                    </div>
+                    <div class="code-block" id="manifest-json"></div>
+                </div>
+            </div>
 
-      function submitOrgForm() {
-        const orgName = document.getElementById("org-name").value.trim();
-        const form = document.getElementById("org-form");
-        if (!orgName) {
-          alert("Please enter an organization name");
-          document.getElementById("org-name").focus();
-          return;
-        }
-        if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(orgName)) {
-          alert("Invalid organization name");
-          document.getElementById("org-name").focus();
-          return;
-        }
-        form.action = `https://github.com/organizations/${encodeURIComponent(orgName)}/settings/apps/new`;
-        form.submit();
-      }
+            <!-- Alert -->
+            <div class="alert">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <strong>Important:</strong> Keep your private key secure! Never commit it to your repository. Always
+                    use GitHub secrets to store sensitive credentials.
+                </div>
+            </div>
+        </div>
 
-      document.getElementById("org-name").addEventListener("keypress", function(e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          submitOrgForm();
-        }
-      });
+        <script>
+            function createPermissionItem(icon, name, value) {
+                const item = document.createElement("div");
+                item.className = "permission-item";
 
-      function copyManifest() {
-        const text = document.getElementById("manifest-json").textContent;
-        navigator.clipboard.writeText(text).then(() => {
-          const btn = document.querySelector(".copy-btn");
-          const orig = btn.textContent;
-          btn.textContent = "Copied!";
-          btn.classList.add("copied");
-          setTimeout(() => {
-            btn.textContent = orig;
-            btn.classList.remove("copied");
-          }, 2000);
-        }).catch(() => {
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          ta.style.position = "fixed";
-          ta.style.opacity = "0";
-          document.body.appendChild(ta);
-          ta.select();
-          try {
-            document.execCommand("copy");
-            const btn = document.querySelector(".copy-btn");
-            const orig = btn.textContent;
-            btn.textContent = "Copied!";
-            btn.classList.add("copied");
-            setTimeout(() => {
-              btn.textContent = orig;
-              btn.classList.remove("copied");
-            }, 2000);
-          } catch (err) {
-            alert("Failed to copy. Please copy manually.");
-          }
-          document.body.removeChild(ta);
-        });
-      }
+                const iconSpan = document.createElement("span");
+                iconSpan.className = "permission-icon";
+                iconSpan.textContent = icon;
+                item.appendChild(iconSpan);
 
-      // Initial render
-      updatePage();
-    </script>
-  </body>
+                const nameSpan = document.createElement("span");
+                nameSpan.className = "permission-name";
+                nameSpan.textContent = name;
+                item.appendChild(nameSpan);
+
+                const valueSpan = document.createElement("span");
+                valueSpan.className = "permission-value";
+                valueSpan.textContent = value;
+                item.appendChild(valueSpan);
+
+                return item;
+            }
+
+            // Provider configurations
+            const providers = {
+                opencode: {
+                    name: "OpenCode GitHub App",
+                    description: "GitHub App for OpenCode (Anomaly) - AI-powered coding assistant",
+                    url: "https://github.com/anomalyco/opencode",
+                    hookUrl: "https://example.com/github/webhook",
+                    permissions: {
+                        contents: "write",
+                        issues: "write",
+                        pull_requests: "write",
+                        actions: "read",
+                        metadata: "read",
+                    },
+                    events: [
+                        "issue_comment",
+                        "issues",
+                        "pull_request",
+                        "pull_request_review",
+                        "pull_request_review_comment",
+                    ],
+                    secretKeys: ["OPENCODE_API_KEY"],
+                    secretLabels: { OPENCODE_API_KEY: "OpenCode API Key" },
+                },
+                kilo: {
+                    name: "Kilocode GitHub App",
+                    description: "GitHub App for Kilo AI - Autonomous coding agent",
+                    url: "https://github.com/Kilo-Org/kilocode",
+                    hookUrl: "https://example.com/github/webhook",
+                    permissions: {
+                        contents: "write",
+                        issues: "write",
+                        pull_requests: "write",
+                        actions: "read",
+                        metadata: "read",
+                    },
+                    events: [
+                        "issue_comment",
+                        "issues",
+                        "pull_request",
+                        "pull_request_review",
+                        "pull_request_review_comment",
+                    ],
+                    secretKeys: ["KILO_API_KEY", "KILO_ORG_ID"],
+                    secretLabels: { KILO_API_KEY: "Kilo API Key", KILO_ORG_ID: "Kilo Org ID" },
+                },
+                claude: {
+                    name: "Claude Code GitHub App",
+                    description: "GitHub App for Claude Code (Anthropic) - AI coding assistant",
+                    url: "https://github.com/anthropics/claude-code-action",
+                    hookUrl: "https://example.com/github/webhook",
+                    permissions: {
+                        contents: "write",
+                        issues: "write",
+                        pull_requests: "write",
+                        actions: "read",
+                        metadata: "read",
+                    },
+                    events: [
+                        "issue_comment",
+                        "issues",
+                        "pull_request",
+                        "pull_request_review",
+                        "pull_request_review_comment",
+                    ],
+                    secretKeys: ["ANTHROPIC_API_KEY"],
+                    secretLabels: { ANTHROPIC_API_KEY: "Anthropic API Key" },
+                },
+                jules: {
+                    name: "Jules GitHub App",
+                    description: "GitHub App for Jules (Ven0m0) - AI-powered workflows",
+                    url: "https://github.com/Ven0m0/.github",
+                    hookUrl: "https://example.com/github/webhook",
+                    permissions: {
+                        contents: "write",
+                        issues: "write",
+                        pull_requests: "write",
+                        actions: "read",
+                        metadata: "read",
+                    },
+                    events: [
+                        "issue_comment",
+                        "issues",
+                        "pull_request",
+                        "pull_request_review",
+                        "pull_request_review_comment",
+                    ],
+                    secretKeys: ["JULES_API_KEY"],
+                    secretLabels: { JULES_API_KEY: "Jules API Key" },
+                },
+            };
+
+            let currentProvider = "opencode";
+
+            function buildManifest(providerKey) {
+                const p = providers[providerKey];
+                return {
+                    name: p.name,
+                    description: p.description,
+                    url: p.url,
+                    hook_attributes: { url: p.hookUrl, active: false },
+                    redirect_url: "https://github.com/settings/apps/new",
+                    callback_urls: [],
+                    setup_url: p.url + "/blob/main/docs/setup.md",
+                    public: false,
+                    default_permissions: p.permissions,
+                    default_events: p.events,
+                };
+            }
+
+            function updatePage() {
+                const p = providers[currentProvider];
+
+                // Update permissions grid
+                const permGrid = document.getElementById("permissions-grid");
+                const permItems = Object.entries(p.permissions).map(([key, val]) =>
+                    createPermissionItem(
+                        "✓",
+                        key.charAt(0).toUpperCase() + key.slice(1).replaceAll("_", " "),
+                        val.charAt(0).toUpperCase() + val.slice(1),
+                    ),
+                );
+                permGrid.replaceChildren(...permItems);
+
+                // Update secrets grid
+                const secGrid = document.getElementById("secrets-grid");
+                const secretItems = [];
+                // Note: GH_TOKEN is optional for all; include it but mark optional
+                secretItems.push(createPermissionItem("⚪", "GH_TOKEN", "GitHub PAT (optional)"));
+
+                for (const key of p.secretKeys) {
+                    secretItems.push(createPermissionItem("✓", key, p.secretLabels[key]));
+                }
+                secGrid.replaceChildren(...secretItems);
+
+                // Update manifest JSON (display and hidden fields)
+                const manifest = buildManifest(currentProvider);
+                const pretty = JSON.stringify(manifest, null, 2);
+                document.getElementById("manifest-json").textContent = pretty;
+                document.getElementById("personal-manifest").value = JSON.stringify(manifest);
+                document.getElementById("org-manifest").value = JSON.stringify(manifest);
+            }
+
+            // Event handlers
+            document.getElementById("provider-select").addEventListener("change", (e) => {
+                currentProvider = e.target.value;
+                updatePage();
+            });
+
+            function submitPersonalForm() {
+                document.getElementById("personal-form").submit();
+            }
+
+            function submitOrgForm() {
+                const orgName = document.getElementById("org-name").value.trim();
+                const form = document.getElementById("org-form");
+                if (!orgName) {
+                    alert("Please enter an organization name");
+                    document.getElementById("org-name").focus();
+                    return;
+                }
+                if (!/^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(orgName)) {
+                    alert("Invalid organization name");
+                    document.getElementById("org-name").focus();
+                    return;
+                }
+                form.action = `https://github.com/organizations/${encodeURIComponent(orgName)}/settings/apps/new`;
+                form.submit();
+            }
+
+            document.getElementById("org-name").addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    submitOrgForm();
+                }
+            });
+
+            function copyManifest() {
+                const text = document.getElementById("manifest-json").textContent;
+                navigator.clipboard
+                    .writeText(text)
+                    .then(() => {
+                        const btn = document.querySelector(".copy-btn");
+                        const orig = btn.textContent;
+                        btn.textContent = "Copied!";
+                        btn.classList.add("copied");
+                        setTimeout(() => {
+                            btn.textContent = orig;
+                            btn.classList.remove("copied");
+                        }, 2000);
+                    })
+                    .catch(() => {
+                        const ta = document.createElement("textarea");
+                        ta.value = text;
+                        ta.style.position = "fixed";
+                        ta.style.opacity = "0";
+                        document.body.appendChild(ta);
+                        ta.select();
+                        try {
+                            document.execCommand("copy");
+                            const btn = document.querySelector(".copy-btn");
+                            const orig = btn.textContent;
+                            btn.textContent = "Copied!";
+                            btn.classList.add("copied");
+                            setTimeout(() => {
+                                btn.textContent = orig;
+                                btn.classList.remove("copied");
+                            }, 2000);
+                        } catch (err) {
+                            alert("Failed to copy. Please copy manually.");
+                        }
+                        document.body.removeChild(ta);
+                    });
+            }
+
+            // Initial render
+            updatePage();
+        </script>
+    </body>
 </html>
