@@ -6,17 +6,20 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
+FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
+MODEL_RE = re.compile(r'^model:\s*["\']?([^\n"\']+)["\']?$', re.MULTILINE)
+
 
 def read_frontmatter(path: Path) -> str:
     """Return the YAML frontmatter block from an agent file."""
-    match = re.match(r"^---\n(.*?)\n---\n", path.read_text(encoding="utf-8"), re.DOTALL)
+    match = FRONTMATTER_RE.match(path.read_text(encoding="utf-8"))
     assert match is not None, f"missing frontmatter in {path}"
     return match.group(1)
 
 
 def read_model(path: Path) -> str:
     """Return the configured primary model for an agent."""
-    match = re.search(r'^model:\s*["\']?([^\n"\']+)["\']?$', read_frontmatter(path), re.MULTILINE)
+    match = MODEL_RE.search(read_frontmatter(path))
     assert match is not None, f"missing model in {path}"
     return match.group(1)
 
