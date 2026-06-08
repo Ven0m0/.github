@@ -84,7 +84,7 @@ runs:
       with:
         python-version: "3.14"
     - name: Install uv
-      uses: astral-sh/setup-uv@v8.1.0
+      uses: astral-sh/setup-uv@v8.2.0
       with:
         enable-cache: true
         activate-environment: true
@@ -162,7 +162,7 @@ runs:
 
     - name: Run OpenCode
       if: ${{ inputs.provider == 'opencode' }}
-      uses: anomalyco/opencode/github@v1.15.13
+      uses: anomalyco/opencode/github@v1.16.2
       with:
         model: ${{ inputs.model != '' && inputs.model || 'opencode/minimax-m2.5-free' }}
         prompt: ${{ inputs.prompt }}
