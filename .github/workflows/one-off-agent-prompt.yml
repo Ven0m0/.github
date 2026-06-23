@@ -44,7 +44,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Jules needs full history for include_commit_log; others only need HEAD
           fetch-depth: ${{ github.event.inputs.provider == 'jules' && '0' || '1' }}
