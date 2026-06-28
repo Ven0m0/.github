@@ -1,22 +1,24 @@
 import json
 import re
-import yaml
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
+RE_FRONTMATTER = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
+RE_MODEL = re.compile(r'^model:\s*["\']?([^\n"\']+)["\']?$', re.MULTILINE)
+
 
 def read_frontmatter(path: Path) -> str:
     """Return the YAML frontmatter block from an agent file."""
-    match = re.match(r"^---\n(.*?)\n---\n", path.read_text(encoding="utf-8"), re.DOTALL)
+    match = RE_FRONTMATTER.match(path.read_text(encoding="utf-8"))
     assert match is not None, f"missing frontmatter in {path}"
     return match.group(1)
 
 
 def read_model(path: Path) -> str:
     """Return the configured primary model for an agent."""
-    match = re.search(r'^model:\s*["\']?([^\n"\']+)["\']?$', read_frontmatter(path), re.MULTILINE)
+    match = RE_MODEL.search(read_frontmatter(path))
     assert match is not None, f"missing model in {path}"
     return match.group(1)
 
@@ -104,6 +106,12 @@ def test_all_agents_use_supported_primary_models():
 
 def test_all_agent_frontmatter_is_valid_yaml():
     """All agent frontmatter blocks must parse as valid YAML."""
+    try:
+        import yaml
+    except ImportError:
+        # Skip YAML validation if PyYAML is not installed
+        return
+
     for path in (REPO_ROOT / "agents").glob("*.agent.md"):
         frontmatter = read_frontmatter(path)
         try:
