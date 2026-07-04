@@ -109,8 +109,8 @@ def test_all_agent_frontmatter_is_valid_yaml():
     try:
         import yaml
     except ImportError:
-        # Skip YAML validation if PyYAML is not installed
-        return
+        import pytest
+        pytest.skip("PyYAML is not installed")
 
     for path in (REPO_ROOT / "agents").glob("*.agent.md"):
         frontmatter = read_frontmatter(path)
