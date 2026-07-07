@@ -41,7 +41,7 @@ jobs:
         shell: bash
       - name: Setup UV
         if: steps.check_files.outputs.has_files == 'true'
-        uses: astral-sh/setup-uv@v8.2.0
+        uses: astral-sh/setup-uv@v8.3.0
         with:
           python-version: "3.13"
           activate-environment: "true"
@@ -60,7 +60,7 @@ jobs:
         run: uv lock -U --fork-strategy requires-python --index-strategy unsafe-best-match --resolution highest
       - name: Lint with Ruff
         if: steps.check_files.outputs.has_files == 'true'
-        uses: astral-sh/ruff-action@v4.0.0
+        uses: astral-sh/ruff-action@v4.1.0
       - name: Fix Lint Issues
         if: steps.check_files.outputs.has_files == 'true'
         run: ruff check --fix-only
