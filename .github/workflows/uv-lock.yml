@@ -41,7 +41,7 @@ jobs:
         shell: bash
       - name: Setup UV
         if: steps.check_files.outputs.has_files == 'true'
-        uses: astral-sh/setup-uv@v8.3.1
+        uses: astral-sh/setup-uv@v8.3.2
         with:
           python-version: "3.13"
           activate-environment: "true"
