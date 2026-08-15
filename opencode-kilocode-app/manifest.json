@@ -1,14 +1,14 @@
 {
   "name": "OpenCode Kilocode App",
   "description": "Custom GitHub App for opencode/kilocode workflows - AI-powered coding assistant for GitHub",
-  "url": "https://github.com/anthropics/claude-code-action",
+  "url": "https://github.com/Ven0m0/.github/tree/main/opencode-kilocode-app",
   "hook_attributes": {
     "url": "https://example.com/github/webhook",
     "active": false
   },
   "redirect_url": "https://github.com/settings/apps/new",
   "callback_urls": [],
-  "setup_url": "https://github.com/anthropics/claude-code-action/blob/main/docs/setup.md",
+  "setup_url": "https://github.com/Ven0m0/.github/blob/main/opencode-kilocode-app/README.md",
   "public": false,
   "default_permissions": {
     "contents": "write",

@@ -271,3 +271,4 @@ github_conf
 .github/hooks/logs
 dummy_project/
 .omc/
+.codegraph/
