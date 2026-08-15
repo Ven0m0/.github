@@ -11,7 +11,7 @@ runs:
     # node-gyp (invoked via bunx for native install scripts) requires Node >=22;
     # some runner images ship an older system Node on PATH
     - name: Setup Node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v7
       with:
         node-version: "24"
 
